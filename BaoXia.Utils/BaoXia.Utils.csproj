@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ApplicationIcon>Images\BaoXia_600x600@1x.ico</ApplicationIcon>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Company>石家庄宝匣软件科技有限公司</Company>
+		<Description>宝匣软件 .Net Core 公用工具集。</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Version>1.1.19</Version>
+		<PackageIcon>BaoXia_600x600@1x.png</PackageIcon>
+		<PackOnBuild>true</PackOnBuild>
+		<FileVersion>1.1.19.0</FileVersion>
+		<ReleaseVersion>1.1.11</ReleaseVersion>
+		<AssemblyVersion>1.1.19.0</AssemblyVersion>
+		<Nullable>enable</Nullable>
+		<Authors>石家庄宝匣软件科技有限公司</Authors>
+		<Title>宝匣软件 - 基础工具包</Title>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+	<ItemGroup>
+		<Folder Include="Security\Cryptography\" />
+		<Folder Include="TestUtils\" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="Microsoft.Extensions.DependencyInjection" />
+		<None Remove="Microsoft.EntityFrameworkCore" />
+		<None Remove="Microsoft.Extensions.Hosting.Abstractions" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Images\BaoXia_600x600@1x.png">
+			<Pack>True</Pack>
+			<PackagePath>
+			</PackagePath>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+	</ItemGroup>
+</Project>

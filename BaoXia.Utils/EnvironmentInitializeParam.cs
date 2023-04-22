@@ -25,7 +25,7 @@ namespace BaoXia.Utils
                 /// <summary>
                 /// 每次写入日志文件的最多日志条目数，默认为： 200 条。
                 /// </summary>
-                public Func<int>? ToGetLogRecordsCountPerFileWrite { get; set; } = () => 200;
+                public Func<int>? ToGetLogRecordsCountPerFileWrite { get; set; } = () => 1000;
 
                 /// <summary>
                 /// 每次日志持久化的超时时间，默认为： 1 秒。

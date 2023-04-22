@@ -619,7 +619,7 @@ namespace BaoXia.Utils
 					+= "<log type=\"log\" serverName=\"" + serverName + "\">"
 					+ "\r\n\t<time logTimestamp=\"" + logTimestamp + "\">" + logTimestampCaption + "</time>"
 					+ "\r\n\t<invoker>" + logRecord.Invoker + "</invoker>"
-					+ "\r\n\t<content>" + logRecord.Content.StringByDecodeInHtmlEscape() ?? string.Empty + "</content>"
+					+ "\r\n\t<content>" + (logRecord.Content.StringByDecodeInHtmlEscape() ?? string.Empty) + "</content>"
 					+ "\r\n</log>";
 				}
 

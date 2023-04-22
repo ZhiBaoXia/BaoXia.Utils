@@ -7,15 +7,20 @@
 		<Company>石家庄宝匣软件科技有限公司</Company>
 		<Description>宝匣软件 .Net Core 公用工具集。</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Version>1.1.19</Version>
+		<Version>1.1.20</Version>
 		<PackageIcon>BaoXia_600x600@1x.png</PackageIcon>
 		<PackOnBuild>true</PackOnBuild>
-		<FileVersion>1.1.19.0</FileVersion>
+		<FileVersion>1.1.20.0</FileVersion>
 		<ReleaseVersion>1.1.11</ReleaseVersion>
-		<AssemblyVersion>1.1.19.0</AssemblyVersion>
+		<AssemblyVersion>1.1.20.0</AssemblyVersion>
 		<Nullable>enable</Nullable>
 		<Authors>石家庄宝匣软件科技有限公司</Authors>
 		<Title>宝匣软件 - 基础工具包</Title>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageProjectUrl>https://github.com/BaoXiaRuanJian/BaoXia.Utils</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/BaoXiaRuanJian/BaoXia.Utils</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>工具集;字符串工具;并发工具</PackageTags>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<WarningLevel>4</WarningLevel>
@@ -30,6 +35,10 @@
 		<None Remove="Microsoft.Extensions.Hosting.Abstractions" />
 	</ItemGroup>
 	<ItemGroup>
+		<None Include="..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 		<None Include="Images\BaoXia_600x600@1x.png">
 			<Pack>True</Pack>
 			<PackagePath>

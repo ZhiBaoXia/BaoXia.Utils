@@ -67,7 +67,7 @@ namespace BaoXia.Utils.ConcurrentTools
 
                 public Tasks(
                         Func<int>? toGetConcurrentTasksCountMax,
-                        TaskCreationOptions taskCreationOptions = TaskCreationOptions.None,
+                        TaskCreationOptions taskCreationOptions = TaskCreationOptions.LongRunning,
                         TaskContinuationOptions taskContinuationOptions = TaskContinuationOptions.None)
                 {
                         _taskScheduler = new ConcurrencyTaskScheduler(toGetConcurrentTasksCountMax);

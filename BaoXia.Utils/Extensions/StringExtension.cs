@@ -1,9 +1,7 @@
 ﻿using BaoXia.Utils.Security.Cryptography;
-using Microsoft.AspNetCore.Http.Features;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -2179,7 +2177,7 @@ namespace BaoXia.Utils.Extensions
 			{
 				return null;
 			}
-			
+
 			var pathBeginCharIndex = indexOfRootPathSeparator;
 			var pathEndCharIndex = uriString.Length;
 			if (!isIncludeQueryParams)
@@ -2679,7 +2677,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="isIntNumber">是否只是整形数字。</param>
 		/// <returns>字符串是否为纯数字字符串时，返回：true，否则返回：false。</returns>
 		public static bool IsNumberString(
-		    this string str,
+		    this string? str,
 		    bool isIntNumber = true)
 		{
 			if (str == null
@@ -2745,17 +2743,19 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="str">当前字符串。</param>
 		/// <returns>字符串是否为纯字母字符串时，返回：true，否则返回：false。</returns>
 		public static bool IsAlphabetString(
-		    this string str)
+		    this string? str)
 		{
-			if (str?.Length > 0)
+			if (string.IsNullOrEmpty(str))
 			{
-				foreach (var character in str)
+				return false;
+			}
+
+			foreach (var character in str)
+			{
+				if ((character < 'a' || character > 'z')
+				    && (character < 'A' || character > 'Z'))
 				{
-					if ((character < 'a' || character > 'z')
-					    && (character < 'A' || character > 'Z'))
-					{
-						return false;
-					}
+					return false;
 				}
 			}
 			return true;

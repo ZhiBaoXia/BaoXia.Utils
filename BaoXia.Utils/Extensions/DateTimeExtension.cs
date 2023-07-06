@@ -56,7 +56,7 @@ namespace BaoXia.Utils.Extensions
                 /// <param name="dateTime">当前时间对象。</param>
                 /// <param name="anotherDateTime">另一个时间对象。</param>
                 /// <param name="compareFieldMin">指定的时间精度，类型为：DateTimeField。</param>
-                /// <returns></returns>
+                /// <returns>“dateTime”小于“anotherDateTime”时，返回“-1”；“dateTime”等于“anotherDateTime”时，返回“0”；“dateTime”大于“anotherDateTime”时，返回“1”。</returns>
                 public static int CompareTo(
                         this DateTime dateTime,
                         DateTime anotherDateTime,
@@ -141,7 +141,6 @@ namespace BaoXia.Utils.Extensions
                         }
                         return 0;
                 }
-
 
                 public static bool IsEarlierInYear(
                        this DateTime dateTime,
@@ -355,6 +354,38 @@ namespace BaoXia.Utils.Extensions
                                 anotherDateTime,
                                 DateTimeField.Millisecond)
                                 > 0;
+                }
+
+                public static bool IsBetween(
+                        this DateTime dateTime,
+                        DateTime? beginTime,
+                        DateTime? endTime,
+                        DateTimeField compareFieldMin)
+                {
+                        if (beginTime != null
+                                && endTime != null)
+                        {
+                                if (dateTime.CompareTo(beginTime.Value, compareFieldMin) >= 0
+                                        && dateTime.CompareTo(endTime.Value, compareFieldMin) < 0)
+                                {
+                                        return true;
+                                }
+                        }
+                        else if (beginTime != null)
+                        {
+                                if (dateTime.CompareTo(beginTime.Value, compareFieldMin) >= 0)
+                                {
+                                        return true;
+                                }
+                        }
+                        else if (endTime != null)
+                        {
+                                if (dateTime.CompareTo(endTime.Value, compareFieldMin) < 0)
+                                {
+                                        return true;
+                                }
+                        }
+                        return false;
                 }
         }
 }

@@ -457,5 +457,100 @@ namespace BaoXia.Utils.Test.ExtensionsTest
                                 Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
                         }
                 }
+
+                [TestMethod]
+                public void ToStringWithSeparator_StringArray_Test()
+                {
+                        ////////////////////////////////////////////////
+                        // 1/，正常组合：
+                        ////////////////////////////////////////////////
+                        var strings = new string[] { "1", "2", "3" };
+                        {
+                                Assert.IsTrue(strings
+                                        .ToStringWithSeparator(",")
+                                        .Equals(
+                                        "1,2,3"));
+                        }
+
+                        ////////////////////////////////////////////////
+                        // 2/，没有分隔符：
+                        ////////////////////////////////////////////////
+                        {
+                                Assert.IsTrue(strings
+                                        .ToStringWithSeparator(null)
+                                        .Equals(
+                                        "123"));
+                        }
+
+                        ////////////////////////////////////////////////
+                        // 3/，没有元素：
+                        ////////////////////////////////////////////////
+                        {
+                                Assert.IsTrue(
+                                        (new string[0])
+                                        .ToStringWithSeparator(",")
+                                        .Equals(
+                                        ""));
+                                Assert.IsTrue(
+                                        (new string[0])
+                                        .ToStringWithSeparator(null)
+                                        .Equals(
+                                        ""));
+                        }
+                }
+
+                [TestMethod]
+                public void ToStringWithSeparator_StringParams_Test()
+                {
+                        ////////////////////////////////////////////////
+                        // 1/，正常组合：
+                        ////////////////////////////////////////////////
+                        var finalString = StringUtil.ToStringWithSeparator(
+                                        ",",
+                                        "1",
+                                        "2",
+                                        "3");
+                        {
+                                Assert.IsTrue(
+                                        finalString
+                                        .Equals(
+                                        "1,2,3"));
+                        }
+
+                        ////////////////////////////////////////////////
+                        // 2/，没有分隔符：
+                        ////////////////////////////////////////////////
+                        finalString = StringUtil.ToStringWithSeparator(
+                                        null,
+                                        "1",
+                                        "2",
+                                        "3");
+                        {
+                                Assert.IsTrue(
+                                        finalString
+                                        .Equals(
+                                        "123"));
+                        }
+
+                        ////////////////////////////////////////////////
+                        // 3/，没有元素：
+                        ////////////////////////////////////////////////
+                        finalString = StringUtil.ToStringWithSeparator(
+                                        ",");
+                        {
+                                Assert.IsTrue(
+                                        finalString
+                                        .Equals(
+                                        ""));
+                        }
+                        finalString = StringUtil.ToStringWithSeparator(
+                                        null);
+                        {
+                                Assert.IsTrue(
+                                        finalString
+                                        .Equals(
+                                        ""));
+                        }
+                }
         }
 }

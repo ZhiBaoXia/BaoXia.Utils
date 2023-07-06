@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 
 namespace BaoXia.Utils.Extensions
@@ -318,6 +319,20 @@ namespace BaoXia.Utils.Extensions
                                 }
                         }
                         return doubles;
+                }
+
+                public static string ToStringWithSeparator(
+                        this IEnumerable<string>? strings,
+                        string? separator)
+                {
+                        if (strings == null)
+                        {
+                                return string.Empty;
+                        }
+
+                        var finalString = string.Join(separator, strings);
+                        { }
+                        return finalString;
                 }
         }
 }

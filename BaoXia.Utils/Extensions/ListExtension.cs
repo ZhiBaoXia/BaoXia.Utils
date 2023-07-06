@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace BaoXia.Utils.Extensions
 {
@@ -39,6 +41,34 @@ namespace BaoXia.Utils.Extensions
                         // !!!
 
                         return true;
+                }
+
+                public static int AddItemsFrom<ItemType>(
+                        this List<ItemType>? list,
+                        IEnumerable<ItemType>? sourceItems,
+                        Func<ItemType, bool> toIsItemNeedAdd)
+                {
+                        if (list == null)
+                        {
+                                return 0;
+                        }
+
+                        if (sourceItems == null
+                                || sourceItems.Any() != true)
+                        {
+                                return 0;
+                        }
+
+                        var itemsCountJustAdd = 0;
+                        foreach (var sourceItem in sourceItems)
+                        {
+                                if (toIsItemNeedAdd(sourceItem) == true)
+                                {
+                                        list.Add(sourceItem);
+                                        itemsCountJustAdd++;
+                                }
+                        }
+                        return itemsCountJustAdd;
                 }
 
                 /// <summary>
@@ -96,6 +126,50 @@ namespace BaoXia.Utils.Extensions
                                 // !!!
                         }
                         return itemsCountNeedRemoved;
+                }
+
+                /// <summary>
+                /// 保留指定的元素，删除其他的元素。
+                /// </summary>
+                /// <typeparam name="ItemType">列表元素类型。</typeparam>
+                /// <param name="list">要删除元素的列表对象。</param>
+                /// <param name="toIsItemNotNeedRemoved">判断元素是否需要被保留的回调方法，返回“true”时，对应的元素会被保留，否则被删除。</param>
+                public static void NotRemoveIf<ItemType>(
+                        this List<ItemType> list,
+                        Func<ItemType, bool> toIsItemNotNeedRemoved)
+                {
+                        for (var itemIndex = list.Count - 1;
+                                itemIndex >= 0;
+                                itemIndex--)
+                        {
+                                var item = list[itemIndex];
+                                if (toIsItemNotNeedRemoved(item) == false)
+                                {
+                                        list.RemoveAt(itemIndex);
+                                }
+                        }
+                }
+
+                /// <summary>
+                /// 删除指定的元素。
+                /// </summary>
+                /// <typeparam name="ItemType">列表元素类型。</typeparam>
+                /// <param name="list">要删除元素的列表对象。</param>
+                /// <param name="toIsItemNeedRemoved">判断元素是否需要被删除的回调方法，返回“true”时，对应的元素会被删除，否则被保留。</param>
+                public static void RemoveIf<ItemType>(
+                        this List<ItemType> list,
+                        Func<ItemType, bool> toIsItemNeedRemoved)
+                {
+                        for (var itemIndex = list.Count - 1;
+                                itemIndex >= 0;
+                                itemIndex--)
+                        {
+                                var item = list[itemIndex];
+                                if (toIsItemNeedRemoved(item) == true)
+                                {
+                                        list.RemoveAt(itemIndex);
+                                }
+                        }
                 }
 
                 /// <summary>

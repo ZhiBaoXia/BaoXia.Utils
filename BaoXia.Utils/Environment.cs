@@ -6,6 +6,14 @@ using System;
 using System.Reflection;
 using System.Text.Json;
 
+
+using var scope = BaoXia.Utils.Environment.ApplicationBuilder.ApplicationServices.CreateScope();
+
+using var scope = BaoXia.Utils.Environment.ApplicationBuilder.ApplicationServices.CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<Data.数据库上下文名称>();
+
+@last
+
 namespace BaoXia.Utils
 {
         public class Environment

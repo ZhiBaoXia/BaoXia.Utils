@@ -6,11 +6,29 @@ namespace BaoXia.Utils.Extensions
 {
         public static class IEnumerableExtension
         {
-                public static bool IsContains<DataType>(
-                        this IEnumerable<DataType> items,
-                        DataType? objectItem,
-                        out int objectItemIndexInItems)
-                        where DataType : notnull
+                public static void ForEach<ItemType>(
+                        this IEnumerable<ItemType>? items,
+                        Func<ItemType, bool> toEnumerateItem)
+                {
+                        if (items == null)
+                        {
+                                return;
+                        }
+
+                        foreach (var item in items)
+                        {
+                                if (!toEnumerateItem(item))
+                                {
+                                        break;
+                                }
+                        }
+                }
+
+                public static bool IsContains<ItemType>(
+                this IEnumerable<ItemType> items,
+                ItemType? objectItem,
+                out int objectItemIndexInItems)
+                where ItemType : notnull
                 {
                         objectItemIndexInItems = -1;
 
@@ -32,11 +50,11 @@ namespace BaoXia.Utils.Extensions
                         return false;
                 }
 
-                public static bool IsNotContains<DataType>(
-                        this IEnumerable<DataType> items,
-                        DataType? objectItem,
+                public static bool IsNotContains<ItemType>(
+                        this IEnumerable<ItemType> items,
+                        ItemType? objectItem,
                         out int objectItemIndexInItems)
-                        where DataType : notnull
+                        where ItemType : notnull
                 {
                         return !IEnumerableExtension.IsContains(
                                 items,
@@ -44,10 +62,10 @@ namespace BaoXia.Utils.Extensions
                                 out objectItemIndexInItems);
                 }
 
-                public static bool IsContains<DataType>(
-                        this IEnumerable<DataType> items,
-                        DataType? objectItem)
-                        where DataType : notnull
+                public static bool IsContains<ItemType>(
+                        this IEnumerable<ItemType> items,
+                        ItemType? objectItem)
+                        where ItemType : notnull
                 {
                         return IEnumerableExtension.IsContains(
                                 items,
@@ -55,20 +73,20 @@ namespace BaoXia.Utils.Extensions
                                 out _);
                 }
 
-                public static bool IsNotContains<DataType>(
-                        this IEnumerable<DataType> items,
-                        DataType? objectItem)
-                        where DataType : notnull
+                public static bool IsNotContains<ItemType>(
+                        this IEnumerable<ItemType> items,
+                        ItemType? objectItem)
+                        where ItemType : notnull
                 {
                         return !IEnumerableExtension.IsContains(
                                 items,
                                 objectItem);
                 }
 
-                public static bool IsContains<DataType>(
-                        this IEnumerable<DataType> items,
-                        IEnumerable<DataType>? objectItems)
-                        where DataType : notnull
+                public static bool IsContains<ItemType>(
+                        this IEnumerable<ItemType> items,
+                        IEnumerable<ItemType>? objectItems)
+                        where ItemType : notnull
                 {
                         if (objectItems != null)
                         {
@@ -91,21 +109,21 @@ namespace BaoXia.Utils.Extensions
                         return false;
                 }
 
-                public static bool IsNotContains<DataType>(
-                        this IEnumerable<DataType> items,
-                        IEnumerable<DataType>? objectItems)
-                        where DataType : notnull
+                public static bool IsNotContains<ItemType>(
+                        this IEnumerable<ItemType> items,
+                        IEnumerable<ItemType>? objectItems)
+                        where ItemType : notnull
                 {
                         return !IEnumerableExtension.IsContains(
                                 items,
                                 objectItems);
                 }
 
-                public static bool IsContainsAny<DataType>(
-                        this IEnumerable<DataType> items,
-                        IEnumerable<DataType>? objectItems,
+                public static bool IsContainsAny<ItemType>(
+                        this IEnumerable<ItemType> items,
+                        IEnumerable<ItemType>? objectItems,
                         bool isNullEqualsEmpty = true)
-                        where DataType : notnull
+                        where ItemType : notnull
                 {
                         if (objectItems != null)
                         {
@@ -125,11 +143,11 @@ namespace BaoXia.Utils.Extensions
                         return false;
                 }
 
-                public static bool IsNotContainsAny<DataType>(
-                        this IEnumerable<DataType> items,
-                        IEnumerable<DataType>? objectItems,
+                public static bool IsNotContainsAny<ItemType>(
+                        this IEnumerable<ItemType> items,
+                        IEnumerable<ItemType>? objectItems,
                         bool isNullEqualsEmpty = true)
-                        where DataType : notnull
+                        where ItemType : notnull
                 {
                         return !IEnumerableExtension.IsContainsAny(
                                 items,
@@ -138,12 +156,12 @@ namespace BaoXia.Utils.Extensions
                 }
 
 
-                public static bool IsEquals<DataType>(
-                        this IEnumerable<DataType> items,
-                        IEnumerable<DataType>? objectItems,
+                public static bool IsEquals<ItemType>(
+                        this IEnumerable<ItemType> items,
+                        IEnumerable<ItemType>? objectItems,
                         bool isIgnoreSameItems = false,
                         bool isNullEqualsEmpty = true)
-                        where DataType : notnull
+                        where ItemType : notnull
                 {
                         if (objectItems != null)
                         {
@@ -233,12 +251,12 @@ namespace BaoXia.Utils.Extensions
                         return false;
                 }
 
-                public static bool IsNotEquals<DataType>(
-                        this IEnumerable<DataType> items,
-                        IEnumerable<DataType>? objectItems,
+                public static bool IsNotEquals<ItemType>(
+                        this IEnumerable<ItemType> items,
+                        IEnumerable<ItemType>? objectItems,
                         bool isIgnoreSameItems = false,
                         bool isNullEqualsEmpty = true)
-                        where DataType : notnull
+                        where ItemType : notnull
                 {
                         return !IEnumerableExtension.IsEquals(
                                 items,

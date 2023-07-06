@@ -93,18 +93,18 @@ namespace BaoXia.Utils.Cache
                                                                 (CancellationToken cancellationToken) =>
                                                                 {
 #if DEBUG
-									var myType = this.GetType();
-									var myName
-												= this.Name?.Length > 0
-												? this.Name
-												: myType.Namespace + "." + myType.Name;
-									System.Diagnostics.Trace.WriteLine(myType + "，自动清理缓存元素任务，开始：");
+                                                                        var myType = this.GetType();
+                                                                        var myName
+                                                                                                = this.Name?.Length > 0
+                                                                                                ? this.Name
+                                                                                                : myType.Namespace + "." + myType.Name;
+                                                                        System.Diagnostics.Trace.WriteLine(myType + "，自动清理缓存元素任务，开始：");
 #endif
                                                                         // !!!⚠ 开始清理无效的缓存 ⚠!!!
                                                                         this.Clean(cancellationToken);
                                                                         // !!!
 #if DEBUG
-									System.Diagnostics.Trace.WriteLine(myType + "，自动清理缓存元素任务，结束。");
+                                                                        System.Diagnostics.Trace.WriteLine(myType + "，自动清理缓存元素任务，结束。");
 #endif
                                                                         if (cancellationToken.IsCancellationRequested)
                                                                         {
@@ -190,18 +190,18 @@ namespace BaoXia.Utils.Cache
                                                                 (CancellationToken cancellationToken) =>
                                                                 {
 #if DEBUG
-									var myType = this.GetType();
-									var myName
-												= this.Name?.Length > 0
-												? this.Name
-												: myType.Namespace + "." + myType.Name;
-									System.Diagnostics.Trace.WriteLine(myType + "，自动更新缓存元素任务，开始：");
+                                                                        var myType = this.GetType();
+                                                                        var myName
+                                                                                                = this.Name?.Length > 0
+                                                                                                ? this.Name
+                                                                                                : myType.Namespace + "." + myType.Name;
+                                                                        System.Diagnostics.Trace.WriteLine(myType + "，自动更新缓存元素任务，开始：");
 #endif
                                                                         // !!!⚠ 开始更新无效的缓存 ⚠!!!
                                                                         this.UpdateAllItems(cancellationToken);
                                                                         // !!!
 #if DEBUG
-									System.Diagnostics.Trace.WriteLine(myType + "，自动更新缓存元素任务，结束。");
+                                                                        System.Diagnostics.Trace.WriteLine(myType + "，自动更新缓存元素任务，结束。");
 #endif
 
                                                                         return true;
@@ -372,6 +372,19 @@ namespace BaoXia.Utils.Cache
                                         isNeedUpdateItemLastReadTime);
                         }
                         return itemNeedAdd;
+                }
+
+                public ItemType? Set(
+                        ItemKeyType itemKey,
+                        ItemType? item,
+                        ItemCacheCreateParamType? itemCreateParam = default,
+                        bool isNeedUpdateItemLastReadTime = true)
+                {
+                        return this.Add(
+                                itemKey,
+                                item,
+                                itemCreateParam,
+                                isNeedUpdateItemLastReadTime);
                 }
 
                 public ItemType? Update(

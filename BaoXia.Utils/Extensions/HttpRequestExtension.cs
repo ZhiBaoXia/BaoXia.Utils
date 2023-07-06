@@ -75,7 +75,7 @@ namespace BaoXia.Utils.Extensions
 				if (remoteIpAddress?.Length > 0)
 				{
 					if (clientHttpProxyAddressList.Count < 1
-						|| clientHttpProxyAddressList[clientHttpProxyAddressList.Count - 1].EqualsIgnoreCase(remoteIpAddress) != true)
+						|| clientHttpProxyAddressList[^1].EqualsIgnoreCase(remoteIpAddress) != true)
 					{
 						// !!!
 						clientHttpProxyAddressList.Add(remoteIpAddress);
@@ -128,7 +128,7 @@ namespace BaoXia.Utils.Extensions
 			var clientConnectionAddressList = request.GetClientConnectionAddressList();
 			if (clientConnectionAddressList.Count > 0)
 			{
-				return clientConnectionAddressList[clientConnectionAddressList.Count - 1];
+				return clientConnectionAddressList[^1];
 			}
 			return null;
 		}

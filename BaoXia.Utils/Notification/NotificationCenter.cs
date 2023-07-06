@@ -101,10 +101,7 @@ namespace BaoXia.Utils.Notification
 				{
 					lock (this)
 					{
-						if (_notificationQueueUndefined == null)
-						{
-							_notificationQueueUndefined = this.CreateNotificationQueue(queueName);
-						}
+						_notificationQueueUndefined ??= this.CreateNotificationQueue(queueName);
 					}
 				}
 				notificationQueue = _notificationQueueUndefined;

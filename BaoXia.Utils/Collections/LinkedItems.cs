@@ -135,10 +135,7 @@ namespace BaoXia.Utils.Collections
 		public LinkedItem<ListItemType> Add(ListItemType listItem)
 		{
 			////////////////////////////////////////////////
-			if (listItem.OwnerList != null)
-			{
-				listItem.OwnerList.Remove(listItem);
-			}
+			listItem.OwnerList?.Remove(listItem);
 			listItem.OwnerList = this;
 			////////////////////////////////////////////////
 
@@ -185,10 +182,7 @@ namespace BaoXia.Utils.Collections
 			}
 
 			////////////////////////////////////////////////
-			if (listItem.OwnerList != null)
-			{
-				listItem.OwnerList.Remove(listItem);
-			}
+			listItem.OwnerList?.Remove(listItem);
 			listItem.OwnerList = this;
 			////////////////////////////////////////////////
 
@@ -257,10 +251,7 @@ namespace BaoXia.Utils.Collections
 			}
 
 			////////////////////////////////////////////////
-			if (listItem.OwnerList != null)
-			{
-				listItem.OwnerList.Remove(listItem);
-			}
+			listItem.OwnerList?.Remove(listItem);
 			listItem.OwnerList = this;
 			////////////////////////////////////////////////
 
@@ -355,7 +346,7 @@ namespace BaoXia.Utils.Collections
 		{
 			var count = _count;
 			{
-				ListItemType? nextListItem = null;
+				ListItemType? nextListItem;
 				for (var listItem = _first;
 				listItem != null;
 				listItem = nextListItem)
@@ -444,12 +435,7 @@ namespace BaoXia.Utils.Collections
 					this.Add(value);
 				}
 
-				var itemReplaced = this[index];
-				if (itemReplaced == null)
-				{
-					throw new Exception("未知的链表异常，没有在指定位置上找到对应的链表元素。");
-				}
-
+				var itemReplaced = this[index] ?? throw new Exception("未知的链表异常，没有在指定位置上找到对应的链表元素。");
 				var prevItem = itemReplaced.Prev;
 				this.Remove(itemReplaced);
 				this.InsertAfter(prevItem, value);

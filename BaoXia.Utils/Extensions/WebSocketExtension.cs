@@ -60,10 +60,7 @@ namespace BaoXia.Utils.Extensions
 				// !!!
 			} while (receiveResult.EndOfMessage == false);
 
-			if (receiveDataResultSpecified == null)
-			{
-				receiveDataResultSpecified = new WebSocketReceiveDataResult();
-			}
+			receiveDataResultSpecified ??= new WebSocketReceiveDataResult();
 			////////////////////////////////////////////////
 			// !!! 
 			receiveDataResultSpecified.Result = receiveResult;
@@ -88,10 +85,7 @@ namespace BaoXia.Utils.Extensions
 			var bytesReceived = receiveResult.BytesReceived;
 			if (bytesReceived?.Length > 0)
 			{
-				if (textEncoding == null)
-				{
-					textEncoding = System.Text.Encoding.UTF8;
-				}
+				textEncoding ??= System.Text.Encoding.UTF8;
 				// !!!
 				receiveResult.StringReceived = textEncoding.GetString(bytesReceived);
 				// !!!
@@ -195,7 +189,8 @@ namespace BaoXia.Utils.Extensions
 					= await WebSocketExtension.ReceiveStringAsync(
 						webSocket,
 						receiveBuffer,
-						cancellationToken);
+						cancellationToken,
+						textEncoding);
 				// !!!
 				yield return receiveDataResult;
 				// !!!

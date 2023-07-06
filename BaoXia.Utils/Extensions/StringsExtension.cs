@@ -139,10 +139,7 @@ namespace BaoXia.Utils.Extensions
 						// !!!
 						keysCount++;
 						// !!!
-						if (strIndexesMatched == null)
-						{
-							strIndexesMatched = new List<int>();
-						}
+						strIndexesMatched ??= new List<int>();
 						strIndexesMatched.Add(strIndexMatched);
 					}
 					foreach (var str in strings)

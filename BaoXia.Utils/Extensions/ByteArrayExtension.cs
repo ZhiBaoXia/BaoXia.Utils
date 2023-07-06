@@ -365,7 +365,7 @@ namespace BaoXia.Utils.Extensions
 				var commaIndexInImageBase64Code = base64String.IndexOf(",");
 				if (commaIndexInImageBase64Code >= 0)
 				{
-					base64String = base64String.Substring(commaIndexInImageBase64Code + 1);
+					base64String = base64String[(commaIndexInImageBase64Code + 1)..];
 				}
 			}
 

@@ -1,5 +1,4 @@
 ﻿using BaoXia.Utils.Extensions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

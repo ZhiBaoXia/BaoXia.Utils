@@ -2,7 +2,6 @@
 using BaoXia.Utils.Security.Cryptography;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Linq;
 using AppIdType = System.Int32;
 using ClientAddressPortType = System.Int32;
 using LoginTimeStampType = System.Int64;
@@ -249,7 +248,7 @@ namespace BaoXia.Utils.Test.SecurityTest.CryptographyTest
                                 if (obj is SessionToken sessionToken
                                         && this.AppId == sessionToken.AppId
                                         && this.UserId == sessionToken.UserId
-                                        && this.ClientAddressIp.SequenceEqual(sessionToken.ClientAddressIp)
+                                        && this.ClientAddressIp.IsItemsEqual(sessionToken.ClientAddressIp)
                                         && this.ClientAddressPort == sessionToken.ClientAddressPort
                                         && this.LoginTimeStamp == sessionToken.LoginTimeStamp)
                                 {

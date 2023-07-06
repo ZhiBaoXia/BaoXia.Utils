@@ -1,16 +1,9 @@
 ﻿using BaoXia.Utils.Extensions;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BaoXia.Utils
 {
-        public class StringUtil
-        {
+	public class StringUtil
+	{
 		////////////////////////////////////////////////
 		// @类方法
 		////////////////////////////////////////////////
@@ -29,16 +22,16 @@ namespace BaoXia.Utils
 		public static bool IsNotEmpty(string? str)
 		{
 			return !StringUtil.IsEmpty(str);
-                }
+		}
 
 		public static bool IsBlank(string? str)
 		{
-                        if (string.IsNullOrWhiteSpace(str))
+			if (string.IsNullOrWhiteSpace(str))
 			{
-                                return true;
-                        }
-                        return false;
-                }
+				return true;
+			}
+			return false;
+		}
 
 		public static bool IsNotBlank(string? str)
 		{
@@ -48,22 +41,22 @@ namespace BaoXia.Utils
 		public static bool IsIntegralNumber(string? str)
 		{
 			return str.IsNumberString(true);
-                }
+		}
 
 		public static bool IsNotIntegralNumber(string? str)
 		{
 			return !StringUtil.IsIntegralNumber(str);
 		}
 
-                public static bool IsDecimalNumber(string? str)
+		public static bool IsDecimalNumber(string? str)
 		{
 			return str.IsNumberString(false);
 		}
 
 		public static bool IsNotDecimalNumber(string? str)
 		{
-                        return !StringUtil.IsDecimalNumber(str);
-                }
+			return !StringUtil.IsDecimalNumber(str);
+		}
 
 		public static bool IsAlphabet(string? str)
 		{
@@ -72,16 +65,16 @@ namespace BaoXia.Utils
 
 		public static bool IsNotAlphabet(string? str)
 		{
-                        return !StringUtil.IsAlphabet(str);
-                }
+			return !StringUtil.IsAlphabet(str);
+		}
 
-                public static string ToStringWithSeparator(
-                        string? separator,
-                        params string[]? strings)
-                {
+		public static string ToStringWithSeparator(
+			string? separator,
+			params string[]? strings)
+		{
 			return strings.ToStringWithSeparator(separator);
-                }
+		}
 
-                #endregion
-        }
+		#endregion
+	}
 }

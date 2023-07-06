@@ -10,151 +10,151 @@ using static BaoXia.Utils.Test.Constants.TestToolsService;
 
 namespace BaoXia.Utils.Test.ExtensionsTest
 {
-        [TestClass]
-        public class HttpClientExtensionTest
-        {
-                [TestMethod]
-                public async Task PostToGetStringAsyncTest()
-                {
-                        var httpClient = new HttpClient();
+	[TestClass]
+	public class HttpClientExtensionTest
+	{
+		[TestMethod]
+		public async Task PostToGetStringAsyncTest()
+		{
+			var httpClient = new HttpClient();
 
-                        var requestHeaders = new Dictionary<string, string?>()
-                        {
-                                {"content-type", "application/json" }
-                        };
-                        var requestBodyObject = new Dictionary<string, string>()
-                        {
-                                {"Name", "testBodyObject" },
-                                { "Value", "Abcdefg"}
-                        };
-                        var requestBodyObjectString
-                                = requestBodyObject.ToJsonString(new System.Text.Json.JsonSerializerOptions()
-                                {
-                                        PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
-                                });
-                        var requestEchoResponseString = await httpClient.PostToGetStringAsync(
-                                TestToolsService.ApiUrls.HttpRequestEcho,
-                                requestBodyObjectString,
-                                requestHeaders,
-                                System.Text.Encoding.UTF8);
+			var requestHeaders = new Dictionary<string, string?>()
+			{
+				{"content-type", "application/json" }
+			};
+			var requestBodyObject = new Dictionary<string, string>()
+			{
+				{"Name", "testBodyObject" },
+				{ "Value", "Abcdefg"}
+			};
+			var requestBodyObjectString
+				= requestBodyObject.ToJsonString(new System.Text.Json.JsonSerializerOptions()
+				{
+					PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+				});
+			var requestEchoResponseString = await httpClient.PostToGetStringAsync(
+				TestToolsService.ApiUrls.HttpRequestEcho,
+				requestBodyObjectString,
+				requestHeaders,
+				System.Text.Encoding.UTF8);
 
-                        Assert.IsTrue(requestEchoResponseString?.Length > 0);
-                        var requestEchoResponse
-                                = requestEchoResponseString
-                                .ToObjectByJsonDeserialize<HttpRequestEchoResponse>(
-                                        new System.Text.Json.JsonSerializerOptions()
-                                        {
-                                                PropertyNameCaseInsensitive = true,
-                                        });
+			Assert.IsTrue(requestEchoResponseString?.Length > 0);
+			var requestEchoResponse
+				= requestEchoResponseString
+				.ToObjectByJsonDeserialize<HttpRequestEchoResponse>(
+					new System.Text.Json.JsonSerializerOptions()
+					{
+						PropertyNameCaseInsensitive = true,
+					});
 
-                        Assert.IsTrue(requestBodyObjectString.Equals(requestEchoResponse?.RequestInfo?.HttpBodyString));
-                        if (requestHeaders?.Count > 0)
-                        {
-                                var responseHttpHeaders = requestEchoResponse.RequestInfo?.HttpHeaders;
-                                Assert.IsTrue(responseHttpHeaders?.Count > 0);
-                                foreach (var requestHeaderKeyValue in requestHeaders)
-                                {
-                                        string? responseHttpHeaderValue = null;
-                                        foreach (var responseHttpHeaderKeyValue in responseHttpHeaders)
-                                        {
-                                                if (responseHttpHeaderKeyValue.Key.EqualsIgnoreCase(requestHeaderKeyValue.Key))
-                                                {
-                                                        responseHttpHeaderValue = responseHttpHeaderKeyValue.Value;
-                                                }
-                                        }
-                                        Assert.IsTrue(responseHttpHeaderValue?.Length > 0);
+			Assert.IsTrue(requestBodyObjectString.Equals(requestEchoResponse?.RequestInfo?.HttpBodyString));
+			if (requestHeaders?.Count > 0)
+			{
+				var responseHttpHeaders = requestEchoResponse.RequestInfo?.HttpHeaders;
+				Assert.IsTrue(responseHttpHeaders?.Count > 0);
+				foreach (var requestHeaderKeyValue in requestHeaders)
+				{
+					string? responseHttpHeaderValue = null;
+					foreach (var responseHttpHeaderKeyValue in responseHttpHeaders)
+					{
+						if (responseHttpHeaderKeyValue.Key.EqualsIgnoreCase(requestHeaderKeyValue.Key))
+						{
+							responseHttpHeaderValue = responseHttpHeaderKeyValue.Value;
+						}
+					}
+					Assert.IsTrue(responseHttpHeaderValue?.Length > 0);
 
-                                        Assert.IsTrue(responseHttpHeaderValue.Contains(
-                                                requestHeaderKeyValue.Value!,
-                                                StringComparison.OrdinalIgnoreCase));
-                                }
-                        }
-                }
+					Assert.IsTrue(responseHttpHeaderValue.Contains(
+						requestHeaderKeyValue.Value!,
+						StringComparison.OrdinalIgnoreCase));
+				}
+			}
+		}
 
-                class PostBody
-                {
-                        public string? Name { get; set; } = "请求参数名称";
+		class PostBody
+		{
+			public string? Name { get; set; } = "请求参数名称";
 
-                        public int NumberValue { get; set; } = 1001;
-                }
+			public int NumberValue { get; set; } = 1001;
+		}
 
-                [TestMethod]
-                public async Task PostToJsonApiAsyncTest()
-                {
-                        var httpClient = new HttpClient();
+		[TestMethod]
+		public async Task PostToJsonApiAsyncTest()
+		{
+			var httpClient = new HttpClient();
 
-                        var requestBody = new PostBody();
-                        var resposneBody = await httpClient.PostToJsonApiAsync<HttpRequestEchoResponse>(
-                                ApiUrls.HttpRequestEcho,
-                                requestBody,
-                                null,
-                                null,
-                                new System.Text.Json.JsonSerializerOptions()
-                                {
-                                        PropertyNameCaseInsensitive = true
-                                });
-                        { }
+			var requestBody = new PostBody();
+			var resposneBody = await httpClient.PostToJsonApiAsync<HttpRequestEchoResponse>(
+				ApiUrls.HttpRequestEcho,
+				requestBody,
+				null,
+				null,
+				new System.Text.Json.JsonSerializerOptions()
+				{
+					PropertyNameCaseInsensitive = true
+				});
+			{ }
 
-                        var requestInfoFromRemote = resposneBody?.RequestInfo;
-                        {
-                                Assert.IsTrue(requestInfoFromRemote != null);
-                                Assert.IsTrue(requestInfoFromRemote.HttpMethod?.EqualsIgnoreCase("POST") == true);
-                        }
-                        var requestBodyFromRemote
-                                = requestInfoFromRemote.HttpBodyString?.ToObjectByJsonDeserialize<PostBody>();
-                        {
-                                Assert.IsTrue(requestBodyFromRemote != null);
-                                Assert.IsTrue(requestBodyFromRemote.Name?.Equals(requestBody.Name));
-                                Assert.IsTrue(requestBodyFromRemote.NumberValue.Equals(requestBody.NumberValue));
-                        }
-                }
+			var requestInfoFromRemote = resposneBody?.RequestInfo;
+			{
+				Assert.IsTrue(requestInfoFromRemote != null);
+				Assert.IsTrue(requestInfoFromRemote.HttpMethod?.EqualsIgnoreCase("POST") == true);
+			}
+			var requestBodyFromRemote
+				= requestInfoFromRemote.HttpBodyString?.ToObjectByJsonDeserialize<PostBody>();
+			{
+				Assert.IsTrue(requestBodyFromRemote != null);
+				Assert.IsTrue(requestBodyFromRemote.Name?.Equals(requestBody.Name));
+				Assert.IsTrue(requestBodyFromRemote.NumberValue.Equals(requestBody.NumberValue));
+			}
+		}
 
-                [TestMethod]
-                public async Task PostToJsonApiWithHeadersAsyncTest()
-                {
-                        var httpClient = new HttpClient();
+		[TestMethod]
+		public async Task PostToJsonApiWithHeadersAsyncTest()
+		{
+			var httpClient = new HttpClient();
 
-                        var requestBody = new PostBody();
-                        var resposneBody = await httpClient.PostToJsonApiAsync<HttpRequestEchoResponse>(
-                                ApiUrls.HttpRequestEcho,
-                                requestBody,
-                                new()
-                                {
-                        { "TestHeader-Name", "TestHeader-Value" }
-                                },
-                                null,
-                                new System.Text.Json.JsonSerializerOptions()
-                                {
-                                        PropertyNameCaseInsensitive = true
-                                });
-                        { }
+			var requestBody = new PostBody();
+			var resposneBody = await httpClient.PostToJsonApiAsync<HttpRequestEchoResponse>(
+				ApiUrls.HttpRequestEcho,
+				requestBody,
+				new()
+				{
+			{ "TestHeader-Name", "TestHeader-Value" }
+				},
+				null,
+				new System.Text.Json.JsonSerializerOptions()
+				{
+					PropertyNameCaseInsensitive = true
+				});
+			{ }
 
-                        var requestInfoFromRemote = resposneBody?.RequestInfo;
-                        {
-                                Assert.IsTrue(requestInfoFromRemote != null);
-                                Assert.IsTrue(requestInfoFromRemote.HttpMethod?.EqualsIgnoreCase("POST") == true);
-                        }
-                        var requestHeadersFromRemote
-                                = requestInfoFromRemote.HttpHeaders;
-                        {
-                                string? testHeader_Value = null;
-                                foreach (var requestHeaderParam in requestHeadersFromRemote)
-                                {
-                                        if (requestHeaderParam.Key.EqualsIgnoreCase("TestHeader-Name"))
-                                        {
-                                                testHeader_Value = requestHeaderParam.Value;
-                                        }
-                                }
-                                Assert.IsTrue(testHeader_Value?.EqualsIgnoreCase("TestHeader-Value")
-                                        == true);
-                        }
-                        var requestBodyFromRemote
-                                = requestInfoFromRemote.HttpBodyString?.ToObjectByJsonDeserialize<PostBody>();
-                        {
-                                Assert.IsTrue(requestBodyFromRemote != null);
-                                Assert.IsTrue(requestBodyFromRemote.Name?.Equals(requestBody.Name));
-                                Assert.IsTrue(requestBodyFromRemote.NumberValue.Equals(requestBody.NumberValue));
-                        }
-                }
-        }
+			var requestInfoFromRemote = resposneBody?.RequestInfo;
+			{
+				Assert.IsTrue(requestInfoFromRemote != null);
+				Assert.IsTrue(requestInfoFromRemote.HttpMethod?.EqualsIgnoreCase("POST") == true);
+			}
+			var requestHeadersFromRemote
+				= requestInfoFromRemote.HttpHeaders;
+			{
+				string? testHeader_Value = null;
+				foreach (var requestHeaderParam in requestHeadersFromRemote)
+				{
+					if (requestHeaderParam.Key.EqualsIgnoreCase("TestHeader-Name"))
+					{
+						testHeader_Value = requestHeaderParam.Value;
+					}
+				}
+				Assert.IsTrue(testHeader_Value?.EqualsIgnoreCase("TestHeader-Value")
+					== true);
+			}
+			var requestBodyFromRemote
+				= requestInfoFromRemote.HttpBodyString?.ToObjectByJsonDeserialize<PostBody>();
+			{
+				Assert.IsTrue(requestBodyFromRemote != null);
+				Assert.IsTrue(requestBodyFromRemote.Name?.Equals(requestBody.Name));
+				Assert.IsTrue(requestBodyFromRemote.NumberValue.Equals(requestBody.NumberValue));
+			}
+		}
+	}
 }

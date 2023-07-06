@@ -4,7 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -547,7 +546,7 @@ namespace BaoXia.Utils
 
 		protected bool DidTryStorageLogRecords(List<LogRecord> logRecordsNeedStorage)
 		{
-			if (logRecordsNeedStorage.Any() != true)
+			if (logRecordsNeedStorage.Count < 1)
 			{
 				return true;
 			}
@@ -567,7 +566,7 @@ namespace BaoXia.Utils
 			}
 			System.IO.Directory.CreateDirectory(logDirectoryPath);
 
-			DateTime firstLogRecordLogTime = logRecordsNeedStorage.First().LogTime;
+			DateTime firstLogRecordLogTime = logRecordsNeedStorage[0].LogTime;
 			var logFilePath = this.CreateLogFilePathForDateTime(firstLogRecordLogTime);
 			if (string.IsNullOrEmpty(logFilePath))
 			{

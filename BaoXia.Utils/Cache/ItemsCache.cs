@@ -86,9 +86,7 @@ namespace BaoXia.Utils.Cache
 					{
 						lock (this)
 						{
-							if (_taskToAutoClean == null)
-							{
-								_taskToAutoClean = new LoopTask(
+							_taskToAutoClean ??= new LoopTask(
 								(CancellationToken cancellationToken) =>
 								{
 #if DEBUG
@@ -112,7 +110,6 @@ namespace BaoXia.Utils.Cache
 									return true;
 								},
 								_toDidGetIntervalSecondsToCleanItemCache);
-							}
 						}
 					}
 					else
@@ -183,9 +180,7 @@ namespace BaoXia.Utils.Cache
 					{
 						lock (this)
 						{
-							if (_taskToAutoUpdate == null)
-							{
-								_taskToAutoUpdate = new LoopTask(
+							_taskToAutoUpdate ??= new LoopTask(
 								(CancellationToken cancellationToken) =>
 								{
 #if DEBUG
@@ -206,7 +201,6 @@ namespace BaoXia.Utils.Cache
 									return true;
 								},
 								this.ToDidGetNoneUpdateSecondsToUpdateItemCache);
-							}
 						}
 					}
 					else

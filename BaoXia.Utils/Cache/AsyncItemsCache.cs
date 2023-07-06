@@ -184,9 +184,7 @@ namespace BaoXia.Utils.Cache
 					{
 						lock (this)
 						{
-							if (_taskToAutoUpdate == null)
-							{
-								_taskToAutoUpdate = new LoopTask(
+							_taskToAutoUpdate ??= new LoopTask(
 									(CancellationToken cancellationToken) =>
 									{
 #if DEBUG
@@ -207,7 +205,6 @@ namespace BaoXia.Utils.Cache
 										return true;
 									},
 									this.ToDidGetNoneUpdateSecondsToUpdateItemCache);
-							}
 						}
 					}
 					else

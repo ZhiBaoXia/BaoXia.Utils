@@ -41,7 +41,7 @@ namespace BaoXia.Utils.Extensions
 			{
 				foreach (var forward in x_Forwarded_For)
 				{
-					var forwardClientAddresses = forward.Split(",", System.StringSplitOptions.RemoveEmptyEntries);
+					var forwardClientAddresses = forward?.Split(",", System.StringSplitOptions.RemoveEmptyEntries);
 					foreach (var forwardClientAddress in forwardClientAddresses)
 					{
 						var forwardClientAddressTrimed = forwardClientAddress.Trim();
@@ -59,7 +59,7 @@ namespace BaoXia.Utils.Extensions
 			{
 				foreach (var x_Real_Ip in x_Real_Ips)
 				{
-					var x_Real_IpTrimed = x_Real_Ip.Trim();
+					var x_Real_IpTrimed = x_Real_Ip?.Trim();
 					if (x_Real_IpTrimed?.Length > 0)
 					{
 						// !!!

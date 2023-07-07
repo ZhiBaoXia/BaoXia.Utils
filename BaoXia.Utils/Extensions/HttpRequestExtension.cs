@@ -42,14 +42,17 @@ namespace BaoXia.Utils.Extensions
 				foreach (var forward in x_Forwarded_For)
 				{
 					var forwardClientAddresses = forward?.Split(",", System.StringSplitOptions.RemoveEmptyEntries);
-					foreach (var forwardClientAddress in forwardClientAddresses)
+					if (forwardClientAddresses != null)
 					{
-						var forwardClientAddressTrimed = forwardClientAddress.Trim();
-						if (forwardClientAddressTrimed?.Length > 0)
+						foreach (var forwardClientAddress in forwardClientAddresses)
 						{
-							// !!!
-							clientHttpProxyAddressList.Add(forwardClientAddressTrimed);
-							// !!!
+							var forwardClientAddressTrimed = forwardClientAddress.Trim();
+							if (forwardClientAddressTrimed?.Length > 0)
+							{
+								// !!!
+								clientHttpProxyAddressList.Add(forwardClientAddressTrimed);
+								// !!!
+							}
 						}
 					}
 				}

@@ -363,6 +363,57 @@ namespace BaoXia.Utils
 		}
 
 
+
+		/// <summary>
+		/// 在创建应用程序对象前初始化环境信息。
+		/// </summary>
+		/// <param name="serverName">当前服务器名称。</param>
+		/// <param name="enviromentName">当前环境名称。</param>
+		/// <param name="aesKeyDeafult">默认的AES加密密钥。</param>
+		/// <param name="configFilesDirectoryPath">配置文件的文件夹路径。</param>
+		/// <param name="logFilesDirectoryPath">日志文件的文件夹路径。</param>
+		/// <param name="environmentInitializeParam">环境初始化的参数，详情可参见“EnvironmentInitializeParam”的定义。</param>
+		public static void InitializeBeforeBuildApplication(
+			string? serverName,
+			string? enviromentName,
+			//
+			string aesKeyDeafult,
+			//
+			string configFilesDirectoryPath,
+			string logFilesDirectoryPath,
+			//
+			EnvironmentInitializeParam? environmentInitializeParam = null)
+		{
+			InitializeBeforeConfigureServicesWithServerName(
+				serverName,
+				enviromentName,
+				//
+				aesKeyDeafult,
+				//
+				configFilesDirectoryPath,
+				logFilesDirectoryPath,
+				//
+				environmentInitializeParam);
+		}
+
+		/// <summary>
+		/// 在创建应用程序对象后初始化环境信息。
+		/// </summary>
+		/// <param name="applicationBuilder">当前应用构建器。</param>
+		/// <param name="hostEnvironment">当前主机环境信息。</param>
+		/// <param name="webRootDirectoryPath"></param>
+		public static void InitializeAfterBuildApplication(
+			WebApplication application)
+		{
+			InitializeAfterConfigureServices(
+				application,
+				application.Environment,
+				application.Environment.WebRootPath);
+		}
+
+
+
+
 		/// <summary>
 		/// 在非“Asp.Net Core”的环境中初始化工具集环境信息。
 		/// </summary>
@@ -425,6 +476,22 @@ namespace BaoXia.Utils
 		}
 
 		/// <summary>
+		/// 使用“ApplicationBuilder.ApplicationServices.CreateScope()”创建一个服务范围容器。
+		/// </summary>
+		/// <returns>新创建的服务范围容器。</returns>
+		public static IServiceScope? CreateServiceScope()
+		{
+			if (ApplicationBuilder is not IApplicationBuilder app)
+			{
+				return default;
+			}
+
+			var serviceScope = app.ApplicationServices.CreateScope();
+			{ }
+			return serviceScope;
+		}
+
+		/// <summary>
 		/// 使用“ApplicationBuilder.ApplicationServices.GetService<ServiceType>()”获取指定类型的服务实例对象。
 		/// </summary>
 		/// <typeparam name="ServiceType">指定的服务类型。</typeparam>
@@ -439,22 +506,6 @@ namespace BaoXia.Utils
 			var service = app.ApplicationServices.GetService<ServiceType>();
 			{ }
 			return service;
-		}
-
-		/// <summary>
-		/// 使用“ApplicationBuilder.ApplicationServices.CreateScope()”创建一个服务范围容器。
-		/// </summary>
-		/// <returns>新创建的服务范围容器。</returns>
-		public static IServiceScope? CreateServiceScope()
-		{
-			if (ApplicationBuilder is not IApplicationBuilder app)
-			{
-				return default;
-			}
-
-			var serviceScope = app.ApplicationServices.CreateScope();
-			{ }
-			return serviceScope;
 		}
 
 		#endregion

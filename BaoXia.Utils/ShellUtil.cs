@@ -6,6 +6,13 @@ namespace BaoXia.Utils
 {
 	public class ShellUtil
 	{
+
+		////////////////////////////////////////////////
+		// @类方法
+		////////////////////////////////////////////////
+
+		#region 类方法
+
 		public static List<string> RunCommand(string cmd)
 		{
 			if (cmd == null
@@ -36,12 +43,7 @@ namespace BaoXia.Utils
 				processStartInfo.RedirectStandardInput = true;
 				processStartInfo.RedirectStandardOutput = true;
 			};
-			var process = Process.Start(processStartInfo);
-			if (process == null)
-			{
-				throw new ApplicationException("无法创建Shell进程。");
-			}
-
+			var process = Process.Start(processStartInfo) ?? throw new ApplicationException("无法创建Shell进程。");
 			using var standardOutput = process.StandardOutput;
 			var stringsProcessOutput = new List<string>();
 			while (!standardOutput.EndOfStream)
@@ -60,5 +62,7 @@ namespace BaoXia.Utils
 			}
 			return stringsProcessOutput;
 		}
+
+		#endregion
 	}
 }

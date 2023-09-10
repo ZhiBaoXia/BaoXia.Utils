@@ -271,7 +271,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="encoding">指定的文件编码，指定值为“null”时，默认使用“Encoding.UTF8”。</param>
 		/// <returns>保存成功时，返回：true，否则返回：false。</returns>
 		public static bool SaveToFilePath(
-			this string str,
+			this string? str,
 			string? filePath,
 			Encoding? encoding = null)
 		{
@@ -292,7 +292,7 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static async Task<bool> SaveToFilePathAsync(
-			this string str,
+			this string? str,
 			string? filePath,
 			Encoding? encoding = null)
 		{
@@ -388,27 +388,33 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="comparisonType">查找字符串时的比较参数，默认为“StringComparison.Ordinal”。</param>
 		/// <returns>指定字符串在当前字符串中出现的次数，类型为：int。</returns>
 		public static int CountOfString(
-		    this string str,
+		    this string? str,
 		    string? key,
 		    StringComparison comparisonType = StringComparison.Ordinal)
 		{
-			int keysCount = 0;
-			if (key?.Length > 0)
+			if (string.IsNullOrEmpty(str))
 			{
-				var keyLength = key.Length;
-				var lastKeyEndIndex = 0;
-				while (true)
+				return 0;
+			}
+			if (string.IsNullOrEmpty(key))
+			{
+				return 0;
+			}
+
+			int keysCount = 0;
+			var keyLength = key.Length;
+			var lastKeyEndIndex = 0;
+			while (true)
+			{
+				var indexOfKey = str.IndexOf(key, lastKeyEndIndex, comparisonType);
+				if (indexOfKey >= 0)
 				{
-					var indexOfKey = str.IndexOf(key, lastKeyEndIndex, comparisonType);
-					if (indexOfKey >= 0)
-					{
-						keysCount++;
-						lastKeyEndIndex = indexOfKey + keyLength;
-					}
-					else
-					{
-						break;
-					}
+					keysCount++;
+					lastKeyEndIndex = indexOfKey + keyLength;
+				}
+				else
+				{
+					break;
 				}
 			}
 			return keysCount;
@@ -420,9 +426,12 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="str">指定的字符串。</param>
 		/// <param name="leftSubstringLength">指定的要获取的左侧内容长度。</param>
 		/// <returns>字符串中指定长度的左侧内容。</returns>
-		public static string Left(this string str, int leftSubstringLength)
+		public static string Left(
+			this string? str,
+			int leftSubstringLength)
 		{
-			if (leftSubstringLength <= 0)
+			if (string.IsNullOrEmpty(str)
+				|| leftSubstringLength <= 0)
 			{
 				return String.Empty;
 			}
@@ -439,9 +448,12 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="str">指定的字符串。</param>
 		/// <param name="rightSubstringLength">指定的要获取的右侧内容长度。</param>
 		/// <returns>字符串中指定长度的右侧内容。</returns>
-		public static string Right(this string str, int rightSubstringLength)
+		public static string Right(
+			this string? str,
+			int rightSubstringLength)
 		{
-			if (rightSubstringLength <= 0)
+			if (string.IsNullOrEmpty(str)
+				|| rightSubstringLength <= 0)
 			{
 				return String.Empty;
 			}
@@ -518,7 +530,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="stringComparison">字符串的比较类型。</param>
 		/// <returns>字符串中，指定关键字后的部分。</returns>
 		public static string? SubstringAfter(
-			this string str,
+			this string? str,
 			string? keyword,
 			int startIndex,
 			StringComparison stringComparison = StringComparison.Ordinal)
@@ -552,7 +564,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="stringComparison">字符串的比较类型。</param>
 		/// <returns>字符串中，指定关键字后的部分。</returns>
 		public static string? SubstringAfter(
-			this string str,
+			this string? str,
 			string? keyword,
 			StringComparison stringComparison = StringComparison.Ordinal)
 		{
@@ -572,13 +584,13 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="comparisonType">查找字符串时的比较参数。</param>
 		/// <returns>指定两个字符串之间的字符串。</returns>
 		public static string? SubstringBetween(
-		    this string str,
+		    this string? str,
 		    string? beginKey,
 		    string? endKey,
 		    bool isSearchEndKeyFromRight = false,
 		    StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 		{
-			if (str.Length < 1)
+			if (string.IsNullOrEmpty(str))
 			{
 				return null;
 			}
@@ -623,7 +635,7 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <returns>当前字符中的“布尔值”。</returns>
-		public static bool BoolValue(this string str)
+		public static bool BoolValue(this string? str)
 		{
 			_ = bool.TryParse(str, out var value);
 			{ }
@@ -635,7 +647,7 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <returns>当前字符中的“整数值”。</returns>
-		public static int IntValue(this string str)
+		public static int IntValue(this string? str)
 		{
 			_ = int.TryParse(str, out var value);
 			{ }
@@ -647,7 +659,7 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <returns>当前字符中的“浮点数值”。</returns>
-		public static float FloatValue(this string str)
+		public static float FloatValue(this string? str)
 		{
 			_ = float.TryParse(str, out var value);
 			{ }
@@ -659,7 +671,7 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <returns>当前字符中的“双精度值”。</returns>
-		public static double DoubleValue(this string str)
+		public static double DoubleValue(this string? str)
 		{
 			_ = double.TryParse(str, out var value);
 			{ }
@@ -675,11 +687,11 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="isIgnoreCase">比较字符串时是否忽略大小写，默认为：true。</param>
 		/// <returns>返回当前字符串对应的枚举值。</returns>
 		public static T EnumValue<T>
-		    (this string str,
+		    (this string? str,
 		    T defaultValue,
 		    bool isIgnoreCase = true) where T : Enum
 		{
-			return EnumExtension.ValueOfEnumValueName<T>(
+			return EnumExtension.ValueOf<T>(
 			    str,
 			    defaultValue,
 			    isIgnoreCase);
@@ -766,10 +778,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="splitOptions">字符串分隔选项。</param>
 		/// <returns>有拆解字符串得出的字符串数组，当字符串为空或非数字时，会转为“0”。</returns>
 		public static string[] ToStringArray(
-			this string str,
+			this string? str,
 			string spliter = ",",
 			StringSplitOptions splitOptions = StringSplitOptions.None)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return Array.Empty<string>();
+			}
+
 			var sections = str.Split(new string[] { spliter }, splitOptions);
 			var stringValues = sections;
 			{ }
@@ -784,7 +801,8 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="splitOptions">字符串分隔选项。</param>
 		/// <returns>有拆解字符串得出的字符串数组，当字符串为空或非数字时，会转为“0”。</returns>
 		public static string[] ToUnemptyStringArrayWithTrimEntries(
-			this string str, string spliter = ",")
+			this string? str,
+			string spliter = ",")
 		{
 			return StringExtension.ToStringArray(
 				str,
@@ -841,10 +859,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="splitOptions">字符串分隔选项。</param>
 		/// <returns>有拆解字符串得出的整型数值数组，当字符串为空或非数字时，会转为“0”。</returns>
 		public static int[] ToIntArray(
-			this string str,
+			this string? str,
 			string spliter = ",",
 			StringSplitOptions splitOptions = StringSplitOptions.None)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return Array.Empty<int>();
+			}
+
 			var sections = str.Split(new string[] { spliter }, splitOptions);
 			var intValues = new int[sections.Length];
 			{
@@ -914,10 +937,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="splitOptions">字符串分隔选项。</param>
 		/// <returns>有拆解字符串得出的浮点数数值数组，当字符串为空或非数字时，会转为“0.0”。</returns>
 		public static double[] ToDoubleArray(
-			this string str,
+			this string? str,
 			string spliter = ",",
 			StringSplitOptions splitOptions = StringSplitOptions.None)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return Array.Empty<double>();
+			}
+
 			var sections = str.Split(new string[] { spliter }, splitOptions);
 			var doubleValues = new double[sections.Length];
 			{
@@ -989,10 +1017,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="splitOptions">字符串分隔选项。</param>
 		/// <returns>有拆解字符串得出的浮点数数值数组，当字符串为空或非数字时，会转为“0.0”。</returns>
 		public static float[] ToFloatArray(
-			this string str,
+			this string? str,
 			string spliter = ",",
 			StringSplitOptions splitOptions = StringSplitOptions.None)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return Array.Empty<float>();
+			}
+
 			var sections = str.Split(new string[] { spliter }, splitOptions);
 			var floatValues = new float[sections.Length];
 			{
@@ -1071,10 +1104,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="fillCount">要填充的字符数量。</param>
 		/// <returns>填充了指定数量，指定字符后的字符串。</returns>
 		public static string StringByFillCharacterAtLeft(
-		    this string str,
+		    this string? str,
 		    char fillChar,
 		    int fillCount)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			if (fillChar != '\0'
 			    && fillCount > 0)
 			{
@@ -1102,10 +1140,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="fillCount">要填充的字符数量。</param>
 		/// <returns>填充了指定数量，指定字符后的字符串。</returns>
 		public static string StringByFillCharacterAtMid(
-		    this string str,
+		    this string? str,
 		    char fillChar,
 		    int fillCount)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			if (fillChar != '\0'
 			    && fillCount > 0)
 			{
@@ -1136,10 +1179,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="fillCount">要填充的字符数量。</param>
 		/// <returns>填充了指定数量，指定字符后的字符串。</returns>
 		public static string StringByFillCharacterAtRight(
-		    this string str,
+		    this string? str,
 		    char fillChar,
 		    int fillCount)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			if (fillChar != '\0'
 			    && fillCount > 0)
 			{
@@ -1167,10 +1215,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="fillCount">要填充的字符数量。</param>
 		/// <returns>填充了指定数量，指定字符后的字符串。</returns>
 		public static string StringByFillCharacterAtLeftToLength(
-		    this string str,
+		    this string? str,
 		    char fillChar,
 		    int stringLengthAfterFill)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			if (fillChar != '\0'
 			    && stringLengthAfterFill > str.Length)
 			{
@@ -1193,10 +1246,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="fillCount">要填充的字符数量。</param>
 		/// <returns>填充了指定数量，指定字符后的字符串。</returns>
 		public static string StringByFillCharacterAtMidToLength(
-		    this string str,
+		    this string? str,
 		    char fillChar,
 		    int stringLengthAfterFill)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			if (fillChar != '\0'
 			    && stringLengthAfterFill > str.Length)
 			{
@@ -1218,10 +1276,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="fillCount">要填充的字符数量。</param>
 		/// <returns>填充了指定数量，指定字符后的字符串。</returns>
 		public static string StringByFillCharacterAtRightToLength(
-		    this string str,
+		    this string? str,
 		    char fillChar,
 		    int stringLengthAfterFill)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			if (fillChar != '\0'
 			    && stringLengthAfterFill > str.Length)
 			{
@@ -1242,9 +1305,14 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="stringLengthAfterRemove">新字符串的目标长度。</param>
 		/// <returns>小于等于指定长度的新字符串。</returns>
 		public static string StringByRemoveLeftCharsToLength(
-			this string str,
+			this string? str,
 			int stringLengthAfterRemove)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			if (str.Length > stringLengthAfterRemove)
 			{
 				str = str[(str.Length - stringLengthAfterRemove)..];
@@ -1259,9 +1327,14 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="stringLengthAfterRemove">新字符串的目标长度。</param>
 		/// <returns>小于等于指定长度的新字符串。</returns>
 		public static string StringByRemoveRightCharsToLength(
-			this string str,
+			this string? str,
 			int stringLengthAfterRemove)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			if (str.Length > stringLengthAfterRemove)
 			{
 				str = str[..stringLengthAfterRemove];
@@ -1276,9 +1349,14 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="stringLengthAfterRemove">新字符串的目标长度。</param>
 		/// <returns>小于等于指定长度的新字符串。</returns>
 		public static string StringByRemoveMidCharsToLength(
-			this string str,
+			this string? str,
 			int stringLengthAfterRemove)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			if (str.Length > stringLengthAfterRemove)
 			{
 				var leftCharsCount = stringLengthAfterRemove / 2;
@@ -1302,7 +1380,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="stringLengthAfterOperation">新字符串的目标长度。</param>
 		/// <returns>等于指定长度的新字符串。</returns>
 		public static string StringByRetainRightCharsToLength(
-			this string str,
+			this string? str,
 			char fillChar,
 			int stringLengthAfterOperation)
 		{
@@ -1321,7 +1399,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="stringLengthAfterOperation">新字符串的目标长度。</param>
 		/// <returns>等于指定长度的新字符串。</returns>
 		public static string StringByRetainLeftAndRightCharsToLength(
-			this string str,
+			this string? str,
 			char fillChar,
 			int stringLengthAfterOperation)
 		{
@@ -1340,7 +1418,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="stringLengthAfterOperation">新字符串的目标长度。</param>
 		/// <returns>等于指定长度的新字符串。</returns>
 		public static string StringByRetainLeftCharsToLength(
-			this string str,
+			this string? str,
 			char fillChar,
 			int stringLengthAfterOperation)
 		{
@@ -1356,13 +1434,15 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <returns>Uri路径编码的新字符串。</returns>
-		public static string StringByEncodeInUriPath(this string str)
+		public static string StringByEncodeInUriPath(this string? str)
 		{
-			var strEncoded = str;
-			if (str.Length > 0)
+			if (string.IsNullOrEmpty(str))
 			{
-				strEncoded = Uri.EscapeDataString(strEncoded);
+				return string.Empty;
 			}
+
+			var strEncoded = Uri.EscapeDataString(str);
+			{ }
 			return strEncoded;
 		}
 
@@ -1371,13 +1451,15 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <returns>Uri路径解码的新字符串。</returns>
-		public static string StringByDecodeInUriPath(this string str)
+		public static string StringByDecodeInUriPath(this string? str)
 		{
-			var strEncoded = str;
-			if (str.Length > 0)
+			if (string.IsNullOrEmpty(str))
 			{
-				strEncoded = Uri.UnescapeDataString(strEncoded);
+				return string.Empty;
 			}
+
+			var strEncoded = Uri.UnescapeDataString(str);
+			{ }
 			return strEncoded;
 		}
 
@@ -1386,13 +1468,15 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <returns>Uri数据编码的新字符串。</returns>
-		public static string StringByEncodeInUriParam(this string str)
+		public static string StringByEncodeInUriParam(this string? str)
 		{
-			var strEncoded = str;
-			if (str.Length > 0)
+			if (string.IsNullOrEmpty(str))
 			{
-				strEncoded = Uri.EscapeDataString(strEncoded);
+				return string.Empty;
 			}
+
+			var strEncoded = Uri.EscapeDataString(str);
+			{ }
 			return strEncoded;
 		}
 
@@ -1401,8 +1485,13 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <returns>Uri数据解码的新字符串。</returns>
-		public static string StringByDecodeInUriParam(this string str)
+		public static string StringByDecodeInUriParam(this string? str)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			var strEncoded = Uri.UnescapeDataString(str);
 			{ }
 			return strEncoded;
@@ -1413,8 +1502,13 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="stringWithUnasciiChars">当前字符串。</param>
 		/// <returns>纯Ascii码构成掉字符串。</returns>
-		public static string StringByEncodeUnasciiCharsToUriParam(this string stringWithUnasciiChars)
+		public static string StringByEncodeUnasciiCharsToUriParam(this string? stringWithUnasciiChars)
 		{
+			if (string.IsNullOrEmpty(stringWithUnasciiChars))
+			{
+				return string.Empty;
+			}
+
 			for (var charIndex = stringWithUnasciiChars.Length - 1;
 				charIndex >= 0;
 				charIndex--)
@@ -1561,8 +1655,13 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">含有标注代码备注的字符串。</param>
 		/// <returns>不含有标注代码备注的字符串。</returns>
-		public static string? StringByRemoveCodeComments(this string str)
+		public static string? StringByRemoveCodeComments(this string? str)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			var codeStrings = new List<string>();
 			var codeStringWithComments = str;
 			if (codeStringWithComments?.Length > 0)
@@ -1824,11 +1923,48 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <returns>使用Utf8编码转化成的字节数组。</returns>
-		public static byte[] ToUtf8Bytes(this string str)
+		public static byte[] ToUtf8Bytes(this string? str)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return Array.Empty<byte>();
+			}
+
 			var strUtf8Bytes = UTF8Encoding.UTF8.GetBytes(str);
 			{ }
 			return strUtf8Bytes;
+		}
+
+		/// <summary>
+		/// 使用字符的大小写，生成当前字符串的哈希码。
+		/// </summary>
+		/// <param name="plaintext">
+		/// 当前字符串对象。
+		/// </param>
+		/// <returns>
+		/// 当前字符串对象对应的字符大小写哈希码，如：“Abc”的哈希码为“100”，“aBc”的哈希码为“010”。 
+		/// </returns>
+		public static string ToHashCodeByCharCase(
+		    this string? plaintext)
+		{
+			var hashCodeBuilder = new StringBuilder();
+			if (!string.IsNullOrEmpty(plaintext))
+			{
+				foreach (var character in plaintext)
+				{
+					if (char.IsUpper(character))
+					{
+						hashCodeBuilder.Append('1');
+					}
+					else
+					{
+						hashCodeBuilder.Append('0');
+					}
+				}
+			}
+			var hashCode = hashCodeBuilder.ToString();
+			{ }
+			return hashCode;
 		}
 
 		/// <summary>
@@ -1876,9 +2012,14 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="textEncoding">指定的字符编码方式。</param>
 		/// <returns>当前字符串的MD5值。</returns>
 		public static string ToHashCodeByMD532(
-		    this string str,
+		    this string? str,
 		    System.Text.Encoding? textEncoding = null)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			var md5String = Security.Cryptography.SHA.CreateMD532String(
 				    str,
 				    textEncoding);
@@ -1893,9 +2034,14 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="textEncoding">指定的字符编码方式。</param>
 		/// <returns>当前字符串的MD5值。</returns>
 		public static string ToHashCodeByMD516(
-		    this string str,
+		    this string? str,
 		    System.Text.Encoding? textEncoding = null)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			var md5String = Security.Cryptography.SHA.CreateMD516String(
 				    str,
 				    textEncoding);
@@ -1911,9 +2057,14 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="isCurrentStringFilePath">当前字符串是否为文件路径。</param>
 		/// <returns>格式合法的以“\”结尾的文件系统路径字符串。</returns>
 		public static string ToFileSystemDirectoryPath(
-		    this string str,
+		    this string? str,
 		    bool isCurrentStringFilePath = false)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			var fileDirectoryPath = str.Trim();
 			if (fileDirectoryPath.EndsWith(System.IO.Path.DirectorySeparatorChar) != true)
 			{
@@ -1942,9 +2093,14 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <returns>去除字符串起始处的“\”和“/”符号后的相对路径字符串。</returns>
-		public static string? ToFileSystemRelativePath(
-		    this string str)
+		public static string ToFileSystemRelativePath(
+		    this string? str)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			var relativeFilePath = str.Trim();
 			if (relativeFilePath?.Length > 0)
 			{
@@ -1969,7 +2125,10 @@ namespace BaoXia.Utils.Extensions
 					relativeFilePath = null;
 				}
 			}
-
+			if (relativeFilePath == null)
+			{
+				return string.Empty;
+			}
 			return relativeFilePath;
 		}
 
@@ -1980,7 +2139,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="rootPath">指定的根路径。</param>
 		/// <returns>当前字符串最终确认的绝对路径，当当前字符串为”null“，或长度无效时，返回”null“。</returns>
 		public static string ToAbsoluteFilePathInRootPath(
-			this string str,
+			this string? str,
 			string? rootPath)
 		{
 			string absoluteFilePath;
@@ -1992,6 +2151,10 @@ namespace BaoXia.Utils.Extensions
 				&& System.IO.Path.IsPathRooted(rootPath))
 			{
 				absoluteFilePath = rootPath.ToFileSystemDirectoryPath() + str;
+			}
+			else if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
 			}
 			else
 			{
@@ -2007,9 +2170,14 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="isCurrentStringFilePath">当前字符串是否为文件URI。</param>
 		/// <returns>格式合法的以“/”结尾的URI系统路径字符串。</returns>
 		public static string ToUriSystemDirectoryPath(
-		    this string str,
+		    this string? str,
 		    bool isCurrentStringFileUri = false)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			var uriDirectoryPath = str.Trim();
 			var directorySeparatorChar = System.IO.Path.AltDirectorySeparatorChar;
 			if (uriDirectoryPath.EndsWith(directorySeparatorChar) != true)
@@ -2037,8 +2205,13 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="str">当前字符串。</param>
 		/// <returns>去除字符串起始处的“\”和“/”符号后的相对路径字符串。</returns>
 		public static string? ToUriSystemRelativePath(
-		    this string str)
+		    this string? str)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
 			var relativeFilePath = str.Trim();
 			var directorySeparatorChar = System.IO.Path.AltDirectorySeparatorChar;
 			{
@@ -2260,12 +2433,19 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="isContainsFileExtensionName">是否包含扩展名，默认为：true。</param>
 		/// <returns>格式合法的文件名，或资源名。</returns>
 		public static string? ToFileName(
-		    this string str,
-		    bool isContainsFileExtensionName = true)
+		    this string? str,
+		    bool isContainsFileExtensionName = true,
+		    char? directorySeparatorChar = null)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
+			directorySeparatorChar ??= System.IO.Path.DirectorySeparatorChar;
+
 			var lastIndexOfDirectorySeparatorChar
-			    = str.LastIndexOf(
-			    System.IO.Path.DirectorySeparatorChar);
+			    = str.LastIndexOf(directorySeparatorChar.Value);
 			if (lastIndexOfDirectorySeparatorChar < 0)
 			{
 				return str;
@@ -2303,13 +2483,20 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="isGetFullExtensionName">是否包含完整的扩展名，即：第一个“.”之后的字符串，默认为：false。</param>
 		/// <returns>格式合法的文件名，或资源名。</returns>
 		public static string ToFileExtensionName(
-		    this string str,
-		    bool isGetFullExtensionName = false)
+		    this string? str,
+		    bool isGetFullExtensionName = false,
+		    char? directorySeparatorChar = null)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return string.Empty;
+			}
+
+			directorySeparatorChar ??= System.IO.Path.DirectorySeparatorChar;
+
 			var fileName = str.Trim();
 			var lastIndexOfDirectorySeparatorChar
-			    = fileName.LastIndexOf(
-			    System.IO.Path.DirectorySeparatorChar);
+			    = fileName.LastIndexOf(directorySeparatorChar.Value);
 			if ((lastIndexOfDirectorySeparatorChar + 1) == str.Length)
 			{
 				return string.Empty;
@@ -2346,10 +2533,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="str">当前字符串。</param>
 		/// <returns>反序列化当前字符串生成的指定类型的对象。</returns>
 		public static object? ToObjectByJsonDeserialize(
-		    this string str,
+		    this string? str,
 		    Type objectType,
 		    JsonSerializerOptions? jsonSerializerOptions = null)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return null;
+			}
+
 			object? obj = null;
 			if (str?.Length > 0)
 			{
@@ -2368,9 +2560,14 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="str">当前字符串。</param>
 		/// <returns>反序列化当前字符串生成的指定类型的对象。</returns>
 		public static T? ToObjectByJsonDeserialize<T>(
-			this string str,
+			this string? str,
 			JsonSerializerOptions? jsonSerializerOptions = null)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return default;
+			}
+
 			T? tObject = default;
 			if (str?.Length > 0)
 			{
@@ -2382,7 +2579,7 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static bool TryToObjectByJsonDeserialize(
-			this string str,
+			this string? str,
 			Type objectType,
 			out object? objectDeserialized,
 			JsonSerializerOptions? jsonSerializerOptions = null)
@@ -2390,6 +2587,11 @@ namespace BaoXia.Utils.Extensions
 			objectDeserialized = null;
 			try
 			{
+				if (string.IsNullOrEmpty(str))
+				{
+					return false;
+				}
+
 				objectDeserialized = str.ToObjectByJsonDeserialize(
 					objectType,
 					jsonSerializerOptions);
@@ -2401,13 +2603,18 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static bool TryToObjectByJsonDeserialize<ObjectType>(
-			this string str,
+			this string? str,
 			out ObjectType? objectDeserialized,
 			JsonSerializerOptions? jsonSerializerOptions = null)
 		{
 			objectDeserialized = default;
 			try
 			{
+				if (string.IsNullOrEmpty(str))
+				{
+					return false;
+				}
+
 				objectDeserialized = str.ToObjectByJsonDeserialize<ObjectType>(
 					jsonSerializerOptions);
 				return true;
@@ -2574,11 +2781,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="comparisonType">字符串的比较类型，默认未：StringComparison.OrdinalIgnoreCase</param>
 		/// <returns>指定字符串在当前字符串中的位置，未找到时返回：-1 。</returns>
 		public static int IndexOfIgnoreCase(
-			this string str,
+			this string? str,
 			string? keywords,
 			int startIndex,
 			StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return -1;
+			}
 			if (keywords == null
 				|| keywords.Length < 1)
 			{
@@ -2607,7 +2818,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="comparisonType">字符串的比较类型，默认未：StringComparison.OrdinalIgnoreCase</param>
 		/// <returns>指定字符串在当前字符串中的位置，未找到时返回：-1 。</returns>
 		public static int IndexOfIgnoreCase(
-			this string str,
+			this string? str,
 			string? keywords,
 			StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 		{
@@ -2627,11 +2838,15 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="comparisonType">字符串的比较类型，默认未：StringComparison.OrdinalIgnoreCase</param>
 		/// <returns>指定字符串在当前字符串中的位置，未找到时返回：-1 。</returns>
 		public static int LastIndexOfIgnoreCase(
-			this string str,
+			this string? str,
 			string? keywords,
 			int startIndex,
 			StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return -1;
+			}
 			if (keywords == null
 				|| keywords.Length < 1)
 			{
@@ -2659,7 +2874,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="comparisonType">字符串的比较类型，默认未：StringComparison.OrdinalIgnoreCase</param>
 		/// <returns>指定字符串在当前字符串中的位置，未找到时返回：-1 。</returns>
 		public static int LastIndexOfIgnoreCase(
-			this string str,
+			this string? str,
 			string? keywords,
 			StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 		{
@@ -2765,7 +2980,7 @@ namespace BaoXia.Utils.Extensions
 		/// 当前字符串是否为有效的Uri主机名称。
 		/// </summary>
 		/// <returns></returns>
-		public static bool IsValidUriHostName(this string str)
+		public static bool IsValidUriHostName(this string? str)
 		{
 			if (str?.Length > 0)
 			{
@@ -2784,7 +2999,7 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <returns></returns>
 		public static bool IsValidUri(
-		    this string str,
+		    this string? str,
 		    string? schemeSpecified = "https")
 		{
 			if (str?.Length > 0)

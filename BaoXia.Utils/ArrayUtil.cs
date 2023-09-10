@@ -1,4 +1,6 @@
-﻿namespace BaoXia.Utils
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace BaoXia.Utils
 {
 	public class ArrayUtil
 	{
@@ -9,7 +11,7 @@
 
 		#region 类方法
 
-		public static bool IsEmpty<T>(T[]? array)
+		public static bool IsEmpty<T>([NotNullWhen(false)] T[]? array)
 		{
 			if (array?.Length > 0)
 			{
@@ -18,7 +20,7 @@
 			return true;
 		}
 
-		public static bool IsNotEmpty<T>(T[]? array)
+		public static bool IsNotEmpty<T>([NotNullWhen(true)] T[]? array)
 		{
 			return !ArrayUtil.IsEmpty(array);
 		}

@@ -17,7 +17,7 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 		[TestMethod]
 		public void ValueNamesOfEnum()
 		{
-			var valueNamesOfEnum = EnumExtension.ValueNamesOfEnum<TestEnum>();
+			var valueNamesOfEnum = EnumExtension.ValueAndNamesOf<TestEnum>();
 			Assert.IsTrue(valueNamesOfEnum?.Count > 0);
 			////////////////////////////////////////////////
 

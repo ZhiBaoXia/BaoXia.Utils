@@ -1,4 +1,5 @@
 ﻿using BaoXia.Utils.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BaoXia.Utils
 {
@@ -10,7 +11,7 @@ namespace BaoXia.Utils
 
 		#region 类方法
 
-		public static bool IsEmpty(string? str)
+		public static bool IsEmpty([NotNullWhen(false)] string? str)
 		{
 			if (string.IsNullOrEmpty(str))
 			{
@@ -19,12 +20,12 @@ namespace BaoXia.Utils
 			return false;
 		}
 
-		public static bool IsNotEmpty(string? str)
+		public static bool IsNotEmpty([NotNullWhen(true)] string? str)
 		{
 			return !StringUtil.IsEmpty(str);
 		}
 
-		public static bool IsBlank(string? str)
+		public static bool IsBlank([NotNullWhen(false)] string? str)
 		{
 			if (string.IsNullOrWhiteSpace(str))
 			{
@@ -33,37 +34,37 @@ namespace BaoXia.Utils
 			return false;
 		}
 
-		public static bool IsNotBlank(string? str)
+		public static bool IsNotBlank([NotNullWhen(true)]  string? str)
 		{
 			return !StringUtil.IsBlank(str);
 		}
 
-		public static bool IsIntegralNumber(string? str)
+		public static bool IsIntegralNumber([NotNullWhen(true)]  string? str)
 		{
 			return str.IsNumberString(true);
 		}
 
-		public static bool IsNotIntegralNumber(string? str)
+		public static bool IsNotIntegralNumber([NotNullWhen(false)] string? str)
 		{
 			return !StringUtil.IsIntegralNumber(str);
 		}
 
-		public static bool IsDecimalNumber(string? str)
+		public static bool IsDecimalNumber([NotNullWhen(true)] string? str)
 		{
 			return str.IsNumberString(false);
 		}
 
-		public static bool IsNotDecimalNumber(string? str)
+		public static bool IsNotDecimalNumber([NotNullWhen(false)] string? str)
 		{
 			return !StringUtil.IsDecimalNumber(str);
 		}
 
-		public static bool IsAlphabet(string? str)
+		public static bool IsAlphabet([NotNullWhen(true)] string? str)
 		{
 			return str.IsAlphabetString();
 		}
 
-		public static bool IsNotAlphabet(string? str)
+		public static bool IsNotAlphabet([NotNullWhen(false)] string? str)
 		{
 			return !StringUtil.IsAlphabet(str);
 		}

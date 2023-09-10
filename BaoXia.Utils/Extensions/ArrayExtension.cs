@@ -381,6 +381,80 @@ namespace BaoXia.Utils.Extensions
 			return itemList.ToArray();
 		}
 
+		/// <summary>
+		/// 在指定的数组中，查找目标元素。
+		/// </summary>
+		/// <typeparam name="ItemType">数组元素的类型。</typeparam>
+		/// <param name="items">指定的数组对象。</param>
+		/// <param name="searchRangeBeginIndex">指定查找区域的起始数组索引。</param>
+		/// <param name="searchRangeLength">指定查找区域的长度。</param>
+		/// <param name="toIsObjectItem">判断元素是否为目标元素的函数。</param>
+		/// <param name="objectItemIndex">目标元素在数组中的索引值。</param>
+		/// <returns>如果查找到目标元素，则返回对应的元素，否则返回“default”。</returns>
+		public static ItemType? Find<ItemType>(
+			this ItemType[]? items,
+			int searchRangeBeginIndex,
+			int searchRangeLength,
+			Func<ItemType, int, bool> toIsObjectItem,
+			out int objectItemIndex)
+		{
+			// !!!
+			objectItemIndex = -1;
+			// !!!
+
+			if (ArrayUtil.IsEmpty(items))
+			{
+				return default;
+			}
+
+			var searchRangeEndIndex = searchRangeBeginIndex + searchRangeLength;
+			for (var itemIndex = searchRangeBeginIndex;
+				itemIndex < searchRangeEndIndex;
+				itemIndex++)
+			{
+				var item = items[itemIndex];
+				if (toIsObjectItem(item, itemIndex))
+				{
+					// !!!
+					objectItemIndex = itemIndex;
+					// !!!
+					return item;
+				}
+			}
+			return default;
+		}
+
+		/// <summary>
+		/// 在指定的数组中，查找目标元素。
+		/// </summary>
+		/// <typeparam name="ItemType">数组元素的类型。</typeparam>
+		/// <param name="items">指定的数组对象。</param>
+		/// <param name="searchRangeBeginIndex">指定查找区域的起始数组索引。</param>
+		/// <param name="searchRangeLength">指定查找区域的长度。</param>
+		/// <param name="toIsObjectItem">判断元素是否为目标元素的函数。</param>
+		/// <param name="objectItemIndex">目标元素在数组中的索引值。</param>
+		/// <returns>如果查找到目标元素，则返回对应的元素，否则返回“default”。</returns>
+		public static ItemType? Find<ItemType>(
+			this ItemType[]? items,
+			Func<ItemType, int, bool> toIsObjectItem,
+			out int objectItemIndex)
+		{
+			// !!!
+			objectItemIndex = -1;
+			// !!!
+
+			if (ArrayUtil.IsEmpty(items))
+			{
+				return default;
+			}
+
+			return Find(
+				items,
+				0,
+				items.Length,
+				toIsObjectItem,
+				out objectItemIndex);
+		}
 
 		/// <summary>
 		/// 使用二分法查找目标元素在列表中的索引值。

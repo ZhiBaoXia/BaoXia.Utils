@@ -34,12 +34,12 @@ namespace BaoXia.Utils
 			return false;
 		}
 
-		public static bool IsNotBlank([NotNullWhen(true)]  string? str)
+		public static bool IsNotBlank([NotNullWhen(true)] string? str)
 		{
 			return !StringUtil.IsBlank(str);
 		}
 
-		public static bool IsIntegralNumber([NotNullWhen(true)]  string? str)
+		public static bool IsIntegralNumber([NotNullWhen(true)] string? str)
 		{
 			return str.IsNumberString(true);
 		}

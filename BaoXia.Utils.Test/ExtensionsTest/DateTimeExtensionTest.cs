@@ -8,7 +8,7 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 	public class DateTimeExtensionTest
 	{
 		[TestMethod]
-		public void MillisecondsFrom1970()
+		public void MillisecondsFrom1970Test()
 		{
 			var dateTime = DateTime.Now;
 
@@ -27,7 +27,65 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 		}
 
 		[TestMethod]
-		public void CompareInDateTimeField()
+		public void QuickDateTimeTest()
+		{
+			var dateTime = new DateTime(2023, 09, 10, 16, 50, 30);
+
+			var zeroOfPrevDay = dateTime.ZeroOfPrevDay();
+			{
+				Assert.IsTrue(zeroOfPrevDay.Equals(new DateTime(2023, 09, 9, 0, 0, 0, 0)));
+			}
+			var zeroOfThisDay = dateTime.ZeroOfThisDay();
+			{
+				Assert.IsTrue(zeroOfThisDay.Equals(new DateTime(2023, 09, 10, 0, 0, 0, 0)));
+			}
+			var zeroOfNextDay = dateTime.ZeroOfNextDay();
+			{
+				Assert.IsTrue(zeroOfNextDay.Equals(new DateTime(2023, 09, 11, 0, 0, 0, 0)));
+			}
+
+			var firstDayOfPrevMonth = dateTime.FirstDayOfPrevMonth();
+			{
+				Assert.IsTrue(firstDayOfPrevMonth.Equals(new DateTime(2023, 08, 1, 0, 0, 0, 0)));
+			}
+			var firstDayOfThisMonth = dateTime.FirstDayOfThisMonth();
+			{
+				Assert.IsTrue(firstDayOfThisMonth.Equals(new DateTime(2023, 09, 1, 0, 0, 0, 0)));
+			}
+			var firstDayOfNextMonth = dateTime.FirstDayOfNextMonth();
+			{
+				Assert.IsTrue(firstDayOfNextMonth.Equals(new DateTime(2023, 10, 1, 0, 0, 0, 0)));
+			}
+
+			var firstDayOfPrevSession = dateTime.FirstDayOfPrevSession();
+			{
+				Assert.IsTrue(firstDayOfPrevSession.Equals(new DateTime(2023, 4, 1, 0, 0, 0, 0)));
+			}
+			var firstDayOfThisSession = dateTime.FirstDayOfThisSession();
+			{
+				Assert.IsTrue(firstDayOfThisSession.Equals(new DateTime(2023, 7, 1, 0, 0, 0, 0)));
+			}
+			var firstDayOfNextSession = dateTime.FirstDayOfNextSession();
+			{
+				Assert.IsTrue(firstDayOfNextSession.Equals(new DateTime(2023, 10, 1, 0, 0, 0, 0)));
+			}
+
+			var firstDayOfPrevYear = dateTime.FirstDayOfPrevYear();
+			{
+				Assert.IsTrue(firstDayOfPrevYear.Equals(new DateTime(2022, 1, 1, 0, 0, 0, 0)));
+			}
+			var firstDayOfThisYear = dateTime.FirstDayOfThisYear();
+			{
+				Assert.IsTrue(firstDayOfThisYear.Equals(new DateTime(2023, 1, 1, 0, 0, 0, 0)));
+			}
+			var firstDayOfNextYear = dateTime.FirstDayOfNextYear();
+			{
+				Assert.IsTrue(firstDayOfNextYear.Equals(new DateTime(2024, 1, 1, 0, 0, 0, 0)));
+			}
+		}
+
+		[TestMethod]
+		public void CompareInDateTimeFieldTest()
 		{
 			DateTime standardTime = DateTime.Now;
 

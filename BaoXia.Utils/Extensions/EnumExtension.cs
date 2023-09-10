@@ -13,7 +13,7 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <typeparam name="Enum">指定的枚举类型。</typeparam>
 		/// <returns>指定枚举类型的所有值，值名称字典。</returns>
-		public static Dictionary<T, string> ValueNamesOfEnum<T>() where T : Enum
+		public static Dictionary<T, string> ValueAndNamesOf<T>() where T : Enum
 		{
 			var allValueNames = new Dictionary<T, string>();
 			foreach (var value
@@ -36,7 +36,7 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <typeparam name="T">指定的枚举类型。</typeparam>
 		/// <returns>指定枚举类型的所有值，值名称字典。</returns>
-		public static List<string> NamesOfEnumValues<T>() where T : Enum
+		public static List<string> NamesOf<T>() where T : Enum
 		{
 			var allValueNames = new List<string>();
 			foreach (var value in Enum.GetValues(typeof(T)))
@@ -56,7 +56,7 @@ namespace BaoXia.Utils.Extensions
 		/// <typeparam name="T">指定的枚举类型。</typeparam>
 		/// <param name="enumValue">指定的枚举值。</param>
 		/// <returns>指定枚举值对应的枚举值名称。</returns>
-		public static string? NameOfEnumValue<T>(T enumValue) where T : Enum
+		public static string? NameOf<T>(T enumValue) where T : Enum
 		{
 			var enumValueType = Enum.Parse(
 				typeof(T),
@@ -72,7 +72,7 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="valueName">指定的枚举值名称字符串。</param>
 		/// <param name="defaultValue">匹配不到时返回的默认枚举值。</param>
 		/// <returns>指定字符串对应的枚举值。</returns>
-		public static T ValueOfEnumValueName<T>(
+		public static T ValueOf<T>(
 			string? valueName,
 			T defaultValue,
 			bool isIgnoreCase = true)

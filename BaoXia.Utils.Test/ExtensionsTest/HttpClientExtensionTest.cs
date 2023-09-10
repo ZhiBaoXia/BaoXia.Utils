@@ -156,5 +156,6 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				Assert.IsTrue(requestBodyFromRemote.NumberValue.Equals(requestBody.NumberValue));
 			}
 		}
+
 	}
 }

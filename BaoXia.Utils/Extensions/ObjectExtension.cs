@@ -9,6 +9,13 @@ namespace BaoXia.Utils.Extensions
 	/// </summary>
 	public static class ObjectExtension
 	{
+
+		////////////////////////////////////////////////
+		// @类方法
+		////////////////////////////////////////////////
+
+		#region 类方法
+
 		public static PropertyInfo[]? GetPublicSetablePropertyInfes(
 		    this object @object,
 		    BindingFlags propertiesBindingFlags = BindingFlags.Default)
@@ -205,5 +212,7 @@ namespace BaoXia.Utils.Extensions
 			{ }
 			return jsonString;
 		}
+
+		#endregion
 	}
 }

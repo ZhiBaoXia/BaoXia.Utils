@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BaoXia.Utils
 {
@@ -10,7 +11,7 @@ namespace BaoXia.Utils
 
 		#region 类方法
 
-		public static bool IsEmpty<T>(List<T>? list)
+		public static bool IsEmpty<T>([NotNullWhen(false)] List<T>? list)
 		{
 			if (list?.Count > 0)
 			{
@@ -19,7 +20,7 @@ namespace BaoXia.Utils
 			return true;
 		}
 
-		public static bool IsNotEmpty<T>(List<T>? list)
+		public static bool IsNotEmpty<T>([NotNullWhen(true)] List<T>? list)
 		{
 			return !ListUtil.IsEmpty(list);
 		}

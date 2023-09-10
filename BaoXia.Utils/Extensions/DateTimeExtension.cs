@@ -69,7 +69,7 @@ namespace BaoXia.Utils.Extensions
 		public static DateTime ZeroOfPrevDay(this DateTime dateTime)
 		{
 			var prevDay = dateTime.AddDays(-1);
-			{}
+			{ }
 			return new DateTime(prevDay.Year, prevDay.Month, prevDay.Day);
 		}
 

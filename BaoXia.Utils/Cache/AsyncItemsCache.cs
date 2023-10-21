@@ -626,7 +626,10 @@ namespace BaoXia.Utils.Cache
                                                         var toDidCreateItemCacheAsync = this.ToDidCreateItemCacheAsync;
                                                         if (toDidCreateItemsCacheAsync != null)
                                                         {
-                                                                if (DidWillCreateItemsCache(itemContainersNeedCreateItem))
+                                                                // !!!
+                                                                DidWillCreateItemsCache(ref itemContainersNeedCreateItem);
+                                                                if (itemContainersNeedCreateItem.Count > 0)
+                                                                // !!!
                                                                 {
                                                                         // !!!
                                                                         await toDidCreateItemsCacheAsync(itemContainersNeedCreateItem);
@@ -749,11 +752,9 @@ namespace BaoXia.Utils.Cache
                 // @事件节点
                 ////////////////////////////////////////////////
 
-                protected virtual bool DidWillCreateItemsCache(
-                        IEnumerable<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> itemCacheContainersNeedCreate)
-                {
-                        return true;
-                }
+                protected virtual void DidWillCreateItemsCache(
+                        ref List<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> itemCacheContainersNeedCreate)
+                { }
 
                 protected virtual bool DidWillCreateItemCache(
                         ItemKeyType itemKey,

@@ -13,6 +13,30 @@ namespace BaoXia.Utils.Cache
                 where ItemKeyType : notnull
                 where ItemType : class
         {
+
+                ////////////////////////////////////////////////
+                // @静态常量
+                ////////////////////////////////////////////////
+
+                #region 静态常量
+
+                protected class WillCreateItemCacheResult
+                {
+                        public bool IsItemCacheCreateContinue { get; set; }
+                        public ItemType? ItemCreated { get; set; }
+
+                        public WillCreateItemCacheResult(
+                                bool isItemCacheCreateContinue,
+                                ItemType? itemCreated)
+                        {
+                                IsItemCacheCreateContinue = isItemCacheCreateContinue;
+                                ItemCreated = itemCreated;
+                        }
+                }
+
+                #endregion
+
+
                 ////////////////////////////////////////////////
                 // @自身属性
                 ////////////////////////////////////////////////
@@ -69,7 +93,7 @@ namespace BaoXia.Utils.Cache
 
                 public Func<IEnumerable<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>>, Task>? ToDidCreateItemsCacheAsync { get; set; }
 
-                public Func<ItemKeyType, ItemType?, ItemType?, ItemCacheOperation, ItemType?>? ToDidItemCacheUpdated { get; set; }
+                public Func<ItemKeyType, ItemType?, ItemType?, ItemCacheOperation, Task<ItemType?>>? ToDidItemCacheUpdatedAsync { get; set; }
 
 
 
@@ -197,7 +221,7 @@ namespace BaoXia.Utils.Cache
                                                                                 System.Diagnostics.Trace.WriteLine(myType + "，自动更新缓存元素任务，开始：");
 #endif
                                                                                 // !!!⚠ 开始更新无效的缓存 ⚠!!!
-                                                                                this.UpdateAllItems(cancellationToken);
+                                                                                this.UpdateAllItemCache(cancellationToken);
                                                                                 // !!!
 #if DEBUG
                                                                                 System.Diagnostics.Trace.WriteLine(myType + "，自动更新缓存元素任务，结束。");
@@ -280,15 +304,15 @@ namespace BaoXia.Utils.Cache
                 ////////////////////////////////////////////////
 
                 public AsyncItemsCache(
-                        Func<ItemKeyType, ItemCacheCreateParamType?, Task<ItemType?>> didCreateItemCache,
-                        Func<ItemKeyType, ItemType?, ItemType?, ItemCacheOperation, ItemType?>? didItemCacheUpdated,
+                        Func<ItemKeyType, ItemCacheCreateParamType?, Task<ItemType?>> didCreateItemCacheAsync,
+                        Func<ItemKeyType, ItemType?, ItemType?, ItemCacheOperation, Task<ItemType?>>? didItemCacheUpdatedAsync,
                         Func<double>? toDidGetIntervalSecondsToCleanItemCache,
                         Func<double>? toDidGetNoneReadSecondsToRemoveItemCache,
                         Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache,
                         Func<int>? toDidGetThreadsCountToCreateItemAsync)
                 {
-                        this.ToDidCreateItemCacheAsync = didCreateItemCache;
-                        this.ToDidItemCacheUpdated = didItemCacheUpdated;
+                        this.ToDidCreateItemCacheAsync = didCreateItemCacheAsync;
+                        this.ToDidItemCacheUpdatedAsync = didItemCacheUpdatedAsync;
                         this.ToDidGetIntervalSecondsToCleanItemCache = toDidGetIntervalSecondsToCleanItemCache;
                         this.ToDidGetNoneReadSecondsToRemoveItemCache = toDidGetNoneReadSecondsToRemoveItemCache;
                         this.ToDidGetNoneUpdateSecondsToUpdateItemCache = toDidGetNoneUpdateSecondsToUpdateItemCache;
@@ -299,12 +323,12 @@ namespace BaoXia.Utils.Cache
 
                 public AsyncItemsCache(
                         Func<ItemKeyType, ItemCacheCreateParamType?, Task<ItemType?>> didCreateItemCache,
-                        Func<ItemKeyType, ItemType?, ItemType?, ItemCacheOperation, ItemType?>? didItemCacheUpdated,
+                        Func<ItemKeyType, ItemType?, ItemType?, ItemCacheOperation, Task<ItemType?>>? didItemCacheUpdatedAsync,
                         Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
                         Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
                         Func<int>? toDidGetThreadsCountToCreateItemAsync = null)
                         : this(didCreateItemCache,
-                                  didItemCacheUpdated,
+                                  didItemCacheUpdatedAsync,
                                   toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
                                   toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
                                   toDidGetNoneUpdateSecondsToUpdateItemCache,
@@ -322,7 +346,7 @@ namespace BaoXia.Utils.Cache
                         // !!!
                 }
 
-                public ItemType? Add(
+                public async Task<ItemType?> AddAsync(
                         ItemKeyType itemKey,
                         ItemType? item,
                         ItemCacheCreateParamType? itemCreateParam = default,
@@ -335,7 +359,7 @@ namespace BaoXia.Utils.Cache
                         }
 
                         ////////////////////////////////////////////////
-                        var itemNeedAdd = this.DidItemCacheUpdated(
+                        var itemNeedAdd = await this.DidItemCacheUpdatedAsync(
                                 itemKey,
                                 default,
                                 item,
@@ -372,13 +396,13 @@ namespace BaoXia.Utils.Cache
                 }
 
 
-                public ItemType? Set(
+                public async Task<ItemType?> SetAsync(
                         ItemKeyType itemKey,
                         ItemType? item,
                         ItemCacheCreateParamType? itemCreateParam = default,
                         bool isNeedUpdateItemLastReadTime = true)
                 {
-                        return this.Add(
+                        return await this.AddAsync(
                                 itemKey,
                                 item,
                                 itemCreateParam,
@@ -408,12 +432,13 @@ namespace BaoXia.Utils.Cache
                                 }
                         }
 
-
-                        var toDidCreateItemCacheAsync = this.ToDidCreateItemCacheAsync;
-                        if (DidWillCreateItemCache(
+                        var willCreateItemCacheAsyncResult
+                                = await DidWillCreateItemCacheAsync(
                                 itemKey,
-                                itemCreateParam,
-                                out var newItem)
+                                itemCreateParam);
+                        var newItem = willCreateItemCacheAsyncResult.ItemCreated;
+                        var toDidCreateItemCacheAsync = this.ToDidCreateItemCacheAsync;
+                        if (willCreateItemCacheAsyncResult.IsItemCacheCreateContinue
                                 && toDidCreateItemCacheAsync != null)
                         {
                                 newItem = await toDidCreateItemCacheAsync(
@@ -423,7 +448,7 @@ namespace BaoXia.Utils.Cache
                         if (itemContainer != null)
                         {
                                 ////////////////////////////////////////////////
-                                newItem = this.DidItemCacheUpdated(
+                                newItem = await this.DidItemCacheUpdatedAsync(
                                         itemKey,
                                         itemContainer.Item,
                                         newItem,
@@ -439,10 +464,10 @@ namespace BaoXia.Utils.Cache
                                 ////////////////////////////////////////////////
                                 return newItem;
                         }
-                        return this.Add(itemKey, newItem); ;
+                        return await this.AddAsync(itemKey, newItem); ;
                 }
 
-                public ItemType? Remove(ItemKeyType itemKey)
+                public async Task<ItemType?> RemoveAsync(ItemKeyType itemKey)
                 {
                         if (typeof(ItemKeyType).IsPointer
                                 && itemKey == null)
@@ -460,7 +485,7 @@ namespace BaoXia.Utils.Cache
                                 : default;
 
                         ////////////////////////////////////////////////
-                        this.DidItemCacheUpdated(
+                        await this.DidItemCacheUpdatedAsync(
                                 itemKey,
                                 itemRemoved,
                                 default,
@@ -497,7 +522,7 @@ namespace BaoXia.Utils.Cache
                                 cancellationToken);
                 }
 
-                public void UpdateAllItems(
+                public void UpdateAllItemCache(
                         double noneUpdateSecondsToUpdateItemCache,
                         CancellationToken cancellationToken)
                 {
@@ -508,15 +533,15 @@ namespace BaoXia.Utils.Cache
                         }
                         if (noneUpdateSecondsToUpdateItemCache > 0.0)
                         {
-                                this.DidUpdate(
+                                this.DidUpdateAllItemCache(
                                         noneUpdateSecondsToUpdateItemCache,
                                         cancellationToken);
                         }
                 }
 
-                public void UpdateAllItems(CancellationToken cancellationToken)
+                public void UpdateAllItemCache(CancellationToken cancellationToken)
                 {
-                        this.UpdateAllItems(
+                        this.UpdateAllItemCache(
                                 this.NoneUpdateSecondsToUpdateItemCache,
                                 cancellationToken);
                 }
@@ -627,7 +652,8 @@ namespace BaoXia.Utils.Cache
                                                         if (toDidCreateItemsCacheAsync != null)
                                                         {
                                                                 // !!!
-                                                                DidWillCreateItemsCache(ref itemContainersNeedCreateItem);
+                                                                itemContainersNeedCreateItem
+                                                                = await DidWillCreateItemsCacheAsync(itemContainersNeedCreateItem);
                                                                 if (itemContainersNeedCreateItem.Count > 0)
                                                                 // !!!
                                                                 {
@@ -647,10 +673,12 @@ namespace BaoXia.Utils.Cache
                                                                                 return;
                                                                         }
 
-                                                                        if (DidWillCreateItemCache(
+                                                                        var willCreateItemCacheAsyncResult
+                                                                        = await DidWillCreateItemCacheAsync(
                                                                                 itemContainerNeedCreateItem.Key,
-                                                                                itemContainerNeedCreateItem.ItemCreateParam,
-                                                                                out var item))
+                                                                                itemContainerNeedCreateItem.ItemCreateParam);
+                                                                        var item = willCreateItemCacheAsyncResult.ItemCreated;
+                                                                        if (willCreateItemCacheAsyncResult.IsItemCacheCreateContinue)
                                                                         {
                                                                                 item
                                                                                 = await toDidCreateItemCacheAsync(
@@ -752,19 +780,20 @@ namespace BaoXia.Utils.Cache
                 // @事件节点
                 ////////////////////////////////////////////////
 
-                protected virtual void DidWillCreateItemsCache(
-                        ref List<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> itemCacheContainersNeedCreate)
-                { }
-
-                protected virtual bool DidWillCreateItemCache(
-                        ItemKeyType itemKey,
-                        ItemCacheCreateParamType? itemCacheCreateParam,
-                        out ItemType? item)
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+                protected virtual async Task<List<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>>> DidWillCreateItemsCacheAsync(List<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> itemCacheContainersNeedCreate)
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
                 {
-                        // !!!
-                        item = default;
-                        // !!!
-                        return true;
+                        return itemCacheContainersNeedCreate;
+                }
+
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+                protected virtual async Task<WillCreateItemCacheResult> DidWillCreateItemCacheAsync(
+                        ItemKeyType itemKey,
+                        ItemCacheCreateParamType? itemCacheCreateParam)
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+                {
+                        return new WillCreateItemCacheResult(true, default);
                 }
 
                 protected virtual Task<Task<ItemType?>> DidCreateTaskToCreateItemForItemContainer(
@@ -781,10 +810,12 @@ namespace BaoXia.Utils.Cache
 
                                 if (itemContainer.Item == null)
                                 {
-                                        if (DidWillCreateItemCache(
+                                        var willCreateItemCacheAsyncResult
+                                        = await DidWillCreateItemCacheAsync(
                                                 itemContainer.Key,
-                                                itemCacheCreateParam,
-                                                out var newItem))
+                                                itemCacheCreateParam);
+                                        var newItem = willCreateItemCacheAsyncResult.ItemCreated;
+                                        if (willCreateItemCacheAsyncResult.IsItemCacheCreateContinue)
                                         {
                                                 newItem
                                                 = await this.ToDidCreateItemCacheAsync(
@@ -808,15 +839,17 @@ namespace BaoXia.Utils.Cache
                 }
 
 
-                public virtual ItemType? DidItemCacheUpdated(
+                protected virtual async Task<ItemType?> DidItemCacheUpdatedAsync(
                         ItemKeyType itemKey,
                         ItemType? lastItem,
                         ItemType? currentItem,
                         ItemCacheOperation itemCacheOperation)
                 {
-                        if (this.ToDidItemCacheUpdated != null)
+                        var toDidItemCacheUpdatedAsync
+                                = this.ToDidItemCacheUpdatedAsync;
+                        if (toDidItemCacheUpdatedAsync != null)
                         {
-                                return this.ToDidItemCacheUpdated(
+                                return await toDidItemCacheUpdatedAsync(
                                         itemKey,
                                         lastItem,
                                         currentItem,
@@ -825,7 +858,7 @@ namespace BaoXia.Utils.Cache
                         return currentItem;
                 }
 
-                public virtual async void DidUpdate(
+                protected virtual async void DidUpdateAllItemCache(
                         double noneUpdateSecondsToUpdateItemCache,
                         CancellationToken cancellationToken)
                 {
@@ -859,7 +892,7 @@ namespace BaoXia.Utils.Cache
                         }
                 }
 
-                public virtual void DidClean(
+                protected virtual void DidClean(
                         double noneReadSecondsToRemoveItemCache,
                         CancellationToken cancellationToken)
                 {

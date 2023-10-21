@@ -1,6 +1,7 @@
 ﻿using BaoXia.Utils.Constants;
 using BaoXia.Utils.Extensions;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Cache
@@ -33,14 +34,14 @@ namespace BaoXia.Utils.Cache
                 ////////////////////////////////////////////////
 
                 public AsyncListsCache(
-                    Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateList,
-                    Func<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation, ListItemType[]?>? didListUpdated,
+                    Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
+                    Func<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation, Task<ListItemType[]?>>? didListUpdatedAsync,
                     Func<double>? toDidGetIntervalSecondsToCleanItemCache,
                     Func<double>? toDidGetNoneReadSecondsToRemoveListCache,
                     Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache,
                     Func<int>? toDidGetThreadsCountToCreateItemAsync)
-                    : base(didCreateList,
-                          didListUpdated,
+                    : base(didCreateListAsync,
+                          didListUpdatedAsync,
                           toDidGetIntervalSecondsToCleanItemCache,
                           toDidGetNoneReadSecondsToRemoveListCache,
                           toDidGetNoneUpdateSecondsToUpdateItemCache,
@@ -48,13 +49,13 @@ namespace BaoXia.Utils.Cache
                 { }
 
                 public AsyncListsCache(
-                        Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateList,
-                        Func<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation, ListItemType[]?>? didListUpdated,
+                        Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
+                        Func<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation, Task<ListItemType[]?>>? didListUpdatedAsync,
                         Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
                         Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
                         Func<int>? toDidGetThreadsCountToCreateItemAs = null)
-                        : this(didCreateList,
-                                  didListUpdated,
+                        : this(didCreateListAsync,
+                                  didListUpdatedAsync,
                                   toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
                                   toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
                                   toDidGetNoneUpdateSecondsToUpdateItemCache,
@@ -158,10 +159,10 @@ namespace BaoXia.Utils.Cache
                                 ////////////////////////////////////////////////
                                 // 3/3，触发列表更新事件。
                                 ////////////////////////////////////////////////
-                                var toDidItemCacheUpdated = this.ToDidItemCacheUpdated;
-                                if (toDidItemCacheUpdated != null)
+                                var toDidItemCacheUpdatedAsync = this.ToDidItemCacheUpdatedAsync;
+                                if (toDidItemCacheUpdatedAsync != null)
                                 {
-                                        currentList = toDidItemCacheUpdated(
+                                        currentList = await toDidItemCacheUpdatedAsync(
                                                 listKey,
                                                 lastList,
                                                 currentList,

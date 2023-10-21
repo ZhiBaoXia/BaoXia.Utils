@@ -20,7 +20,7 @@ namespace BaoXia.Utils.Cache
 
                 #region 静态常量
 
-                protected class WillCreateItemCacheResult
+                protected struct WillCreateItemCacheResult
                 {
                         public bool IsItemCacheCreateContinue { get; set; }
                         public ItemType? ItemCreated { get; set; }
@@ -780,22 +780,18 @@ namespace BaoXia.Utils.Cache
                 // @事件节点
                 ////////////////////////////////////////////////
 
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
                 protected virtual async Task<List<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>>> DidWillCreateItemsCacheAsync(List<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> itemCacheContainersNeedCreate)
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
                 {
-                        return itemCacheContainersNeedCreate;
+                        return await Task.FromResult(itemCacheContainersNeedCreate);
                 }
 
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
                 protected virtual async Task<WillCreateItemCacheResult> DidWillCreateItemCacheAsync(
                         ItemKeyType itemKey,
                         ItemCacheCreateParamType? itemCacheCreateParam)
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
                 {
-                        return new WillCreateItemCacheResult(true, default);
+                        return await Task.FromResult(new WillCreateItemCacheResult(true, default));
                 }
-
+                
                 protected virtual Task<Task<ItemType?>> DidCreateTaskToCreateItemForItemContainer(
                         AsyncItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?> itemContainer,
                         ItemCacheCreateParamType? itemCacheCreateParam,

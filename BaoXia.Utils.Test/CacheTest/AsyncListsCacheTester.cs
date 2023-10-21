@@ -26,11 +26,9 @@ namespace BaoXia.Utils.Test.CacheTest
                         {
                                 return await CacheListItem<ListIdType>.CreateItemListAsync(listId);
                         },
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
                         async (listKey, lastList, currentList, listOperation) =>
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
                         {
-                                return currentList;
+                                return await Task.FromResult(currentList);
                         },
                         () => CacheTestConfig.NoneReadSecondsToClearItemCache);
 

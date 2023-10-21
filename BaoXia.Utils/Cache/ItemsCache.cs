@@ -593,7 +593,12 @@ namespace BaoXia.Utils.Cache
                                                                         var toDidCreateItemCache = this.ToDidCreateItemCache;
                                                                         if (toDidCreateItemsCache != null)
                                                                         {
-                                                                                if (DidWillCreateItemsCache(itemContainersNeedCreateItem))
+                                                                                var itemContainersNeedCreateItemCount
+                                                                                        = itemContainersNeedCreateItem.Count;
+                                                                                // !!!
+                                                                                DidWillCreateItemsCache(ref itemContainersNeedCreateItem);
+                                                                                if (itemContainersNeedCreateItem.Count > 0)
+                                                                                // !!!
                                                                                 {
                                                                                         // !!!
                                                                                         toDidCreateItemsCache(itemContainersNeedCreateItem);
@@ -602,7 +607,7 @@ namespace BaoXia.Utils.Cache
                                                                                 // !!!
                                                                                 Interlocked.Add(
                                                                                         ref _itemContainersCountInCreatingItemAsync,
-                                                                                        -1 * itemContainersNeedCreateItem.Count);
+                                                                                        -1 * itemContainersNeedCreateItemCount);
                                                                                 // !!!
                                                                         }
                                                                         else if (toDidCreateItemCache != null)
@@ -743,11 +748,9 @@ namespace BaoXia.Utils.Cache
                 // @事件节点
                 ////////////////////////////////////////////////
 
-                protected virtual bool DidWillCreateItemsCache(
-                        IEnumerable<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> itemCacheContainersNeedCreate)
-                {
-                        return true;
-                }
+                protected virtual void DidWillCreateItemsCache(
+                        ref List<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> itemCacheContainersNeedCreate)
+                { }
 
                 protected virtual bool DidWillCreateItemCache(
                         ItemKeyType itemKey,

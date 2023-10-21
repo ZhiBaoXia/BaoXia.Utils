@@ -140,7 +140,7 @@ namespace BaoXia.Utils.Test
                                 (Time: new DateTime(2023, 10, 19, 4, 30, 0), TestResult: true),
                                 (Time: new DateTime(2023, 10, 19, 4, 30, 1), TestResult: true),
 
-                                (Time: new DateTime(2023, 10, 19, 20, 0, 0), TestResult: true),1
+                                (Time: new DateTime(2023, 10, 19, 20, 0, 0), TestResult: true),
                                 (Time: new DateTime(2023, 10, 19, 23, 29, 59), TestResult: true),
                                 (Time: new DateTime(2023, 10, 19, 23, 30, 0), TestResult: true),
                                 (Time: new DateTime(2023, 10, 20, 1, 0, 0), TestResult: false),

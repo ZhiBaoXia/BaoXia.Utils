@@ -2,30 +2,30 @@
 
 namespace BaoXia.Utils.TestUtils
 {
-	public abstract class TestCaseAsync : TestCase
-	{
+        public abstract class TestCaseAsync : TestCase
+        {
 
-		////////////////////////////////////////////////
-		// @事件节点
-		////////////////////////////////////////////////
+                ////////////////////////////////////////////////
+                // @事件节点
+                ////////////////////////////////////////////////
 
-		#region 事件节点
-		protected abstract Task DidTestAsync();
+                #region 事件节点
+                protected abstract Task DidTestAsync();
 
-		#endregion
+                #endregion
 
 
-		////////////////////////////////////////////////
-		// @实现“TestCase”
-		////////////////////////////////////////////////
+                ////////////////////////////////////////////////
+                // @实现“TestCase”
+                ////////////////////////////////////////////////
 
-		#region 实现“TestCase”
-		protected override void DidTest()
-		{
-			DidTestAsync().Wait();
-		}
+                #region 实现“TestCase”
+                protected override void DidTest()
+                {
+                        DidTestAsync().Wait();
+                }
 
-		#endregion
-	}
+                #endregion
+        }
 }
 

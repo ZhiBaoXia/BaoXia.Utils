@@ -813,7 +813,7 @@ namespace BaoXia.Utils.Cache
                                 }
                         }
                 }
-                public virtual void DidClean(
+                protected virtual void DidClean(
                         double noneReadSecondsToRemoveItemCache,
                         CancellationToken cancellationToken)
                 {

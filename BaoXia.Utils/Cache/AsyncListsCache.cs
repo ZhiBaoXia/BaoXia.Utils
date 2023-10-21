@@ -1,6 +1,9 @@
 ﻿using BaoXia.Utils.Constants;
 using BaoXia.Utils.Extensions;
 using System;
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Cache
@@ -27,20 +30,21 @@ namespace BaoXia.Utils.Cache
                 // @自身属性
                 ////////////////////////////////////////////////
 
+                protected ConcurrentDictionary<ListKeyType, SemaphoreSlim> _listSemaphoreSlims = new ();
 
                 ////////////////////////////////////////////////
                 // @自身实现
                 ////////////////////////////////////////////////
 
                 public AsyncListsCache(
-                    Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateList,
-                    Func<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation, ListItemType[]?>? didListUpdated,
+                    Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
+                    Func<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation, Task<ListItemType[]?>>? didListUpdatedAsync,
                     Func<double>? toDidGetIntervalSecondsToCleanItemCache,
                     Func<double>? toDidGetNoneReadSecondsToRemoveListCache,
                     Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache,
                     Func<int>? toDidGetThreadsCountToCreateItemAsync)
-                    : base(didCreateList,
-                          didListUpdated,
+                    : base(didCreateListAsync,
+                          didListUpdatedAsync,
                           toDidGetIntervalSecondsToCleanItemCache,
                           toDidGetNoneReadSecondsToRemoveListCache,
                           toDidGetNoneUpdateSecondsToUpdateItemCache,
@@ -48,13 +52,13 @@ namespace BaoXia.Utils.Cache
                 { }
 
                 public AsyncListsCache(
-                        Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateList,
-                        Func<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation, ListItemType[]?>? didListUpdated,
+                        Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
+                        Func<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation, Task<ListItemType[]?>>? didListUpdatedAsync,
                         Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
                         Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
                         Func<int>? toDidGetThreadsCountToCreateItemAs = null)
-                        : this(didCreateList,
-                                  didListUpdated,
+                        : this(didCreateListAsync,
+                                  didListUpdatedAsync,
                                   toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
                                   toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
                                   toDidGetNoneUpdateSecondsToUpdateItemCache,
@@ -142,7 +146,13 @@ namespace BaoXia.Utils.Cache
                         ////////////////////////////////////////////////
 
                         ListItemType[]? currentList;
-                        lock (listContainerNeedAddItem)
+                        var listSemaphoreSlim = _listSemaphoreSlims.GetOrAdd(
+                                listKey,
+                                new SemaphoreSlim(1));
+                        // !!!
+                        await listSemaphoreSlim.WaitAsync();
+                        // !!!
+                        try
                         {
                                 currentList = listContainerNeedAddItem.Item;
                                 var lastList = currentList;
@@ -158,10 +168,10 @@ namespace BaoXia.Utils.Cache
                                 ////////////////////////////////////////////////
                                 // 3/3，触发列表更新事件。
                                 ////////////////////////////////////////////////
-                                var toDidItemCacheUpdated = this.ToDidItemCacheUpdated;
-                                if (toDidItemCacheUpdated != null)
+                                var toDidItemCacheUpdatedAsync = this.ToDidItemCacheUpdatedAsync;
+                                if (toDidItemCacheUpdatedAsync != null)
                                 {
-                                        currentList = toDidItemCacheUpdated(
+                                        currentList = await toDidItemCacheUpdatedAsync(
                                                 listKey,
                                                 lastList,
                                                 currentList,
@@ -173,6 +183,12 @@ namespace BaoXia.Utils.Cache
                                         currentList,
                                         createListParam,
                                         isNeedUpdateItemLastReadTime);
+                                // !!!
+                        }
+                        finally
+                        {
+                                // !!!
+                                listSemaphoreSlim.Release();
                                 // !!!
                         }
                         return currentList;
@@ -209,7 +225,13 @@ namespace BaoXia.Utils.Cache
                         ////////////////////////////////////////////////
                         // 2/4，排队更新列表对象（容器）。
                         ////////////////////////////////////////////////
-                        lock (listContainerNeedRemoveItem)
+                        var listSemaphoreSlim = _listSemaphoreSlims.GetOrAdd(
+                                listKey,
+                                new SemaphoreSlim(1));
+                        // !!!
+                        await listSemaphoreSlim.WaitAsync();
+                        // !!!
+                        try
                         {
                                 var currentList = listContainerNeedRemoveItem.Item;
                                 if (currentList != null)
@@ -223,10 +245,10 @@ namespace BaoXia.Utils.Cache
                                         ////////////////////////////////////////////////
                                         // 3/4，触发列表更新事件。
                                         ////////////////////////////////////////////////
-                                        var toDidItemCacheUpdated = this.ToDidItemCacheUpdated;
-                                        if (toDidItemCacheUpdated != null)
+                                        var toDidItemCacheUpdatedAsync = this.ToDidItemCacheUpdatedAsync;
+                                        if (toDidItemCacheUpdatedAsync != null)
                                         {
-                                                currentList = toDidItemCacheUpdated(
+                                                currentList = await toDidItemCacheUpdatedAsync(
                                                         listKey,
                                                         lastList,
                                                         currentList,
@@ -242,6 +264,12 @@ namespace BaoXia.Utils.Cache
                                                 isNeedUpdateItemLastReadTime);
                                 }
                                 return currentList;
+                        }
+                        finally
+                        {
+                                // !!!
+                                listSemaphoreSlim.Release();
+                                // !!!
                         }
                 }
         }

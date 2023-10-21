@@ -3,62 +3,62 @@ using System.Collections.Concurrent;
 
 namespace BaoXia.Utils.Cache
 {
-	public class ObjectPool<ObjectType> where ObjectType : class
-	{
+        public class ObjectPool<ObjectType> where ObjectType : class
+        {
 
-		////////////////////////////////////////////////
-		// @自身属性
-		////////////////////////////////////////////////
+                ////////////////////////////////////////////////
+                // @自身属性
+                ////////////////////////////////////////////////
 
-		#region 自身属性
+                #region 自身属性
 
-		protected ConcurrentQueue<ObjectType> _objects = new();
+                protected ConcurrentQueue<ObjectType> _objects = new();
 
-		public Func<ObjectType> ToGetObject { get; set; }
-
-
-		#endregion
+                public Func<ObjectType> ToGetObject { get; set; }
 
 
+                #endregion
 
-		////////////////////////////////////////////////
-		// @自身实现
-		////////////////////////////////////////////////
 
-		#region 自身实现
 
-		public ObjectPool(Func<ObjectType> toGetObject)
-		{
-			this.ToGetObject = toGetObject;
-		}
+                ////////////////////////////////////////////////
+                // @自身实现
+                ////////////////////////////////////////////////
 
-		public ObjectType GetObject()
-		{
-			if (!_objects.TryDequeue(out var objectItem)
-				|| objectItem == null)
-			{
-				var toGetObject = this.ToGetObject;
-				// !!!
-				objectItem = toGetObject();
-				// !!!
-			}
-			return objectItem;
-		}
+                #region 自身实现
 
-		public ObjectPoolItemContainer<ObjectType> GetObjectToUsing(
-			out ObjectType? objectItem)
-		{
-			// !!!
-			objectItem = this.GetObject();
-			// !!!
-			return new ObjectPoolItemContainer<ObjectType>(this, objectItem);
-		}
+                public ObjectPool(Func<ObjectType> toGetObject)
+                {
+                        this.ToGetObject = toGetObject;
+                }
 
-		public void ReleaseObject(ObjectType objectItem)
-		{
-			_objects.Enqueue(objectItem);
-		}
+                public ObjectType GetObject()
+                {
+                        if (!_objects.TryDequeue(out var objectItem)
+                                || objectItem == null)
+                        {
+                                var toGetObject = this.ToGetObject;
+                                // !!!
+                                objectItem = toGetObject();
+                                // !!!
+                        }
+                        return objectItem;
+                }
 
-		#endregion
-	}
+                public ObjectPoolItemContainer<ObjectType> GetObjectToUsing(
+                        out ObjectType? objectItem)
+                {
+                        // !!!
+                        objectItem = this.GetObject();
+                        // !!!
+                        return new ObjectPoolItemContainer<ObjectType>(this, objectItem);
+                }
+
+                public void ReleaseObject(ObjectType objectItem)
+                {
+                        _objects.Enqueue(objectItem);
+                }
+
+                #endregion
+        }
 }

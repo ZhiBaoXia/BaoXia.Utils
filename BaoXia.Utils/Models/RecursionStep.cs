@@ -2,31 +2,31 @@
 
 namespace BaoXia.Utils.Models
 {
-	class RecursionStep<StepType>
-	{
-		////////////////////////////////////////////////
-		// @自身属性
-		////////////////////////////////////////////////
+        class RecursionStep<StepType>
+        {
+                ////////////////////////////////////////////////
+                // @自身属性
+                ////////////////////////////////////////////////
 
-		public IList<StepType>? Steps { get; set; }
+                public IList<StepType>? Steps { get; set; }
 
-		public int NextStepIndex { get; set; }
+                public int NextStepIndex { get; set; }
 
 
-		////////////////////////////////////////////////
-		// @自身实现
-		////////////////////////////////////////////////
+                ////////////////////////////////////////////////
+                // @自身实现
+                ////////////////////////////////////////////////
 
-		public RecursionStep()
-		{ }
+                public RecursionStep()
+                { }
 
-		public RecursionStep(
-			IList<StepType> steps,
-			int nextStepIndex)
-		{
-			this.Steps = steps;
-			this.NextStepIndex = nextStepIndex;
-		}
+                public RecursionStep(
+                        IList<StepType> steps,
+                        int nextStepIndex)
+                {
+                        this.Steps = steps;
+                        this.NextStepIndex = nextStepIndex;
+                }
 
-	}
+        }
 }

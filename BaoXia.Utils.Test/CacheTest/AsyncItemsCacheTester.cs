@@ -261,10 +261,10 @@ namespace BaoXia.Utils.Test.CacheTest
                                         await _itemsCache.AddAsync(
                                                 itemId,
                                                 new CacheItem<ItemIdType>()
-                                                 {
-                                                         Id = itemId,
-                                                         Title = "元素（" + itemId + "）"
-                                                 });
+                                                {
+                                                        Id = itemId,
+                                                        Title = "元素（" + itemId + "）"
+                                                });
                                         itemIdsAdded.Add(itemId);
                                         ////////////////////////////////////////////////
                                         testRecorder.EndTest();

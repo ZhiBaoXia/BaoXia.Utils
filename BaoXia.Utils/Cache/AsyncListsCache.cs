@@ -2,7 +2,6 @@
 using BaoXia.Utils.Extensions;
 using System;
 using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,7 +29,7 @@ namespace BaoXia.Utils.Cache
                 // @自身属性
                 ////////////////////////////////////////////////
 
-                protected ConcurrentDictionary<ListKeyType, SemaphoreSlim> _listSemaphoreSlims = new ();
+                protected ConcurrentDictionary<ListKeyType, SemaphoreSlim> _listSemaphoreSlims = new();
 
                 ////////////////////////////////////////////////
                 // @自身实现

@@ -31,7 +31,9 @@ namespace BaoXia.Utils.Test.CacheTest
                                 }
                                 return item;
                         },
-                        (listKey, lastList, currentList, listOperation) =>
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+                        async (listKey, lastList, currentList, listOperation) =>
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
                         {
                                 return currentList;
                         },
@@ -70,7 +72,7 @@ namespace BaoXia.Utils.Test.CacheTest
                         var randomForInsert = new System.Random((int)DateTime.Now.Ticks);
                         var testRecorders_Insert = new CacheTestUnitRecorders();
                         Action insertAction = new(
-                           () =>
+                           async () =>
                                 {
                                         var itemId = _toDidCreateItemId();
                                         { }
@@ -79,13 +81,13 @@ namespace BaoXia.Utils.Test.CacheTest
                                         var testRecorder = new CacheTestUnitRecorder("【异步元素缓存】（" + _testName + "）插入测试");
                                         testRecorder.BeginTest(itemId.ToString()!);
                                         ////////////////////////////////////////////////
-                                        _itemsCache.Add(
-                                         itemId,
-                                         new CacheItem<ItemIdType>()
-                                         {
-                                                 Id = itemId,
-                                                 Title = "元素（" + itemId + "）"
-                                         });
+                                        await _itemsCache.AddAsync(
+                                                itemId,
+                                                 new CacheItem<ItemIdType>()
+                                                 {
+                                                         Id = itemId,
+                                                         Title = "元素（" + itemId + "）"
+                                                 });
                                         ////////////////////////////////////////////////
                                         testRecorder.EndTest();
                                         testRecorders_Insert.AddRecorder(testRecorder);
@@ -249,20 +251,20 @@ namespace BaoXia.Utils.Test.CacheTest
                         var randomForInsert = new System.Random((int)DateTime.Now.Ticks);
                         var testRecorders_Insert = new CacheTestUnitRecorders();
                         Action insertAction = new(
-                                () =>
+                                async () =>
                                 {
                                         var itemId = _toDidCreateItemId();
 
                                         var testRecorder = new CacheTestUnitRecorder("【异步元素缓存】（" + _testName + "）“尝试”插入测试");
                                         testRecorder.BeginTest(itemId.ToString()!);
                                         ////////////////////////////////////////////////
-                                        _itemsCache.Add(
-                                         itemId,
-                                         new CacheItem<ItemIdType>()
-                                         {
-                                                 Id = itemId,
-                                                 Title = "元素（" + itemId + "）"
-                                         });
+                                        await _itemsCache.AddAsync(
+                                                itemId,
+                                                new CacheItem<ItemIdType>()
+                                                 {
+                                                         Id = itemId,
+                                                         Title = "元素（" + itemId + "）"
+                                                 });
                                         itemIdsAdded.Add(itemId);
                                         ////////////////////////////////////////////////
                                         testRecorder.EndTest();

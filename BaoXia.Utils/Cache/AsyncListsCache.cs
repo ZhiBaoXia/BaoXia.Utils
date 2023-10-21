@@ -1,6 +1,8 @@
 ﻿using BaoXia.Utils.Constants;
 using BaoXia.Utils.Extensions;
 using System;
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,6 +30,7 @@ namespace BaoXia.Utils.Cache
                 // @自身属性
                 ////////////////////////////////////////////////
 
+                protected ConcurrentDictionary<ListKeyType, SemaphoreSlim> _listSemaphoreSlims = new ();
 
                 ////////////////////////////////////////////////
                 // @自身实现
@@ -143,7 +146,13 @@ namespace BaoXia.Utils.Cache
                         ////////////////////////////////////////////////
 
                         ListItemType[]? currentList;
-                        lock (listContainerNeedAddItem)
+                        var listSemaphoreSlim = _listSemaphoreSlims.GetOrAdd(
+                                listKey,
+                                new SemaphoreSlim(1));
+                        // !!!
+                        await listSemaphoreSlim.WaitAsync();
+                        // !!!
+                        try
                         {
                                 currentList = listContainerNeedAddItem.Item;
                                 var lastList = currentList;
@@ -174,6 +183,12 @@ namespace BaoXia.Utils.Cache
                                         currentList,
                                         createListParam,
                                         isNeedUpdateItemLastReadTime);
+                                // !!!
+                        }
+                        finally
+                        {
+                                // !!!
+                                listSemaphoreSlim.Release();
                                 // !!!
                         }
                         return currentList;
@@ -210,7 +225,13 @@ namespace BaoXia.Utils.Cache
                         ////////////////////////////////////////////////
                         // 2/4，排队更新列表对象（容器）。
                         ////////////////////////////////////////////////
-                        lock (listContainerNeedRemoveItem)
+                        var listSemaphoreSlim = _listSemaphoreSlims.GetOrAdd(
+                                listKey,
+                                new SemaphoreSlim(1));
+                        // !!!
+                        await listSemaphoreSlim.WaitAsync();
+                        // !!!
+                        try
                         {
                                 var currentList = listContainerNeedRemoveItem.Item;
                                 if (currentList != null)
@@ -224,10 +245,10 @@ namespace BaoXia.Utils.Cache
                                         ////////////////////////////////////////////////
                                         // 3/4，触发列表更新事件。
                                         ////////////////////////////////////////////////
-                                        var toDidItemCacheUpdated = this.ToDidItemCacheUpdated;
-                                        if (toDidItemCacheUpdated != null)
+                                        var toDidItemCacheUpdatedAsync = this.ToDidItemCacheUpdatedAsync;
+                                        if (toDidItemCacheUpdatedAsync != null)
                                         {
-                                                currentList = toDidItemCacheUpdated(
+                                                currentList = await toDidItemCacheUpdatedAsync(
                                                         listKey,
                                                         lastList,
                                                         currentList,
@@ -243,6 +264,12 @@ namespace BaoXia.Utils.Cache
                                                 isNeedUpdateItemLastReadTime);
                                 }
                                 return currentList;
+                        }
+                        finally
+                        {
+                                // !!!
+                                listSemaphoreSlim.Release();
+                                // !!!
                         }
                 }
         }

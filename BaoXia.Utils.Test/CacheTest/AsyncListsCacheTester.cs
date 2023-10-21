@@ -26,7 +26,9 @@ namespace BaoXia.Utils.Test.CacheTest
                         {
                                 return await CacheListItem<ListIdType>.CreateItemListAsync(listId);
                         },
-                        (listKey, lastList, currentList, listOperation) =>
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+                        async (listKey, lastList, currentList, listOperation) =>
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
                         {
                                 return currentList;
                         },
@@ -95,8 +97,7 @@ namespace BaoXia.Utils.Test.CacheTest
                         Func<Task> queryFunc = new(
                                 async () =>
                                 {
-                                        ListIdType? listId = default;
-                                        if (!listIds.TryTake(out listId))
+                                        if (!listIds.TryTake(out ListIdType? listId))
                                         {
                                                 listId = _toDidCreateListId();
                                         }

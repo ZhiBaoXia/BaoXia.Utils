@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Cache
 {
-        public class AsyncItemCacheItemContainer<ItemKeyType, ItemType, ItemCacheCreateParamType>
+        public class ItemCacheItemContainerAsync<ItemKeyType, ItemType, ItemCacheCreateParamType>
                 : ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>
                         where ItemKeyType : notnull
         {
@@ -26,7 +26,7 @@ namespace BaoXia.Utils.Cache
                 #region 自身实现
 
 
-                public AsyncItemCacheItemContainer(
+                public ItemCacheItemContainerAsync(
                         ItemKeyType key,
                         ItemType? item,
                         Boolean isItemValid,

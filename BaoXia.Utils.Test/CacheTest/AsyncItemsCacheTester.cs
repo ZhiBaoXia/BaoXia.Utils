@@ -22,7 +22,7 @@ namespace BaoXia.Utils.Test.CacheTest
 
                 protected Func<ItemIdType> _toDidCreateItemId;
 
-                protected readonly AsyncItemsCache<ItemIdType, CacheItem<ItemIdType>, object> _itemsCache = new(
+                protected readonly ItemsCacheAsync<ItemIdType, CacheItem<ItemIdType>, object> _itemsCache = new(
                         async (itemId, _) =>
                         {
                                 var item = await CacheItem<ItemIdType>.CreateItemAsync(itemId);

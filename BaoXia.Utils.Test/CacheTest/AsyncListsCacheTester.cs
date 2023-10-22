@@ -21,7 +21,7 @@ namespace BaoXia.Utils.Test.CacheTest
 
                 protected Func<ListIdType> _toDidCreateListId;
 
-                protected readonly AsyncListsCache<ListIdType, CacheListItem<ListIdType>, object> _listsCache = new(
+                protected readonly ListsCachAsync<ListIdType, CacheListItem<ListIdType>, object> _listsCache = new(
                         async (listId, createListParam) =>
                         {
                                 return await CacheListItem<ListIdType>.CreateItemListAsync(listId);

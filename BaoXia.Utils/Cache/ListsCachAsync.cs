@@ -10,8 +10,8 @@ namespace BaoXia.Utils.Cache
         /// <summary>
         /// 列表缓存。
         /// </summary>
-        public class AsyncListsCache<ListKeyType, ListItemType, CreateListCacheParamType>
-                : AsyncItemsCache<ListKeyType, ListItemType[], CreateListCacheParamType>
+        public class ListsCachAsync<ListKeyType, ListItemType, CreateListCacheParamType>
+                : ItemsCacheAsync<ListKeyType, ListItemType[], CreateListCacheParamType>
                     where ListKeyType : notnull
         {
                 ////////////////////////////////////////////////
@@ -35,7 +35,7 @@ namespace BaoXia.Utils.Cache
                 // @自身实现
                 ////////////////////////////////////////////////
 
-                public AsyncListsCache(
+                public ListsCachAsync(
                     Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
                     Func<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation, Task<ListItemType[]?>>? didListUpdatedAsync,
                     Func<double>? toDidGetIntervalSecondsToCleanItemCache,
@@ -50,7 +50,7 @@ namespace BaoXia.Utils.Cache
                           toDidGetThreadsCountToCreateItemAsync)
                 { }
 
-                public AsyncListsCache(
+                public ListsCachAsync(
                         Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
                         Func<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation, Task<ListItemType[]?>>? didListUpdatedAsync,
                         Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
@@ -148,8 +148,12 @@ namespace BaoXia.Utils.Cache
                         var listSemaphoreSlim = _listSemaphoreSlims.GetOrAdd(
                                 listKey,
                                 new SemaphoreSlim(1));
+			// !!!
+			// !!! ⚠ 同一个线程只能获得一次信号量，                     ⚠
+			// !!! ⚠ 因此，不能在同一个线程中“Wait”多次，           ⚠
+			// !!! ⚠ 后续的“Wait”会因为信号量已经被占用而阻塞。 ⚠
                         // !!!
-                        await listSemaphoreSlim.WaitAsync();
+			await listSemaphoreSlim.WaitAsync();
                         // !!!
                         try
                         {
@@ -227,8 +231,12 @@ namespace BaoXia.Utils.Cache
                         var listSemaphoreSlim = _listSemaphoreSlims.GetOrAdd(
                                 listKey,
                                 new SemaphoreSlim(1));
-                        // !!!
-                        await listSemaphoreSlim.WaitAsync();
+			// !!!
+			// !!! ⚠ 同一个线程只能获得一次信号量，                     ⚠
+			// !!! ⚠ 因此，不能在同一个线程中“Wait”多次，           ⚠
+			// !!! ⚠ 后续的“Wait”会因为信号量已经被占用而阻塞。 ⚠
+			// !!!
+			await listSemaphoreSlim.WaitAsync();
                         // !!!
                         try
                         {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Cache
 {
-        public class AsyncItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType> : IDisposable
+        public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : IDisposable
                 where ItemKeyType : notnull
                 where ItemType : class
         {
@@ -45,7 +45,7 @@ namespace BaoXia.Utils.Cache
 
                 protected readonly ConcurrentDictionary<
                         ItemKeyType,
-                        AsyncItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>>
+                        ItemCacheItemContainerAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?>>
                         _itemContainersCache = new();
 
                 public string? Name { get; set; }
@@ -79,7 +79,7 @@ namespace BaoXia.Utils.Cache
                         }
                 }
 
-                public ICollection<AsyncItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> ValueContainers
+                public ICollection<ItemCacheItemContainerAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> ValueContainers
                 {
                         get
                         {
@@ -303,7 +303,7 @@ namespace BaoXia.Utils.Cache
                 // @自身实现
                 ////////////////////////////////////////////////
 
-                public AsyncItemsCache(
+                public ItemsCacheAsync(
                         Func<ItemKeyType, ItemCacheCreateParamType?, Task<ItemType?>> didCreateItemCacheAsync,
                         Func<ItemKeyType, ItemType?, ItemType?, ItemCacheOperation, Task<ItemType?>>? didItemCacheUpdatedAsync,
                         Func<double>? toDidGetIntervalSecondsToCleanItemCache,
@@ -321,7 +321,7 @@ namespace BaoXia.Utils.Cache
                                 toDidGetThreadsCountToCreateItemAsync);
                 }
 
-                public AsyncItemsCache(
+                public ItemsCacheAsync(
                         Func<ItemKeyType, ItemCacheCreateParamType?, Task<ItemType?>> didCreateItemCache,
                         Func<ItemKeyType, ItemType?, ItemType?, ItemCacheOperation, Task<ItemType?>>? didItemCacheUpdatedAsync,
                         Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
@@ -335,7 +335,7 @@ namespace BaoXia.Utils.Cache
                                   toDidGetThreadsCountToCreateItemAsync)
                 { }
 
-                ~AsyncItemsCache()
+                ~ItemsCacheAsync()
                 {
                         _cancellationTokenSource.Cancel();
                         _itemContainersCache.Clear();
@@ -373,7 +373,7 @@ namespace BaoXia.Utils.Cache
 
                         var now = DateTime.Now;
                         var newItemContainer
-                                = new AsyncItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>(
+                                = new ItemCacheItemContainerAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?>(
                                         itemKey,
                                         itemNeedAdd,
                                         true,
@@ -420,7 +420,7 @@ namespace BaoXia.Utils.Cache
                                 return default;
                         }
 
-                        AsyncItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>?
+                        ItemCacheItemContainerAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?>?
                                 itemContainer = null;
                         if (itemCreateParam == null)
                         {
@@ -546,7 +546,7 @@ namespace BaoXia.Utils.Cache
                                 cancellationToken);
                 }
 
-                protected async Task<AsyncItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>?> TryGetAsync(
+                protected async Task<ItemCacheItemContainerAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?>?> TryGetAsync(
                         ItemKeyType itemCacheKey,
                         bool isNeedTryToCreateItem,
                         bool isNeedCreateItemAsync,
@@ -576,7 +576,7 @@ namespace BaoXia.Utils.Cache
                                 {
                                         var now = DateTime.Now;
                                         itemContainer
-                                                = new AsyncItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>(
+                                                = new ItemCacheItemContainerAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?>(
                                                         itemCacheKey,
                                                         default,
                                                         false,
@@ -724,7 +724,7 @@ namespace BaoXia.Utils.Cache
                         return itemContainer;
                 }
 
-                public async Task<AsyncTryGetItemResult<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> TryGetAsync(
+                public async Task<TryGetItemResultAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?>> TryGetAsync(
                         ItemKeyType itemCacheKey,
                         bool isNeedCreateItemAsync = false,
                         ItemCacheCreateParamType? itemCacheCreateParam = default)
@@ -739,12 +739,12 @@ namespace BaoXia.Utils.Cache
                         if (itemContainer == null
                                 || itemContainer.IsItemValid == false)
                         {
-                                return new AsyncTryGetItemResult<ItemKeyType, ItemType?, ItemCacheCreateParamType?>
+                                return new TryGetItemResultAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?>
                                 {
                                         IsGotSucess = false
                                 };
                         }
-                        return new AsyncTryGetItemResult<ItemKeyType, ItemType?, ItemCacheCreateParamType?>
+                        return new TryGetItemResultAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?>
                         {
                                 IsGotSucess = true,
                                 itemContainer = itemContainer,
@@ -752,7 +752,7 @@ namespace BaoXia.Utils.Cache
                         };
                 }
 
-                public async Task<AsyncItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>?> GetItemContainerAsync(
+                public async Task<ItemCacheItemContainerAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?>?> GetItemContainerAsync(
                         ItemKeyType itemCacheKey,
                         ItemCacheCreateParamType? itemCacheCreateParam)
                 {
@@ -793,7 +793,7 @@ namespace BaoXia.Utils.Cache
                 }
                 
                 protected virtual Task<Task<ItemType?>> DidCreateTaskToCreateItemForItemContainer(
-                        AsyncItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?> itemContainer,
+                        ItemCacheItemContainerAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?> itemContainer,
                         ItemCacheCreateParamType? itemCacheCreateParam,
                         bool isNeedUpdateItemLastReadTime)
                 {

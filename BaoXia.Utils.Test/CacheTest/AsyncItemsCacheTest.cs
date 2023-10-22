@@ -106,7 +106,7 @@ namespace BaoXia.Utils.Test.CacheTest
                 [TestMethod]
                 public void InitializeWithNullTest()
                 {
-                        var itemCache = new AsyncItemsCache<string, object, object>(
+                        var itemCache = new ItemsCacheAsync<string, object, object>(
                                 async (key, _) =>
                                 {
                                         await Task.Delay(1);
@@ -128,7 +128,7 @@ namespace BaoXia.Utils.Test.CacheTest
                 [TestMethod]
                 public async Task AutoRemoveNoneReadCacheItems_AutoRemove()
                 {
-                        var itemsCache = new AsyncItemsCache<int, TestItem, object>(
+                        var itemsCache = new ItemsCacheAsync<int, TestItem, object>(
                                 async (id, _) =>
                                 {
                                         await Task.Delay(0);
@@ -155,7 +155,7 @@ namespace BaoXia.Utils.Test.CacheTest
                 [TestMethod]
                 public async Task AutoRemoveNoneReadCacheItems_AutoUpdateReadTime()
                 {
-                        var itemsCache = new AsyncItemsCache<int, TestItem, object>(
+                        var itemsCache = new ItemsCacheAsync<int, TestItem, object>(
                                 async (id, _) =>
                                 {
                                         await Task.Delay(0);

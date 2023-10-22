@@ -8,7 +8,7 @@ namespace BaoXia.Utils.Cache
         /// <summary>
         /// 实体元素缓存。
         /// </summary>
-        public class AsyncDbSetItemsCache<ItemGroupKeyType, ItemKeyType, ItemType>
+        public class DbSetItemsCacheAsync<ItemGroupKeyType, ItemKeyType, ItemType>
                                                                                                 where ItemGroupKeyType : notnull
                                                                                                 where ItemKeyType : notnull
                                                                                                 where ItemType : class
@@ -17,16 +17,16 @@ namespace BaoXia.Utils.Cache
                 // @自身属性
                 ////////////////////////////////////////////////
 
-                private readonly AsyncListsCache<ItemGroupKeyType, ItemType, DbSet<ItemType>> _itemListsCache;
+                private readonly ListsCachAsync<ItemGroupKeyType, ItemType, DbSet<ItemType>> _itemListsCache;
 
-                private readonly AsyncItemsCache<ItemKeyType, ItemType, DbSet<ItemType>> _itemsCache;
+                private readonly ItemsCacheAsync<ItemKeyType, ItemType, DbSet<ItemType>> _itemsCache;
 
 
                 ////////////////////////////////////////////////
                 // @自身实现
                 ////////////////////////////////////////////////
 
-                public AsyncDbSetItemsCache(
+                public DbSetItemsCacheAsync(
                     Func<ItemGroupKeyType, DbSet<ItemType>?, Task<ItemType[]?>> didCreateItemListCache,
                     Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, ItemCacheOperation, Task<ItemType[]?>> didItemListUpdatedAsync,
                     Func<double>? toDidGetIntervalSecondsToCleanItemListCache,
@@ -49,7 +49,7 @@ namespace BaoXia.Utils.Cache
                             toDidGetNoneReadSecondsToRemoveItemCache);
                 }
 
-                public AsyncDbSetItemsCache(
+                public DbSetItemsCacheAsync(
                     Func<ItemGroupKeyType, DbSet<ItemType>?, Task<ItemType[]?>> didCreateItemListCache,
                     Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, ItemCacheOperation, Task<ItemType[]?>> didItemListUpdatedAsync,
                     //

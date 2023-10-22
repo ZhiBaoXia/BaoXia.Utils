@@ -29,7 +29,7 @@ namespace BaoXia.Utils.Cache
                 // @自身属性
                 ////////////////////////////////////////////////
 
-                protected ConcurrentDictionary<ListKeyType, SemaphoreSlim> _listSemaphoreSlims = new();
+                private ConcurrentDictionary<ListKeyType, SemaphoreSlim> _listSemaphoreSlims = new();
 
                 ////////////////////////////////////////////////
                 // @自身实现

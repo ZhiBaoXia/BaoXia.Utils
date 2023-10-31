@@ -508,6 +508,25 @@ namespace BaoXia.Utils
                         return service;
                 }
 
+                /// <summary>
+                /// 创建一个服务范围容器，并获取必要的服务实例对象。
+                /// </summary>
+                /// <typeparam name="ServiceType">要获取的服务实例对象类型。</typeparam>
+                /// <param name="service">指定服务类型的实例对象。</param>
+                /// <returns>返回服务范围容器，外部应当使用“using”指令即时的释放容器。</returns>
+                public static IServiceScope CreateSopeToGetServiceRequired<ServiceType>(
+                        out ServiceType service)
+                        where ServiceType : notnull
+                {
+                        var scope = CreateServiceScope();
+                        {
+                                // !!!
+                                service = scope!.ServiceProvider.GetRequiredService<ServiceType>();
+                                // !!!
+                        }
+                        return scope;
+                }
+
                 #endregion
         }
 }

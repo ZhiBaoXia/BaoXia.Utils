@@ -12,7 +12,7 @@ namespace BaoXia.Utils.Extensions
 
                 #region 类方法
 
-                public static List<Type> RemoveTypesWithBaseClassSpecified(
+                public static List<Type> RemoveTypesExceptBaseClassSpecified(
                         this List<Type> typeList,
                         Type? baseClassSpecified,
                         Type? baseInterfaceSpecified = null,

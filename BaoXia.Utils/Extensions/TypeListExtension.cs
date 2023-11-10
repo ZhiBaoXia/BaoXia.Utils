@@ -34,7 +34,7 @@ namespace BaoXia.Utils.Extensions
                         {
                                 typeList.NotRemoveIf((type) =>
                                 {
-                                        if (type.IsAssignableFrom(baseInterfaceSpecified))
+                                        if (type.IsAssignableTo(baseInterfaceSpecified))
                                         {
                                                 return true;
                                         }

@@ -148,12 +148,12 @@ namespace BaoXia.Utils.Cache
                         var listSemaphoreSlim = _listSemaphoreSlims.GetOrAdd(
                                 listKey,
                                 new SemaphoreSlim(1));
-			// !!!
-			// !!! ⚠ 同一个线程只能获得一次信号量，                     ⚠
-			// !!! ⚠ 因此，不能在同一个线程中“Wait”多次，           ⚠
-			// !!! ⚠ 后续的“Wait”会因为信号量已经被占用而阻塞。 ⚠
                         // !!!
-			await listSemaphoreSlim.WaitAsync();
+                        // !!! ⚠ 同一个线程只能获得一次信号量，                     ⚠
+                        // !!! ⚠ 因此，不能在同一个线程中“Wait”多次，           ⚠
+                        // !!! ⚠ 后续的“Wait”会因为信号量已经被占用而阻塞。 ⚠
+                        // !!!
+                        await listSemaphoreSlim.WaitAsync();
                         // !!!
                         try
                         {
@@ -231,12 +231,12 @@ namespace BaoXia.Utils.Cache
                         var listSemaphoreSlim = _listSemaphoreSlims.GetOrAdd(
                                 listKey,
                                 new SemaphoreSlim(1));
-			// !!!
-			// !!! ⚠ 同一个线程只能获得一次信号量，                     ⚠
-			// !!! ⚠ 因此，不能在同一个线程中“Wait”多次，           ⚠
-			// !!! ⚠ 后续的“Wait”会因为信号量已经被占用而阻塞。 ⚠
-			// !!!
-			await listSemaphoreSlim.WaitAsync();
+                        // !!!
+                        // !!! ⚠ 同一个线程只能获得一次信号量，                     ⚠
+                        // !!! ⚠ 因此，不能在同一个线程中“Wait”多次，           ⚠
+                        // !!! ⚠ 后续的“Wait”会因为信号量已经被占用而阻塞。 ⚠
+                        // !!!
+                        await listSemaphoreSlim.WaitAsync();
                         // !!!
                         try
                         {

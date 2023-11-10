@@ -363,7 +363,7 @@ namespace BaoXia.Utils.Cache
                                 itemKey,
                                 default,
                                 item,
-                                ItemCacheOperation.Create);
+                                ItemCacheOperation.Add);
                         if (itemNeedAdd == null
                                 && this.IsNullValueValidToCache != true)
                         {
@@ -791,7 +791,7 @@ namespace BaoXia.Utils.Cache
                 {
                         return await Task.FromResult(new WillCreateItemCacheResult(true, default));
                 }
-                
+
                 protected virtual Task<Task<ItemType?>> DidCreateTaskToCreateItemForItemContainer(
                         ItemCacheItemContainerAsync<ItemKeyType, ItemType?, ItemCacheCreateParamType?> itemContainer,
                         ItemCacheCreateParamType? itemCacheCreateParam,

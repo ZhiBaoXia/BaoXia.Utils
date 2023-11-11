@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BaoXia.Utils.Models;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Text;
 
@@ -148,6 +149,28 @@ namespace BaoXia.Utils.Extensions
                                 return request.HttpContext.Connection.RemotePort;
                         }
                         return 0;
+                }
+
+                /// <summary>
+                /// 获取客户端的Ip信息。
+                /// </summary>
+                /// <param name="httpRequest">当前Http请求对象。</param>
+                /// <returns>当前Http请求对象的客户端Ip信息。</returns>
+                public static ClientIpInfo GetClientIpInfo(
+                        this HttpRequest? httpRequest)
+                {
+                        if (httpRequest == null)
+                        {
+                                return new ClientIpInfo();
+                        }
+
+                        var endPointInfo = new ClientIpInfo()
+                        {
+                                IpAddressChain = httpRequest.GetClientConnectionAddressesString(),
+                                IpPortLast = httpRequest.GetClientConnectionPortLast()
+
+                        };
+                        return endPointInfo;
                 }
         }
 }

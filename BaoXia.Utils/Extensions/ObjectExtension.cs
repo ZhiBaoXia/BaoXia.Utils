@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json;
 
@@ -196,13 +197,42 @@ namespace BaoXia.Utils.Extensions
                         return newObject;
                 }
 
-                /// <summary>
-                /// 将当前对象序列化为Json字符串。
-                /// </summary>
-                /// <typeparam name="ObjectType">当前对象类型。</typeparam>
-                /// <param name="item">当前对象。</param>
-                /// <returns>对象序列化产生的Json字符串。</returns>
-                public static string ToJsonString<ObjectType>(
+
+
+		public static ObjectType[] CloneObjectsToArray<ObjectType>(this ICollection<ObjectType> objects)
+			where ObjectType : class, new()
+		{
+			var objectArray = new ObjectType[objects.Count];
+			var objectIndex = 0;
+			foreach (var obj in objects)
+			{
+				if (objectIndex < objectArray.Length)
+				{
+					objectArray[objectIndex] = obj.CloneWithSameProperties();
+				}
+				objectIndex++;
+			}
+			return objectArray;
+		}
+
+		public static List<ObjectType> CloneObjectsToList<ObjectType>(this ICollection<ObjectType> objects)
+			where ObjectType : class, new()
+		{
+			var objectList = new List<ObjectType>();
+			foreach (var obj in objects)
+			{
+				objectList.Add(obj.CloneWithSameProperties());
+			}
+			return objectList;
+		}
+
+		/// <summary>
+		/// 将当前对象序列化为Json字符串。
+		/// </summary>
+		/// <typeparam name="ObjectType">当前对象类型。</typeparam>
+		/// <param name="item">当前对象。</param>
+		/// <returns>对象序列化产生的Json字符串。</returns>
+		public static string ToJsonString<ObjectType>(
                         this ObjectType item,
                         JsonSerializerOptions? jsonSerializerOptions = null)
                 {

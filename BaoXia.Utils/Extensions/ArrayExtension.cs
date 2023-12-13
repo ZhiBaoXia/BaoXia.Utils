@@ -1,595 +1,839 @@
-﻿using System;
+﻿using BaoXia.Utils.Models;
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace BaoXia.Utils.Extensions
+namespace BaoXia.Utils.Extensions;
+
+/// <summary>
+/// 数组扩展类。
+/// </summary>
+public static class ArrayExtension
 {
 	/// <summary>
-	/// 数组扩展类。
+	/// 比较两个数组中的每一个元素是否相等。
 	/// </summary>
-	public static class ArrayExtension
+	/// <typeparam name="ItemType">指定的数组元素类型。</typeparam>
+	/// <param name="items">当前数组对象。</param>
+	/// <param name="anotherItems">另一个数组对象。</param>
+	/// <param name="isNullEqualsNone">另一个数组对象为“null”时，如果当前数组对象没有元素，是否视为相等，默认为“true”。</param>
+	/// <returns>两个数组中的每一个元素都相等时，返回“true”，否则返回“false”。</returns>
+	public static bool IsItemsEqual<ItemType>(
+		this ItemType[] items,
+		ItemType[]? anotherItems,
+		bool isNullEqualsNone = true)
 	{
-		/// <summary>
-		/// 比较两个数组中的每一个元素是否相等。
-		/// </summary>
-		/// <typeparam name="ItemType">指定的数组元素类型。</typeparam>
-		/// <param name="items">当前数组对象。</param>
-		/// <param name="anotherItems">另一个数组对象。</param>
-		/// <param name="isNullEqualsNone">另一个数组对象为“null”时，如果当前数组对象没有元素，是否视为相等，默认为“true”。</param>
-		/// <returns>两个数组中的每一个元素都相等时，返回“true”，否则返回“false”。</returns>
-		public static bool IsItemsEqual<ItemType>(
-			this ItemType[] items,
-			ItemType[]? anotherItems,
-			bool isNullEqualsNone = true)
+		if (anotherItems == null)
 		{
-			if (anotherItems == null)
+			if (items.Length < 1
+				&& isNullEqualsNone == true)
 			{
-				if (items.Length < 1
-					&& isNullEqualsNone == true)
+				return false;
+			}
+			return false;
+		}
+		if (anotherItems.Length != items.Length)
+		{
+			return false;
+		}
+
+		foreach (var item in items)
+		{
+			foreach (var anotherItem in anotherItems)
+			{
+				if (object.Equals(item, anotherItem) == false)
 				{
 					return false;
 				}
-				return false;
 			}
-			if (anotherItems.Length != items.Length)
-			{
-				return false;
-			}
+		}
+		return true;
+	}
 
+	/// <summary>
+	/// 获取目标元素在当前数组中第一次出现的索引值。
+	/// </summary>
+	/// <typeparam name="ItemType">当前数组元素类型。</typeparam>
+	/// <param name="items">当前数组。</param>
+	/// <param name="objectItem">目标元素。</param>
+	/// <returns>返回目标元素在数组中第一次出现的索引值，目标元素不存在时返回“-1”。</returns>
+	public static int IndexOf<ItemType>(
+		this ItemType[] items,
+		ItemType? objectItem)
+	{
+		return Array.IndexOf(items, objectItem);
+	}
+
+	/// <summary>
+	/// 通过在指定位置上插入多个元素，创建新的元素数组。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素类型。</typeparam>
+	/// <param name="items">当前数组。</param>
+	/// <param name="insertItemIndex">要插入元素的索引值。</param>
+	/// <param name="itemNeedInserted">要插入的元素。</param>
+	/// <returns>插入元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
+	public static ItemType[] ArrayByInsertAt<ItemType>(
+		this ItemType[] items,
+		int insertItemIndex,
+		ItemType itemNeedInserted)
+	{
+		if (insertItemIndex < 0
+			|| insertItemIndex > items.Length)
+		{
+			throw new IndexOutOfRangeException();
+		}
+
+		////////////////////////////////////////////////
+
+		var newItems = new ItemType[items.Length + 1];
+		{
+			Array.Copy(
+				items,
+				newItems,
+				insertItemIndex);
+			// !!!
+			newItems[insertItemIndex] = itemNeedInserted;
+			// !!!
+			Array.Copy(
+				items,
+				insertItemIndex,
+				newItems,
+				insertItemIndex + 1,
+				items.Length - insertItemIndex);
+		}
+		return newItems;
+	}
+
+	/// <summary>
+	/// 通过在指定位置上插入多个元素，创建新的元素数组。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素类型。</typeparam>
+	/// <param name="items">当前数组。</param>
+	/// <param name="insertItemIndex">要插入元素的索引值。</param>
+	/// <param name="itemsNeedInserted">要插入的多个元素。</param>
+	/// <returns>插入元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
+	public static ItemType[] ArrayByInsertAt<ItemType>(
+		this ItemType[] items,
+		int insertItemIndex,
+		ICollection<ItemType> itemsNeedInserted)
+	{
+		if (insertItemIndex < 0
+			|| insertItemIndex > items.Length)
+		{
+			throw new IndexOutOfRangeException();
+		}
+
+		////////////////////////////////////////////////
+
+		var itemsNeedInsertedCount = itemsNeedInserted.Count;
+		var newItems = new ItemType[items.Length + itemsNeedInsertedCount];
+		{
+			Array.Copy(
+				items,
+				newItems,
+				insertItemIndex);
+			// !!!
+			var itemInsertIndex = 0;
+			foreach (var itemNeedInserted in itemsNeedInserted)
+			{
+				newItems[insertItemIndex + itemInsertIndex] = itemNeedInserted;
+				itemInsertIndex++;
+			}
+			// !!!
+			Array.Copy(
+				items,
+				insertItemIndex,
+				newItems,
+				insertItemIndex + itemsNeedInsertedCount,
+				items.Length - insertItemIndex);
+		}
+		return newItems;
+	}
+
+	/// <summary>
+	/// 通过在新增多个元素，创建新的元素数组。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素类型。</typeparam>
+	/// <param name="items">当前数组。</param>
+	/// <param name="newItem">要加入的新的对象。</param>
+	/// <returns>新增元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
+	public static ItemType[] ArrayByAdd<ItemType>(
+		this ItemType[] items,
+		ItemType newItem)
+	{
+		return items.ArrayByInsertAt(
+			items.Length,
+			newItem);
+	}
+
+	/// <summary>
+	/// 通过在新增多个元素，创建新的元素数组。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素类型。</typeparam>
+	/// <param name="items">当前数组。</param>
+	/// <param name="newItems">要加入的新的多个对象。</param>
+	/// <returns>新增元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
+	public static ItemType[] ArrayByAdd<ItemType>(
+		this ItemType[] items,
+		ICollection<ItemType> newItems)
+	{
+		return items.ArrayByInsertAt(
+			items.Length,
+			newItems);
+	}
+
+	/// <summary>
+	/// 通过移除指定位置上的元素，创建新的元素数组。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素类型。</typeparam>
+	/// <param name="items">当前数组。</param>
+	/// <param name="removeItemIndex">要移除元素的索引值。</param>
+	/// <returns>移除元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
+	public static ItemType[] ArrayByRemoveAt<ItemType>(
+		this ItemType[] items,
+		int removeItemIndex)
+	{
+		if (removeItemIndex < 0
+			|| removeItemIndex >= items.Length)
+		{
+			throw new IndexOutOfRangeException();
+		}
+
+		var newItems = new ItemType[items.Length - 1];
+		{
+			Array.Copy(
+				items,
+				newItems,
+				removeItemIndex);
+			Array.Copy(
+				items,
+				removeItemIndex + 1,
+				newItems,
+				removeItemIndex,
+				newItems.Length - removeItemIndex);
+		}
+		return newItems;
+	}
+
+
+	/// <summary>
+	/// 通过移除重复元素，创建新的元素数组。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素类型。</typeparam>
+	/// <param name="items">当前数组。</param>
+	/// <param name="objectItem">要删除的目标数组。</param>
+	/// <param name="toIsObjectItem">指定的判断对象是否相同的回调函数。</param>
+	/// <param name="isClearNull">是否清除“null”元素。</param>
+	/// <returns>移除重复元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。</returns>
+	public static ItemType[] ArrayByRemoveFrom<ItemType>(
+		this ItemType[] items,
+		int firstItemIndexNeedRemove,
+		int itemsCountNeedRemove)
+	{
+		if (items.Length < 1)
+		{
+			return items;
+		}
+
+		var endItemIndexNeedRemove
+			= firstItemIndexNeedRemove + itemsCountNeedRemove;
+		var itemList = new List<ItemType>();
+		for (var itemIndex = 0;
+			itemIndex < items.Length;
+			itemIndex++)
+		{
+			var item = items[itemIndex];
+			if (itemIndex < firstItemIndexNeedRemove
+				|| itemIndex >= endItemIndexNeedRemove)
+			{
+				itemList.Add(item);
+			}
+		}
+		return itemList.ToArray();
+	}
+
+	/// <summary>
+	/// 通过移除重复元素，创建新的元素数组。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素类型。</typeparam>
+	/// <param name="items">当前数组。</param>
+	/// <param name="objectItem">要删除的目标数组。</param>
+	/// <param name="toIsObjectItem">指定的判断对象是否相同的回调函数。</param>
+	/// <param name="isClearNull">是否清除“null”元素。</param>
+	/// <returns>移除重复元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。</returns>
+	public static ItemType[] ArrayByRemove<ItemType>(
+		this ItemType[] items,
+		ItemType? objectItem,
+		Func<ItemType, bool>? toIsObjectItem = null,
+		bool isClearNull = true)
+	{
+		if (items.Length < 1)
+		{
+			return items;
+		}
+
+		var itemList = new List<ItemType>();
+		if (toIsObjectItem != null)
+		{
 			foreach (var item in items)
 			{
-				foreach (var anotherItem in anotherItems)
+				if (item != null
+					|| isClearNull == false)
 				{
-					if (object.Equals(item, anotherItem) == false)
+					if (!toIsObjectItem(item))
 					{
-						return false;
+						itemList.Add(item);
 					}
 				}
 			}
-			return true;
 		}
-
-		/// <summary>
-		/// 获取目标元素在当前数组中第一次出现的索引值。
-		/// </summary>
-		/// <typeparam name="ItemType">当前数组元素类型。</typeparam>
-		/// <param name="items">当前数组。</param>
-		/// <param name="objectItem">目标元素。</param>
-		/// <returns>返回目标元素在数组中第一次出现的索引值，目标元素不存在时返回“-1”。</returns>
-		public static int IndexOf<ItemType>(
-			this ItemType[] items,
-			ItemType? objectItem)
+		else
 		{
-			return Array.IndexOf(items, objectItem);
-		}
-
-		/// <summary>
-		/// 通过在指定位置上插入多个元素，创建新的元素数组。
-		/// </summary>
-		/// <typeparam name="ItemType">数组元素类型。</typeparam>
-		/// <param name="items">当前数组。</param>
-		/// <param name="insertItemIndex">要插入元素的索引值。</param>
-		/// <param name="itemNeedInserted">要插入的元素。</param>
-		/// <returns>插入元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
-		public static ItemType[] ArrayByInsertAt<ItemType>(
-			this ItemType[] items,
-			int insertItemIndex,
-			ItemType itemNeedInserted)
-		{
-			if (insertItemIndex < 0
-				|| insertItemIndex > items.Length)
+			foreach (var item in items)
 			{
-				throw new IndexOutOfRangeException();
-			}
-
-			////////////////////////////////////////////////
-
-			var newItems = new ItemType[items.Length + 1];
-			{
-				Array.Copy(
-					items,
-					newItems,
-					insertItemIndex);
-				// !!!
-				newItems[insertItemIndex] = itemNeedInserted;
-				// !!!
-				Array.Copy(
-					items,
-					insertItemIndex,
-					newItems,
-					insertItemIndex + 1,
-					items.Length - insertItemIndex);
-			}
-			return newItems;
-		}
-
-		/// <summary>
-		/// 通过在指定位置上插入多个元素，创建新的元素数组。
-		/// </summary>
-		/// <typeparam name="ItemType">数组元素类型。</typeparam>
-		/// <param name="items">当前数组。</param>
-		/// <param name="insertItemIndex">要插入元素的索引值。</param>
-		/// <param name="itemsNeedInserted">要插入的多个元素。</param>
-		/// <returns>插入元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
-		public static ItemType[] ArrayByInsertAt<ItemType>(
-			this ItemType[] items,
-			int insertItemIndex,
-			ICollection<ItemType> itemsNeedInserted)
-		{
-			if (insertItemIndex < 0
-				|| insertItemIndex > items.Length)
-			{
-				throw new IndexOutOfRangeException();
-			}
-
-			////////////////////////////////////////////////
-
-			var itemsNeedInsertedCount = itemsNeedInserted.Count;
-			var newItems = new ItemType[items.Length + itemsNeedInsertedCount];
-			{
-				Array.Copy(
-					items,
-					newItems,
-					insertItemIndex);
-				// !!!
-				var itemInsertIndex = 0;
-				foreach (var itemNeedInserted in itemsNeedInserted)
+				if (item != null
+					|| isClearNull == false)
 				{
-					newItems[insertItemIndex + itemInsertIndex] = itemNeedInserted;
-					itemInsertIndex++;
-				}
-				// !!!
-				Array.Copy(
-					items,
-					insertItemIndex,
-					newItems,
-					insertItemIndex + itemsNeedInsertedCount,
-					items.Length - insertItemIndex);
-			}
-			return newItems;
-		}
-
-		/// <summary>
-		/// 通过在新增多个元素，创建新的元素数组。
-		/// </summary>
-		/// <typeparam name="ItemType">数组元素类型。</typeparam>
-		/// <param name="items">当前数组。</param>
-		/// <param name="newItem">要加入的新的对象。</param>
-		/// <returns>新增元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
-		public static ItemType[] ArrayByAdd<ItemType>(
-			this ItemType[] items,
-			ItemType newItem)
-		{
-			return items.ArrayByInsertAt(
-				items.Length,
-				newItem);
-		}
-
-		/// <summary>
-		/// 通过在新增多个元素，创建新的元素数组。
-		/// </summary>
-		/// <typeparam name="ItemType">数组元素类型。</typeparam>
-		/// <param name="items">当前数组。</param>
-		/// <param name="newItems">要加入的新的多个对象。</param>
-		/// <returns>新增元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
-		public static ItemType[] ArrayByAdd<ItemType>(
-			this ItemType[] items,
-			ICollection<ItemType> newItems)
-		{
-			return items.ArrayByInsertAt(
-				items.Length,
-				newItems);
-		}
-
-		/// <summary>
-		/// 通过移除指定位置上的元素，创建新的元素数组。
-		/// </summary>
-		/// <typeparam name="ItemType">数组元素类型。</typeparam>
-		/// <param name="items">当前数组。</param>
-		/// <param name="removeItemIndex">要移除元素的索引值。</param>
-		/// <returns>移除元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
-		public static ItemType[] ArrayByRemoveAt<ItemType>(
-			this ItemType[] items,
-			int removeItemIndex)
-		{
-			if (removeItemIndex < 0
-				|| removeItemIndex >= items.Length)
-			{
-				throw new IndexOutOfRangeException();
-			}
-
-			var newItems = new ItemType[items.Length - 1];
-			{
-				Array.Copy(
-					items,
-					newItems,
-					removeItemIndex);
-				Array.Copy(
-					items,
-					removeItemIndex + 1,
-					newItems,
-					removeItemIndex,
-					newItems.Length - removeItemIndex);
-			}
-			return newItems;
-		}
-
-
-		/// <summary>
-		/// 通过移除重复元素，创建新的元素数组。
-		/// </summary>
-		/// <typeparam name="ItemType">数组元素类型。</typeparam>
-		/// <param name="items">当前数组。</param>
-		/// <param name="objectItem">要删除的目标数组。</param>
-		/// <param name="toIsObjectItem">指定的判断对象是否相同的回调函数。</param>
-		/// <param name="isClearNull">是否清除“null”元素。</param>
-		/// <returns>移除重复元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。</returns>
-		public static ItemType[] ArrayByRemoveFrom<ItemType>(
-			this ItemType[] items,
-			int firstItemIndexNeedRemove,
-			int itemsCountNeedRemove)
-		{
-			if (items.Length < 1)
-			{
-				return items;
-			}
-
-			var endItemIndexNeedRemove
-				= firstItemIndexNeedRemove + itemsCountNeedRemove;
-			var itemList = new List<ItemType>();
-			for (var itemIndex = 0;
-				itemIndex < items.Length;
-				itemIndex++)
-			{
-				var item = items[itemIndex];
-				if (itemIndex < firstItemIndexNeedRemove
-					|| itemIndex >= endItemIndexNeedRemove)
-				{
-					itemList.Add(item);
-				}
-			}
-			return itemList.ToArray();
-		}
-
-		/// <summary>
-		/// 通过移除重复元素，创建新的元素数组。
-		/// </summary>
-		/// <typeparam name="ItemType">数组元素类型。</typeparam>
-		/// <param name="items">当前数组。</param>
-		/// <param name="objectItem">要删除的目标数组。</param>
-		/// <param name="toIsObjectItem">指定的判断对象是否相同的回调函数。</param>
-		/// <param name="isClearNull">是否清除“null”元素。</param>
-		/// <returns>移除重复元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。</returns>
-		public static ItemType[] ArrayByRemove<ItemType>(
-			this ItemType[] items,
-			ItemType? objectItem,
-			Func<ItemType, bool>? toIsObjectItem = null,
-			bool isClearNull = true)
-		{
-			if (items.Length < 1)
-			{
-				return items;
-			}
-
-			var itemList = new List<ItemType>();
-			if (toIsObjectItem != null)
-			{
-				foreach (var item in items)
-				{
-					if (item != null
-						|| isClearNull == false)
+					var isItemsEquals = false;
+					if ((item == null && objectItem == null)
+						|| (item != null && item.Equals(objectItem)))
 					{
-						if (!toIsObjectItem(item))
-						{
-							itemList.Add(item);
-						}
+						isItemsEquals = true;
+					}
+					if (!isItemsEquals)
+					{
+						itemList.Add(item);
 					}
 				}
 			}
-			else
-			{
-				foreach (var item in items)
-				{
-					if (item != null
-						|| isClearNull == false)
-					{
-						var isItemsEquals = false;
-						if ((item == null && objectItem == null)
-							|| (item != null && item.Equals(objectItem)))
-						{
-							isItemsEquals = true;
-						}
-						if (!isItemsEquals)
-						{
-							itemList.Add(item);
-						}
-					}
-				}
-			}
-			return itemList.ToArray();
+		}
+		return itemList.ToArray();
+	}
+
+	/// <summary>
+	/// 通过移除重复元素，创建新的元素数组。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素类型。</typeparam>
+	/// <param name="items">当前数组。</param>
+	/// <param name="toIsItemsEquals">指定的判断对象是否相同的回调函数。</param>
+	/// <param name="isClearNull">是否清除“null”元素。</param>
+	/// <returns>移除重复元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。</returns>
+	public static ItemType[] ArrayByRemoveDuplicateItems<ItemType>(
+		this ItemType[] items,
+		Func<ItemType, ItemType, bool>? toIsItemsEquals = null,
+		bool isClearNull = true)
+	{
+		if (items.Length < 1)
+		{
+			return items;
 		}
 
-		/// <summary>
-		/// 通过移除重复元素，创建新的元素数组。
-		/// </summary>
-		/// <typeparam name="ItemType">数组元素类型。</typeparam>
-		/// <param name="items">当前数组。</param>
-		/// <param name="toIsItemsEquals">指定的判断对象是否相同的回调函数。</param>
-		/// <param name="isClearNull">是否清除“null”元素。</param>
-		/// <returns>移除重复元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。</returns>
-		public static ItemType[] ArrayByRemoveDuplicateItems<ItemType>(
-			this ItemType[] items,
-			Func<ItemType, ItemType, bool>? toIsItemsEquals = null,
-			bool isClearNull = true)
+		var itemList = new List<ItemType>();
+		if (toIsItemsEquals != null)
 		{
-			if (items.Length < 1)
+			foreach (var item in items)
 			{
-				return items;
-			}
-
-			var itemList = new List<ItemType>();
-			if (toIsItemsEquals != null)
-			{
-				foreach (var item in items)
+				if (item != null
+					|| isClearNull == false)
 				{
-					if (item != null
-						|| isClearNull == false)
+					var isValidItem = true;
+					for (var itemExistedIndex = itemList.Count - 1;
+						itemExistedIndex >= 0;
+						itemExistedIndex--)
 					{
-						var isValidItem = true;
-						for (var itemExistedIndex = itemList.Count - 1;
-							itemExistedIndex >= 0;
-							itemExistedIndex--)
+						var itemExisted = itemList[itemExistedIndex];
+						if (toIsItemsEquals(item, itemExisted))
 						{
-							var itemExisted = itemList[itemExistedIndex];
-							if (toIsItemsEquals(item, itemExisted))
-							{
-								isValidItem = false;
-							}
+							isValidItem = false;
 						}
-						if (isValidItem)
-						{
-							itemList.Add(item);
-						}
+					}
+					if (isValidItem)
+					{
+						itemList.Add(item);
 					}
 				}
 			}
-			else
-			{
-				foreach (var item in items)
-				{
-					if (item != null
-						|| isClearNull == false)
-					{
-						var isValidItem = true;
-						for (var itemExistedIndex = itemList.Count - 1;
-							itemExistedIndex >= 0;
-							itemExistedIndex--)
-						{
-							var itemExisted = itemList[itemExistedIndex];
-							if ((item == null && itemExisted == null)
-								|| (item != null && item.Equals(itemExisted)))
-							{
-								isValidItem = false;
-							}
-						}
-						if (isValidItem)
-						{
-							itemList.Add(item);
-						}
-					}
-				}
-			}
-			return itemList.ToArray();
 		}
-
-		/// <summary>
-		/// 在指定的数组中，查找目标元素。
-		/// </summary>
-		/// <typeparam name="ItemType">数组元素的类型。</typeparam>
-		/// <param name="items">指定的数组对象。</param>
-		/// <param name="searchRangeBeginIndex">指定查找区域的起始数组索引。</param>
-		/// <param name="searchRangeLength">指定查找区域的长度。</param>
-		/// <param name="toIsObjectItem">判断元素是否为目标元素的函数。</param>
-		/// <param name="objectItemIndex">目标元素在数组中的索引值。</param>
-		/// <returns>如果查找到目标元素，则返回对应的元素，否则返回“default”。</returns>
-		public static ItemType? Find<ItemType>(
-			this ItemType[]? items,
-			int searchRangeBeginIndex,
-			int searchRangeLength,
-			Func<ItemType, int, bool> toIsObjectItem,
-			out int objectItemIndex)
+		else
 		{
-			// !!!
-			objectItemIndex = -1;
-			// !!!
-
-			if (ArrayUtil.IsEmpty(items))
+			foreach (var item in items)
 			{
-				return default;
-			}
-
-			var searchRangeEndIndex = searchRangeBeginIndex + searchRangeLength;
-			for (var itemIndex = searchRangeBeginIndex;
-				itemIndex < searchRangeEndIndex;
-				itemIndex++)
-			{
-				var item = items[itemIndex];
-				if (toIsObjectItem(item, itemIndex))
+				if (item != null
+					|| isClearNull == false)
 				{
-					// !!!
-					objectItemIndex = itemIndex;
-					// !!!
-					return item;
+					var isValidItem = true;
+					for (var itemExistedIndex = itemList.Count - 1;
+						itemExistedIndex >= 0;
+						itemExistedIndex--)
+					{
+						var itemExisted = itemList[itemExistedIndex];
+						if ((item == null && itemExisted == null)
+							|| (item != null && item.Equals(itemExisted)))
+						{
+							isValidItem = false;
+						}
+					}
+					if (isValidItem)
+					{
+						itemList.Add(item);
+					}
 				}
 			}
+		}
+		return itemList.ToArray();
+	}
+
+	/// <summary>
+	/// 在指定的数组中，查找目标元素。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素的类型。</typeparam>
+	/// <param name="items">指定的数组对象。</param>
+	/// <param name="searchRangeBeginIndex">指定查找区域的起始数组索引。</param>
+	/// <param name="searchRangeLength">指定查找区域的长度。</param>
+	/// <param name="toIsObjectItem">判断元素是否为目标元素的函数。</param>
+	/// <param name="objectItemIndex">目标元素在数组中的索引值。</param>
+	/// <returns>如果查找到目标元素，则返回对应的元素，否则返回“default”。</returns>
+	public static ItemType? Find<ItemType>(
+		this ItemType[]? items,
+		int searchRangeBeginIndex,
+		int searchRangeLength,
+		Func<ItemType, int, bool> toIsObjectItem,
+		out int objectItemIndex)
+	{
+		// !!!
+		objectItemIndex = -1;
+		// !!!
+
+		if (ArrayUtil.IsEmpty(items))
+		{
 			return default;
 		}
 
-		/// <summary>
-		/// 在指定的数组中，查找目标元素。
-		/// </summary>
-		/// <typeparam name="ItemType">数组元素的类型。</typeparam>
-		/// <param name="items">指定的数组对象。</param>
-		/// <param name="searchRangeBeginIndex">指定查找区域的起始数组索引。</param>
-		/// <param name="searchRangeLength">指定查找区域的长度。</param>
-		/// <param name="toIsObjectItem">判断元素是否为目标元素的函数。</param>
-		/// <param name="objectItemIndex">目标元素在数组中的索引值。</param>
-		/// <returns>如果查找到目标元素，则返回对应的元素，否则返回“default”。</returns>
-		public static ItemType? Find<ItemType>(
-			this ItemType[]? items,
-			Func<ItemType, int, bool> toIsObjectItem,
-			out int objectItemIndex)
+		var searchRangeEndIndex = searchRangeBeginIndex + searchRangeLength;
+		for (var itemIndex = searchRangeBeginIndex;
+			itemIndex < searchRangeEndIndex;
+			itemIndex++)
 		{
-			// !!!
-			objectItemIndex = -1;
-			// !!!
-
-			if (ArrayUtil.IsEmpty(items))
+			var item = items[itemIndex];
+			if (toIsObjectItem(item, itemIndex))
 			{
-				return default;
+				// !!!
+				objectItemIndex = itemIndex;
+				// !!!
+				return item;
 			}
-
-			return Find(
-				items,
-				0,
-				items.Length,
-				toIsObjectItem,
-				out objectItemIndex);
 		}
+		return default;
+	}
 
-		/// <summary>
-		/// 使用二分法查找目标元素在列表中的索引值。
-		/// </summary>
-		/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
-		/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
-		/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
-		/// <param name="searchRangeEndIndex">结束查找的对象索引值。</param>
-		/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
-		/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
-		public static int FindItemIndexWithDichotomyInRange<ItemType>(
-			this ItemType[]? itemsSorted,
-			int searchRangeBeginIndex,
-			int searchRangeLength,
-			Func<ItemType, int> toComparerToObjectItemWith)
+	/// <summary>
+	/// 在指定的数组中，查找目标元素。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素的类型。</typeparam>
+	/// <param name="items">指定的数组对象。</param>
+	/// <param name="searchRangeBeginIndex">指定查找区域的起始数组索引。</param>
+	/// <param name="searchRangeLength">指定查找区域的长度。</param>
+	/// <param name="toIsObjectItem">判断元素是否为目标元素的函数。</param>
+	/// <param name="objectItemIndex">目标元素在数组中的索引值。</param>
+	/// <returns>如果查找到目标元素，则返回对应的元素，否则返回“default”。</returns>
+	public static ItemType? Find<ItemType>(
+		this ItemType[]? items,
+		Func<ItemType, int, bool> toIsObjectItem,
+		out int objectItemIndex)
+	{
+		// !!!
+		objectItemIndex = -1;
+		// !!!
+
+		if (ArrayUtil.IsEmpty(items))
 		{
-			if (itemsSorted == null
-				|| itemsSorted.Length < 1)
-			{
-				return -1;
-			}
-
-			var items = itemsSorted;
-			var itemsCount = items.Length;
-			if (searchRangeBeginIndex < 0)
-			{
-				searchRangeBeginIndex = 0;
-			}
-			var searchRangeEndIndex = searchRangeBeginIndex + searchRangeLength;
-			if (searchRangeEndIndex < 0
-				|| searchRangeEndIndex > itemsCount)
-			{
-				searchRangeEndIndex = itemsCount;
-			}
-
-
-			var objectItemIndexMatched = -1;
-			while (searchRangeEndIndex > searchRangeBeginIndex)
-			{
-				searchRangeLength
-					= searchRangeEndIndex - searchRangeBeginIndex;
-				var searchShotIndex
-					= searchRangeBeginIndex
-					+ searchRangeLength / 2;
-
-				var item = items[searchShotIndex];
-				var resultOfComparerItemToObjectItem = toComparerToObjectItemWith(item);
-				if (resultOfComparerItemToObjectItem == 0)
-				{
-					// !!!
-					objectItemIndexMatched = searchShotIndex;
-					// !!!
-					break;
-				}
-				else if (searchRangeLength == 1)
-				{
-					break;
-				}
-				else if (resultOfComparerItemToObjectItem < 0)
-				{
-					searchRangeBeginIndex = searchShotIndex;
-					// searchRangeEndIndex = searchRangeEndIndex;
-				}
-				else if (resultOfComparerItemToObjectItem > 0)
-				{
-					// searchRangeBeginIndex = searchRangeBeginIndex;
-					searchRangeEndIndex = searchShotIndex;
-				}
-			}
-			return objectItemIndexMatched;
-		}
-
-		/// <summary>
-		/// 使用二分法查找目标元素在列表中的索引值。
-		/// </summary>
-		/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
-		/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
-		/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
-		/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
-		public static int FindItemIndexWithDichotomy<ItemType>(
-			this ItemType[]? itemsSorted,
-			Func<ItemType, int> toComparerToObjectItemWith)
-		{
-			return ArrayExtension.FindItemIndexWithDichotomyInRange<ItemType>(
-				itemsSorted,
-				-1,
-				-1,
-				toComparerToObjectItemWith);
-		}
-
-		/// <summary>
-		/// 使用二分法查找目标元素在列表中的索引值。
-		/// </summary>
-		/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
-		/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
-		/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
-		/// <param name="searchRangeEndIndex">结束查找的对象索引值。</param>
-		/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
-		/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
-		public static ItemType? FindItemWithDichotomyInRange<ItemType>(
-			this ItemType[]? itemsSorted,
-			int searchRangeBeginIndex,
-			int searchRangeEndIndex,
-			Func<ItemType, int> toComparerToObjectItemWith)
-		{
-			var itemIndex = ArrayExtension.FindItemIndexWithDichotomyInRange(
-				itemsSorted,
-				searchRangeBeginIndex,
-				searchRangeEndIndex,
-				toComparerToObjectItemWith);
-			if (itemsSorted != null
-				&& itemIndex >= 0
-			       && itemIndex < itemsSorted.Length)
-			{
-				return itemsSorted[itemIndex];
-			}
 			return default;
 		}
 
-		/// <summary>
-		/// 使用二分法查找目标元素。
-		/// </summary>
-		/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
-		/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
-		/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
-		/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
-		public static ItemType? FindItemWithDichotomy<ItemType>(
-			this ItemType[]? itemsSorted,
-			Func<ItemType, int> toComparerToObjectItemWith)
+		return Find(
+			items,
+			0,
+			items.Length,
+			toIsObjectItem,
+			out objectItemIndex);
+	}
+
+	/// <summary>
+	/// 使用二分法查找目标元素在列表中的索引值。
+	/// </summary>
+	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
+	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
+	/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
+	/// <param name="searchRangeEndIndex">结束查找的对象索引值。</param>
+	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
+	public static int FindItemIndexWithDichotomyInRange<ItemType>(
+		this ItemType[]? itemsSorted,
+		int searchRangeBeginIndex,
+		int searchRangeLength,
+		Func<ItemType, int> toComparerToObjectItemWith)
+	{
+		if (itemsSorted == null
+			|| itemsSorted.Length < 1)
 		{
-			return ArrayExtension.FindItemWithDichotomyInRange<ItemType>(
-				itemsSorted,
-				-1,
-				-1,
-				toComparerToObjectItemWith);
+			return -1;
 		}
+
+		var items = itemsSorted;
+		var itemsCount = items.Length;
+		if (searchRangeBeginIndex < 0)
+		{
+			searchRangeBeginIndex = 0;
+		}
+		var searchRangeEndIndex = searchRangeBeginIndex + searchRangeLength;
+		if (searchRangeEndIndex < 0
+			|| searchRangeEndIndex > itemsCount)
+		{
+			searchRangeEndIndex = itemsCount;
+		}
+
+
+		var objectItemIndexMatched = -1;
+		while (searchRangeEndIndex > searchRangeBeginIndex)
+		{
+			searchRangeLength
+				= searchRangeEndIndex - searchRangeBeginIndex;
+			var searchShotIndex
+				= searchRangeBeginIndex
+				+ searchRangeLength / 2;
+
+			var item = items[searchShotIndex];
+			var resultOfComparerItemToObjectItem = toComparerToObjectItemWith(item);
+			if (resultOfComparerItemToObjectItem == 0)
+			{
+				// !!!
+				objectItemIndexMatched = searchShotIndex;
+				// !!!
+				break;
+			}
+			else if (searchRangeLength == 1)
+			{
+				break;
+			}
+			else if (resultOfComparerItemToObjectItem < 0)
+			{
+				searchRangeBeginIndex = searchShotIndex;
+				// searchRangeEndIndex = searchRangeEndIndex;
+			}
+			else if (resultOfComparerItemToObjectItem > 0)
+			{
+				// searchRangeBeginIndex = searchRangeBeginIndex;
+				searchRangeEndIndex = searchShotIndex;
+			}
+		}
+		return objectItemIndexMatched;
+	}
+
+	/// <summary>
+	/// 使用二分法查找目标元素在列表中的索引值。
+	/// </summary>
+	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
+	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
+	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
+	public static int FindItemIndexWithDichotomy<ItemType>(
+		this ItemType[]? itemsSorted,
+		Func<ItemType, int> toComparerToObjectItemWith)
+	{
+		return ArrayExtension.FindItemIndexWithDichotomyInRange<ItemType>(
+			itemsSorted,
+			-1,
+			-1,
+			toComparerToObjectItemWith);
+	}
+
+	/// <summary>
+	/// 使用二分法查找目标元素在列表中的索引值。
+	/// </summary>
+	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
+	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
+	/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
+	/// <param name="searchRangeEndIndex">结束查找的对象索引值。</param>
+	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
+	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
+		this ItemType[]? itemsSorted,
+		int searchRangeBeginIndex,
+		int searchRangeEndIndex,
+		Func<ItemType, int> toComparerToObjectItemWith)
+	{
+		var itemIndex = ArrayExtension.FindItemIndexWithDichotomyInRange(
+			itemsSorted,
+			searchRangeBeginIndex,
+			searchRangeEndIndex,
+			toComparerToObjectItemWith);
+		if (itemsSorted != null
+			&& itemIndex >= 0
+		       && itemIndex < itemsSorted.Length)
+		{
+			return itemsSorted[itemIndex];
+		}
+		return default;
+	}
+
+	/// <summary>
+	/// 使用二分法查找目标元素。
+	/// </summary>
+	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
+	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
+	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
+	public static ItemType? FindItemWithDichotomy<ItemType>(
+		this ItemType[]? itemsSorted,
+		Func<ItemType, int> toComparerToObjectItemWith)
+	{
+		return ArrayExtension.FindItemWithDichotomyInRange<ItemType>(
+			itemsSorted,
+			-1,
+			-1,
+			toComparerToObjectItemWith);
+	}
+
+
+	public static async Task<ItemSearchResult<ItemType>?> SearchAsync<ItemType>(
+	    this ItemType[] items,
+	    //
+	    int searchTasksCount,
+	    Func<ItemType, double>? toGetItemSearchMatchedProgress,
+	    Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
+	    //
+	    int pageIndex,
+	    int pageSize)
+	{
+		var itemsCount = items.Length;
+		if (itemsCount < 1)
+		{
+			return null;
+		}
+
+		var itemPageBeginItemIndex = pageIndex * pageSize;
+		if (itemPageBeginItemIndex < 0)
+		{
+			itemPageBeginItemIndex = 0;
+		}
+		var itemPageEndItemIndex = itemPageBeginItemIndex + pageSize;
+		if (itemPageEndItemIndex > itemsCount)
+		{
+			itemPageEndItemIndex = itemsCount;
+		}
+		if (itemPageBeginItemIndex >= itemsCount
+		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
+		{
+			return null;
+		}
+
+		////////////////////////////////////////////////
+		// 1/，不需要搜索匹配和排序时，直接按有效的分页索引返回实体。
+		////////////////////////////////////////////////
+
+		List<ItemType> itemsSearchedInPage;
+		if (toGetItemSearchMatchedProgress == null
+		&& toSortItemSearchMatchInfes == null)
+		{
+
+			itemsSearchedInPage = new List<ItemType>();
+			var itemIndex = 0;
+			foreach (var item in items)
+			{
+				if (itemIndex < itemPageBeginItemIndex)
+				{
+					itemIndex++;
+					continue;
+				}
+				if (itemIndex >= itemPageEndItemIndex)
+				{
+					break;
+				}
+				// !!!
+				itemsSearchedInPage.Add(item);
+				itemIndex++;
+				// !!!
+			}
+			//
+			return new(items.Length, itemsSearchedInPage);
+			//
+		}
+
+		////////////////////////////////////////////////
+		// 2/，创建元素的搜索匹配信息。
+		////////////////////////////////////////////////
+
+		List<ItemSearchMatchInfo<ItemType>> itemSearchMatchInfes = new();
+		if (toGetItemSearchMatchedProgress == null)
+		{
+			foreach (var item in items)
+			{
+				itemSearchMatchInfes.Add(new(item, 0));
+			}
+		}
+		else
+		{
+			var itemCreateItemSearchMatchInfoIndex = -1;
+			var tasksToCreateItemSearchMatchInfes = new List<Task>();
+			for (var taskIndexToCreateItemSearchMatchInfes = 0;
+			    taskIndexToCreateItemSearchMatchInfes < searchTasksCount;
+			    taskIndexToCreateItemSearchMatchInfes++)
+			{
+				tasksToCreateItemSearchMatchInfes.Add(Task.Run(() =>
+				{
+					for (var itemIndex = Interlocked.Increment(ref itemCreateItemSearchMatchInfoIndex);
+					itemIndex < items.Length;
+					itemIndex = Interlocked.Increment(ref itemCreateItemSearchMatchInfoIndex))
+					{
+						var item = items[itemIndex];
+						var itemSearchMatchedProgress = toGetItemSearchMatchedProgress(item);
+						if (itemSearchMatchedProgress <= 0)
+						{
+							continue;
+						}
+						lock (itemSearchMatchInfes)
+						{
+							itemSearchMatchInfes.Add(new(
+					    item,
+					    itemSearchMatchedProgress));
+						}
+					}
+				}));
+			}
+			// !!!
+			await Task.WhenAll(tasksToCreateItemSearchMatchInfes);
+			// !!!
+		}
+		var itemSearchMatchInfesCount = itemSearchMatchInfes.Count;
+		if (itemPageEndItemIndex > itemSearchMatchInfesCount)
+		{
+			itemPageEndItemIndex = itemSearchMatchInfesCount;
+		}
+		if (itemPageBeginItemIndex >= itemSearchMatchInfesCount
+		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
+		{
+			return null;
+		}
+
+
+		////////////////////////////////////////////////
+		// 3/，根据搜索匹配信息排序元素。
+		////////////////////////////////////////////////
+		if (toSortItemSearchMatchInfes != null)
+		{
+			itemSearchMatchInfes
+			    = toSortItemSearchMatchInfes.Invoke(itemSearchMatchInfes);
+		}
+		else
+		{
+			itemSearchMatchInfes.Sort((
+			    searchMatchInfoA,
+			    searchMatchInfoB) =>
+			{
+				return searchMatchInfoB.MatchedProgress.CompareTo(
+			searchMatchInfoA.MatchedProgress);
+			});
+		}
+
+		////////////////////////////////////////////////
+		// 4/，根据搜索、排序后的结果进行分页。
+		////////////////////////////////////////////////
+		itemsSearchedInPage = new List<ItemType>();
+		for (var itemIndex = itemPageBeginItemIndex;
+		    itemIndex < itemPageEndItemIndex;
+		    itemIndex++)
+		{
+			var itemSearchMatchInfo = itemSearchMatchInfes[itemIndex];
+			// !!!
+			itemsSearchedInPage.Add(itemSearchMatchInfo.Item);
+			// !!!
+		}
+		//
+		return new(itemSearchMatchInfes.Count, itemsSearchedInPage);
+		//
+	}
+
+	public static List<ItemType> GetPageItems<ItemType>(
+	    this ItemType[] items,
+	    //
+	    Func<List<ItemType>, List<ItemType>>? toSortItems,
+	    //
+	    int pageIndex,
+	    int pageSize)
+	{
+		int itemsCount = items.Length;
+		if (itemsCount < 1)
+		{
+			return new List<ItemType>();
+		}
+
+		var itemPageBeginItemIndex = pageIndex * pageSize;
+		if (itemPageBeginItemIndex < 0)
+		{
+			itemPageBeginItemIndex = 0;
+		}
+		var itemPageEndItemIndex = itemPageBeginItemIndex + pageSize;
+		if (itemPageEndItemIndex > itemsCount)
+		{
+			itemPageEndItemIndex = itemsCount;
+		}
+		if (itemPageBeginItemIndex >= itemsCount
+		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
+		{
+			return new List<ItemType>();
+		}
+
+		////////////////////////////////////////////////
+		// 1/，不需要搜索匹配和排序时，直接按有效的分页索引返回实体。
+		////////////////////////////////////////////////
+
+		List<ItemType> pageItems;
+		if (toSortItems == null)
+		{
+			pageItems = new List<ItemType>();
+			var itemIndex = 0;
+			foreach (var item in items)
+			{
+				if (itemIndex < itemPageBeginItemIndex)
+				{
+					itemIndex++;
+					continue;
+				}
+				if (itemIndex >= itemPageEndItemIndex)
+				{
+					break;
+				}
+				// !!!
+				pageItems.Add(item);
+				itemIndex++;
+				// !!!
+			}
+			return pageItems;
+		}
+
+		////////////////////////////////////////////////
+		// 2/，根据搜索匹配信息排序元素。
+		////////////////////////////////////////////////
+		var itemList = new List<ItemType>(items);
+		if (toSortItems != null)
+		{
+			itemList = toSortItems(itemList);
+		}
+
+		////////////////////////////////////////////////
+		// 3/，根据搜索、排序后的结果进行分页。
+		////////////////////////////////////////////////
+		pageItems = new List<ItemType>();
+		for (var itemIndex = itemPageBeginItemIndex;
+		    itemIndex < itemPageEndItemIndex;
+		    itemIndex++)
+		{
+			var item = itemList[itemIndex];
+			// !!!
+			pageItems.Add(item);
+			// !!!
+		}
+		return pageItems;
 	}
 }

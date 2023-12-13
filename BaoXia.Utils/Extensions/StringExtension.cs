@@ -420,6 +420,23 @@ namespace BaoXia.Utils.Extensions
 			return keysCount;
 		}
 
+
+		/// <summary>
+		/// 不区分大小写的获取指定字符串在当前字符串中出现的次数。
+		/// </summary>
+		/// <param name="str">当前字符串。</param>
+		/// <param name="key">要查找的字符串。</param>
+		/// <returns>指定字符串在当前字符串中出现的次数，类型为：int。</returns>
+		public static int CountOfStringIgnoreCase(
+		    this string? str,
+		    string? key)
+		{
+			return CountOfString(
+				str,
+				key,
+				StringComparison.OrdinalIgnoreCase);
+		}
+
 		/// <summary>
 		/// 返回指定字符串左侧指定长度的内容。
 		/// </summary>

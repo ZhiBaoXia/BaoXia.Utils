@@ -273,6 +273,20 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 
 		}
 
+
+		[TestMethod]
+		public void GetPropertyNameWithPropertyValueTest()
+		{
+			var testObject = new ClassA();
+			{
+				testObject.StringProperty = "Abc";
+			}
+			var nameOfProperty = testObject.GetPropertyNameWithPropertyValue(testObject.StringProperty);
+			{
+				Assert.IsTrue(nameof(ClassA.StringProperty) == nameOfProperty);
+			}
+		}
+
 		[TestMethod]
 		public void SetPropertiesWithSameNameFromTest()
 		{

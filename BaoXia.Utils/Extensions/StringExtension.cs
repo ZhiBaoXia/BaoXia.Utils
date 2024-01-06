@@ -420,7 +420,6 @@ namespace BaoXia.Utils.Extensions
 			return keysCount;
 		}
 
-
 		/// <summary>
 		/// 不区分大小写的获取指定字符串在当前字符串中出现的次数。
 		/// </summary>
@@ -435,6 +434,38 @@ namespace BaoXia.Utils.Extensions
 				str,
 				key,
 				StringComparison.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
+		/// 获得指定匹配字符串，在当前字符串中的匹配进度值。
+		/// </summary>
+		/// <param name="str">当前字符串。</param>
+		/// <param name="matchValue">指定的匹配字符串。</param>
+		/// <param name="comparisonType">查找字符串时的比较参数，默认为“StringComparison.OrdinalIgnoreCase”。</param>
+		/// <returns>指定匹配字符串，在当前字符串中的匹配进度值，范围：0.0 - 1.0 。</returns>
+		public static double GetMatchProgressValueOf(
+			this string? str,
+			string? matchValue,
+			StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+		{
+			if (string.IsNullOrEmpty(str)
+			    || string.IsNullOrEmpty(matchValue))
+			{
+				return 0.0;
+			}
+
+			var searchKeysCount = str.CountOfString(
+			    matchValue,
+			    comparisonType);
+			if (searchKeysCount < 0)
+			{
+				return 0;
+			}
+			var matchedProgressValue
+			= (double)(matchValue.Length * searchKeysCount)
+			/ str.Length;
+			{ }
+			return matchedProgressValue;
 		}
 
 		/// <summary>
@@ -825,39 +856,40 @@ namespace BaoXia.Utils.Extensions
 		/// </summary>
 		/// <param name="intArray">原始的整数数值数组。</param>
 		/// <param name="spliter">创建字符串时使用的数值分隔符，默认为“,”。</param>
+		/// <param name="numberFormat">指定的数字字符串格式字符串。</param>
 		/// <returns>整型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
-		public static string StringWithInts(IEnumerable<int> intArray, string? spliter = ",")
+		public static string StringWithInts(
+			IEnumerable<int>? intArray,
+			string? spliter = ",",
+			string? numberFormat = null)
 		{
-			string str = string.Empty;
+			if (EnumerableUtil.IsEmpty(intArray))
+			{
+				return string.Empty;
+			}
+
+			var stringBuilder = new StringBuilder();
 			if (spliter?.Length > 0)
 			{
 				foreach (var intValue in intArray)
 				{
-					if (str.Length < 1)
+					if (stringBuilder.Length > 0)
 					{
-						str = intValue.ToString();
+						stringBuilder.Append(spliter);
 					}
-					else
-					{
-						str += spliter + intValue.ToString();
-					}
+					stringBuilder.Append(intValue.ToString(numberFormat));
 				}
 			}
 			else
 			{
 				foreach (var intValue in intArray)
 				{
-					if (str.Length < 1)
-					{
-						str = intValue.ToString();
-					}
-					else
-					{
-						str += intValue.ToString();
-					}
+					stringBuilder.Append(intValue.ToString(numberFormat));
 				}
 			}
-			return str;
+			var nubmersString = stringBuilder.ToString();
+			{ }
+			return nubmersString;
 		}
 
 		/// <summary>
@@ -887,7 +919,9 @@ namespace BaoXia.Utils.Extensions
 					var section = sections[sectionIndex];
 					try
 					{
-						intValues[sectionIndex] = int.Parse(section.Trim());
+						int.TryParse(section.Trim(), out var number);
+						{ }
+						intValues[sectionIndex] = number;
 					}
 					catch
 					{
@@ -898,65 +932,67 @@ namespace BaoXia.Utils.Extensions
 			return intValues;
 		}
 
+
 		/// <summary>
-		/// 由浮点型数值数组，创建字符串，如：由“[1.0, 2.0, 3.0]”，创建字符串“1.0,2.0,3.0”。
+		/// 由整型数值数组，创建字符串，如：由“[1, 2, 3]”，创建字符串“1,2,3”。
 		/// </summary>
-		/// <param name="doubleArray">原始的整数数值数组。</param>
+		/// <param name="longArray">原始的整数数值数组。</param>
 		/// <param name="spliter">创建字符串时使用的数值分隔符，默认为“,”。</param>
-		/// <returns>浮点型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
-		public static string StringWithDoubles(IEnumerable<double> doubleArray, string? spliter = ",")
+		/// <param name="numberFormat">指定的数字字符串格式字符串。</param>
+		/// <returns>整型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
+		public static string StringWithLongs(
+			IEnumerable<long>? longArray,
+			string? spliter = ",",
+			string? numberFormat = null)
 		{
-			string str = String.Empty;
+			if (EnumerableUtil.IsEmpty(longArray))
+			{
+				return string.Empty;
+			}
+
+			var stringBuilder = new StringBuilder();
 			if (spliter?.Length > 0)
 			{
-				foreach (var doubleValue in doubleArray)
+				foreach (var longValue in longArray)
 				{
-					if (str.Length < 1)
+					if (stringBuilder.Length > 0)
 					{
-						str = doubleValue.ToString();
+						stringBuilder.Append(spliter);
 					}
-					else
-					{
-						str += spliter + doubleValue.ToString();
-					}
+					stringBuilder.Append(longValue.ToString(numberFormat));
 				}
 			}
 			else
 			{
-				foreach (var doubleValue in doubleArray)
+				foreach (var longValue in longArray)
 				{
-					if (str.Length < 1)
-					{
-						str = doubleValue.ToString();
-					}
-					else
-					{
-						str += doubleValue.ToString();
-					}
+					stringBuilder.Append(longValue.ToString(numberFormat));
 				}
 			}
-			return str;
+			var nubmersString = stringBuilder.ToString();
+			{ }
+			return nubmersString;
 		}
 
 		/// <summary>
-		/// 由当前字符串，拆解成浮点数数值数组。
+		/// 由当前字符串，拆解成整型数值数组。
 		/// </summary>
 		/// <param name="str">当前字符串。</param>
 		/// <param name="spliter">字符串中的分隔符。</param>
 		/// <param name="splitOptions">字符串分隔选项。</param>
-		/// <returns>有拆解字符串得出的浮点数数值数组，当字符串为空或非数字时，会转为“0.0”。</returns>
-		public static double[] ToDoubleArray(
+		/// <returns>有拆解字符串得出的整型数值数组，当字符串为空或非数字时，会转为“0”。</returns>
+		public static long[] ToLongArray(
 			this string? str,
 			string spliter = ",",
 			StringSplitOptions splitOptions = StringSplitOptions.None)
 		{
 			if (string.IsNullOrEmpty(str))
 			{
-				return Array.Empty<double>();
+				return Array.Empty<long>();
 			}
 
 			var sections = str.Split(new string[] { spliter }, splitOptions);
-			var doubleValues = new double[sections.Length];
+			var longValues = new long[sections.Length];
 			{
 				for (var sectionIndex = 0;
 				    sectionIndex < sections.Length;
@@ -965,57 +1001,59 @@ namespace BaoXia.Utils.Extensions
 					var section = sections[sectionIndex];
 					try
 					{
-						doubleValues[sectionIndex] = double.Parse(section.Trim());
+						long.TryParse(section.Trim(), out var number);
+						{ }
+						longValues[sectionIndex] = number;
 					}
 					catch
 					{
-						doubleValues[sectionIndex] = 0;
+						longValues[sectionIndex] = 0;
 					}
 				}
 			}
-			return doubleValues;
+			return longValues;
 		}
+
 
 		/// <summary>
 		/// 由浮点型数值数组，创建字符串，如：由“[1.0, 2.0, 3.0]”，创建字符串“1.0,2.0,3.0”。
 		/// </summary>
 		/// <param name="floatArray">原始的整数数值数组。</param>
 		/// <param name="spliter">创建字符串时使用的数值分隔符，默认为“,”。</param>
+		/// <param name="numberFormat">指定的数字字符串格式字符串。</param>
 		/// <returns>浮点型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
 		public static string StringWithFloats(
 			IEnumerable<float> floatArray,
-			string? spliter = ",")
+			string? spliter = ",",
+			string? numberFormat = null)
 		{
-			string str = string.Empty;
+			if (EnumerableUtil.IsEmpty(floatArray))
+			{
+				return string.Empty;
+			}
+
+			var stringBuilder = new StringBuilder();
 			if (spliter?.Length > 0)
 			{
 				foreach (var floatValue in floatArray)
 				{
-					if (str.Length < 1)
+					if (stringBuilder.Length > 0)
 					{
-						str = floatValue.ToString();
+						stringBuilder.Append(spliter);
 					}
-					else
-					{
-						str += spliter + floatValue.ToString();
-					}
+					stringBuilder.Append(floatValue.ToString(numberFormat));
 				}
 			}
 			else
 			{
 				foreach (var floatValue in floatArray)
 				{
-					if (str.Length < 1)
-					{
-						str = floatValue.ToString();
-					}
-					else
-					{
-						str += floatValue.ToString();
-					}
+					stringBuilder.Append(floatValue.ToString(numberFormat));
 				}
 			}
-			return str;
+			var nubmersString = stringBuilder.ToString();
+			{ }
+			return nubmersString;
 		}
 
 		/// <summary>
@@ -1045,7 +1083,9 @@ namespace BaoXia.Utils.Extensions
 					var section = sections[sectionIndex];
 					try
 					{
-						floatValues[sectionIndex] = float.Parse(section.Trim());
+						float.TryParse(section.Trim(), out var number);
+						{ }
+						floatValues[sectionIndex] = number;
 					}
 					catch
 					{
@@ -1054,6 +1094,87 @@ namespace BaoXia.Utils.Extensions
 				}
 			}
 			return floatValues;
+		}
+
+		/// <summary>
+		/// 由浮点型数值数组，创建字符串，如：由“[1.0, 2.0, 3.0]”，创建字符串“1.0,2.0,3.0”。
+		/// </summary>
+		/// <param name="doubleArray">原始的整数数值数组。</param>
+		/// <param name="spliter">创建字符串时使用的数值分隔符，默认为“,”。</param>
+		/// <param name="numberFormat">指定的数字字符串格式字符串。</param>
+		/// <returns>浮点型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
+		public static string StringWithDoubles(
+			IEnumerable<double>? doubleArray,
+			string? spliter = ",",
+			string? numberFormat = null)
+		{
+			if (EnumerableUtil.IsEmpty(doubleArray))
+			{
+				return string.Empty;
+			}
+
+			var stringBuilder = new StringBuilder();
+			if (spliter?.Length > 0)
+			{
+				foreach (var doubleValue in doubleArray)
+				{
+					if (stringBuilder.Length > 0)
+					{
+						stringBuilder.Append(spliter);
+					}
+					stringBuilder.Append(doubleValue.ToString(numberFormat));
+				}
+			}
+			else
+			{
+				foreach (var doubleValue in doubleArray)
+				{
+					stringBuilder.Append(doubleValue.ToString(numberFormat));
+				}
+			}
+			var nubmersString = stringBuilder.ToString();
+			{ }
+			return nubmersString;
+		}
+
+		/// <summary>
+		/// 由当前字符串，拆解成浮点数数值数组。
+		/// </summary>
+		/// <param name="str">当前字符串。</param>
+		/// <param name="spliter">字符串中的分隔符。</param>
+		/// <param name="splitOptions">字符串分隔选项。</param>
+		/// <returns>有拆解字符串得出的浮点数数值数组，当字符串为空或非数字时，会转为“0.0”。</returns>
+		public static double[] ToDoubleArray(
+			this string? str,
+			string spliter = ",",
+			StringSplitOptions splitOptions = StringSplitOptions.None)
+		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return Array.Empty<double>();
+			}
+
+			var sections = str.Split(new string[] { spliter }, splitOptions);
+			var doubleValues = new double[sections.Length];
+			{
+				for (var sectionIndex = 0;
+				    sectionIndex < sections.Length;
+				    sectionIndex++)
+				{
+					var section = sections[sectionIndex];
+					try
+					{
+						double.TryParse(section.Trim(), out var number);
+						{ }
+						doubleValues[sectionIndex] = number;
+					}
+					catch
+					{
+						doubleValues[sectionIndex] = 0;
+					}
+				}
+			}
+			return doubleValues;
 		}
 
 

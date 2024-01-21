@@ -26,7 +26,7 @@ namespace BaoXia.Utils.Extensions
 			public UdpClientListenInfo(
 				UdpClient udpClient,
 				IPEndPoint listenIPEndPoint,
-				Action<UdpClient, IPEndPoint?, byte[]> toReceiveMessage,
+				Func<UdpClient, IPEndPoint?, byte[]?, Exception?, bool> toReceiveMessage,
 				Func<UdpClientListenInfo?, bool>? toWillContinueReceiveBytes)
 			{
 				UdpClient = udpClient;
@@ -39,17 +39,35 @@ namespace BaoXia.Utils.Extensions
 						return;
 					}
 
-					var remoteEndPoint = udpClientListenInfo.ListenIPEndPoint;
-					var bytesReceived = udpClientListenInfo.UdpClient.EndReceive(
-						receiveResult,
-						ref remoteEndPoint);
+					IPEndPoint? remoteEndPoint = null;
+					byte[]? bytesReceived = null;
+					Exception? exceptionOfReceiveBytes = null;
+					try
+					{
+						remoteEndPoint = udpClientListenInfo.ListenIPEndPoint;
+						bytesReceived = udpClientListenInfo.UdpClient.EndReceive(
+							receiveResult,
+							ref remoteEndPoint);
+					}
+					catch (Exception exception)
+					{
+						exceptionOfReceiveBytes = exception;
+					}
 
 					////////////////////////////////////////////////
 					// !!!
-					toReceiveMessage(udpClientListenInfo.UdpClient, remoteEndPoint, bytesReceived);
+					var receiveMessageResult = toReceiveMessage(
+						udpClientListenInfo.UdpClient,
+						remoteEndPoint,
+						bytesReceived,
+						exceptionOfReceiveBytes);
 					// !!!
 					////////////////////////////////////////////////
 
+					if (!receiveMessageResult)
+					{
+						return;
+					}
 					var toWillContinueReceiveBytes = udpClientListenInfo.ToWillContinueReceiveBytes;
 					if (toWillContinueReceiveBytes == null
 					|| toWillContinueReceiveBytes(udpClientListenInfo))
@@ -76,7 +94,7 @@ namespace BaoXia.Utils.Extensions
 			this UdpClient udpClient,
 			Func<UdpClientListenInfo?, bool>? toWillContinueReceiveBytes,
 			IPEndPoint listenIPEndPoint,
-			Action<UdpClient, IPEndPoint?, byte[]> toReceiveMessage)
+			Func<UdpClient, IPEndPoint?, byte[]?, Exception?, bool> toReceiveMessage)
 		{
 			var udpClientListenInfo = new UdpClientListenInfo(
 				udpClient,

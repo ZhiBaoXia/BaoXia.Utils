@@ -1,4 +1,5 @@
-﻿using BaoXia.Utils.Extensions;
+﻿using BaoXia.Utils.Constants;
+using BaoXia.Utils.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
@@ -960,5 +961,71 @@ public class StringExtensionTest
 		Assert.IsTrue(testObjectB != null);
 		Assert.IsTrue(testObjectB.Id.Equals(testObjectA.Id));
 		Assert.IsTrue(testObjectB.Name?.Equals(testObjectA.Name) == true);
+	}
+
+	[TestMethod]
+	public void ToPrivacyStringTest()
+	{
+		var plaintextString = "13812345678";
+		var privacytextString = plaintextString.ToPrivacyString(
+			5,
+			StringPartType.Center,
+			"*");
+		{
+			Assert.IsTrue(privacytextString.Equals("138*****678"));
+		}
+		privacytextString = plaintextString.ToPrivacyString(
+			6,
+			StringPartType.Center,
+			"*");
+		{
+			Assert.IsTrue(privacytextString.Equals("138******78"));
+		}
+		privacytextString = plaintextString.ToPrivacyString(
+			0,
+			StringPartType.Center,
+			"*");
+		{
+			Assert.IsTrue(privacytextString.Equals("13812345678"));
+		}
+		privacytextString = plaintextString.ToPrivacyString(
+			11,
+			StringPartType.Center,
+			"*");
+		{
+			Assert.IsTrue(privacytextString.Equals("***********"));
+		}
+		privacytextString = plaintextString.ToPrivacyString(
+			20,
+			StringPartType.Center,
+			"*");
+		{
+			Assert.IsTrue(privacytextString.Equals("***********"));
+		}
+
+		privacytextString = plaintextString.ToPrivacyString(
+			4,
+			StringPartType.Left,
+			"*");
+		{
+			Assert.IsTrue(privacytextString.Equals("****2345678"));
+		}
+		privacytextString = plaintextString.ToPrivacyString(
+			5,
+			StringPartType.Right,
+			"MAsk");
+		{
+			Assert.IsTrue(privacytextString.Equals("138123MAskM"));
+		}
+
+		privacytextString = plaintextString.ToPrivacyStringForPhoneNumber();
+		{
+			Assert.IsTrue(privacytextString.Equals("138*****678"));
+		}
+
+		privacytextString = "130123456789012345".ToPrivacyStringForCNIdCardNumber();
+		{
+			Assert.IsTrue(privacytextString.Equals("1301**********2345"));
+		}
 	}
 }

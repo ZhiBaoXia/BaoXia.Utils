@@ -266,22 +266,18 @@ namespace BaoXia.Utils
 		{
 			lock (this)
 			{
-				if ((_currentStateInTask & LoopTaskState.Running) != 0
-				|| _objectState == LoopTaskState.Started)
+				if (_objectState != LoopTaskState.Started)
 				{
-					// !!!
 					_objectState = LoopTaskState.Started;
-					// !!!
-					if (this.StopTime <= DateTime.Now)
-					{
-						this.StopTime = DateTime.MaxValue;
-					}
-					//⚠ 当前任务线程正在运行，无需额外操作 ⚠
 				}
-				else
+
+				var isCurrentState_NotStarted
+					= (_currentStateInTask & LoopTaskState.Started) != LoopTaskState.Started
+					&& (_currentStateInTask & LoopTaskState.Running) != LoopTaskState.Running;
+				if (isCurrentState_NotStarted)
 				{
 					// !!!
-					_objectState = LoopTaskState.Started;
+					_currentStateInTask = LoopTaskState.Started;
 					// !!!
 					if (this.StopTime <= DateTime.Now)
 					{
@@ -294,10 +290,7 @@ namespace BaoXia.Utils
 					var taskCancellationToken = _taskCancellationTokenSource.Token;
 					// !!!
 					Interlocked.Increment(ref _threadTaskIdSeed);
-					if (_threadTaskIdSeed == 0)
-					{
-						_threadTaskIdSeed = 1;
-					}
+
 					_currentThreadTaskId = _threadTaskIdSeed;
 					var currentTaskId = _threadTaskIdSeed;
 					_task = Task.Run(async () =>
@@ -360,8 +353,7 @@ namespace BaoXia.Utils
 							{
 								if (currentTaskId == _currentThreadTaskId)
 								{
-									if (taskCancellationToken.IsCancellationRequested == true
-									|| (_currentStateInTask & LoopTaskState.Stopped) != 0)
+									if ((_currentStateInTask & LoopTaskState.Stopped) == LoopTaskState.Stopped)
 									{
 										// 如果关闭期间重新标记了任务开始，则继续下一轮任务。
 										if (_objectState == LoopTaskState.Started)
@@ -370,11 +362,33 @@ namespace BaoXia.Utils
 										}
 										else
 										{
-											if ((_currentStateInTask & LoopTaskState.Stopped) == 0)
+											// !!!⚠ 结束循环 ⚠!!!
+											break;
+											// !!!⚠ 结束循环 ⚠!!!
+										}
+									}
+									// !!!⚠ 本次任务携带的“taskCancellationToken”明确已经取消了，则退出本次任务线程。 ⚠!!!
+									else if (taskCancellationToken.IsCancellationRequested == true)
+									{
+										////////////////////////////////////////////////
+										// 【⚠注意】此时，Start方法，会开启新的任务线程。
+										// 如果关闭期间重新标记了任务开始，则继续下一轮任务。
+										// 又因为此时，满足以下条件：
+										// 1，lock(this)，同步锁。
+										// 2，currentTaskId == _currentThreadTaskId，任务Id未改变。
+										// 因此此时，可以修改内置属性，已表示实际状态，如：“_currentStateInTask”。
+										////////////////////////////////////////////////
+
+										//if (_objectState == LoopTaskState.Started)
+										//{  
+										//	_currentStateInTask = LoopTaskState.Running;
+										//}
+										//else
+										{
+											if ((_currentStateInTask & LoopTaskState.Stopped) != LoopTaskState.Stopped)
 											{
 												_currentStateInTask = LoopTaskState.StoppedWithCancel;
 											}
-
 											// !!!⚠ 结束循环 ⚠!!!
 											break;
 											// !!!⚠ 结束循环 ⚠!!!
@@ -386,7 +400,6 @@ namespace BaoXia.Utils
 									return;
 								}
 							}
-
 
 							try
 							{
@@ -459,7 +472,7 @@ namespace BaoXia.Utils
 										if (currentTaskId == _currentThreadTaskId)
 										{
 											Interlocked.Increment(ref _processingIndex);
-											if (_objectState == LoopTaskState.Stopped
+											if ((_objectState & LoopTaskState.Stopped) == LoopTaskState.Stopped
 											|| DateTime.Now >= this.StopTime)
 											{
 												// !!!
@@ -511,6 +524,8 @@ namespace BaoXia.Utils
 										{
 											// !!!  
 											_currentStateInTask = LoopTaskState.StoppedWithCompleted;
+											// !!! isNeedProcessTaskContinue 表示了“用户的目标意图”，因此需要同步更改“_objectState” !!!
+											_objectState = LoopTaskState.StoppedWithCompleted;
 											// !!!
 										}
 										else
@@ -522,7 +537,6 @@ namespace BaoXia.Utils
 								////////////////////////////////////////////////
 								////////////////////////////////////////////////
 								////////////////////////////////////////////////
-
 							}
 							catch (System.Threading.Tasks.TaskCanceledException)
 							{

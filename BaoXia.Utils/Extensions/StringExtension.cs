@@ -1,4 +1,5 @@
-﻿using BaoXia.Utils.Security.Cryptography;
+﻿using BaoXia.Utils.Constants;
+using BaoXia.Utils.Security.Cryptography;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -2865,10 +2866,10 @@ namespace BaoXia.Utils.Extensions
 		/// 将当前字符串转为对应的RGBA颜色像素值。
 		/// </summary>
 		/// <param name="colorString">当前颜色描述字符串。</param>
-		/// <param name="red">当前颜色描述字符串对应的“红色”像素值。</param>
-		/// <param name="green">当前颜色描述字符串对应的“绿色”像素值。</param>
-		/// <param name="blue">当前颜色描述字符串对应的“蓝色”像素值。</param>
-		/// <param name="alpha">当前颜色描述字符串对应的“透明度”像素值。</param>
+		/// <param name="red">当前颜色描述字符串对应的“红色”像素值，取值范围：0-255。</param>
+		/// <param name="green">当前颜色描述字符串对应的“绿色”像素值，取值范围：0-255。</param>
+		/// <param name="blue">当前颜色描述字符串对应的“蓝色”像素值，取值范围：0-255。</param>
+		/// <param name="alpha">当前颜色描述字符串对应的“透明度”像素值，取值范围：0.0-1.0。</param>
 		/// <returns></returns>
 		public static bool ToRGBA(
 			this string colorString,
@@ -2968,6 +2969,152 @@ namespace BaoXia.Utils.Extensions
 				}
 			}
 			return true;
+		}
+
+
+		/// <summary>
+		/// 将当前字符串转为隐私字符串。
+		/// </summary>
+		/// <param name="str">当前字符串。</param>
+		/// <param name="privacyCharsCount">要隐私处理的字符数量。</param>
+		/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
+		/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
+		/// <returns>返回经过隐私处理的字符串。</returns>
+		public static string ToPrivacyString(
+			this string? str,
+			int privacyCharsCount,
+			StringPartType privacyStringPart = StringPartType.Center,
+			string? privacytext = "*")
+		{
+			if (string.IsNullOrEmpty(str))
+			{
+				return str ?? string.Empty;
+			}
+
+			var strLength = str.Length;
+
+			if (privacyCharsCount < 0)
+			{
+				privacyCharsCount = 0;
+			}
+
+			int privacyCharsBeginIndex;
+			int privacyCharsEndIndex;
+			switch (privacyStringPart)
+			{
+				default:
+				case StringPartType.Unknow:
+					{
+						return str;
+					}
+				case StringPartType.Left:
+					{
+						privacyCharsBeginIndex = 0;
+					}
+					break;
+				case StringPartType.Center:
+					{
+						privacyCharsBeginIndex = (strLength - privacyCharsCount) / 2;
+						if (((strLength - privacyCharsCount) % 2) > 0)
+						{
+							privacyCharsBeginIndex += 1;
+						}
+					}
+					break;
+				case StringPartType.Right:
+					{
+						privacyCharsBeginIndex = strLength - privacyCharsCount;
+					}
+					break;
+			}
+			if (privacyCharsBeginIndex < 0)
+			{
+				privacyCharsBeginIndex = 0;
+			}
+			privacyCharsEndIndex = privacyCharsBeginIndex + privacyCharsCount;
+			if (privacyCharsEndIndex > strLength)
+			{
+				privacyCharsEndIndex = strLength;
+				if (strLength - privacyCharsCount >= 0)
+				{
+					privacyCharsBeginIndex = privacyCharsEndIndex - privacyCharsCount;
+				}
+				else
+				{
+					privacyCharsBeginIndex = 0;
+				}
+			}
+
+			//
+			var leftPlaintext = str[..privacyCharsBeginIndex];
+			//
+			var centerPrivacytext = string.Empty;
+			var centerPrivacytextLength = privacyCharsEndIndex - privacyCharsBeginIndex;
+			if (centerPrivacytextLength > 0
+				&& privacytext?.Length > 0)
+			{
+				var privacytextLength = privacytext.Length;
+				while (centerPrivacytext.Length < centerPrivacytextLength)
+				{
+					if ((centerPrivacytext.Length + privacytextLength) > centerPrivacytextLength)
+					{
+						centerPrivacytext += privacytext[..(centerPrivacytextLength - centerPrivacytext.Length)];
+					}
+					else
+					{
+						centerPrivacytext += privacytext;
+					}
+				}
+			}
+			//
+			var rightPlaintext = str[privacyCharsEndIndex..];
+			//
+
+			var privacyText = leftPlaintext + centerPrivacytext + rightPlaintext;
+			{ }
+			return privacyText;
+		}
+
+		/// <summary>
+		/// 将当前“电话号码”字符串（11位）转为隐私字符串。
+		/// </summary>
+		/// <param name="phoneNumber">当前“电话毫秒”字符串。</param>
+		/// <param name="privacyCharsCount">要隐私处理的字符数量，默认位“5”。</param>
+		/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
+		/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
+		/// <returns>返回经过隐私处理的字符串。</returns>
+		public static string ToPrivacyStringForPhoneNumber(
+			this string? phoneNumber,
+			int privacyCharsCount = 5,
+			StringPartType privacyStringPart = StringPartType.Center,
+			string? privacytext = "*")
+		{
+			return ToPrivacyString(
+				phoneNumber,
+				privacyCharsCount,
+				privacyStringPart,
+				privacytext);
+		}
+
+		/// <summary>
+		/// 将当前“身份证”字符串（18位）转为隐私字符串。
+		/// </summary>
+		/// <param name="phoneNumber">当前“电话毫秒”字符串。</param>
+		/// <param name="privacyCharsCount">要隐私处理的字符数量，默认位“10”。</param>
+		/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
+		/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
+		/// <returns>返回经过隐私处理的字符串。</returns>
+		public static string ToPrivacyStringForCNIdCardNumber(
+			this string? idCardNumber,
+			int privacyCharsCount = 10,
+			StringPartType privacyStringPart = StringPartType.Center,
+			string? privacytext = "*")
+		{
+			return ToPrivacyString(
+				idCardNumber,
+				privacyCharsCount,
+				privacyStringPart,
+				privacytext);
 		}
 
 		/// <summary>

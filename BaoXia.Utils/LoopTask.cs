@@ -360,8 +360,13 @@ namespace BaoXia.Utils
 							{
 								if (currentTaskId == _currentThreadTaskId)
 								{
-									if (taskCancellationToken.IsCancellationRequested == true
-									|| (_currentStateInTask & LoopTaskState.Stopped) != 0)
+									if ((_currentStateInTask & LoopTaskState.Stopped) == LoopTaskState.Stopped)
+									{
+										// !!!⚠ 结束循环 ⚠!!!
+										break;
+										// !!!⚠ 结束循环 ⚠!!!
+									}
+									else if (taskCancellationToken.IsCancellationRequested == true)
 									{
 										// 如果关闭期间重新标记了任务开始，则继续下一轮任务。
 										if (_objectState == LoopTaskState.Started)
@@ -370,7 +375,10 @@ namespace BaoXia.Utils
 										}
 										else
 										{
-											if ((_currentStateInTask & LoopTaskState.Stopped) == 0)
+											// 如果当前任务状态不是“停止”状态，
+											// 则是由“taskCancellationToken.IsCancellationRequested”取消的，
+											// 所以标修正任务状态为“停止”由取消操作而停止的状态。
+											if ((_currentStateInTask & LoopTaskState.Stopped) != LoopTaskState.Stopped)
 											{
 												_currentStateInTask = LoopTaskState.StoppedWithCancel;
 											}

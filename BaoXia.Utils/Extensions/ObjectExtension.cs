@@ -17,6 +17,20 @@ public static class ObjectExtension
 
 	#region 类方法
 
+	public static ObjectType? CreateObject<ObjectType>()
+	{
+		var @object = Activator.CreateInstance<ObjectType>();
+		{ }
+		return @object;
+	}
+
+	public static object? CreateObject(Type objectType)
+	{
+		var @object = Activator.CreateInstance(objectType);
+		{ }
+		return @object;
+	}
+
 	public static PropertyInfo[]? GetPublicSetablePropertyInfes(
 	    this object @object,
 	    BindingFlags propertiesBindingFlags = BindingFlags.Default)
@@ -49,7 +63,6 @@ public static class ObjectExtension
 		{ }
 		return propertyValue;
 	}
-
 
 	public static string? GetPropertyNameWithPropertyValue(
 		this object @object,

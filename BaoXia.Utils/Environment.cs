@@ -25,7 +25,7 @@ public class Environment
 
 		ReadCommentHandling = JsonCommentHandling.Skip,
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-		PropertyNameCaseInsensitive = true,
+		PropertyNameCaseInsensitive = true
 	};
 
 	#endregion
@@ -47,6 +47,11 @@ public class Environment
 	/// 当前环境名称，可作为配置文件后缀等环境参数使用。
 	/// </summary>
 	public static string? EnviromentName { get; set; }
+
+	/// <summary>
+	/// 当前应用程序，所在的程序集 @last。
+	/// </summary>
+	public Assembly? CurrentApplicationAssembly { get; set; }
 
 	/// <summary>
 	/// 当前应用程序名称。

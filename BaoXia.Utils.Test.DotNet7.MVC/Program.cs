@@ -1,3 +1,5 @@
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,6 +10,9 @@ builder.Services.AddControllersWithViews();
 BaoXia.Utils.Environment.InitializeBeforeBuildApplication(
 	"BaoXia.Utils.Test.DotNet7.MVC",
 	BaoXia.Utils.Environment.GetEnvironmentNameWith_ASPNETCORE_ENVIRONMENT(),
+	//
+	Assembly.GetExecutingAssembly(),
+	//
 	"0123456789",
 	"/ConfigFiles",
 	"/LogFiles");

@@ -26,6 +26,14 @@ namespace BaoXia.Utils.Test.DotNet7.MVC.Controllers
 				Assert.IsTrue(logger != null);
 			};
 
+			//
+			var currentApplicationAssembly = BaoXia.Utils.Environment.CurrentApplicationAssembly;
+			if (currentApplicationAssembly == null)
+			{
+				return new StatusCodeResult((int)System.Net.HttpStatusCode.InternalServerError);
+			}
+			//
+
 			return View();
 		}
 

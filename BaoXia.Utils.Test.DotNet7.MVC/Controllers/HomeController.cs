@@ -26,6 +26,17 @@ namespace BaoXia.Utils.Test.DotNet7.MVC.Controllers
 				Assert.IsTrue(logger != null);
 			};
 
+			//
+			var currentApplicationAssembly = BaoXia.Utils.Environment.CurrentApplicationAssembly;
+			if (currentApplicationAssembly == null)
+			{
+				//
+				_logger.Log(LogLevel.Debug, "无法获取到当前应用程序的程序集信息。");
+				//
+				return new StatusCodeResult((int)System.Net.HttpStatusCode.InternalServerError);
+			}
+			//
+
 			return View();
 		}
 

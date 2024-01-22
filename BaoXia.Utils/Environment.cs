@@ -25,7 +25,7 @@ public class Environment
 
 		ReadCommentHandling = JsonCommentHandling.Skip,
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-		PropertyNameCaseInsensitive = true,
+		PropertyNameCaseInsensitive = true
 	};
 
 	#endregion
@@ -47,6 +47,11 @@ public class Environment
 	/// 当前环境名称，可作为配置文件后缀等环境参数使用。
 	/// </summary>
 	public static string? EnviromentName { get; set; }
+
+	/// <summary>
+	/// 当前应用程序，所在的程序集 @last。
+	/// </summary>
+	public static Assembly? CurrentApplicationAssembly { get; set; }
 
 	/// <summary>
 	/// 当前应用程序名称。
@@ -168,6 +173,7 @@ public class Environment
 	/// </summary>
 	/// <param name="serverName">当前服务器名称。</param>
 	/// <param name="enviromentName">当前环境名称。</param>
+	/// <param name="currentExecutingAssembly">当前执行中的程序集，用于初始化时记录当前应用程序程序集，避免在如“EF程序命令执行时”，业务程序无法准确获取到当前应用程序的程序集。</param>
 	/// <param name="applicationBuilder">当前应用构建器。</param>
 	/// <param name="hostEnvironment">当前主机环境信息。</param>
 	/// <param name="webRootDirectoryPath">Web内容所在文件夹路径。</param>
@@ -179,6 +185,7 @@ public class Environment
 			string? serverName,
 			string? enviromentName,
 			//
+			Assembly? currentExecutingAssembly,
 			IApplicationBuilder? applicationBuilder,
 			IHostEnvironment? hostEnvironment,
 			//
@@ -192,7 +199,10 @@ public class Environment
 	{
 		Environment.ServerName = serverName;
 		Environment.EnviromentName = enviromentName;
-
+		if (currentExecutingAssembly != null)
+		{
+			Environment.CurrentApplicationAssembly = currentExecutingAssembly;
+		}
 		Environment.ApplicationName = Assembly.GetExecutingAssembly().GetName().Name;
 		Environment.ApplicationFullName = Assembly.GetExecutingAssembly().GetName().ToString();
 
@@ -249,6 +259,7 @@ public class Environment
 	public static void InitializeWithServerNameAtProgramRun(
 		string? serverName,
 		string? enviromentName,
+		Assembly? currentExecutingAssembly,
 		string aesKeyDeafult,
 		string configFilesDirectoryPath,
 		string logFilesDirectoryPath,
@@ -259,6 +270,7 @@ public class Environment
 			   serverName,
 			   enviromentName,
 			   //
+			   currentExecutingAssembly,
 			   null,
 			   null,
 			   //
@@ -285,6 +297,7 @@ public class Environment
 	public static void InitializeWithServerNameAtStartup(
 		string? serverName,
 		string? enviromentName,
+		Assembly? currentExecutingAssembly,
 		//
 		IApplicationBuilder applicationBuilder,
 		IHostEnvironment? hostEnvironment,
@@ -300,6 +313,7 @@ public class Environment
 			   serverName,
 			   enviromentName,
 			   //
+			   currentExecutingAssembly,
 			   applicationBuilder,
 			   hostEnvironment,
 			   //
@@ -325,6 +339,8 @@ public class Environment
 		string? serverName,
 		string? enviromentName,
 		//
+		Assembly? currentExecutingAssembly,
+		//
 		string aesKeyDeafult,
 		//
 		string configFilesDirectoryPath,
@@ -335,6 +351,7 @@ public class Environment
 		Environment.InitializeWithServerName(
 			   serverName,
 			   enviromentName,
+			   currentExecutingAssembly,
 			   null,
 			   null,
 			   null,
@@ -359,6 +376,7 @@ public class Environment
 		Environment.InitializeWithServerName(
 			   Environment.ServerName,
 			   Environment.EnviromentName,
+			   null,
 			   applicationBuilder,
 			   hostEnvironment,
 			   webRootDirectoryPath,
@@ -390,6 +408,8 @@ public class Environment
 		string? serverName,
 		string? enviromentName,
 		//
+		Assembly? currentExecutingAssembly,
+		//
 		string aesKeyDeafult,
 		//
 		string configFilesDirectoryPath,
@@ -400,6 +420,8 @@ public class Environment
 		InitializeBeforeConfigureServicesWithServerName(
 			serverName,
 			enviromentName,
+			//
+			currentExecutingAssembly,
 			//
 			aesKeyDeafult,
 			//
@@ -424,9 +446,6 @@ public class Environment
 			application.Environment.WebRootPath);
 	}
 
-
-
-
 	/// <summary>
 	/// 在非“Asp.Net Core”的环境中初始化工具集环境信息。
 	/// </summary>
@@ -438,6 +457,8 @@ public class Environment
 	public static void InitializeWithEnviromentName(
 		string? enviromentName,
 		//
+		Assembly? currentExecutingAssembly,
+		//
 		string aesKeyDeafult,
 		//
 		string configFilesDirectoryPath,
@@ -448,6 +469,7 @@ public class Environment
 		Environment.InitializeBeforeConfigureServicesWithServerName(
 			null,
 			enviromentName,
+			currentExecutingAssembly,
 			aesKeyDeafult,
 			configFilesDirectoryPath,
 			logFilesDirectoryPath,

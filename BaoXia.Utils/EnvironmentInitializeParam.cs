@@ -20,7 +20,7 @@ namespace BaoXia.Utils
 		/// <summary>
 		/// 每个日志文件的最大尺寸，默认为： 2 MB。
 		/// </summary>
-		public Func<int>? ToGetMaxBytesCountPerLogFile { get; set; } = () => 1024 * 1024 * 2;
+		public Func<long>? ToGetMaxBytesCountPerLogFile { get; set; } = () => 1024 * 1024 * 2;
 
 		/// <summary>
 		/// 每次写入日志文件的最多日志条目数，默认为： 200 条。
@@ -76,7 +76,7 @@ namespace BaoXia.Utils
 		/// </param>
 		public EnvironmentInitializeParam(
 			Func<double>? toGetAutoFlushLogBufferIntervalSeconds = null,
-			Func<int>? toGetMaxBytesCountPerLogFile = null,
+			Func<long>? toGetMaxBytesCountPerLogFile = null,
 			Func<int>? toGetLogRecordsCountPerFileWrite = null,
 			Func<double>? toGetTimeoutSecondsToStorageLogRecords = null,
 			Func<LogFile, IEnumerable<LogRecord>, bool>? toStorageLogRecords = null,
@@ -94,7 +94,7 @@ namespace BaoXia.Utils
 
 			if (toGetLogRecordsCountPerFileWrite != null)
 			{
-				ToGetMaxBytesCountPerLogFile = toGetLogRecordsCountPerFileWrite;
+				ToGetLogRecordsCountPerFileWrite = toGetLogRecordsCountPerFileWrite;
 			}
 
 			if (toGetTimeoutSecondsToStorageLogRecords != null)

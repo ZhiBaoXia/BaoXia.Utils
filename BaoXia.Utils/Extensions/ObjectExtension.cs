@@ -238,10 +238,15 @@ public static class ObjectExtension
 	}
 
 
-	public static ObjectType[] CloneObjectsToArray<ObjectType>(this ICollection<ObjectType> objects)
+	public static ObjectType[]? CloneObjectsToArray<ObjectType>(this IEnumerable<ObjectType>? objects)
 		where ObjectType : class, new()
 	{
-		var objectArray = new ObjectType[objects.Count];
+		if (objects == null)
+		{
+			return null;
+		}
+
+		var objectArray = new ObjectType[objects.GetCount()];
 		var objectIndex = 0;
 		foreach (var obj in objects)
 		{
@@ -254,9 +259,14 @@ public static class ObjectExtension
 		return objectArray;
 	}
 
-	public static List<ObjectType> CloneObjectsToList<ObjectType>(this ICollection<ObjectType> objects)
+	public static List<ObjectType>? CloneObjectsToList<ObjectType>(this IEnumerable<ObjectType>? objects)
 		where ObjectType : class, new()
 	{
+		if (objects == null)
+		{
+			return null;
+		}
+
 		var objectList = new List<ObjectType>();
 		foreach (var obj in objects)
 		{

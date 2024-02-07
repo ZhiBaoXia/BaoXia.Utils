@@ -6,6 +6,26 @@ namespace BaoXia.Utils.Extensions;
 
 public static class IEnumerableExtension
 {
+	public static int GetCount<ItemType>(this IEnumerable<ItemType>? items)
+	{
+		if (items == null)
+		{
+			return 0;
+		}
+
+		if (items is ICollection<ItemType> collection)
+		{
+			return collection.Count;
+		}
+
+		var itemsCount = 0;
+		foreach (var item in items)
+		{
+			itemsCount++;
+		}
+		return itemsCount;
+	}
+
 	public static void ForEach<ItemType>(
 		this IEnumerable<ItemType>? items,
 		Func<ItemType, bool> toEnumerateItem)
@@ -25,10 +45,10 @@ public static class IEnumerableExtension
 	}
 
 	public static bool IsContains<ItemType>(
-	this IEnumerable<ItemType> items,
-	ItemType? objectItem,
-	out int objectItemIndexInItems)
-	where ItemType : notnull
+		this IEnumerable<ItemType> items,
+		ItemType? objectItem,
+		out int objectItemIndexInItems)
+		where ItemType : notnull
 	{
 		objectItemIndexInItems = -1;
 

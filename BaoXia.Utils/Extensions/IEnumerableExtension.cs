@@ -331,6 +331,22 @@ public static class IEnumerableExtension
 		return itemGroups.Values.ToArray();
 	}
 
+	public static Dictionary<KeyType, bool>? ToDictionaryWithValueTrue<KeyType>(
+		this IEnumerable<KeyType>? keys)
+		where KeyType : notnull
+	{
+		if (keys == null)
+		{
+			return null;
+		}
+
+		var dictionary = new Dictionary<KeyType, bool>();
+		foreach (var key in keys)
+		{
+			dictionary.AddOrSet(key, true);
+		}
+		return dictionary;
+	}
 	
 	public static List<ObjectType> CloneObjectsToList<ObjectType>(this IEnumerable<ObjectType>? objects)
 	where ObjectType : class, new()

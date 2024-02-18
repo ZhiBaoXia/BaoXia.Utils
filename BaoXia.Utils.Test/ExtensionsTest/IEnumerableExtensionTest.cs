@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test.ExtensionsTest;
 
@@ -23,6 +24,133 @@ public class IEnumerableExtensionTest
 		{
 			Assert.IsTrue(itemEnumerable.GetCount() == itemList.Count);
 		}
+	}
+
+	[TestMethod]
+	public void ForEachAtLeastOnceTest()
+	{
+		var items_Int = new int[] { 1, 2, 3, 4, 5 };
+		var objectItem_Int = 0;
+		items_Int.ForEachAtLeastOnce((item) =>
+		{
+			objectItem_Int++;
+			{
+				// !!!
+				Assert.IsTrue(item == objectItem_Int);
+				// !!!
+			}
+			return true;
+		});
+		items_Int = Array.Empty<int>();
+		items_Int.ForEachAtLeastOnce((item) =>
+		{
+			// !!!
+			Assert.IsTrue(item == 0);
+			// !!!
+			return true;
+		});
+		items_Int = null;
+		items_Int.ForEachAtLeastOnce((item) =>
+		{
+			// !!!
+			Assert.IsTrue(item == 0);
+			// !!!
+			return true;
+		});
+
+
+		var items_String = new string[] { "1", "2", "3", "4", "5" };
+		var objectItem_String = 0;
+		items_String.ForEachAtLeastOnce((item) =>
+		{
+			objectItem_String++;
+			{
+				// !!!
+				Assert.IsTrue(item == objectItem_String.ToString());
+				// !!!
+			}
+			return true;
+		});
+		items_String = Array.Empty<string>();
+		items_String.ForEachAtLeastOnce((item) =>
+		{
+			// !!!
+			Assert.IsTrue(item == null);
+			// !!!
+			return true;
+		});
+		items_String = null;
+		items_String.ForEachAtLeastOnce((item) =>
+		{
+			// !!!
+			Assert.IsTrue(item == null);
+			// !!!
+			return true;
+		});
+	}
+
+
+	[TestMethod]
+	public async Task ForEachAtLeastOnceAsyncAsyncTest()
+	{
+		var items_Int = new int[] { 1, 2, 3, 4, 5 };
+		var objectItem_Int = 0;
+		await items_Int.ForEachAtLeastOnceAsync(async (item) =>
+		{
+			objectItem_Int++;
+			{
+				// !!!
+				Assert.IsTrue(item == objectItem_Int);
+				// !!!
+			}
+			return await Task.FromResult(true);
+		});
+		items_Int = Array.Empty<int>();
+		await items_Int.ForEachAtLeastOnceAsync(async (item) =>
+		{
+			// !!!
+			Assert.IsTrue(item == 0);
+			// !!!
+			return await Task.FromResult(true);
+		});
+		items_Int = null;
+		await items_Int.ForEachAtLeastOnceAsync(async (item) =>
+		{
+			// !!!
+			Assert.IsTrue(item == 0);
+			// !!!
+			return await Task.FromResult(true);
+		});
+
+
+		var items_String = new string[] { "1", "2", "3", "4", "5" };
+		var objectItem_String = 0;
+		await items_String.ForEachAtLeastOnceAsync(async (item) =>
+		{
+			objectItem_String++;
+			{
+				// !!!
+				Assert.IsTrue(item == objectItem_String.ToString());
+				// !!!
+			}
+			return await Task.FromResult(true);
+		});
+		items_String = Array.Empty<string>();
+		await items_String.ForEachAtLeastOnceAsync(async (item) =>
+		{
+			// !!!
+			Assert.IsTrue(item == null);
+			// !!!
+			return await Task.FromResult(true);
+		});
+		items_String = null;
+		await items_String.ForEachAtLeastOnceAsync(async (item) =>
+		{
+			// !!!
+			Assert.IsTrue(item == null);
+			// !!!
+			return await Task.FromResult(true);
+		});
 	}
 
 	[TestMethod]

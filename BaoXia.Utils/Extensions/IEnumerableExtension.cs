@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Extensions;
 
@@ -24,6 +25,60 @@ public static class IEnumerableExtension
 			itemsCount++;
 		}
 		return itemsCount;
+	}
+
+	public static void ForEachAtLeastOnce<ItemType>(
+		this IEnumerable<ItemType>? items,
+		Func<ItemType?, bool> toReceiveItem)
+	{
+		var itemsEnumerator = items?.GetEnumerator();
+		for (var item
+			= (itemsEnumerator?.MoveNext() == true
+			? itemsEnumerator.Current
+			: default)
+			;
+			;)
+		{
+			////////////////////////////////////////////////
+			if (toReceiveItem(item) != true)
+			{
+				break;
+			}
+			////////////////////////////////////////////////
+
+			if (itemsEnumerator?.MoveNext() != true)
+			{
+				break;
+			}
+			item = itemsEnumerator.Current;
+		}
+	}
+
+	public static async Task ForEachAtLeastOnceAsync<ItemType>(
+		this IEnumerable<ItemType>? items,
+		Func<ItemType?, Task<bool>> toReceiveItemAsync)
+	{
+		var itemsEnumerator = items?.GetEnumerator();
+		for (var item
+			= (itemsEnumerator?.MoveNext() == true
+			? itemsEnumerator.Current
+			: default)
+			;
+			;)
+		{
+			////////////////////////////////////////////////
+			if (await toReceiveItemAsync(item) != true)
+			{
+				break;
+			}
+			////////////////////////////////////////////////
+
+			if (itemsEnumerator?.MoveNext() != true)
+			{
+				break;
+			}
+			item = itemsEnumerator.Current;
+		}
 	}
 
 	public static void ForEach<ItemType>(

@@ -21,7 +21,7 @@ public static class DictionaryExtension
 	/// <param name="key">指定的健字段。</param>
 	/// <param name="value">指定的值字段。</param>
 	public static void AddOrSet<KeyType, ValueType>(
-		this Dictionary<KeyType, ValueType> dictionary,
+		this IDictionary<KeyType, ValueType> dictionary,
 		KeyType key,
 		ValueType value) where KeyType : notnull
 	{

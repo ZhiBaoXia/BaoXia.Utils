@@ -402,7 +402,7 @@ public static class IEnumerableExtension
 		}
 		return dictionary;
 	}
-	
+
 	public static List<ObjectType> CloneObjectsToList<ObjectType>(this IEnumerable<ObjectType>? objects)
 	where ObjectType : class, new()
 	{
@@ -416,4 +416,5 @@ public static class IEnumerableExtension
 		}
 		return objectList;
 	}
+
 }

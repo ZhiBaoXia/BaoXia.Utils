@@ -14,6 +14,8 @@ public class ItemSearchResult<ItemType>
 
 	public List<ItemType> ItemsInPage { get; set; }
 
+	public List<ItemSearchMatchInfo<ItemType>>? ItemSearchMatchInfesInPage { get; set; }
+
 	#endregion
 
 
@@ -25,10 +27,12 @@ public class ItemSearchResult<ItemType>
 
 	public ItemSearchResult(
 		int itemsCountSearchMatched,
-		List<ItemType> itemsInPage)
+		List<ItemType> itemsInPage,
+		List<ItemSearchMatchInfo<ItemType>>? itemSearchMatchInfesInPage)
 	{
 		ItemsCountSearchMatched = itemsCountSearchMatched;
 		ItemsInPage = itemsInPage;
+		ItemSearchMatchInfesInPage = itemSearchMatchInfesInPage;
 	}
 
 	#endregion

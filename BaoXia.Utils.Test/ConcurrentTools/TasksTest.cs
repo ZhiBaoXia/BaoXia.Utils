@@ -163,8 +163,16 @@ namespace BaoXia.Utils.Test.ConcurrentTools
 				{
 					var stepNumber = 1;
 					var stepNumberLocker = new object();
+					////////////////////////////////////////////////
+					// !!! 此处测试的目的在于”TryRun“不会卡住当前线程的继续进行。 !!!
+					////////////////////////////////////////////////
 					_ = tasks.TryRun(() =>
 					{
+						// !!! 模拟消耗时间的操作。 !!!
+						var endTime = DateTime.Now.AddSeconds(0.3);
+						while (DateTime.Now < endTime)
+						{ }
+						// !!!
 						lock (stepNumberLocker)
 						{
 							Assert.IsTrue(stepNumber == 2);

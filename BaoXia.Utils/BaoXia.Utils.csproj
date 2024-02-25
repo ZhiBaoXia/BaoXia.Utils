@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ApplicationIcon>Images\BaoXia_600x600@1x.ico</ApplicationIcon>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Company>石家庄宝匣软件科技有限公司</Company>

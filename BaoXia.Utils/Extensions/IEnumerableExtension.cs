@@ -1,11 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Extensions;
 
 public static class IEnumerableExtension
 {
+	public static int GetCount<ItemType>(this IEnumerable<ItemType>? items)
+	{
+		if (items == null)
+		{
+			return 0;
+		}
+
+		if (items is ICollection<ItemType> collection)
+		{
+			return collection.Count;
+		}
+
+		var itemsCount = 0;
+		foreach (var item in items)
+		{
+			itemsCount++;
+		}
+		return itemsCount;
+	}
+
+	public static void ForEachAtLeastOnce<ItemType>(
+		this IEnumerable<ItemType>? items,
+		Func<ItemType?, bool> toReceiveItem)
+	{
+		var itemsEnumerator = items?.GetEnumerator();
+		for (var item
+			= (itemsEnumerator?.MoveNext() == true
+			? itemsEnumerator.Current
+			: default)
+			;
+			;)
+		{
+			////////////////////////////////////////////////
+			if (toReceiveItem(item) != true)
+			{
+				break;
+			}
+			////////////////////////////////////////////////
+
+			if (itemsEnumerator?.MoveNext() != true)
+			{
+				break;
+			}
+			item = itemsEnumerator.Current;
+		}
+	}
+
+	public static async Task ForEachAtLeastOnceAsync<ItemType>(
+		this IEnumerable<ItemType>? items,
+		Func<ItemType?, Task<bool>> toReceiveItemAsync)
+	{
+		var itemsEnumerator = items?.GetEnumerator();
+		for (var item
+			= (itemsEnumerator?.MoveNext() == true
+			? itemsEnumerator.Current
+			: default)
+			;
+			;)
+		{
+			////////////////////////////////////////////////
+			if (await toReceiveItemAsync(item) != true)
+			{
+				break;
+			}
+			////////////////////////////////////////////////
+
+			if (itemsEnumerator?.MoveNext() != true)
+			{
+				break;
+			}
+			item = itemsEnumerator.Current;
+		}
+	}
+
 	public static void ForEach<ItemType>(
 		this IEnumerable<ItemType>? items,
 		Func<ItemType, bool> toEnumerateItem)
@@ -25,10 +100,10 @@ public static class IEnumerableExtension
 	}
 
 	public static bool IsContains<ItemType>(
-	this IEnumerable<ItemType> items,
-	ItemType? objectItem,
-	out int objectItemIndexInItems)
-	where ItemType : notnull
+		this IEnumerable<ItemType> items,
+		ItemType? objectItem,
+		out int objectItemIndexInItems)
+		where ItemType : notnull
 	{
 		objectItemIndexInItems = -1;
 
@@ -310,4 +385,36 @@ public static class IEnumerableExtension
 		}
 		return itemGroups.Values.ToArray();
 	}
+
+	public static Dictionary<KeyType, bool>? ToDictionaryWithValueTrue<KeyType>(
+		this IEnumerable<KeyType>? keys)
+		where KeyType : notnull
+	{
+		if (keys == null)
+		{
+			return null;
+		}
+
+		var dictionary = new Dictionary<KeyType, bool>();
+		foreach (var key in keys)
+		{
+			dictionary.AddOrSet(key, true);
+		}
+		return dictionary;
+	}
+
+	public static List<ObjectType> CloneObjectsToList<ObjectType>(this IEnumerable<ObjectType>? objects)
+	where ObjectType : class, new()
+	{
+		var objectList = new List<ObjectType>();
+		if (objects != null)
+		{
+			foreach (var obj in objects)
+			{
+				objectList.Add(obj.CloneWithSameProperties());
+			}
+		}
+		return objectList;
+	}
+
 }

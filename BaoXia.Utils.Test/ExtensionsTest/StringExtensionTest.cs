@@ -2,6 +2,7 @@
 using BaoXia.Utils.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test.ExtensionsTest;
 
@@ -436,6 +437,37 @@ public class StringExtensionTest
 		{
 			Assert.IsTrue(filePath.ToFileName()!.Equals(fileName));
 		}
+	}
+
+	[TestMethod]
+	public async Task GetItemsContainedAsyncTest()
+	{
+		var testString = "000111222333444555";
+		var testItems = new string[]
+		{
+			"111",
+			"333",
+			"555",
+			"aaa"
+		};
+		var testItemsContained
+			= await testString.GetItemsContainedAsync(
+			testItems,
+			(str, testItem) =>
+			{
+				if (str.Contains(testItem, StringComparison.OrdinalIgnoreCase))
+				{
+					return testItem;
+				}
+				return null;
+			});
+		// !!!
+		Assert.IsTrue(testItemsContained != null);
+		Assert.IsTrue(testItemsContained.Count == 3);
+		Assert.IsTrue(testItemsContained.Contains("111"));
+		Assert.IsTrue(testItemsContained.Contains("333"));
+		Assert.IsTrue(testItemsContained.Contains("555"));
+		// !!!
 	}
 
 	[TestMethod]

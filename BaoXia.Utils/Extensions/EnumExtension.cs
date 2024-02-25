@@ -115,6 +115,7 @@ public static class EnumExtension
 		return defaultValue;
 	}
 
+
 	/// <summary>
 	/// 获取枚举值对应的枚举值名称。
 	/// </summary>

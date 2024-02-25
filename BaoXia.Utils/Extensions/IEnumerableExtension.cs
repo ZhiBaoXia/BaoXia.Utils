@@ -402,19 +402,4 @@ public static class IEnumerableExtension
 		}
 		return dictionary;
 	}
-
-	public static List<ObjectType> CloneObjectsToList<ObjectType>(this IEnumerable<ObjectType>? objects)
-	where ObjectType : class, new()
-	{
-		var objectList = new List<ObjectType>();
-		if (objects != null)
-		{
-			foreach (var obj in objects)
-			{
-				objectList.Add(obj.CloneWithSameProperties());
-			}
-		}
-		return objectList;
-	}
-
 }

@@ -2,12 +2,14 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BaoXia.Utils.Test.ExtensionsTest;
 
 [TestClass]
 public class ArrayExtensionTest
 {
+	[TestMethod]
 	public static void CreateArrayByAddInsertAndRemoveTest<T>(
 		int testArrayLength,
 		params T[] newValues)
@@ -82,6 +84,73 @@ public class ArrayExtensionTest
 			Assert.IsTrue(object.Equals(items[itemIndex], default(T)));
 			// !!!
 		}
+	}
+
+	[TestMethod]
+	public void InsertByOrderTest()
+	{
+		int[] itemsInOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+		int[] itemsInOrderDescending = itemsInOrder.Reverse().ToArray();
+		var itemInRandomOrder = new int[itemsInOrder.Length];
+		for (int itemIndex = 0;
+			itemIndex < itemInRandomOrder.Length;
+			itemIndex++)
+		{
+			itemInRandomOrder[itemIndex] = 0;
+		}
+		for (int itemIndex = 0;
+			itemIndex < itemsInOrder.Length;
+			itemIndex++)
+		{
+			var item = itemsInOrder[itemIndex];
+			while (true)
+			{
+				var itemRandomIndex
+					= System.Random.Shared.Next(itemInRandomOrder.Length);
+				if (itemInRandomOrder[itemRandomIndex] == 0)
+				{
+					// !!!
+					itemInRandomOrder[itemRandomIndex] = item;
+					break;
+					// !!!
+				}
+			}
+		}
+
+		var arrayWithOrder = new int[0];
+		foreach (var item in itemInRandomOrder)
+		{
+			arrayWithOrder
+				= arrayWithOrder.ArrayByInsertWithOrder(
+				item,
+				(itemA, itemB) =>
+				{
+					return itemA.CompareTo(itemB);
+				});
+		}
+		////////////////////////////////////////////////
+		// !!!
+		Assert.IsTrue(arrayWithOrder.SequenceEqual(itemsInOrder));
+		// !!!
+		////////////////////////////////////////////////
+		///
+
+		var arrayWithOrderDescending = new int[0];
+		foreach (var item in itemInRandomOrder)
+		{
+			arrayWithOrderDescending
+				= arrayWithOrderDescending.ArrayByInsertWithOrderDescending(
+				item,
+				(itemA, itemB) =>
+				{
+					return itemA.CompareTo(itemB);
+				});
+		}
+		////////////////////////////////////////////////
+		// !!!
+		Assert.IsTrue(arrayWithOrderDescending.SequenceEqual(itemsInOrderDescending));
+		// !!!
+		////////////////////////////////////////////////
 	}
 
 	[TestMethod]

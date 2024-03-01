@@ -35,6 +35,71 @@ public class ListExtensionTest
 	}
 
 	[TestMethod]
+	public void InsertByOrderTest()
+	{
+		int[] itemsInOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+		int[] itemsInOrderDescending = itemsInOrder.Reverse().ToArray();
+		var itemInRandomOrder = new int[itemsInOrder.Length];
+		for (int itemIndex = 0;
+			itemIndex < itemInRandomOrder.Length;
+			itemIndex++)
+		{
+			itemInRandomOrder[itemIndex] = 0;
+		}
+		for (int itemIndex = 0;
+			itemIndex < itemsInOrder.Length;
+			itemIndex++)
+		{
+			var item = itemsInOrder[itemIndex];
+			while (true)
+			{
+				var itemRandomIndex
+					= System.Random.Shared.Next(itemInRandomOrder.Length);
+				if (itemInRandomOrder[itemRandomIndex] == 0)
+				{
+					// !!!
+					itemInRandomOrder[itemRandomIndex] = item;
+					break;
+					// !!!
+				}
+			}
+		}
+
+		var listWithOrder = new List<int>();
+		foreach (var item in itemInRandomOrder)
+		{
+			listWithOrder.InsertWithOrder(
+				item,
+				(itemA, itemB) =>
+				{
+					return itemA.CompareTo(itemB);
+				});
+		}
+		////////////////////////////////////////////////
+		// !!!
+		Assert.IsTrue(listWithOrder.SequenceEqual(itemsInOrder));
+		// !!!
+		////////////////////////////////////////////////
+		///
+
+		var listWithOrderDescending = new List<int>();
+		foreach (var item in itemInRandomOrder)
+		{
+			listWithOrderDescending.InsertWithOrderDescending(
+				item,
+				(itemA, itemB) =>
+				{
+					return itemA.CompareTo(itemB);
+				});
+		}
+		////////////////////////////////////////////////
+		// !!!
+		Assert.IsTrue(listWithOrderDescending.SequenceEqual(itemsInOrderDescending));
+		// !!!
+		////////////////////////////////////////////////
+	}
+
+	[TestMethod]
 	public void RemoveFromTest()
 	{
 		var TestItems = new int[]

@@ -151,6 +151,75 @@ public static class ArrayExtension
 		return newItems;
 	}
 
+	public static ItemType[] ArrayByInsertWithOrder<ItemType>(
+		this ItemType[] items,
+		ItemType newItem,
+		Func<ItemType, ItemType, int> toCompareItem)
+	{
+		if (items.Length < 1)
+		{
+			// !!!
+			return items.ArrayByAdd(newItem);
+			// !!!
+		}
+
+		for (var itemIndex = 0;
+			itemIndex < items.Length;
+			itemIndex++)
+		{
+			var item = items[itemIndex];
+			var compareResult = toCompareItem(newItem, item);
+			if (compareResult < 0)
+			{
+				// !!!
+				return items.ArrayByInsertAt(itemIndex, newItem);
+				// !!!
+			}
+			if (itemIndex == (items.Length - 1))
+			{
+				// !!!
+				return items.ArrayByInsertAt(itemIndex + 1, newItem);
+				// !!!
+			}
+		}
+		return items;
+	}
+
+	public static ItemType[] ArrayByInsertWithOrderDescending<ItemType>(
+		this ItemType[] items,
+		ItemType newItem,
+		Func<ItemType, ItemType, int> toCompareItem)
+	{
+		if (items.Length < 1)
+		{
+			// !!!
+			return items.ArrayByAdd(newItem);
+			// !!!
+		}
+
+		for (var itemIndex = 0;
+			itemIndex < items.Length;
+			itemIndex++)
+		{
+			var item = items[itemIndex];
+			var compareResult = toCompareItem(newItem, item);
+			if (compareResult > 0)
+			{
+				// !!!
+				return items.ArrayByInsertAt(itemIndex, newItem);
+				// !!!
+			}
+			if (itemIndex == (items.Length - 1))
+			{
+				// !!!
+				return items.ArrayByInsertAt(itemIndex + 1, newItem);
+				// !!!
+			}
+		}
+		return items;
+	}
+
+
 	/// <summary>
 	/// 通过在新增多个元素，创建新的元素数组。
 	/// </summary>

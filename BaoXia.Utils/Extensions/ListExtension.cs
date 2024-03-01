@@ -71,6 +71,88 @@ public static class ListExtension
 		return itemsCountJustAdd;
 	}
 
+	public static void InsertWithOrder<ItemType>(
+		this IList<ItemType> list,
+		ItemType? newItem,
+		Func<ItemType, ItemType, int> toCompareItem)
+	{
+		if (newItem == null)
+		{
+			return;
+		}
+
+		if (list.Count < 1)
+		{
+			// !!!
+			list.Add(newItem);
+			return;
+			// !!!
+		}
+
+		for (var itemIndex = 0;
+			itemIndex < list.Count;
+			itemIndex++)
+		{
+			var item = list[itemIndex];
+			var compareResult = toCompareItem(newItem, item);
+			if (compareResult < 0)
+			{
+				// !!!
+				list.Insert(itemIndex, newItem);
+				return;
+				// !!!
+			}
+			if (itemIndex == (list.Count - 1))
+			{
+				// !!!
+				list.Insert(itemIndex + 1, newItem);
+				return;
+				// !!!
+			}
+		}
+	}
+
+	public static void InsertWithOrderDescending<ItemType>(
+		this IList<ItemType> list,
+		ItemType? newItem,
+		Func<ItemType, ItemType, int> toCompareItem)
+	{
+		if (newItem == null)
+		{
+			return;
+		}
+
+		if (list.Count < 1)
+		{
+			// !!!
+			list.Add(newItem);
+			return;
+			// !!!
+		}
+
+		for (var itemIndex = 0;
+			itemIndex < list.Count;
+			itemIndex++)
+		{
+			var item = list[itemIndex];
+			var compareResult = toCompareItem(newItem, item);
+			if (compareResult > 0)
+			{
+				// !!!
+				list.Insert(itemIndex, newItem);
+				return;
+				// !!!
+			}
+			if (itemIndex == (list.Count - 1))
+			{
+				// !!!
+				list.Insert(itemIndex + 1, newItem);
+				return;
+				// !!!
+			}
+		}
+	}
+
 	/// <summary>
 	/// 移除指定区间索引值的元素。
 	/// </summary>

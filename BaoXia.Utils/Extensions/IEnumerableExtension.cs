@@ -1,6 +1,9 @@
-﻿using System;
+﻿using BaoXia.Utils.ConcurrentTools;
+using BaoXia.Utils.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Extensions;
@@ -401,5 +404,465 @@ public static class IEnumerableExtension
 			dictionary.AddOrSet(key, true);
 		}
 		return dictionary;
+	}
+
+
+	public static async Task ConcurrentProcessItemsAsync<ItemType>(
+		this IEnumerable<ItemType> items,
+		Action<ItemType> toProcessItem,
+		int concurrentTasksCountMax = 10)
+	{
+		var itemsConcurrentProcessQueue
+			= new ItemsConcurrentProcessQueue<ItemType>(concurrentTasksCountMax);
+		foreach (var item in items)
+		{
+			// !!!
+			itemsConcurrentProcessQueue.ProcessItem(item, toProcessItem);
+			// !!!
+		}
+		// !!!
+		await itemsConcurrentProcessQueue.WhenAll();
+		// !!!
+	}
+
+	public static async Task ConcurrentProcessItemsAsync<ItemType>(
+		this IEnumerable<ItemType> items,
+		Func<ItemType, Task> toProcessItemAsync,
+		int concurrentTasksCountMax = 10)
+	{
+		var itemsConcurrentProcessQueue
+			= new ItemsConcurrentProcessQueue<ItemType>(concurrentTasksCountMax);
+		foreach (var item in items)
+		{
+			// !!!
+			itemsConcurrentProcessQueue.ProcessItem(item, toProcessItemAsync);
+			// !!!
+		}
+		// !!!
+		await itemsConcurrentProcessQueue.WhenAll();
+		// !!!
+	}
+
+	public static async Task<ItemSearchResult<ItemType>?> SearchAsync<ItemType>(
+		this IEnumerable<ItemType> items,
+		//
+		int searchTasksCount,
+		Func<ItemType, double>? toGetItemSearchMatchedProgress,
+		Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
+		Func<List<ItemSearchMatchInfo<ItemType>>, Task<List<ItemSearchMatchInfo<ItemType>>>>? toSortItemSearchMatchInfesAsync,
+		//
+		int pageIndex,
+		int pageSize,
+		//
+		bool isGetItemSearchMatchInfesInPage = false)
+	{
+		var itemsCount = items.GetCount();
+		if (itemsCount < 1)
+		{
+			return null;
+		}
+
+		var itemPageBeginItemIndex = pageIndex * pageSize;
+		if (itemPageBeginItemIndex < 0)
+		{
+			itemPageBeginItemIndex = 0;
+		}
+		var itemPageEndItemIndex = itemPageBeginItemIndex + pageSize;
+		if (itemPageEndItemIndex > itemsCount)
+		{
+			itemPageEndItemIndex = itemsCount;
+		}
+		if (itemPageBeginItemIndex >= itemsCount
+		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
+		{
+			return null;
+		}
+
+		////////////////////////////////////////////////
+		// 1/，不需要搜索匹配和排序时，直接按有效的分页索引返回实体。
+		////////////////////////////////////////////////
+
+		List<ItemType> itemsSearchedInPage;
+		List<ItemSearchMatchInfo<ItemType>>? itemSearchMatchInfesInPage = null;
+		if (toGetItemSearchMatchedProgress == null
+			&& toSortItemSearchMatchInfes == null
+			&& toSortItemSearchMatchInfesAsync == null)
+		{
+			itemsSearchedInPage = [];
+			if (isGetItemSearchMatchInfesInPage)
+			{
+				itemSearchMatchInfesInPage = [];
+				if (items is ICollection<ItemType> itemsCollection)
+				{
+					for (var itemIndex = itemPageBeginItemIndex;
+						itemIndex < itemPageEndItemIndex;
+						itemIndex++)
+					{
+						var item = itemsCollection.ElementAt(itemIndex);
+						// !!!
+						itemsSearchedInPage.Add(item);
+						itemSearchMatchInfesInPage.Add(new(item, 1.0));
+						itemIndex++;
+						// !!!
+					}
+				}
+				else
+				{
+					var itemIndex = 0;
+					foreach (var item in items)
+					{
+						if (itemIndex < itemPageBeginItemIndex)
+						{
+							itemIndex++;
+							continue;
+						}
+						if (itemIndex >= itemPageEndItemIndex)
+						{
+							break;
+						}
+						// !!!
+						itemsSearchedInPage.Add(item);
+						itemSearchMatchInfesInPage.Add(new(item, 1.0));
+						itemIndex++;
+						// !!!
+					}
+				}
+			}
+			else
+			{
+				if (items is ICollection<ItemType> itemsCollection)
+				{
+					for (var itemIndex = itemPageBeginItemIndex;
+						itemIndex < itemPageEndItemIndex;
+						itemIndex++)
+					{
+						var item = itemsCollection.ElementAt(itemIndex);
+						// !!!
+						itemsSearchedInPage.Add(item);
+						itemIndex++;
+						// !!!
+					}
+				}
+				else
+				{
+					var itemIndex = 0;
+					foreach (var item in items)
+					{
+						if (itemIndex < itemPageBeginItemIndex)
+						{
+							itemIndex++;
+							continue;
+						}
+						if (itemIndex >= itemPageEndItemIndex)
+						{
+							break;
+						}
+						// !!!
+						itemsSearchedInPage.Add(item);
+						itemIndex++;
+						// !!!
+					}
+				}
+			}
+			//
+			return new(
+				itemsCount,
+				itemsSearchedInPage,
+				itemSearchMatchInfesInPage);
+			//
+		}
+
+		////////////////////////////////////////////////
+		// 2/，创建元素的搜索匹配信息。
+		////////////////////////////////////////////////
+
+		List<ItemSearchMatchInfo<ItemType>> itemSearchMatchInfes = [];
+		await items.ConcurrentProcessItemsAsync(
+			(item) =>
+			{
+				var itemSearchMatchedProgress = 0.0;
+				if (toGetItemSearchMatchedProgress != null)
+				{
+					itemSearchMatchedProgress = toGetItemSearchMatchedProgress(item);
+				}
+				if (itemSearchMatchedProgress <= 0)
+				{
+					return;
+				}
+				lock (itemSearchMatchInfes)
+				{
+					itemSearchMatchInfes.Add(new(
+						item,
+						itemSearchMatchedProgress));
+				}
+			},
+			searchTasksCount);
+
+		var itemSearchMatchInfesCount = itemSearchMatchInfes.Count;
+		if (itemPageEndItemIndex > itemSearchMatchInfesCount)
+		{
+			itemPageEndItemIndex = itemSearchMatchInfesCount;
+		}
+		if (itemPageBeginItemIndex >= itemSearchMatchInfesCount
+		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
+		{
+			return null;
+		}
+
+
+		////////////////////////////////////////////////
+		// 3/，根据搜索匹配信息排序元素。
+		////////////////////////////////////////////////
+		if (toSortItemSearchMatchInfes != null)
+		{
+			itemSearchMatchInfes
+			    = toSortItemSearchMatchInfes(itemSearchMatchInfes);
+		}
+		else if (toSortItemSearchMatchInfesAsync != null)
+		{
+			itemSearchMatchInfes = await toSortItemSearchMatchInfesAsync(itemSearchMatchInfes);
+		}
+		else
+		{
+			itemSearchMatchInfes.Sort((
+			    searchMatchInfoA,
+			    searchMatchInfoB) =>
+			{
+				return searchMatchInfoB.MatchedProgress.CompareTo(
+					searchMatchInfoA.MatchedProgress);
+			});
+		}
+
+		////////////////////////////////////////////////
+		// 4/，根据搜索、排序后的结果进行分页。
+		////////////////////////////////////////////////
+		itemsSearchedInPage = [];
+		if (isGetItemSearchMatchInfesInPage)
+		{
+			itemSearchMatchInfesInPage = new List<ItemSearchMatchInfo<ItemType>>();
+			for (var itemIndex = itemPageBeginItemIndex;
+			    itemIndex < itemPageEndItemIndex;
+			    itemIndex++)
+			{
+				var itemSearchMatchInfo = itemSearchMatchInfes[itemIndex];
+				// !!!
+				itemsSearchedInPage.Add(itemSearchMatchInfo.Item);
+				itemSearchMatchInfesInPage.Add(itemSearchMatchInfo);
+				// !!!
+			}
+		}
+		else
+		{
+			for (var itemIndex = itemPageBeginItemIndex;
+			    itemIndex < itemPageEndItemIndex;
+			    itemIndex++)
+			{
+				var itemSearchMatchInfo = itemSearchMatchInfes[itemIndex];
+				// !!!
+				itemsSearchedInPage.Add(itemSearchMatchInfo.Item);
+				// !!!
+			}
+		}
+		//
+		return new(
+			itemSearchMatchInfes.Count,
+			itemsSearchedInPage,
+			itemSearchMatchInfesInPage);
+		//
+	}
+
+
+	public static async Task<ItemSearchResult<ItemType>?> SearchAsync<ItemType>(
+		this IEnumerable<ItemType> items,
+		//
+		int searchTasksCount,
+		Func<ItemType, Task<double>>? toGetItemSearchMatchedProgressAsync,
+		Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
+		Func<List<ItemSearchMatchInfo<ItemType>>, Task<List<ItemSearchMatchInfo<ItemType>>>>? toSortItemSearchMatchInfesAsync,
+		//
+		int pageIndex,
+		int pageSize,
+		//
+		bool isGetItemSearchMatchInfesInPage = false)
+	{
+		var itemsCount = items.GetCount();
+		if (itemsCount < 1)
+		{
+			return null;
+		}
+
+		var itemPageBeginItemIndex = pageIndex * pageSize;
+		if (itemPageBeginItemIndex < 0)
+		{
+			itemPageBeginItemIndex = 0;
+		}
+		var itemPageEndItemIndex = itemPageBeginItemIndex + pageSize;
+		if (itemPageEndItemIndex > itemsCount)
+		{
+			itemPageEndItemIndex = itemsCount;
+		}
+		if (itemPageBeginItemIndex >= itemsCount
+		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
+		{
+			return null;
+		}
+
+		////////////////////////////////////////////////
+		// 1/，不需要搜索匹配和排序时，直接按有效的分页索引返回实体。
+		////////////////////////////////////////////////
+
+		List<ItemType> itemsSearchedInPage;
+		List<ItemSearchMatchInfo<ItemType>>? itemSearchMatchInfesInPage = null;
+		if (toGetItemSearchMatchedProgressAsync == null
+			&& toSortItemSearchMatchInfes == null
+			&& toSortItemSearchMatchInfesAsync == null)
+		{
+			itemsSearchedInPage = [];
+			var itemIndex = 0;
+			if (isGetItemSearchMatchInfesInPage)
+			{
+				itemSearchMatchInfesInPage = [];
+				foreach (var item in items)
+				{
+					if (itemIndex < itemPageBeginItemIndex)
+					{
+						itemIndex++;
+						continue;
+					}
+					if (itemIndex >= itemPageEndItemIndex)
+					{
+						break;
+					}
+					// !!!
+					itemsSearchedInPage.Add(item);
+					itemSearchMatchInfesInPage.Add(new(item, 1.0));
+					itemIndex++;
+					// !!!
+				}
+			}
+			else
+			{
+				foreach (var item in items)
+				{
+					if (itemIndex < itemPageBeginItemIndex)
+					{
+						itemIndex++;
+						continue;
+					}
+					if (itemIndex >= itemPageEndItemIndex)
+					{
+						break;
+					}
+					// !!!
+					itemsSearchedInPage.Add(item);
+					itemIndex++;
+					// !!!
+				}
+			}
+			//
+			return new(
+				itemsCount,
+				itemsSearchedInPage,
+				itemSearchMatchInfesInPage);
+			//
+		}
+
+		////////////////////////////////////////////////
+		// 2/，创建元素的搜索匹配信息。
+		////////////////////////////////////////////////
+
+		List<ItemSearchMatchInfo<ItemType>> itemSearchMatchInfes = [];
+		await items.ConcurrentProcessItemsAsync(
+			async (item) =>
+			{
+				var itemSearchMatchedProgress = 0.0;
+				if (toGetItemSearchMatchedProgressAsync != null)
+				{
+					itemSearchMatchedProgress = await toGetItemSearchMatchedProgressAsync(item);
+				}
+				if (itemSearchMatchedProgress <= 0)
+				{
+					return;
+				}
+				lock (itemSearchMatchInfes)
+				{
+					itemSearchMatchInfes.Add(new(
+						item,
+						itemSearchMatchedProgress));
+				}
+			},
+			searchTasksCount);
+
+		var itemSearchMatchInfesCount = itemSearchMatchInfes.Count;
+		if (itemPageEndItemIndex > itemSearchMatchInfesCount)
+		{
+			itemPageEndItemIndex = itemSearchMatchInfesCount;
+		}
+		if (itemPageBeginItemIndex >= itemSearchMatchInfesCount
+		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
+		{
+			return null;
+		}
+
+
+		////////////////////////////////////////////////
+		// 3/，根据搜索匹配信息排序元素。
+		////////////////////////////////////////////////
+		if (toSortItemSearchMatchInfes != null)
+		{
+			itemSearchMatchInfes
+			    = toSortItemSearchMatchInfes(itemSearchMatchInfes);
+		}
+		else if (toSortItemSearchMatchInfesAsync != null)
+		{
+			itemSearchMatchInfes = await toSortItemSearchMatchInfesAsync(itemSearchMatchInfes);
+		}
+		else
+		{
+			itemSearchMatchInfes.Sort((
+			    searchMatchInfoA,
+			    searchMatchInfoB) =>
+			{
+				return searchMatchInfoB.MatchedProgress.CompareTo(
+					searchMatchInfoA.MatchedProgress);
+			});
+		}
+
+		////////////////////////////////////////////////
+		// 4/，根据搜索、排序后的结果进行分页。
+		////////////////////////////////////////////////
+		itemsSearchedInPage = [];
+		if (isGetItemSearchMatchInfesInPage)
+		{
+			itemSearchMatchInfesInPage = new List<ItemSearchMatchInfo<ItemType>>();
+			for (var itemIndex = itemPageBeginItemIndex;
+			    itemIndex < itemPageEndItemIndex;
+			    itemIndex++)
+			{
+				var itemSearchMatchInfo = itemSearchMatchInfes[itemIndex];
+				// !!!
+				itemsSearchedInPage.Add(itemSearchMatchInfo.Item);
+				itemSearchMatchInfesInPage.Add(itemSearchMatchInfo);
+				// !!!
+			}
+		}
+		else
+		{
+			for (var itemIndex = itemPageBeginItemIndex;
+			    itemIndex < itemPageEndItemIndex;
+			    itemIndex++)
+			{
+				var itemSearchMatchInfo = itemSearchMatchInfes[itemIndex];
+				// !!!
+				itemsSearchedInPage.Add(itemSearchMatchInfo.Item);
+				// !!!
+			}
+		}
+		//
+		return new(
+			itemSearchMatchInfes.Count,
+			itemsSearchedInPage,
+			itemSearchMatchInfesInPage);
+		//
 	}
 }

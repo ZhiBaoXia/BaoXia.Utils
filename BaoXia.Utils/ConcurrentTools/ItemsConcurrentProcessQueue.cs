@@ -17,6 +17,12 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 	public Tasks TaskToProcessItem { get; set; } = new(tasksCountToProcessItemMax);
 
 	#endregion
+
+
+	////////////////////////////////////////////////
+	// @自身实现
+	////////////////////////////////////////////////
+
 	#region 自身实现
 
 	public void ProcessItem(
@@ -32,9 +38,13 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 		//
 		TaskToProcessItem.TryRun(() =>
 		{
-			// !!!
-			toProcessItem(item);
-			// !!!
+			while (ItemQueueNeedProcessed.TryDequeue(
+				out var itemNeedProcess))
+			{
+				// !!!
+				toProcessItem(itemNeedProcess);
+				// !!!
+			}
 		});
 		// !!!
 	}
@@ -52,9 +62,13 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 		//
 		TaskToProcessItem.TryRun(async () =>
 		{
-			// !!!
-			await toProcessItemAsync(item);
-			// !!!
+			while (ItemQueueNeedProcessed.TryDequeue(
+				out var itemNeedProcess))
+			{
+				// !!!
+				await toProcessItemAsync(itemNeedProcess);
+				// !!!
+			}
 		});
 		// !!!
 	}

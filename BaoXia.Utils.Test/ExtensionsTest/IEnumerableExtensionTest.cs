@@ -1,7 +1,10 @@
 ﻿using BaoXia.Utils.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test.ExtensionsTest;
@@ -690,5 +693,87 @@ public class IEnumerableExtensionTest
 		// !!!
 		Assert.IsTrue(itemsCount == items.Count);
 		// !!!
+	}
+
+	class ItemEnumratesCount
+	{
+		public int Number;
+	}
+
+	[TestMethod]
+	public async Task ConcurrentProcessItemsAsyncTest()
+	{
+		var sourceItems = new int[10000];
+		for (var itemindex = 0;
+			itemindex < sourceItems.Length;
+			itemindex++)
+		{
+			sourceItems[itemindex] = itemindex;
+		}
+
+
+		ConcurrentDictionary<int, ItemEnumratesCount> itemEnumratesCounts = new();
+
+		await sourceItems.ConcurrentProcessItemsAsync(
+			       (item) =>
+			       {
+				       var itemEnumratesCount
+				       = itemEnumratesCounts.GetOrAdd(item, new ItemEnumratesCount());
+				       // !!!
+				       Interlocked.Increment(ref itemEnumratesCount.Number);
+				       // !!!
+			       });
+		foreach (var sourceItem in sourceItems)
+		{
+			Assert.IsTrue(itemEnumratesCounts.TryGetValue(
+				sourceItem,
+				out var itemEnumratesCount)
+				== true);
+			// !!!
+			Assert.IsTrue(itemEnumratesCount.Number == 1);
+			// !!!
+		}
+	}
+
+
+	[DataTestMethod]
+	public async Task SearchAsyncTest()
+	{
+		var testItems = new TestItem[10000];
+		for (var testIndex = 0;
+			testIndex < testItems.Length;
+			testIndex++)
+		{
+			testItems[testIndex] = new(
+				testIndex,
+				(testIndex + 1).ToString());
+		}
+		var searchKey = "99";
+
+		var searchPage = await testItems.SearchAsync(
+			10,
+			(item) =>
+			{
+				return item.Value.GetMatchProgressValueOf(searchKey);
+			},
+			null,
+			null,
+			0,
+			20);
+		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
+		Assert.IsTrue(searchPage?.ItemsInPage![0].Value == "99");
+
+		searchPage = await testItems.SearchAsync(
+			10,
+			(item) =>
+			{
+				return item.Value.GetMatchProgressValueOf(searchKey);
+			},
+			null,
+			null,
+			1,
+			20);
+		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
+		Assert.IsTrue(searchPage?.ItemsInPage![0].Value == "9915");
 	}
 }

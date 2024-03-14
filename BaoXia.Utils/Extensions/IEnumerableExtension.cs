@@ -2,6 +2,7 @@
 using BaoXia.Utils.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -100,6 +101,21 @@ public static class IEnumerableExtension
 				break;
 			}
 		}
+	}
+
+	public static bool IsEmpty<ItemType>(this IEnumerable<ItemType>? items)
+	{
+		if (items == null
+			|| items.GetCount() < 1)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public static bool IsNotEmpty<ItemType>([NotNullWhen(true)] this IEnumerable<ItemType>? items)
+	{
+		return !IsEmpty(items);
 	}
 
 	public static bool IsContains<ItemType>(

@@ -534,15 +534,24 @@ public static class ArrayExtension
 	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
 	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
 	/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
-	/// <param name="searchRangeEndIndex">结束查找的对象索引值。</param>
+	/// <param name="searchRangeLength">查找范围的对象数量。</param>
 	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="isGetItemNearestLeft">是否获取最接近目标的左侧对象。</param>
+	/// <param name="itemIndexNearest">最接近目标的左侧对象索引值。</param>
+	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomyInRange<ItemType>(
 		this ItemType[]? itemsSorted,
 		int searchRangeBeginIndex,
 		int searchRangeLength,
-		Func<ItemType, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toComparerToObjectItemWith,
+		bool isGetItemNearestLeft,
+		out int itemIndexNearest,
+		out ItemType? itemNearest)
 	{
+		itemIndexNearest = -1;
+		itemNearest = default;
+
 		if (itemsSorted == null
 			|| itemsSorted.Length < 1)
 		{
@@ -573,7 +582,7 @@ public static class ArrayExtension
 				+ searchRangeLength / 2;
 
 			var item = items[searchShotIndex];
-			var resultOfComparerItemToObjectItem = toComparerToObjectItemWith(item);
+			var resultOfComparerItemToObjectItem = toComparerToObjectItemWith(item, searchShotIndex);
 			if (resultOfComparerItemToObjectItem == 0)
 			{
 				// !!!
@@ -581,19 +590,55 @@ public static class ArrayExtension
 				// !!!
 				break;
 			}
-			else if (searchRangeLength == 1)
+			else
 			{
-				break;
+				// !!! 不是目标时，记录最接近目标的元素信息。 !!!
+				itemIndexNearest = searchShotIndex;
+				itemNearest = item;
+				// !!!
+				if (searchRangeLength == 1)
+				{
+					break;
+				}
+				else if (resultOfComparerItemToObjectItem < 0)
+				{
+					searchRangeBeginIndex = searchShotIndex;
+					// searchRangeEndIndex = searchRangeEndIndex;
+				}
+				else if (resultOfComparerItemToObjectItem > 0)
+				{
+					// searchRangeBeginIndex = searchRangeBeginIndex;
+					searchRangeEndIndex = searchShotIndex;
+				}
 			}
-			else if (resultOfComparerItemToObjectItem < 0)
+		}
+		if (isGetItemNearestLeft)
+		{
+			if (itemNearest == null)
 			{
-				searchRangeBeginIndex = searchShotIndex;
-				// searchRangeEndIndex = searchRangeEndIndex;
+				itemIndexNearest = 0;
+				itemNearest = items[itemIndexNearest];
 			}
-			else if (resultOfComparerItemToObjectItem > 0)
+			else if (itemIndexNearest > 0
+				&& toComparerToObjectItemWith(itemNearest, itemIndexNearest) > 0)
 			{
-				// searchRangeBeginIndex = searchRangeBeginIndex;
-				searchRangeEndIndex = searchShotIndex;
+				itemIndexNearest -= 1;
+				itemNearest = items[itemIndexNearest];
+			}
+		}
+		else
+		{
+
+			if (itemNearest == null)
+			{
+				itemIndexNearest = items.Length;
+				itemNearest = default;
+			}
+			else if (itemIndexNearest > 0
+				&& toComparerToObjectItemWith(itemNearest, itemIndexNearest) < 0)
+			{
+				itemIndexNearest += 1;
+				itemNearest = items[itemIndexNearest];
 			}
 		}
 		return objectItemIndexMatched;
@@ -605,16 +650,25 @@ public static class ArrayExtension
 	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
 	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
 	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="isGetItemNearestLeft">是否获取最接近目标的左侧对象。</param>
+	/// <param name="itemIndexNearest">最接近目标的左侧对象索引值。</param>
+	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomy<ItemType>(
 		this ItemType[]? itemsSorted,
-		Func<ItemType, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toComparerToObjectItemWith,
+		bool isGetItemNearestLeft,
+		out int itemIndexNearest,
+		out ItemType? itemNearest)
 	{
 		return ArrayExtension.FindItemIndexWithDichotomyInRange<ItemType>(
 			itemsSorted,
 			-1,
 			-1,
-			toComparerToObjectItemWith);
+			toComparerToObjectItemWith,
+			isGetItemNearestLeft,
+			out itemIndexNearest,
+			out itemNearest);
 	}
 
 	/// <summary>
@@ -625,18 +679,27 @@ public static class ArrayExtension
 	/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
 	/// <param name="searchRangeEndIndex">结束查找的对象索引值。</param>
 	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="isGetItemNearestLeft">是否获取最接近目标的左侧对象。</param>
+	/// <param name="itemIndexNearest">最接近目标的左侧对象索引值。</param>
+	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
 	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
 		this ItemType[]? itemsSorted,
 		int searchRangeBeginIndex,
 		int searchRangeEndIndex,
-		Func<ItemType, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toComparerToObjectItemWith,
+		bool isGetItemNearestLeft,
+		out int itemIndexNearest,
+		out ItemType? itemNearest)
 	{
 		var itemIndex = ArrayExtension.FindItemIndexWithDichotomyInRange(
 			itemsSorted,
 			searchRangeBeginIndex,
 			searchRangeEndIndex,
-			toComparerToObjectItemWith);
+			toComparerToObjectItemWith,
+			isGetItemNearestLeft,
+			out itemIndexNearest,
+			out itemNearest);
 		if (itemsSorted != null
 			&& itemIndex >= 0
 		       && itemIndex < itemsSorted.Length)
@@ -652,16 +715,25 @@ public static class ArrayExtension
 	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
 	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
 	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="isGetItemNearestLeft">是否获取最接近目标的左侧对象。</param>
+	/// <param name="itemIndexNearest">最接近目标的左侧对象索引值。</param>
+	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
 	public static ItemType? FindItemWithDichotomy<ItemType>(
 		this ItemType[]? itemsSorted,
-		Func<ItemType, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toComparerToObjectItemWith,
+		bool isGetItemNearestLeft,
+		out int itemIndexNearest,
+		out ItemType? itemNearest)
 	{
 		return ArrayExtension.FindItemWithDichotomyInRange<ItemType>(
 			itemsSorted,
 			-1,
 			-1,
-			toComparerToObjectItemWith);
+			toComparerToObjectItemWith,
+			isGetItemNearestLeft,
+			out itemIndexNearest,
+			out itemNearest);
 	}
 
 	public static List<ItemType> GetPageItems<ItemType>(

@@ -204,7 +204,7 @@ public class ArrayExtensionTest
 		{
 			var objectTestItem = items[i];
 			var itemIndexFound = items.FindItemIndexWithDichotomy(
-				(testItem) =>
+				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
@@ -223,7 +223,7 @@ public class ArrayExtensionTest
 			var itemIndexFound = items.FindItemIndexWithDichotomyInRange(
 				testSearchRangeBeginIndex,
 				testSearchRangeLength,
-				(testItem) =>
+				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
@@ -234,10 +234,11 @@ public class ArrayExtensionTest
 		for (var i = 0; i < items.Length; i++)
 		{
 			var objectTestItem = items[i];
-			var itemFound = items.FindItemWithDichotomy((testItem) =>
-			{
-				return testItem.Index.CompareTo(objectTestItem.Index);
-			});
+			var itemFound = items.FindItemWithDichotomy(
+				(testItem, testItemIndex) =>
+				{
+					return testItem.Index.CompareTo(objectTestItem.Index);
+				});
 			Assert.IsTrue(itemFound?.Index == objectTestItem.Index);
 		}
 
@@ -253,7 +254,7 @@ public class ArrayExtensionTest
 			var itemFound = items.FindItemWithDichotomyInRange(
 				testSearchRangeBeginIndex,
 				testSearchRangeLength,
-				(testItem) =>
+				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
@@ -261,6 +262,87 @@ public class ArrayExtensionTest
 		}
 	}
 
+	[TestMethod]
+	public void FindNearestItemIndexWithDichotomyTest()
+	{
+		var itemList = new List<int>();
+		var random = new System.Random();
+		const int testItemCount = 100;
+		for (int testItemIndex = 0;
+			testItemIndex < testItemCount;
+			testItemIndex++)
+		{
+			if (testItemIndex % 2 == 0)
+			{
+				itemList.Add(testItemIndex);
+			}
+		}
+		itemList.Sort((itemA, itemB) =>
+		{
+			return itemA.CompareTo(itemB);
+		});
+
+		var items = itemList.ToArray();
+		for (int objectTestItemIndex = 0;
+			objectTestItemIndex < testItemCount;
+			objectTestItemIndex++)
+		{
+			items.FindItemIndexWithDichotomy(
+				(testItem, testItemIndex) =>
+				{
+					return testItem.CompareTo(objectTestItemIndex);
+				},
+				//
+				true,
+				out var itemIndexNearest,
+				out var itemNearestAtLeft);
+			if (objectTestItemIndex == 0)
+			{
+				Assert.IsTrue(itemIndexNearest == -1);
+				Assert.IsTrue(itemNearestAtLeft == default);
+			}
+			else if ((objectTestItemIndex % 2) == 1)
+			{
+				Assert.IsTrue(itemIndexNearest == (objectTestItemIndex / 2));
+				Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 1);
+			}
+			else
+			{
+				// !!!
+				Assert.IsTrue(itemIndexNearest == (objectTestItemIndex / 2) - 1);
+				if (itemIndexNearest >= 0
+					&& itemIndexNearest < items.Length)
+				{
+					Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 2);
+				}
+				// !!!
+			}
+		}
+
+		@last
+		for (int objectTestItemIndex = 0;
+			objectTestItemIndex < testItemCount;
+			objectTestItemIndex++)
+		{
+			items.FindItemIndexWithDichotomy(
+				(testItem, testItemIndex) =>
+				{
+					return testItem.CompareTo(objectTestItemIndex);
+				},
+				//
+				false,
+				out var itemIndexNearest,
+				out var itemNearestAtRight);
+			// !!!
+			Assert.IsTrue(itemIndexNearest == objectTestItemIndex + 1);
+			if (itemIndexNearest >= 0
+				&& itemIndexNearest < items.Length)
+			{
+				Assert.IsTrue(itemNearestAtRight == objectTestItemIndex + 1);
+			}
+			// !!!
+		}
+	}
 
 	class TestObjectWithoutEqual : object
 	{

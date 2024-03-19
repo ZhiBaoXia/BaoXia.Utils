@@ -614,31 +614,67 @@ public static class ArrayExtension
 		}
 		if (isGetItemNearestLeft)
 		{
-			if (itemNearest == null)
+			if (objectItemIndexMatched >= 0)
+			{
+				itemIndexNearest = objectItemIndexMatched - 1;
+				if (itemIndexNearest >= 0)
+				{
+					itemNearest = items[itemIndexNearest];
+				}
+				else
+				{
+					itemNearest = default;
+				}
+			}
+			else if (itemNearest == null)
 			{
 				itemIndexNearest = 0;
 				itemNearest = items[itemIndexNearest];
 			}
-			else if (itemIndexNearest > 0
-				&& toComparerToObjectItemWith(itemNearest, itemIndexNearest) > 0)
+			else if (toComparerToObjectItemWith(itemNearest, itemIndexNearest) > 0)
 			{
-				itemIndexNearest -= 1;
-				itemNearest = items[itemIndexNearest];
+				itemIndexNearest--;
+				if (itemIndexNearest >= 0)
+				{
+					itemNearest = items[itemIndexNearest];
+				}
+				else
+				{
+					itemNearest = default;
+				}
 			}
 		}
 		else
 		{
 
-			if (itemNearest == null)
+			if (objectItemIndexMatched >= 0)
+			{
+				itemIndexNearest = objectItemIndexMatched + 1;
+				if (itemIndexNearest < items.Length)
+				{
+					itemNearest = items[itemIndexNearest];
+				}
+				else
+				{
+					itemNearest = default;
+				}
+			}
+			else if (itemNearest == null)
 			{
 				itemIndexNearest = items.Length;
 				itemNearest = default;
 			}
-			else if (itemIndexNearest > 0
-				&& toComparerToObjectItemWith(itemNearest, itemIndexNearest) < 0)
+			else if (toComparerToObjectItemWith(itemNearest, itemIndexNearest) < 0)
 			{
-				itemIndexNearest += 1;
-				itemNearest = items[itemIndexNearest];
+				itemIndexNearest++;
+				if (itemIndexNearest < items.Length)
+				{
+					itemNearest = items[itemIndexNearest];
+				}
+				else
+				{
+					itemNearest = default;
+				}
 			}
 		}
 		return objectItemIndexMatched;
@@ -735,6 +771,69 @@ public static class ArrayExtension
 			out itemIndexNearest,
 			out itemNearest);
 	}
+
+
+	public static int FindItemIndexWithDichotomyInRange<ItemType>(
+		this ItemType[]? itemsSorted,
+		int searchRangeBeginIndex,
+		int searchRangeLength,
+		Func<ItemType, int, int> toComparerToObjectItemWith)
+	{
+		return FindItemIndexWithDichotomyInRange(
+			itemsSorted,
+			searchRangeBeginIndex,
+			searchRangeLength,
+			toComparerToObjectItemWith,
+			//
+			true,
+			out _,
+			out _);
+	}
+
+	public static int FindItemIndexWithDichotomy<ItemType>(
+		this ItemType[]? itemsSorted,
+		Func<ItemType, int, int> toComparerToObjectItemWith)
+	{
+		return FindItemIndexWithDichotomy(
+			itemsSorted,
+			toComparerToObjectItemWith,
+			//
+			true,
+			out _,
+			out _);
+	}
+
+	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
+		this ItemType[]? itemsSorted,
+		int searchRangeBeginIndex,
+		int searchRangeEndIndex,
+		Func<ItemType, int, int> toComparerToObjectItemWith)
+	{
+		return FindItemWithDichotomyInRange(
+			itemsSorted,
+			searchRangeBeginIndex,
+			searchRangeEndIndex,
+			toComparerToObjectItemWith,
+			//
+			true,
+			out _,
+			out _);
+	}
+
+	public static ItemType? FindItemWithDichotomy<ItemType>(
+		this ItemType[]? itemsSorted,
+		Func<ItemType, int, int> toComparerToObjectItemWith)
+	{
+		return FindItemWithDichotomy(
+			itemsSorted,
+			toComparerToObjectItemWith,
+			//
+			true,
+			out _,
+			out _);
+	}
+
+
 
 	public static List<ItemType> GetPageItems<ItemType>(
 	    this ItemType[] items,

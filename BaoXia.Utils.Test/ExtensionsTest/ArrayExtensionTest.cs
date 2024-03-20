@@ -283,6 +283,9 @@ public class ArrayExtensionTest
 		});
 
 		var items = itemList.ToArray();
+
+		//var firstTestItemOdd = 1;
+		var firsttTestItemEven = 0;
 		for (int objectTestItemIndex = 0;
 			objectTestItemIndex < testItemCount;
 			objectTestItemIndex++)
@@ -294,32 +297,43 @@ public class ArrayExtensionTest
 				},
 				//
 				true,
-				out var itemIndexNearest,
+				out var itemIndexNearestAtLeft,
 				out var itemNearestAtLeft);
-			if (objectTestItemIndex == 0)
+
+
+			if ((objectTestItemIndex % 2) == 0)
 			{
-				Assert.IsTrue(itemIndexNearest == -1);
-				Assert.IsTrue(itemNearestAtLeft == default);
-			}
-			else if ((objectTestItemIndex % 2) == 1)
-			{
-				Assert.IsTrue(itemIndexNearest == (objectTestItemIndex / 2));
-				Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 1);
-			}
-			else
-			{
-				// !!!
-				Assert.IsTrue(itemIndexNearest == (objectTestItemIndex / 2) - 1);
-				if (itemIndexNearest >= 0
-					&& itemIndexNearest < items.Length)
+				Assert.IsTrue(itemIndexNearestAtLeft == (objectTestItemIndex / 2) - 1);
+				if (itemIndexNearestAtLeft >= 0)
 				{
 					Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 2);
 				}
-				// !!!
+				else if (itemIndexNearestAtLeft == -1)
+				{
+					Assert.IsTrue(itemNearestAtLeft == firsttTestItemEven);
+				}
+				else
+				{
+					Assert.Fail();
+				}
+			}
+			else
+			{
+				Assert.IsTrue(itemIndexNearestAtLeft == (objectTestItemIndex / 2));
+				Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 1);
 			}
 		}
 
-		@last
+		var lastTestItemOdd = testItemCount - 1;
+		if (lastTestItemOdd % 2 == 0)
+		{
+			lastTestItemOdd -= 1;
+		}
+		var lastTestItemEven = testItemCount - 1;
+		if (lastTestItemEven % 2 != 0)
+		{
+			lastTestItemEven -= 1;
+		}
 		for (int objectTestItemIndex = 0;
 			objectTestItemIndex < testItemCount;
 			objectTestItemIndex++)
@@ -331,16 +345,40 @@ public class ArrayExtensionTest
 				},
 				//
 				false,
-				out var itemIndexNearest,
+				out var itemIndexNearestAtRight,
 				out var itemNearestAtRight);
-			// !!!
-			Assert.IsTrue(itemIndexNearest == objectTestItemIndex + 1);
-			if (itemIndexNearest >= 0
-				&& itemIndexNearest < items.Length)
+			if ((objectTestItemIndex % 2) == 0)
 			{
-				Assert.IsTrue(itemNearestAtRight == objectTestItemIndex + 1);
+				Assert.IsTrue(itemIndexNearestAtRight == (objectTestItemIndex / 2) + 1);
+				if (itemIndexNearestAtRight < items.Length)
+				{
+					Assert.IsTrue(itemNearestAtRight == objectTestItemIndex + 2);
+				}
+				else if (itemIndexNearestAtRight == items.Length)
+				{
+					Assert.IsTrue(objectTestItemIndex == lastTestItemEven);
+				}
+				else
+				{
+					Assert.Fail();
+				}
 			}
-			// !!!
+			else
+			{
+				Assert.IsTrue(itemIndexNearestAtRight == (objectTestItemIndex / 2) + 1);
+				if (itemIndexNearestAtRight < items.Length)
+				{
+					Assert.IsTrue(itemNearestAtRight == objectTestItemIndex + 1);
+				}
+				else if (itemIndexNearestAtRight == items.Length)
+				{
+					Assert.IsTrue(objectTestItemIndex == lastTestItemOdd);
+				}
+				else
+				{
+					Assert.Fail();
+				}
+			}
 		}
 	}
 

@@ -528,6 +528,8 @@ public static class ArrayExtension
 			out objectItemIndex);
 	}
 
+
+
 	/// <summary>
 	/// 使用二分法查找目标元素在列表中的索引值。
 	/// </summary>

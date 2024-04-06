@@ -1,7 +1,9 @@
 ﻿using BaoXia.Utils.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test.ExtensionsTest;
@@ -690,5 +692,159 @@ public class IEnumerableExtensionTest
 		// !!!
 		Assert.IsTrue(itemsCount == items.Count);
 		// !!!
+	}
+
+	class ItemEnumratesCount
+	{
+		public int Number;
+	}
+
+	[TestMethod]
+	public async Task ConcurrentProcessItemsAsyncTest()
+	{
+		var sourceItems = new int[10000];
+		for (var itemindex = 0;
+			itemindex < sourceItems.Length;
+			itemindex++)
+		{
+			sourceItems[itemindex] = itemindex;
+		}
+
+
+		ConcurrentDictionary<int, ItemEnumratesCount> itemEnumratesCounts = new();
+
+		await sourceItems.ConcurrentProcessItemsAsync(
+			       (item) =>
+			       {
+				       var itemEnumratesCount
+				       = itemEnumratesCounts.GetOrAdd(item, new ItemEnumratesCount());
+				       // !!!
+				       Interlocked.Increment(ref itemEnumratesCount.Number);
+				       // !!!
+			       });
+		foreach (var sourceItem in sourceItems)
+		{
+			Assert.IsTrue(itemEnumratesCounts.TryGetValue(
+				sourceItem,
+				out var itemEnumratesCount)
+				== true);
+			// !!!
+			Assert.IsTrue(itemEnumratesCount.Number == 1);
+			// !!!
+		}
+	}
+
+
+	[DataTestMethod]
+	public async Task SearchAsyncTest()
+	{
+		var testItems = new TestItem[10000];
+		for (var testIndex = 0;
+			testIndex < testItems.Length;
+			testIndex++)
+		{
+			testItems[testIndex] = new(
+				testIndex,
+				(testIndex + 1).ToString());
+		}
+		var searchKey = "99";
+
+		var searchPage = await testItems.SearchAsync(
+			10,
+			(item) =>
+			{
+				return item.Value.GetMatchProgressValueOf(
+					searchKey,
+					StringComparison.OrdinalIgnoreCase,
+					false);
+			},
+			(itemSearchResults) =>
+			{
+				itemSearchResults.Sort((searchResultA, searchResultB) =>
+				{
+					var compareResult
+					= searchResultB.MatchedProgress.CompareTo(
+						searchResultA.MatchedProgress);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					compareResult
+					= searchResultB.Item.Value.Length.CompareTo(
+						searchResultA.Item.Value.Length);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					compareResult
+					= searchResultB.Item.GroupId.CompareTo(
+						searchResultA.Item.GroupId);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					return 0;
+				});
+				return itemSearchResults;
+			},
+			null,
+			0,
+			20);
+		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
+		var itemPage = searchPage?.ItemsInPage!;
+		var firstItemInPage = itemPage[0].Value;
+		Assert.IsTrue(firstItemInPage == "9999");
+
+		searchPage = await testItems.SearchAsync(
+			10,
+			(item) =>
+			{
+				return item.Value.GetMatchProgressValueOf(
+					searchKey,
+					StringComparison.OrdinalIgnoreCase,
+					false);
+			},
+			(itemSearchResults) =>
+			{
+				itemSearchResults.Sort((searchResultA, searchResultB) =>
+				{
+					var compareResult
+					= searchResultB.MatchedProgress.CompareTo(
+						searchResultA.MatchedProgress);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					compareResult
+					= searchResultB.Item.Value.Length.CompareTo(
+						searchResultA.Item.Value.Length);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					compareResult
+					= searchResultB.Item.GroupId.CompareTo(
+						searchResultA.Item.GroupId);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					return 0;
+				});
+				return itemSearchResults;
+			},
+			null,
+			1,
+			20);
+		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
+		itemPage = searchPage?.ItemsInPage!;
+		firstItemInPage = itemPage[0].Value;
+		Assert.IsTrue(firstItemInPage == "9998");
 	}
 }

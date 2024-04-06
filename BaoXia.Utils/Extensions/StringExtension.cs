@@ -387,11 +387,13 @@ public static class StringExtension
 	/// <param name="str">当前字符串。</param>
 	/// <param name="key">要查找的字符串。</param>
 	/// <param name="comparisonType">查找字符串时的比较参数，默认为“StringComparison.Ordinal”。</param>
+	/// <param name="isKeyCharsOverlapEnable">目标关键字是否可以重叠，如：“999”是否算作包含两次的“99”，默认为“false”，不重叠。</param>
 	/// <returns>指定字符串在当前字符串中出现的次数，类型为：int。</returns>
 	public static int CountOfString(
 	    this string? str,
 	    string? key,
-	    StringComparison comparisonType = StringComparison.Ordinal)
+	    StringComparison comparisonType = StringComparison.Ordinal,
+	    bool isKeyCharsOverlapEnable = false)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -411,7 +413,14 @@ public static class StringExtension
 			if (indexOfKey >= 0)
 			{
 				keysCount++;
-				lastKeyEndIndex = indexOfKey + keyLength;
+				if (isKeyCharsOverlapEnable)
+				{
+					lastKeyEndIndex = indexOfKey + 1;
+				}
+				else
+				{
+					lastKeyEndIndex = indexOfKey + keyLength;
+				}
 			}
 			else
 			{
@@ -443,11 +452,13 @@ public static class StringExtension
 	/// <param name="str">当前字符串。</param>
 	/// <param name="matchValue">指定的匹配字符串。</param>
 	/// <param name="comparisonType">查找字符串时的比较参数，默认为“StringComparison.OrdinalIgnoreCase”。</param>
+	/// <param name="isMatchValueCharsOverlapEnable">目标字符串是否可以重叠，如：“999”是否算作包含两次的“99”，默认为“false”，不重叠。</param>
 	/// <returns>指定匹配字符串，在当前字符串中的匹配进度值，范围：0.0 - 1.0 。</returns>
 	public static double GetMatchProgressValueOf(
 		this string? str,
 		string? matchValue,
-		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase,
+		bool isMatchValueCharsOverlapEnable = false)
 	{
 		if (string.IsNullOrEmpty(str)
 		    || string.IsNullOrEmpty(matchValue))
@@ -457,7 +468,8 @@ public static class StringExtension
 
 		var searchKeysCount = str.CountOfString(
 		    matchValue,
-		    comparisonType);
+		    comparisonType,
+		    isMatchValueCharsOverlapEnable);
 		if (searchKeysCount < 0)
 		{
 			return 0;

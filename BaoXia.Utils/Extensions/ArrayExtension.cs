@@ -1,8 +1,5 @@
-﻿using BaoXia.Utils.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Extensions;
 
@@ -20,14 +17,27 @@ public static class ArrayExtension
 	/// <param name="isNullEqualsNone">另一个数组对象为“null”时，如果当前数组对象没有元素，是否视为相等，默认为“true”。</param>
 	/// <returns>两个数组中的每一个元素都相等时，返回“true”，否则返回“false”。</returns>
 	public static bool IsItemsEqual<ItemType>(
-		this ItemType[] items,
+		this ItemType[]? items,
 		ItemType[]? anotherItems,
 		bool isNullEqualsNone = true)
 	{
+		if (items == null)
+		{
+			if (anotherItems == null)
+			{
+				return true;
+			}
+			else if (isNullEqualsNone
+				&& anotherItems.Length < 1)
+			{
+				return true;
+			}
+			return false;
+		}
 		if (anotherItems == null)
 		{
-			if (items.Length < 1
-				&& isNullEqualsNone == true)
+			if (isNullEqualsNone == true
+				&& items.Length < 1)
 			{
 				return false;
 			}
@@ -150,6 +160,75 @@ public static class ArrayExtension
 		}
 		return newItems;
 	}
+
+	public static ItemType[] ArrayByInsertWithOrder<ItemType>(
+		this ItemType[] items,
+		ItemType newItem,
+		Func<ItemType, ItemType, int> toCompareItem)
+	{
+		if (items.Length < 1)
+		{
+			// !!!
+			return items.ArrayByAdd(newItem);
+			// !!!
+		}
+
+		for (var itemIndex = 0;
+			itemIndex < items.Length;
+			itemIndex++)
+		{
+			var item = items[itemIndex];
+			var compareResult = toCompareItem(newItem, item);
+			if (compareResult < 0)
+			{
+				// !!!
+				return items.ArrayByInsertAt(itemIndex, newItem);
+				// !!!
+			}
+			if (itemIndex == (items.Length - 1))
+			{
+				// !!!
+				return items.ArrayByInsertAt(itemIndex + 1, newItem);
+				// !!!
+			}
+		}
+		return items;
+	}
+
+	public static ItemType[] ArrayByInsertWithOrderDescending<ItemType>(
+		this ItemType[] items,
+		ItemType newItem,
+		Func<ItemType, ItemType, int> toCompareItem)
+	{
+		if (items.Length < 1)
+		{
+			// !!!
+			return items.ArrayByAdd(newItem);
+			// !!!
+		}
+
+		for (var itemIndex = 0;
+			itemIndex < items.Length;
+			itemIndex++)
+		{
+			var item = items[itemIndex];
+			var compareResult = toCompareItem(newItem, item);
+			if (compareResult > 0)
+			{
+				// !!!
+				return items.ArrayByInsertAt(itemIndex, newItem);
+				// !!!
+			}
+			if (itemIndex == (items.Length - 1))
+			{
+				// !!!
+				return items.ArrayByInsertAt(itemIndex + 1, newItem);
+				// !!!
+			}
+		}
+		return items;
+	}
+
 
 	/// <summary>
 	/// 通过在新增多个元素，创建新的元素数组。
@@ -459,21 +538,32 @@ public static class ArrayExtension
 			out objectItemIndex);
 	}
 
+
+
 	/// <summary>
 	/// 使用二分法查找目标元素在列表中的索引值。
 	/// </summary>
 	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
 	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
 	/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
-	/// <param name="searchRangeEndIndex">结束查找的对象索引值。</param>
+	/// <param name="searchRangeLength">查找范围的对象数量。</param>
 	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="isGetItemNearestLeft">是否获取最接近目标的左侧对象。</param>
+	/// <param name="itemIndexNearest">最接近目标的左侧对象索引值。</param>
+	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomyInRange<ItemType>(
 		this ItemType[]? itemsSorted,
 		int searchRangeBeginIndex,
 		int searchRangeLength,
-		Func<ItemType, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toComparerToObjectItemWith,
+		bool isGetItemNearestLeft,
+		out int itemIndexNearest,
+		out ItemType? itemNearest)
 	{
+		itemIndexNearest = -1;
+		itemNearest = default;
+
 		if (itemsSorted == null
 			|| itemsSorted.Length < 1)
 		{
@@ -504,7 +594,7 @@ public static class ArrayExtension
 				+ searchRangeLength / 2;
 
 			var item = items[searchShotIndex];
-			var resultOfComparerItemToObjectItem = toComparerToObjectItemWith(item);
+			var resultOfComparerItemToObjectItem = toComparerToObjectItemWith(item, searchShotIndex);
 			if (resultOfComparerItemToObjectItem == 0)
 			{
 				// !!!
@@ -512,19 +602,91 @@ public static class ArrayExtension
 				// !!!
 				break;
 			}
-			else if (searchRangeLength == 1)
+			else
 			{
-				break;
+				// !!! 不是目标时，记录最接近目标的元素信息。 !!!
+				itemIndexNearest = searchShotIndex;
+				itemNearest = item;
+				// !!!
+				if (searchRangeLength == 1)
+				{
+					break;
+				}
+				else if (resultOfComparerItemToObjectItem < 0)
+				{
+					searchRangeBeginIndex = searchShotIndex;
+					// searchRangeEndIndex = searchRangeEndIndex;
+				}
+				else if (resultOfComparerItemToObjectItem > 0)
+				{
+					// searchRangeBeginIndex = searchRangeBeginIndex;
+					searchRangeEndIndex = searchShotIndex;
+				}
 			}
-			else if (resultOfComparerItemToObjectItem < 0)
+		}
+		if (isGetItemNearestLeft)
+		{
+			if (objectItemIndexMatched >= 0)
 			{
-				searchRangeBeginIndex = searchShotIndex;
-				// searchRangeEndIndex = searchRangeEndIndex;
+				itemIndexNearest = objectItemIndexMatched - 1;
+				if (itemIndexNearest >= 0)
+				{
+					itemNearest = items[itemIndexNearest];
+				}
+				else
+				{
+					itemNearest = default;
+				}
 			}
-			else if (resultOfComparerItemToObjectItem > 0)
+			else if (itemNearest == null)
 			{
-				// searchRangeBeginIndex = searchRangeBeginIndex;
-				searchRangeEndIndex = searchShotIndex;
+				itemIndexNearest = 0;
+				itemNearest = items[itemIndexNearest];
+			}
+			else if (toComparerToObjectItemWith(itemNearest, itemIndexNearest) > 0)
+			{
+				itemIndexNearest--;
+				if (itemIndexNearest >= 0)
+				{
+					itemNearest = items[itemIndexNearest];
+				}
+				else
+				{
+					itemNearest = default;
+				}
+			}
+		}
+		else
+		{
+
+			if (objectItemIndexMatched >= 0)
+			{
+				itemIndexNearest = objectItemIndexMatched + 1;
+				if (itemIndexNearest < items.Length)
+				{
+					itemNearest = items[itemIndexNearest];
+				}
+				else
+				{
+					itemNearest = default;
+				}
+			}
+			else if (itemNearest == null)
+			{
+				itemIndexNearest = items.Length;
+				itemNearest = default;
+			}
+			else if (toComparerToObjectItemWith(itemNearest, itemIndexNearest) < 0)
+			{
+				itemIndexNearest++;
+				if (itemIndexNearest < items.Length)
+				{
+					itemNearest = items[itemIndexNearest];
+				}
+				else
+				{
+					itemNearest = default;
+				}
 			}
 		}
 		return objectItemIndexMatched;
@@ -536,16 +698,25 @@ public static class ArrayExtension
 	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
 	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
 	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="isGetItemNearestLeft">是否获取最接近目标的左侧对象。</param>
+	/// <param name="itemIndexNearest">最接近目标的左侧对象索引值。</param>
+	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomy<ItemType>(
 		this ItemType[]? itemsSorted,
-		Func<ItemType, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toComparerToObjectItemWith,
+		bool isGetItemNearestLeft,
+		out int itemIndexNearest,
+		out ItemType? itemNearest)
 	{
 		return ArrayExtension.FindItemIndexWithDichotomyInRange<ItemType>(
 			itemsSorted,
 			-1,
 			-1,
-			toComparerToObjectItemWith);
+			toComparerToObjectItemWith,
+			isGetItemNearestLeft,
+			out itemIndexNearest,
+			out itemNearest);
 	}
 
 	/// <summary>
@@ -556,18 +727,27 @@ public static class ArrayExtension
 	/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
 	/// <param name="searchRangeEndIndex">结束查找的对象索引值。</param>
 	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="isGetItemNearestLeft">是否获取最接近目标的左侧对象。</param>
+	/// <param name="itemIndexNearest">最接近目标的左侧对象索引值。</param>
+	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
 	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
 		this ItemType[]? itemsSorted,
 		int searchRangeBeginIndex,
 		int searchRangeEndIndex,
-		Func<ItemType, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toComparerToObjectItemWith,
+		bool isGetItemNearestLeft,
+		out int itemIndexNearest,
+		out ItemType? itemNearest)
 	{
 		var itemIndex = ArrayExtension.FindItemIndexWithDichotomyInRange(
 			itemsSorted,
 			searchRangeBeginIndex,
 			searchRangeEndIndex,
-			toComparerToObjectItemWith);
+			toComparerToObjectItemWith,
+			isGetItemNearestLeft,
+			out itemIndexNearest,
+			out itemNearest);
 		if (itemsSorted != null
 			&& itemIndex >= 0
 		       && itemIndex < itemsSorted.Length)
@@ -583,447 +763,89 @@ public static class ArrayExtension
 	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
 	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
 	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="isGetItemNearestLeft">是否获取最接近目标的左侧对象。</param>
+	/// <param name="itemIndexNearest">最接近目标的左侧对象索引值。</param>
+	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
 	public static ItemType? FindItemWithDichotomy<ItemType>(
 		this ItemType[]? itemsSorted,
-		Func<ItemType, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toComparerToObjectItemWith,
+		bool isGetItemNearestLeft,
+		out int itemIndexNearest,
+		out ItemType? itemNearest)
 	{
 		return ArrayExtension.FindItemWithDichotomyInRange<ItemType>(
 			itemsSorted,
 			-1,
 			-1,
-			toComparerToObjectItemWith);
+			toComparerToObjectItemWith,
+			isGetItemNearestLeft,
+			out itemIndexNearest,
+			out itemNearest);
 	}
 
 
-	public static async Task<ItemSearchResult<ItemType>?> SearchAsync<ItemType>(
-	    this ItemType[] items,
-	    //
-	    int searchTasksCount,
-	    Func<ItemType, double>? toGetItemSearchMatchedProgress,
-	    Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
-	    Func<List<ItemSearchMatchInfo<ItemType>>, Task<List<ItemSearchMatchInfo<ItemType>>>>? toSortItemSearchMatchInfesAsync,
-	    //
-	    int pageIndex,
-	    int pageSize,
-	    //
-	    bool isGetItemSearchMatchInfesInPage = false)
+	public static int FindItemIndexWithDichotomyInRange<ItemType>(
+		this ItemType[]? itemsSorted,
+		int searchRangeBeginIndex,
+		int searchRangeLength,
+		Func<ItemType, int, int> toComparerToObjectItemWith)
 	{
-		var itemsCount = items.Length;
-		if (itemsCount < 1)
-		{
-			return null;
-		}
-
-		var itemPageBeginItemIndex = pageIndex * pageSize;
-		if (itemPageBeginItemIndex < 0)
-		{
-			itemPageBeginItemIndex = 0;
-		}
-		var itemPageEndItemIndex = itemPageBeginItemIndex + pageSize;
-		if (itemPageEndItemIndex > itemsCount)
-		{
-			itemPageEndItemIndex = itemsCount;
-		}
-		if (itemPageBeginItemIndex >= itemsCount
-		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
-		{
-			return null;
-		}
-
-		////////////////////////////////////////////////
-		// 1/，不需要搜索匹配和排序时，直接按有效的分页索引返回实体。
-		////////////////////////////////////////////////
-
-		List<ItemType> itemsSearchedInPage;
-		List<ItemSearchMatchInfo<ItemType>>? itemSearchMatchInfesInPage = null;
-		if (toGetItemSearchMatchedProgress == null
-			&& toSortItemSearchMatchInfes == null
-			&& toSortItemSearchMatchInfesAsync == null)
-		{
-			itemsSearchedInPage = new List<ItemType>();
-			var itemIndex = 0;
-			if (isGetItemSearchMatchInfesInPage)
-			{
-				itemSearchMatchInfesInPage = new List<ItemSearchMatchInfo<ItemType>>();
-				foreach (var item in items)
-				{
-					if (itemIndex < itemPageBeginItemIndex)
-					{
-						itemIndex++;
-						continue;
-					}
-					if (itemIndex >= itemPageEndItemIndex)
-					{
-						break;
-					}
-					// !!!
-					itemsSearchedInPage.Add(item);
-					itemSearchMatchInfesInPage.Add(new(item, 1.0));
-					itemIndex++;
-					// !!!
-				}
-			}
-			else
-			{
-				foreach (var item in items)
-				{
-					if (itemIndex < itemPageBeginItemIndex)
-					{
-						itemIndex++;
-						continue;
-					}
-					if (itemIndex >= itemPageEndItemIndex)
-					{
-						break;
-					}
-					// !!!
-					itemsSearchedInPage.Add(item);
-					itemIndex++;
-					// !!!
-				}
-			}
+		return FindItemIndexWithDichotomyInRange(
+			itemsSorted,
+			searchRangeBeginIndex,
+			searchRangeLength,
+			toComparerToObjectItemWith,
 			//
-			return new(
-				items.Length,
-				itemsSearchedInPage,
-				itemSearchMatchInfesInPage);
-			//
-		}
-
-		////////////////////////////////////////////////
-		// 2/，创建元素的搜索匹配信息。
-		////////////////////////////////////////////////
-
-		List<ItemSearchMatchInfo<ItemType>> itemSearchMatchInfes = new();
-		if (toGetItemSearchMatchedProgress == null)
-		{
-			foreach (var item in items)
-			{
-				itemSearchMatchInfes.Add(new(item, 0));
-			}
-		}
-		else
-		{
-			var itemCreateItemSearchMatchInfoIndex = -1;
-			var tasksToCreateItemSearchMatchInfes = new List<Task>();
-			for (var taskIndexToCreateItemSearchMatchInfes = 0;
-			    taskIndexToCreateItemSearchMatchInfes < searchTasksCount;
-			    taskIndexToCreateItemSearchMatchInfes++)
-			{
-				tasksToCreateItemSearchMatchInfes.Add(Task.Run(() =>
-				{
-					for (var itemIndex = Interlocked.Increment(ref itemCreateItemSearchMatchInfoIndex);
-					itemIndex < items.Length;
-					itemIndex = Interlocked.Increment(ref itemCreateItemSearchMatchInfoIndex))
-					{
-						var item = items[itemIndex];
-						var itemSearchMatchedProgress = toGetItemSearchMatchedProgress(item);
-						if (itemSearchMatchedProgress <= 0)
-						{
-							continue;
-						}
-						lock (itemSearchMatchInfes)
-						{
-							itemSearchMatchInfes.Add(new(
-					    item,
-					    itemSearchMatchedProgress));
-						}
-					}
-				}));
-			}
-			// !!!
-			await Task.WhenAll(tasksToCreateItemSearchMatchInfes);
-			// !!!
-		}
-		var itemSearchMatchInfesCount = itemSearchMatchInfes.Count;
-		if (itemPageEndItemIndex > itemSearchMatchInfesCount)
-		{
-			itemPageEndItemIndex = itemSearchMatchInfesCount;
-		}
-		if (itemPageBeginItemIndex >= itemSearchMatchInfesCount
-		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
-		{
-			return null;
-		}
-
-
-		////////////////////////////////////////////////
-		// 3/，根据搜索匹配信息排序元素。
-		////////////////////////////////////////////////
-		if (toSortItemSearchMatchInfes != null)
-		{
-			itemSearchMatchInfes
-			    = toSortItemSearchMatchInfes(itemSearchMatchInfes);
-		}
-		else if (toSortItemSearchMatchInfesAsync != null)
-		{
-			itemSearchMatchInfes
-				= await toSortItemSearchMatchInfesAsync(itemSearchMatchInfes);
-		}
-		else
-		{
-			itemSearchMatchInfes.Sort((
-			    searchMatchInfoA,
-			    searchMatchInfoB) =>
-			{
-				return searchMatchInfoB.MatchedProgress.CompareTo(
-			searchMatchInfoA.MatchedProgress);
-			});
-		}
-
-		////////////////////////////////////////////////
-		// 4/，根据搜索、排序后的结果进行分页。
-		////////////////////////////////////////////////
-		itemsSearchedInPage = new List<ItemType>();
-		if (isGetItemSearchMatchInfesInPage)
-		{
-			itemSearchMatchInfesInPage = new List<ItemSearchMatchInfo<ItemType>>();
-			for (var itemIndex = itemPageBeginItemIndex;
-			    itemIndex < itemPageEndItemIndex;
-			    itemIndex++)
-			{
-				var itemSearchMatchInfo = itemSearchMatchInfes[itemIndex];
-				// !!!
-				itemsSearchedInPage.Add(itemSearchMatchInfo.Item);
-				itemSearchMatchInfesInPage.Add(itemSearchMatchInfo);
-				// !!!
-			}
-		}
-		else
-		{
-			for (var itemIndex = itemPageBeginItemIndex;
-			    itemIndex < itemPageEndItemIndex;
-			    itemIndex++)
-			{
-				var itemSearchMatchInfo = itemSearchMatchInfes[itemIndex];
-				// !!!
-				itemsSearchedInPage.Add(itemSearchMatchInfo.Item);
-				// !!!
-			}
-		}
-		//
-		return new(
-			itemSearchMatchInfes.Count,
-			itemsSearchedInPage,
-			itemSearchMatchInfesInPage);
-		//
+			true,
+			out _,
+			out _);
 	}
 
-
-	public static async Task<ItemSearchResult<ItemType>?> SearchAsync<ItemType>(
-	    this ItemType[] items,
-	    //
-	    int searchTasksCount,
-	    Func<ItemType, Task<double>>? toGetItemSearchMatchedProgressAsync,
-	    Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
-	    Func<List<ItemSearchMatchInfo<ItemType>>, Task<List<ItemSearchMatchInfo<ItemType>>>>? toSortItemSearchMatchInfesAsync,
-	    //
-	    int pageIndex,
-	    int pageSize,
-	    //
-	    bool isGetItemSearchMatchInfesInPage = false)
+	public static int FindItemIndexWithDichotomy<ItemType>(
+		this ItemType[]? itemsSorted,
+		Func<ItemType, int, int> toComparerToObjectItemWith)
 	{
-		var itemsCount = items.Length;
-		if (itemsCount < 1)
-		{
-			return null;
-		}
-
-		var itemPageBeginItemIndex = pageIndex * pageSize;
-		if (itemPageBeginItemIndex < 0)
-		{
-			itemPageBeginItemIndex = 0;
-		}
-		var itemPageEndItemIndex = itemPageBeginItemIndex + pageSize;
-		if (itemPageEndItemIndex > itemsCount)
-		{
-			itemPageEndItemIndex = itemsCount;
-		}
-		if (itemPageBeginItemIndex >= itemsCount
-		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
-		{
-			return null;
-		}
-
-		////////////////////////////////////////////////
-		// 1/，不需要搜索匹配和排序时，直接按有效的分页索引返回实体。
-		////////////////////////////////////////////////
-
-		List<ItemType> itemsSearchedInPage;
-		List<ItemSearchMatchInfo<ItemType>>? itemSearchMatchInfesInPage = null;
-		if (toGetItemSearchMatchedProgressAsync == null
-			&& toSortItemSearchMatchInfes == null
-			&& toSortItemSearchMatchInfesAsync == null)
-		{
-			itemsSearchedInPage = new List<ItemType>();
-			var itemIndex = 0;
-			if (isGetItemSearchMatchInfesInPage)
-			{
-				itemSearchMatchInfesInPage = new List<ItemSearchMatchInfo<ItemType>>();
-				foreach (var item in items)
-				{
-					if (itemIndex < itemPageBeginItemIndex)
-					{
-						itemIndex++;
-						continue;
-					}
-					if (itemIndex >= itemPageEndItemIndex)
-					{
-						break;
-					}
-					// !!!
-					itemsSearchedInPage.Add(item);
-					itemSearchMatchInfesInPage.Add(new(item, 1.0));
-					itemIndex++;
-					// !!!
-				}
-			}
-			else
-			{
-				foreach (var item in items)
-				{
-					if (itemIndex < itemPageBeginItemIndex)
-					{
-						itemIndex++;
-						continue;
-					}
-					if (itemIndex >= itemPageEndItemIndex)
-					{
-						break;
-					}
-					// !!!
-					itemsSearchedInPage.Add(item);
-					itemIndex++;
-					// !!!
-				}
-			}
+		return FindItemIndexWithDichotomy(
+			itemsSorted,
+			toComparerToObjectItemWith,
 			//
-			return new(
-				items.Length,
-				itemsSearchedInPage,
-				itemSearchMatchInfesInPage);
-			//
-		}
-
-		////////////////////////////////////////////////
-		// 2/，创建元素的搜索匹配信息。
-		////////////////////////////////////////////////
-
-		List<ItemSearchMatchInfo<ItemType>> itemSearchMatchInfes = new();
-		if (toGetItemSearchMatchedProgressAsync == null)
-		{
-			foreach (var item in items)
-			{
-				itemSearchMatchInfes.Add(new(item, 0));
-			}
-		}
-		else
-		{
-			var itemCreateItemSearchMatchInfoIndex = -1;
-			var tasksToCreateItemSearchMatchInfes = new List<Task>();
-			for (var taskIndexToCreateItemSearchMatchInfes = 0;
-			    taskIndexToCreateItemSearchMatchInfes < searchTasksCount;
-			    taskIndexToCreateItemSearchMatchInfes++)
-			{
-				tasksToCreateItemSearchMatchInfes.Add(Task.Run(async () =>
-				{
-					for (var itemIndex = Interlocked.Increment(ref itemCreateItemSearchMatchInfoIndex);
-					itemIndex < items.Length;
-					itemIndex = Interlocked.Increment(ref itemCreateItemSearchMatchInfoIndex))
-					{
-						var item = items[itemIndex];
-						var itemSearchMatchedProgress = await toGetItemSearchMatchedProgressAsync(item);
-						if (itemSearchMatchedProgress <= 0)
-						{
-							continue;
-						}
-						lock (itemSearchMatchInfes)
-						{
-							itemSearchMatchInfes.Add(new(
-					    item,
-					    itemSearchMatchedProgress));
-						}
-					}
-				}));
-			}
-			// !!!
-			await Task.WhenAll(tasksToCreateItemSearchMatchInfes);
-			// !!!
-		}
-		var itemSearchMatchInfesCount = itemSearchMatchInfes.Count;
-		if (itemPageEndItemIndex > itemSearchMatchInfesCount)
-		{
-			itemPageEndItemIndex = itemSearchMatchInfesCount;
-		}
-		if (itemPageBeginItemIndex >= itemSearchMatchInfesCount
-		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
-		{
-			return null;
-		}
-
-
-		////////////////////////////////////////////////
-		// 3/，根据搜索匹配信息排序元素。
-		////////////////////////////////////////////////
-		if (toSortItemSearchMatchInfes != null)
-		{
-			itemSearchMatchInfes
-			    = toSortItemSearchMatchInfes(itemSearchMatchInfes);
-		}
-		else if (toSortItemSearchMatchInfesAsync != null)
-		{
-			itemSearchMatchInfes
-			    = await toSortItemSearchMatchInfesAsync(itemSearchMatchInfes);
-		}
-		else
-		{
-			itemSearchMatchInfes.Sort((
-			    searchMatchInfoA,
-			    searchMatchInfoB) =>
-			{
-				return searchMatchInfoB.MatchedProgress.CompareTo(
-			searchMatchInfoA.MatchedProgress);
-			});
-		}
-
-		////////////////////////////////////////////////
-		// 4/，根据搜索、排序后的结果进行分页。
-		////////////////////////////////////////////////
-		itemsSearchedInPage = new List<ItemType>();
-		if (isGetItemSearchMatchInfesInPage)
-		{
-			itemSearchMatchInfesInPage = new List<ItemSearchMatchInfo<ItemType>>();
-			for (var itemIndex = itemPageBeginItemIndex;
-			    itemIndex < itemPageEndItemIndex;
-			    itemIndex++)
-			{
-				var itemSearchMatchInfo = itemSearchMatchInfes[itemIndex];
-				// !!!
-				itemsSearchedInPage.Add(itemSearchMatchInfo.Item);
-				itemSearchMatchInfesInPage.Add(itemSearchMatchInfo);
-				// !!!
-			}
-		}
-		else
-		{
-			for (var itemIndex = itemPageBeginItemIndex;
-			    itemIndex < itemPageEndItemIndex;
-			    itemIndex++)
-			{
-				var itemSearchMatchInfo = itemSearchMatchInfes[itemIndex];
-				// !!!
-				itemsSearchedInPage.Add(itemSearchMatchInfo.Item);
-				// !!!
-			}
-		}
-		//
-		return new(
-			itemSearchMatchInfes.Count,
-			itemsSearchedInPage,
-			itemSearchMatchInfesInPage);
-		//
+			true,
+			out _,
+			out _);
 	}
+
+	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
+		this ItemType[]? itemsSorted,
+		int searchRangeBeginIndex,
+		int searchRangeEndIndex,
+		Func<ItemType, int, int> toComparerToObjectItemWith)
+	{
+		return FindItemWithDichotomyInRange(
+			itemsSorted,
+			searchRangeBeginIndex,
+			searchRangeEndIndex,
+			toComparerToObjectItemWith,
+			//
+			true,
+			out _,
+			out _);
+	}
+
+	public static ItemType? FindItemWithDichotomy<ItemType>(
+		this ItemType[]? itemsSorted,
+		Func<ItemType, int, int> toComparerToObjectItemWith)
+	{
+		return FindItemWithDichotomy(
+			itemsSorted,
+			toComparerToObjectItemWith,
+			//
+			true,
+			out _,
+			out _);
+	}
+
+
 
 	public static List<ItemType> GetPageItems<ItemType>(
 	    this ItemType[] items,

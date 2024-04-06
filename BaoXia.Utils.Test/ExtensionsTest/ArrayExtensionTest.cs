@@ -2,12 +2,14 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BaoXia.Utils.Test.ExtensionsTest;
 
 [TestClass]
 public class ArrayExtensionTest
 {
+	[TestMethod]
 	public static void CreateArrayByAddInsertAndRemoveTest<T>(
 		int testArrayLength,
 		params T[] newValues)
@@ -85,6 +87,73 @@ public class ArrayExtensionTest
 	}
 
 	[TestMethod]
+	public void InsertByOrderTest()
+	{
+		int[] itemsInOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+		int[] itemsInOrderDescending = itemsInOrder.Reverse().ToArray();
+		var itemInRandomOrder = new int[itemsInOrder.Length];
+		for (int itemIndex = 0;
+			itemIndex < itemInRandomOrder.Length;
+			itemIndex++)
+		{
+			itemInRandomOrder[itemIndex] = 0;
+		}
+		for (int itemIndex = 0;
+			itemIndex < itemsInOrder.Length;
+			itemIndex++)
+		{
+			var item = itemsInOrder[itemIndex];
+			while (true)
+			{
+				var itemRandomIndex
+					= System.Random.Shared.Next(itemInRandomOrder.Length);
+				if (itemInRandomOrder[itemRandomIndex] == 0)
+				{
+					// !!!
+					itemInRandomOrder[itemRandomIndex] = item;
+					break;
+					// !!!
+				}
+			}
+		}
+
+		var arrayWithOrder = new int[0];
+		foreach (var item in itemInRandomOrder)
+		{
+			arrayWithOrder
+				= arrayWithOrder.ArrayByInsertWithOrder(
+				item,
+				(itemA, itemB) =>
+				{
+					return itemA.CompareTo(itemB);
+				});
+		}
+		////////////////////////////////////////////////
+		// !!!
+		Assert.IsTrue(arrayWithOrder.SequenceEqual(itemsInOrder));
+		// !!!
+		////////////////////////////////////////////////
+		///
+
+		var arrayWithOrderDescending = new int[0];
+		foreach (var item in itemInRandomOrder)
+		{
+			arrayWithOrderDescending
+				= arrayWithOrderDescending.ArrayByInsertWithOrderDescending(
+				item,
+				(itemA, itemB) =>
+				{
+					return itemA.CompareTo(itemB);
+				});
+		}
+		////////////////////////////////////////////////
+		// !!!
+		Assert.IsTrue(arrayWithOrderDescending.SequenceEqual(itemsInOrderDescending));
+		// !!!
+		////////////////////////////////////////////////
+	}
+
+	[TestMethod]
 	public void CreateArrayByAddInsertAndRemoveTest()
 	{
 		const int testArrayLength = 10;
@@ -135,7 +204,7 @@ public class ArrayExtensionTest
 		{
 			var objectTestItem = items[i];
 			var itemIndexFound = items.FindItemIndexWithDichotomy(
-				(testItem) =>
+				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
@@ -154,7 +223,7 @@ public class ArrayExtensionTest
 			var itemIndexFound = items.FindItemIndexWithDichotomyInRange(
 				testSearchRangeBeginIndex,
 				testSearchRangeLength,
-				(testItem) =>
+				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
@@ -165,10 +234,11 @@ public class ArrayExtensionTest
 		for (var i = 0; i < items.Length; i++)
 		{
 			var objectTestItem = items[i];
-			var itemFound = items.FindItemWithDichotomy((testItem) =>
-			{
-				return testItem.Index.CompareTo(objectTestItem.Index);
-			});
+			var itemFound = items.FindItemWithDichotomy(
+				(testItem, testItemIndex) =>
+				{
+					return testItem.Index.CompareTo(objectTestItem.Index);
+				});
 			Assert.IsTrue(itemFound?.Index == objectTestItem.Index);
 		}
 
@@ -184,7 +254,7 @@ public class ArrayExtensionTest
 			var itemFound = items.FindItemWithDichotomyInRange(
 				testSearchRangeBeginIndex,
 				testSearchRangeLength,
-				(testItem) =>
+				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
@@ -192,6 +262,125 @@ public class ArrayExtensionTest
 		}
 	}
 
+	[TestMethod]
+	public void FindNearestItemIndexWithDichotomyTest()
+	{
+		var itemList = new List<int>();
+		var random = new System.Random();
+		const int testItemCount = 100;
+		for (int testItemIndex = 0;
+			testItemIndex < testItemCount;
+			testItemIndex++)
+		{
+			if (testItemIndex % 2 == 0)
+			{
+				itemList.Add(testItemIndex);
+			}
+		}
+		itemList.Sort((itemA, itemB) =>
+		{
+			return itemA.CompareTo(itemB);
+		});
+
+		var items = itemList.ToArray();
+
+		//var firstTestItemOdd = 1;
+		var firsttTestItemEven = 0;
+		for (int objectTestItemIndex = 0;
+			objectTestItemIndex < testItemCount;
+			objectTestItemIndex++)
+		{
+			items.FindItemIndexWithDichotomy(
+				(testItem, testItemIndex) =>
+				{
+					return testItem.CompareTo(objectTestItemIndex);
+				},
+				//
+				true,
+				out var itemIndexNearestAtLeft,
+				out var itemNearestAtLeft);
+
+
+			if ((objectTestItemIndex % 2) == 0)
+			{
+				Assert.IsTrue(itemIndexNearestAtLeft == (objectTestItemIndex / 2) - 1);
+				if (itemIndexNearestAtLeft >= 0)
+				{
+					Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 2);
+				}
+				else if (itemIndexNearestAtLeft == -1)
+				{
+					Assert.IsTrue(itemNearestAtLeft == firsttTestItemEven);
+				}
+				else
+				{
+					Assert.Fail();
+				}
+			}
+			else
+			{
+				Assert.IsTrue(itemIndexNearestAtLeft == (objectTestItemIndex / 2));
+				Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 1);
+			}
+		}
+
+		var lastTestItemOdd = testItemCount - 1;
+		if (lastTestItemOdd % 2 == 0)
+		{
+			lastTestItemOdd -= 1;
+		}
+		var lastTestItemEven = testItemCount - 1;
+		if (lastTestItemEven % 2 != 0)
+		{
+			lastTestItemEven -= 1;
+		}
+		for (int objectTestItemIndex = 0;
+			objectTestItemIndex < testItemCount;
+			objectTestItemIndex++)
+		{
+			items.FindItemIndexWithDichotomy(
+				(testItem, testItemIndex) =>
+				{
+					return testItem.CompareTo(objectTestItemIndex);
+				},
+				//
+				false,
+				out var itemIndexNearestAtRight,
+				out var itemNearestAtRight);
+			if ((objectTestItemIndex % 2) == 0)
+			{
+				Assert.IsTrue(itemIndexNearestAtRight == (objectTestItemIndex / 2) + 1);
+				if (itemIndexNearestAtRight < items.Length)
+				{
+					Assert.IsTrue(itemNearestAtRight == objectTestItemIndex + 2);
+				}
+				else if (itemIndexNearestAtRight == items.Length)
+				{
+					Assert.IsTrue(objectTestItemIndex == lastTestItemEven);
+				}
+				else
+				{
+					Assert.Fail();
+				}
+			}
+			else
+			{
+				Assert.IsTrue(itemIndexNearestAtRight == (objectTestItemIndex / 2) + 1);
+				if (itemIndexNearestAtRight < items.Length)
+				{
+					Assert.IsTrue(itemNearestAtRight == objectTestItemIndex + 1);
+				}
+				else if (itemIndexNearestAtRight == items.Length)
+				{
+					Assert.IsTrue(objectTestItemIndex == lastTestItemOdd);
+				}
+				else
+				{
+					Assert.Fail();
+				}
+			}
+		}
+	}
 
 	class TestObjectWithoutEqual : object
 	{

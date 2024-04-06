@@ -40,7 +40,8 @@ namespace BaoXia.Utils.Test
 		public void ConfigFileLoadAndSaveWithConfigOptionsPathTest()
 		{
 			var tmpFileDirectoryPath
-				= System.IO.Path.GetTempPath().ToFileSystemDirectoryPath();
+				= System.IO.Path.GetTempPath().ToFileSystemDirectoryPath()
+				+ "BaoXia.Utils.Test";
 
 			var configFileForLoad = new TestConfigFile();
 			{
@@ -89,12 +90,12 @@ namespace BaoXia.Utils.Test
 
 				ObjectArrayValue = new ObjectProperty[]
 				{
-					new ObjectProperty()
+					new()
 					{
 						Name = "Name_1",
 						Value = 1
 					},
-					new ObjectProperty()
+					new()
 					{
 						Name = "Name_2",
 						Value = 2
@@ -166,7 +167,8 @@ namespace BaoXia.Utils.Test
 		public void ConfigFileSecondExtensionNameTest()
 		{
 			var tmpFileDirectoryPath
-				= System.IO.Path.GetTempPath().ToFileSystemDirectoryPath();
+				= System.IO.Path.GetTempPath().ToFileSystemDirectoryPath()
+				+ "BaoXia.Utils.Test";
 
 			var configFileForLoad = new TestConfigFile();
 			{

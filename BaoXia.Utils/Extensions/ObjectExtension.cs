@@ -454,7 +454,7 @@ public static class ObjectExtension
 	{
 		if (objectItem == null)
 		{
-			return Array.Empty<byte>();
+			return [];
 		}
 		if (propertiesBindingFlags == System.Reflection.BindingFlags.Default)
 		{
@@ -467,7 +467,7 @@ public static class ObjectExtension
 		var propertyInfes = objectItem.GetType().GetProperties(propertiesBindingFlags);
 		if (propertyInfes.Length == 0)
 		{
-			return Array.Empty<byte>();
+			return [];
 		}
 
 

@@ -56,13 +56,13 @@ public static class EnumExtension
 	/// <typeparam name="T">指定的枚举类型。</typeparam>
 	/// <param name="enumValue">指定的枚举值。</param>
 	/// <returns>指定枚举值对应的枚举值名称。</returns>
-	public static string? NameOf<T>(T enumValue) where T : Enum
+	public static string NameOf<T>(T enumValue) where T : Enum
 	{
 		var enumValueType = Enum.Parse(
 			typeof(T),
 			enumValue.ToString());
 		{ }
-		return enumValueType.ToString();
+		return enumValueType.ToString()!;
 	}
 
 	/// <summary>

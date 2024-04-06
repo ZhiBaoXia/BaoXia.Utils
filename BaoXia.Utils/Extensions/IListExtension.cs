@@ -1,18 +1,15 @@
-﻿using BaoXia.Utils.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Extensions;
 
 /// <summary>
 /// List 扩展类。
 /// </summary>
-public static class ListExtension
+public static class IListExtension
 {
 	public static bool AddUnique<ItemType>(
-		this List<ItemType> list,
+		this IList<ItemType> list,
 		ItemType item,
 		Func<ItemType, ItemType, bool>? toIsSameItems = null,
 		bool isAddNullItem = false)
@@ -45,7 +42,7 @@ public static class ListExtension
 	}
 
 	public static int AddItemsFrom<ItemType>(
-		this List<ItemType>? list,
+		this IList<ItemType>? list,
 		IEnumerable<ItemType>? sourceItems,
 		Func<ItemType, bool> toIsItemNeedAdd)
 	{
@@ -342,7 +339,7 @@ public static class ListExtension
 	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomyInRange<ItemType>(
-		this List<ItemType>? itemsSorted,
+		this IList<ItemType>? itemsSorted,
 		int searchRangeBeginIndex,
 		int searchRangeLength,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
@@ -492,13 +489,13 @@ public static class ListExtension
 	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomy<ItemType>(
-		this List<ItemType>? itemsSorted,
+		this IList<ItemType>? itemsSorted,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
 		out int itemIndexNearest,
 		out ItemType? itemNearest)
 	{
-		return ListExtension.FindItemIndexWithDichotomyInRange<ItemType>(
+		return IListExtension.FindItemIndexWithDichotomyInRange<ItemType>(
 			itemsSorted,
 			-1,
 			-1,
@@ -521,7 +518,7 @@ public static class ListExtension
 	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
 	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
-		this List<ItemType>? itemsSorted,
+		this IList<ItemType>? itemsSorted,
 		int searchRangeBeginIndex,
 		int searchRangeEndIndex,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
@@ -529,7 +526,7 @@ public static class ListExtension
 		out int itemIndexNearest,
 		out ItemType? itemNearest)
 	{
-		var itemIndex = ListExtension.FindItemIndexWithDichotomyInRange(
+		var itemIndex = IListExtension.FindItemIndexWithDichotomyInRange(
 			itemsSorted,
 			searchRangeBeginIndex,
 			searchRangeEndIndex,
@@ -557,13 +554,13 @@ public static class ListExtension
 	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
 	public static ItemType? FindItemWithDichotomy<ItemType>(
-		this List<ItemType>? itemsSorted,
+		this IList<ItemType>? itemsSorted,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
 		out int itemIndexNearest,
 		out ItemType? itemNearest)
 	{
-		return ListExtension.FindItemWithDichotomyInRange<ItemType>(
+		return IListExtension.FindItemWithDichotomyInRange<ItemType>(
 			itemsSorted,
 			-1,
 			-1,
@@ -575,7 +572,7 @@ public static class ListExtension
 
 
 	public static int FindItemIndexWithDichotomyInRange<ItemType>(
-		this List<ItemType>? itemsSorted,
+		this IList<ItemType>? itemsSorted,
 		int searchRangeBeginIndex,
 		int searchRangeLength,
 		Func<ItemType, int, int> toComparerToObjectItemWith)
@@ -592,7 +589,7 @@ public static class ListExtension
 	}
 
 	public static int FindItemIndexWithDichotomy<ItemType>(
-		this List<ItemType>? itemsSorted,
+		this IList<ItemType>? itemsSorted,
 		Func<ItemType, int, int> toComparerToObjectItemWith)
 	{
 		return FindItemIndexWithDichotomy(
@@ -605,7 +602,7 @@ public static class ListExtension
 	}
 
 	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
-		this List<ItemType>? itemsSorted,
+		this IList<ItemType>? itemsSorted,
 		int searchRangeBeginIndex,
 		int searchRangeEndIndex,
 		Func<ItemType, int, int> toComparerToObjectItemWith)
@@ -622,7 +619,7 @@ public static class ListExtension
 	}
 
 	public static ItemType? FindItemWithDichotomy<ItemType>(
-		this List<ItemType>? itemsSorted,
+		this IList<ItemType>? itemsSorted,
 		Func<ItemType, int, int> toComparerToObjectItemWith)
 	{
 		return FindItemWithDichotomy(
@@ -637,7 +634,7 @@ public static class ListExtension
 
 
 	public static List<ItemType> GetPageItems<ItemType>(
-	    this List<ItemType> items,
+	    this IList<ItemType> items,
 	    //
 	    Func<List<ItemType>, List<ItemType>>? toSortItems,
 	    //

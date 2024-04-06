@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -756,12 +755,28 @@ public class IEnumerableExtensionTest
 			{
 				return item.Value.GetMatchProgressValueOf(searchKey);
 			},
-			null,
+			(itemSearchResults) =>
+			{
+				itemSearchResults.Sort((searchResultA, searchResultB) =>
+				{
+					var compareResult
+					= searchResultB.MatchedProgress.CompareTo(
+						searchResultA.MatchedProgress);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					return searchResultB.Item.Value.Length.CompareTo(
+						searchResultA.Item.Value.Length);
+				});
+				return itemSearchResults;
+			},
 			null,
 			0,
 			20);
 		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
-		Assert.IsTrue(searchPage?.ItemsInPage![0].Value == "99");
+		Assert.IsTrue(searchPage?.ItemsInPage![0].Value == "9999");
 
 		searchPage = await testItems.SearchAsync(
 			10,
@@ -769,11 +784,27 @@ public class IEnumerableExtensionTest
 			{
 				return item.Value.GetMatchProgressValueOf(searchKey);
 			},
-			null,
+			(itemSearchResults) =>
+			{
+				itemSearchResults.Sort((searchResultA, searchResultB) =>
+				{
+					var compareResult
+					= searchResultB.MatchedProgress.CompareTo(
+						searchResultA.MatchedProgress);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					return searchResultB.Item.Value.Length.CompareTo(
+						searchResultA.Item.Value.Length);
+				});
+				return itemSearchResults;
+			},
 			null,
 			1,
 			20);
 		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
-		Assert.IsTrue(searchPage?.ItemsInPage![0].Value == "9915");
+		Assert.IsTrue(searchPage?.ItemsInPage![0].Value == "9916");
 	}
 }

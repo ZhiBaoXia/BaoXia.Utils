@@ -1,8 +1,5 @@
-﻿using BaoXia.Utils.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Extensions;
 
@@ -20,14 +17,27 @@ public static class ArrayExtension
 	/// <param name="isNullEqualsNone">另一个数组对象为“null”时，如果当前数组对象没有元素，是否视为相等，默认为“true”。</param>
 	/// <returns>两个数组中的每一个元素都相等时，返回“true”，否则返回“false”。</returns>
 	public static bool IsItemsEqual<ItemType>(
-		this ItemType[] items,
+		this ItemType[]? items,
 		ItemType[]? anotherItems,
 		bool isNullEqualsNone = true)
 	{
+		if (items == null)
+		{
+			if (anotherItems == null)
+			{
+				return true;
+			}
+			else if (isNullEqualsNone
+				&& anotherItems.Length < 1)
+			{
+				return true;
+			}
+			return false;
+		}
 		if (anotherItems == null)
 		{
-			if (items.Length < 1
-				&& isNullEqualsNone == true)
+			if (isNullEqualsNone == true
+				&& items.Length < 1)
 			{
 				return false;
 			}

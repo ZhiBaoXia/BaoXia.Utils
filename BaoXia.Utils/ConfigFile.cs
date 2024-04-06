@@ -69,6 +69,10 @@ namespace BaoXia.Utils
 
 			_configFilesDirectoryPath
 				= configFilesDirectoryPath.ToFileSystemDirectoryPath();
+			if (!System.IO.Directory.Exists(_configFilesDirectoryPath))
+			{
+				System.IO.Directory.CreateDirectory(_configFilesDirectoryPath);
+			}
 
 			lock (_configFiles)
 			{
@@ -308,6 +312,7 @@ namespace BaoXia.Utils
 				&& System.IO.File.Exists(finalConfigFilePath))
 			{
 				var configDictionaryPath = finalConfigFilePath.ToFileSystemDirectoryPath(true);
+
 				var configFileName = finalConfigFilePath.ToFileName(false);
 				{
 					var configBackupTimeStamp = DateTime.Now.ToString("Backup_yyyy_MM_dd hh_mm_ss");
@@ -330,10 +335,11 @@ namespace BaoXia.Utils
 				// !!!
 				if (configBackupFilePath != null)
 				{
-					System.IO.File.Copy(
-						finalConfigFilePath,
+					var configJson
+						= System.IO.File.ReadAllText(finalConfigFilePath);
+					System.IO.File.WriteAllText(
 						configBackupFilePath,
-						true);
+						configJson);
 				}
 				// !!!
 			}
@@ -342,7 +348,6 @@ namespace BaoXia.Utils
 			{
 				var newConfigJson
 					= StringExtension.StringByJsonSerialize(this);
-
 				System.IO.File.WriteAllText(
 					finalConfigFilePath,
 					newConfigJson,

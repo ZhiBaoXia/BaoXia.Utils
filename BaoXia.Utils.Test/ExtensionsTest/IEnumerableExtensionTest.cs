@@ -753,7 +753,10 @@ public class IEnumerableExtensionTest
 			10,
 			(item) =>
 			{
-				return item.Value.GetMatchProgressValueOf(searchKey);
+				return item.Value.GetMatchProgressValueOf(
+					searchKey,
+					StringComparison.OrdinalIgnoreCase,
+					false);
 			},
 			(itemSearchResults) =>
 			{
@@ -767,8 +770,23 @@ public class IEnumerableExtensionTest
 						return compareResult;
 					}
 
-					return searchResultB.Item.Value.Length.CompareTo(
+					compareResult
+					= searchResultB.Item.Value.Length.CompareTo(
 						searchResultA.Item.Value.Length);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					compareResult
+					= searchResultB.Item.GroupId.CompareTo(
+						searchResultA.Item.GroupId);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					return 0;
 				});
 				return itemSearchResults;
 			},
@@ -776,13 +794,18 @@ public class IEnumerableExtensionTest
 			0,
 			20);
 		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
-		Assert.IsTrue(searchPage?.ItemsInPage![0].Value == "9999");
+		var itemPage = searchPage?.ItemsInPage!;
+		var firstItemInPage = itemPage[0].Value;
+		Assert.IsTrue(firstItemInPage == "9999");
 
 		searchPage = await testItems.SearchAsync(
 			10,
 			(item) =>
 			{
-				return item.Value.GetMatchProgressValueOf(searchKey);
+				return item.Value.GetMatchProgressValueOf(
+					searchKey,
+					StringComparison.OrdinalIgnoreCase,
+					false);
 			},
 			(itemSearchResults) =>
 			{
@@ -796,8 +819,23 @@ public class IEnumerableExtensionTest
 						return compareResult;
 					}
 
-					return searchResultB.Item.Value.Length.CompareTo(
+					compareResult
+					= searchResultB.Item.Value.Length.CompareTo(
 						searchResultA.Item.Value.Length);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					compareResult
+					= searchResultB.Item.GroupId.CompareTo(
+						searchResultA.Item.GroupId);
+					if (compareResult != 0)
+					{
+						return compareResult;
+					}
+
+					return 0;
 				});
 				return itemSearchResults;
 			},
@@ -805,6 +843,8 @@ public class IEnumerableExtensionTest
 			1,
 			20);
 		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
-		Assert.IsTrue(searchPage?.ItemsInPage![0].Value == "9916");
+		itemPage = searchPage?.ItemsInPage!;
+		firstItemInPage = itemPage[0].Value;
+		Assert.IsTrue(firstItemInPage == "9998");
 	}
 }

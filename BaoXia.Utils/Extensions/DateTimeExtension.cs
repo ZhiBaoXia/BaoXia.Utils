@@ -74,6 +74,56 @@ public static class DateTimeExtension
 		return new DateTime(nextDay.Year, nextDay.Month, nextDay.Day);
 	}
 
+
+	public static DateTime ZeroOfThisHour(this DateTime dateTime)
+	{
+		return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
+	}
+
+	public static DateTime ZeroOfPrevHour(this DateTime dateTime)
+	{
+		dateTime = dateTime.AddHours(-1.0);
+		return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
+	}
+
+	public static DateTime ZeroOfNextHour(this DateTime dateTime)
+	{
+		dateTime = dateTime.AddHours(1.0);
+		return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
+	}
+
+
+	public static DateTime ZeroOfThisMinute(this DateTime dateTime)
+	{
+		return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, 0);
+	}
+
+	public static DateTime ZeroOfPrevMinute(this DateTime dateTime)
+	{
+		return dateTime.AddMinutes(-1.0).ZeroOfThisMinute();
+	}
+
+	public static DateTime ZeroOfNextMinute(this DateTime dateTime)
+	{
+		return dateTime.AddMinutes(1.0).ZeroOfThisMinute();
+	}
+
+	public static DateTime ZeroOfThisSecond(this DateTime dateTime)
+	{
+		return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, dateTime.Second);
+	}
+
+	public static DateTime ZeroOfPrevSecond(this DateTime dateTime)
+	{
+		return dateTime.AddSeconds(-1.0).ZeroOfThisMinute();
+	}
+
+	public static DateTime ZeroOfNextSecond(this DateTime dateTime)
+	{
+		return dateTime.AddSeconds(1.0).ZeroOfThisMinute();
+	}
+
+
 	/// <summary>
 	/// 返回当前时间所属周（以周日为第一天的周）的第一天（零点）的时间对象。
 	/// </summary>

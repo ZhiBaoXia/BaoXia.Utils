@@ -424,6 +424,8 @@ public class ObjectExtensionTest
 		public string? StringProperty { get; set; }
 
 		public ClassForGeneratePropertyValueBytes2? ObjectProperty { get; set; }
+
+		public int[]? IntsProperty { get; set; }
 	}
 
 
@@ -431,6 +433,8 @@ public class ObjectExtensionTest
 	{
 		public int IntProperty { get; set; }
 		public string? StringProperty { get; set; }
+
+		public string[]? StringsProperty { get; set; }
 	}
 
 	protected class ClassForGeneratePropertyValueBytes
@@ -469,7 +473,8 @@ public class ObjectExtensionTest
 			testObject.ObjectProperty = new()
 			{
 				IntProperty = 11,
-				StringProperty = "Def"
+				StringProperty = "Def",
+				StringsProperty = ["Xyz", "Xyz", "Xyz"]
 			};
 			testObject.DateTimeProperty = DateTime.Now;
 

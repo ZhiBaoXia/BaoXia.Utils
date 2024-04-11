@@ -335,53 +335,6 @@ public static class StringExtension
 	}
 
 	/// <summary>
-	/// 比较两个字符串是否相同。
-	/// </summary>
-	/// <param name="strA">要进行比较的第一个字符串。</param>
-	/// <param name="strB">要进行比较的第二个字符串。</param>
-	/// <param name="stringComparison">字符串的比较类型。</param>
-	/// <param name="isNullEqualsEmpty">是否空字符串与长度为零的字符串视为相同。</param>
-	/// <returns>两个字符串相同时，返回：true，否则返回：false。</returns>
-	public static bool EqualsStrings(
-	    string? strA,
-	    string? strB,
-	    StringComparison stringComparison = StringComparison.Ordinal,
-	    bool isNullEqualsEmpty = true)
-	{
-		if (strA == strB)
-		{
-			return true;
-		}
-		else if (strA != null
-		    && strB == null)
-		{
-			if (strA.Length == 0)
-			{
-				if (isNullEqualsEmpty)
-				{
-					return true;
-				}
-			}
-		}
-		else if (strA == null
-		    && strB != null)
-		{
-			if (strB.Length == 0)
-			{
-				if (isNullEqualsEmpty)
-				{
-					return true;
-				}
-			}
-		}
-		else if (strA?.Equals(strB, stringComparison) == true)
-		{
-			return true;
-		}
-		return false;
-	}
-
-	/// <summary>
 	/// 获取指定字符串在当前字符串中出现的次数。
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
@@ -2873,6 +2826,28 @@ public static class StringExtension
 		return false;
 	}
 
+	public static string WithDefault(
+		this string? str,
+		string defaultString = "[无]",
+		bool isStringNullToDefault = true,
+		bool isStringEmptyToDefault = true)
+	{
+		if (str == null)
+		{
+			if (isStringNullToDefault)
+			{
+				return defaultString;
+			}
+		}
+		else if (str.Length < 1)
+		{
+			if (isStringEmptyToDefault)
+			{
+				return defaultString;
+			}
+		}
+		return str ?? string.Empty;
+	}
 
 	/// <summary>
 	/// 将当前字符串转为对应的RGBA颜色像素值。

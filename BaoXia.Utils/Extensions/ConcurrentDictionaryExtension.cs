@@ -92,7 +92,7 @@ namespace BaoXia.Utils.Extensions
 				isNullEqualsEmpty,
 				(stringA, stringB) =>
 				{
-					return BaoXia.Utils.Extensions.StringExtension.EqualsStrings(
+					return StringUtil.EqualsStrings(
 						stringA,
 						stringB,
 						stringComparison,

@@ -120,7 +120,7 @@ namespace BaoXia.Utils
 			{
 				var filePath = value?.Trim();
 
-				if (StringExtension.EqualsStrings(
+				if (StringUtil.EqualsStrings(
 					_filePath,
 					filePath,
 					StringComparison.CurrentCultureIgnoreCase))

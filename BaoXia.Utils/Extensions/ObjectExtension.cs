@@ -1,5 +1,9 @@
-﻿using System;
+﻿using BaoXia.Utils.Constants;
+using BaoXia.Utils.Models;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,7 +17,6 @@ namespace BaoXia.Utils.Extensions;
 /// </summary>
 public static class ObjectExtension
 {
-
 	////////////////////////////////////////////////
 	// @类方法
 	////////////////////////////////////////////////
@@ -302,15 +305,34 @@ public static class ObjectExtension
 	/// <returns>如果任意对象是基本数据类型，则将基本类型数据转为字节数组。</returns>
 	public static byte[]? ConvertBaseValueToBytes(object? baseValue)
 	{
-		////////////////////////////////////////////////
-		// 优先，检查并返回，常用的数据类型：
-		////////////////////////////////////////////////
-		if (baseValue == null
-			|| baseValue.GetType().IsValueType != true)
+		if (baseValue == null)
 		{
 			return null;
 		}
 
+		////////////////////////////////////////////////
+		// 1/2，优先，检查并返回，常用的【值类型】：
+		////////////////////////////////////////////////
+		if (baseValue is string stringValue)
+		{
+			return Encoding.UTF8.GetBytes(stringValue);
+		}
+		else if (baseValue.GetType().IsValueType == false)
+		{
+			if (baseValue is IEnumerable items)
+			{
+				var itemsEnumerator = items.GetEnumerator();
+				if (itemsEnumerator.MoveNext() == false)
+				{
+					return null;
+				}
+				var firstItem = itemsEnumerator.Current;
+				var itemType = firstItem.GetType();
+					@last
+			}
+			return null;
+		}
+		//
 		if (baseValue is Boolean booleanValue)
 		{
 			return BitConverter.GetBytes(booleanValue);
@@ -331,15 +353,10 @@ public static class ObjectExtension
 		{
 			return BitConverter.GetBytes(dateTimeValue.Ticks);
 		}
-		if (baseValue is string stringValue)
-		{
-			return Encoding.UTF8.GetBytes(stringValue);
-		}
 
 		////////////////////////////////////////////////
-		// 其次，检查并返回，不常用的数据类型：
+		// 2/2，优先，检查并返回，不常用的【值类型】：
 		////////////////////////////////////////////////
-
 
 		if (baseValue is Int16 int16Value)
 		{
@@ -368,12 +385,12 @@ public static class ObjectExtension
 		}
 		if (baseValue is Byte byteValue)
 		{
-			return new byte[] { byteValue };
+			return [byteValue];
 		}
 
 		if (baseValue is SByte sByteValue)
 		{
-			return new byte[] { (byte)sByteValue };
+			return [(byte)sByteValue];
 		}
 		//if (baseValue is Single singleValue)
 		//{
@@ -438,24 +455,50 @@ public static class ObjectExtension
 		return null;
 	}
 
-	/// <summary>
-	/// 生成当前对象，所有值类型属性的字节数组。
-	/// </summary>
-	/// <param name="objectItem">当前对象。</param>
-	/// <param name="propertyNamesExcepted">要排除生成的属性名称，大小写敏感。</param>
-	/// <param name="propertiesBindingFlags">要读取的属性绑定标志，如果指定为“System.Reflection.BindingFlags.Default”，则默认使用“System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.GetProperty”的组合。</param>
-	/// <param name="propertyByteSeparator">属性的字节分隔符。</param>
-	/// <returns>返回由当前对象，所有值类型属性生成的字节数组。</returns>
-	public static byte[] GenerateBytesOfValueProperties(
-		this object? objectItem,
+	public static List<ItemPropertyGetInfo<object>>? GetPropertyGetInfesOfItem(
+		object? item,
 		string[]? propertyNamesExcepted = null,
 		System.Reflection.BindingFlags propertiesBindingFlags = System.Reflection.BindingFlags.Default,
-		byte propertyByteSeparator = 0)
+		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null)
 	{
-		if (objectItem == null)
+		if (item == null)
+		{
+			return null;
+		}
+		var itemType = item.GetType();
+		if (itemType.IsValueType)
 		{
 			return [];
 		}
+		// 字符串对象的特殊处理。
+		if (itemType.Equals(typeof(string)))
+		{
+			return [];
+		}
+
+		// 容器对象的特殊处理。
+		if (item is IEnumerable childItems)
+		{
+			var chilItemPropertyGetInfes = new List<ItemPropertyGetInfo<object>>();
+			foreach (var childItem in childItems)
+			{
+				if (childItem.GetType().IsValueType)
+				{
+					return [];
+				}
+				else
+				{
+					chilItemPropertyGetInfes.Add(new ItemPropertyGetInfo<object>(
+						ItemPropertyGetInfoType.ObjectItemInIEnumerable,
+						item,
+						null,
+						childItem));
+				}
+			}
+			return chilItemPropertyGetInfes;
+		}
+
+		// 普通的对象属性。
 		if (propertiesBindingFlags == System.Reflection.BindingFlags.Default)
 		{
 			propertiesBindingFlags
@@ -463,9 +506,53 @@ public static class ObjectExtension
 				| System.Reflection.BindingFlags.Public
 				| System.Reflection.BindingFlags.GetProperty;
 		}
+		var itemPropertyInfes = itemType.GetProperties(propertiesBindingFlags);
+		if (itemPropertyInfes == null
+		|| itemPropertyInfes.Length < 1)
+		{
+			return [];
+		}
+		var itemPropertyGetInfes = new List<ItemPropertyGetInfo<object>>();
+		foreach (var hostItemPropertyInfo in itemPropertyInfes)
+		{
+			if (propertyNamesExcepted?.Contains(hostItemPropertyInfo.Name) == true)
+			{
+				continue;
+			}
+			if (toIsPropertyInfoOfObjectValidToGenerate?.Invoke(
+				item,
+				hostItemPropertyInfo) == false)
+			{
+				continue;
+			}
+			itemPropertyGetInfes.Add(new(
+				ItemPropertyGetInfoType.NormalProperty,
+				item,
+				hostItemPropertyInfo,
+				null));
+		}
+		return itemPropertyGetInfes;
+	}
 
-		var propertyInfes = objectItem.GetType().GetProperties(propertiesBindingFlags);
-		if (propertyInfes.Length == 0)
+	/// <summary>
+	/// 生成当前对象，所有值类型属性的字节数组。
+	/// </summary>
+	/// <param name="objectItem">当前对象。</param>
+	/// <param name="propertyNamesExcepted">要排除生成的属性名称，大小写敏感。</param>
+	/// <param name="propertiesBindingFlags">要读取的属性绑定标志，如果指定为“System.Reflection.BindingFlags.Default”，则默认使用“System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.GetProperty”的组合。</param>
+	/// <param name="propertyByteSeparator">属性的字节分隔符。</param>
+	/// <param name="isGetPropertyInfesRecursivly">是否使用递归深度获取对象的属性信息。。</param>
+	/// <param name="toIsPropertyInfoOfObjectValidToGenerate">判断指定对象，指定属性是否参与字节生成的回调。</param>
+	/// <returns>返回由当前对象，所有值类型属性生成的字节数组。</returns>
+	public static byte[] GenerateBytesOfValueProperties(
+		this object? objectItem,
+		string[]? propertyNamesExcepted = null,
+		System.Reflection.BindingFlags propertiesBindingFlags = System.Reflection.BindingFlags.Default,
+		byte propertyByteSeparator = 0,
+		bool isGetPropertyInfesRecursivly = false,
+		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null)
+	{
+		if (objectItem == null)
 		{
 			return [];
 		}
@@ -473,29 +560,117 @@ public static class ObjectExtension
 
 		var memoryStream = new MemoryStream();
 		using var binaryWriter = new BinaryWriter(memoryStream);
-		{
-			//memoryStream.SetLength(0);
-			//binaryWriter.Seek(0, SeekOrigin.Begin);
-		}
-		foreach (var propertyInfo in propertyInfes)
-		{
-			if (propertyNamesExcepted?.Contains(propertyInfo.Name) == true)
-			{
-				continue;
-			}
+		////////////////////////////////////////////////
 
-			var propertyValue = propertyInfo.GetValue(objectItem);
-			var propertyValueBytes = ConvertBaseValueToBytes(propertyValue);
-			if (propertyValueBytes == null)
-			{
-				continue;
-			}
+		var objectItemPropertyGetInfes = GetPropertyGetInfesOfItem(
+			objectItem,
+			propertyNamesExcepted,
+			propertiesBindingFlags,
+			toIsPropertyInfoOfObjectValidToGenerate);
+		if (objectItemPropertyGetInfes == null
+			|| objectItemPropertyGetInfes.Count < 1)
+		{
 
-			// !!!
-			binaryWriter.Write(propertyValueBytes);
-			binaryWriter.Write(propertyByteSeparator);
-			// !!!
 		}
+		else
+		{
+			foreach (var objectItemPropertyGetInfo in objectItemPropertyGetInfes)
+			{
+				RecursionUtil.RecursionEnumerate<ItemPropertyGetInfo<object>>(
+					objectItemPropertyGetInfo,
+					(itemPropertyGetInfo) =>
+					{
+						return GetPropertyGetInfesOfItem(
+							itemPropertyGetInfo.GetPropertyOfHostItem(),
+							propertyNamesExcepted,
+							propertiesBindingFlags,
+							toIsPropertyInfoOfObjectValidToGenerate);
+					},
+					(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
+					{
+						var itemPropertyValue
+						= itemPropertyGetInfo.GetPropertyOfHostItem();
+						var itemPropertyValueBytes = ConvertBaseValueToBytes(itemPropertyValue);
+						if (itemPropertyValueBytes != null)
+						{
+							// !!!
+							binaryWriter.Write(itemPropertyValueBytes);
+							binaryWriter.Write(propertyByteSeparator);
+							// !!!
+						}
+						return true;
+					});
+			}
+		}
+		var objectItemPropertyInfes = objectItem.GetType().GetProperties(propertiesBindingFlags);
+		if (isGetPropertyInfesRecursivly)
+		{
+			foreach (var objectItemPropertyInfo in objectItemPropertyInfes)
+			{
+				if (propertyNamesExcepted?.Contains(objectItemPropertyInfo.Name) == true)
+				{
+					continue;
+				}
+				if (toIsPropertyInfoOfObjectValidToGenerate?.Invoke(
+					objectItem,
+					objectItemPropertyInfo) == false)
+				{
+					continue;
+				}
+
+				RecursionUtil.RecursionEnumerate<ItemPropertyGetInfo<object>>(
+					new(ItemPropertyGetInfoType.NormalProperty,
+						objectItem,
+						objectItemPropertyInfo,
+						null),
+					(itemPropertyGetInfo) =>
+					{
+
+					},
+					(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
+					{
+						var itemPropertyValue
+						= itemPropertyGetInfo.PropertyInfo.GetValue(itemPropertyGetInfo.HosttItem);
+
+						var itemPropertyValueBytes = ConvertBaseValueToBytes(itemPropertyValue);
+						if (itemPropertyValueBytes != null)
+						{
+							// !!!
+							binaryWriter.Write(itemPropertyValueBytes);
+							binaryWriter.Write(propertyByteSeparator);
+							// !!!
+						}
+						return true;
+					});
+			}
+		}
+		else
+		{
+			foreach (var objectItemPropertyInfo in objectItemPropertyInfes)
+			{
+				if (propertyNamesExcepted?.Contains(objectItemPropertyInfo.Name) == true)
+				{
+					continue;
+				}
+				if (toIsPropertyInfoOfObjectValidToGenerate?.Invoke(
+					objectItem,
+					objectItemPropertyInfo) == false)
+				{
+					continue;
+				}
+
+				var itemPropertyValue = objectItemPropertyInfo.GetValue(objectItem);
+				var itemPropertyValueBytes = ConvertBaseValueToBytes(itemPropertyValue);
+				if (itemPropertyValueBytes != null)
+				{
+					// !!!
+					binaryWriter.Write(itemPropertyValueBytes);
+					binaryWriter.Write(propertyByteSeparator);
+					// !!!
+				}
+			}
+		}
+		////////////////////////////////////////////////
 		var objectItemBytes = memoryStream.ToArray();
 		{ }
 		return objectItemBytes;

@@ -88,7 +88,7 @@ public class StringExtensionTest
 		{
 			keyWords = testStringA_1.SubstringBetween("{", "}");
 		}
-		Assert.IsTrue(StringExtension.EqualsStrings(keyWords, kKeyWordsA_1));
+		Assert.IsTrue(StringUtil.EqualsStrings(keyWords, kKeyWordsA_1));
 
 
 

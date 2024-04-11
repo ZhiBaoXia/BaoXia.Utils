@@ -49,7 +49,7 @@ public class Environment
 	public static string? EnviromentName { get; set; }
 
 	/// <summary>
-	/// 当前应用程序，所在的程序集 @last。
+	/// 当前应用程序，所在的程序集。
 	/// </summary>
 	public static Assembly? CurrentApplicationAssembly { get; set; }
 

@@ -39,7 +39,7 @@ public class ItemPropertyGetInfo<ItemType>
 
 	#region 自身实现
 
-	public object? GetPropertyOfHostItem() 
+	public object? GetPropertyValue() 
 	{
 		switch (Type)
 		{

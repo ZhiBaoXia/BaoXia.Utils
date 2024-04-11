@@ -329,7 +329,8 @@ public static class ArrayExtension
 				itemList.Add(item);
 			}
 		}
-		return itemList.ToArray();
+
+		return [.. itemList];
 	}
 
 	/// <summary>
@@ -387,7 +388,7 @@ public static class ArrayExtension
 				}
 			}
 		}
-		return itemList.ToArray();
+		return [.. itemList];
 	}
 
 	/// <summary>
@@ -460,7 +461,7 @@ public static class ArrayExtension
 				}
 			}
 		}
-		return itemList.ToArray();
+		return [.. itemList];
 	}
 
 	/// <summary>
@@ -858,7 +859,7 @@ public static class ArrayExtension
 		int itemsCount = items.Length;
 		if (itemsCount < 1)
 		{
-			return new List<ItemType>();
+			return [];
 		}
 
 		var itemPageBeginItemIndex = pageIndex * pageSize;
@@ -874,7 +875,7 @@ public static class ArrayExtension
 		if (itemPageBeginItemIndex >= itemsCount
 		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
 		{
-			return new List<ItemType>();
+			return [];
 		}
 
 		////////////////////////////////////////////////
@@ -884,7 +885,7 @@ public static class ArrayExtension
 		List<ItemType> pageItems;
 		if (toSortItems == null)
 		{
-			pageItems = new List<ItemType>();
+			pageItems = [];
 			var itemIndex = 0;
 			foreach (var item in items)
 			{
@@ -917,7 +918,7 @@ public static class ArrayExtension
 		////////////////////////////////////////////////
 		// 3/，根据搜索、排序后的结果进行分页。
 		////////////////////////////////////////////////
-		pageItems = new List<ItemType>();
+		pageItems = [];
 		for (var itemIndex = itemPageBeginItemIndex;
 		    itemIndex < itemPageEndItemIndex;
 		    itemIndex++)

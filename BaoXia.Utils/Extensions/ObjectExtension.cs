@@ -328,7 +328,22 @@ public static class ObjectExtension
 				}
 				var firstItem = itemsEnumerator.Current;
 				var itemType = firstItem.GetType();
-					@last
+				if (itemType.IsValueType
+					|| itemType == typeof(string))
+				{
+					var memoryStream = new MemoryStream();
+					using var binaryWriter = new BinaryWriter(memoryStream);
+					foreach (var item in items)
+					{
+						var itemBytes 
+							= ConvertBaseValueToBytes(item)
+							?? throw new Exception("将基础类型值转为字节数组失败，意外的错误。");
+						// !!!
+						binaryWriter.Write(itemBytes);
+						// !!!
+					}
+					return memoryStream.ToArray();
+				}
 			}
 			return null;
 		}
@@ -570,96 +585,16 @@ public static class ObjectExtension
 		if (objectItemPropertyGetInfes == null
 			|| objectItemPropertyGetInfes.Count < 1)
 		{
-
+			return ConvertBaseValueToBytes(objectItem) ?? [];
 		}
-		else
+
+
+		byte[] objectItemBytes;
+		if (isGetPropertyInfesRecursivly == false)
 		{
 			foreach (var objectItemPropertyGetInfo in objectItemPropertyGetInfes)
 			{
-				RecursionUtil.RecursionEnumerate<ItemPropertyGetInfo<object>>(
-					objectItemPropertyGetInfo,
-					(itemPropertyGetInfo) =>
-					{
-						return GetPropertyGetInfesOfItem(
-							itemPropertyGetInfo.GetPropertyOfHostItem(),
-							propertyNamesExcepted,
-							propertiesBindingFlags,
-							toIsPropertyInfoOfObjectValidToGenerate);
-					},
-					(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
-					{
-						var itemPropertyValue
-						= itemPropertyGetInfo.GetPropertyOfHostItem();
-						var itemPropertyValueBytes = ConvertBaseValueToBytes(itemPropertyValue);
-						if (itemPropertyValueBytes != null)
-						{
-							// !!!
-							binaryWriter.Write(itemPropertyValueBytes);
-							binaryWriter.Write(propertyByteSeparator);
-							// !!!
-						}
-						return true;
-					});
-			}
-		}
-		var objectItemPropertyInfes = objectItem.GetType().GetProperties(propertiesBindingFlags);
-		if (isGetPropertyInfesRecursivly)
-		{
-			foreach (var objectItemPropertyInfo in objectItemPropertyInfes)
-			{
-				if (propertyNamesExcepted?.Contains(objectItemPropertyInfo.Name) == true)
-				{
-					continue;
-				}
-				if (toIsPropertyInfoOfObjectValidToGenerate?.Invoke(
-					objectItem,
-					objectItemPropertyInfo) == false)
-				{
-					continue;
-				}
-
-				RecursionUtil.RecursionEnumerate<ItemPropertyGetInfo<object>>(
-					new(ItemPropertyGetInfoType.NormalProperty,
-						objectItem,
-						objectItemPropertyInfo,
-						null),
-					(itemPropertyGetInfo) =>
-					{
-
-					},
-					(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
-					{
-						var itemPropertyValue
-						= itemPropertyGetInfo.PropertyInfo.GetValue(itemPropertyGetInfo.HosttItem);
-
-						var itemPropertyValueBytes = ConvertBaseValueToBytes(itemPropertyValue);
-						if (itemPropertyValueBytes != null)
-						{
-							// !!!
-							binaryWriter.Write(itemPropertyValueBytes);
-							binaryWriter.Write(propertyByteSeparator);
-							// !!!
-						}
-						return true;
-					});
-			}
-		}
-		else
-		{
-			foreach (var objectItemPropertyInfo in objectItemPropertyInfes)
-			{
-				if (propertyNamesExcepted?.Contains(objectItemPropertyInfo.Name) == true)
-				{
-					continue;
-				}
-				if (toIsPropertyInfoOfObjectValidToGenerate?.Invoke(
-					objectItem,
-					objectItemPropertyInfo) == false)
-				{
-					continue;
-				}
-
-				var itemPropertyValue = objectItemPropertyInfo.GetValue(objectItem);
+				var itemPropertyValue = objectItemPropertyGetInfo.GetPropertyValue();
 				var itemPropertyValueBytes = ConvertBaseValueToBytes(itemPropertyValue);
 				if (itemPropertyValueBytes != null)
 				{
@@ -669,9 +604,41 @@ public static class ObjectExtension
 					// !!!
 				}
 			}
+			////////////////////////////////////////////////
+			objectItemBytes = memoryStream.ToArray();
+			{ }
+			return objectItemBytes;
+			////////////////////////////////////////////////
 		}
-		////////////////////////////////////////////////
-		var objectItemBytes = memoryStream.ToArray();
+
+		foreach (var objectItemPropertyGetInfo in objectItemPropertyGetInfes)
+		{
+			RecursionUtil.RecursionEnumerate<ItemPropertyGetInfo<object>>(
+				objectItemPropertyGetInfo,
+				(itemPropertyGetInfo) =>
+				{
+					return GetPropertyGetInfesOfItem(
+						itemPropertyGetInfo.GetPropertyValue(),
+						propertyNamesExcepted,
+						propertiesBindingFlags,
+						toIsPropertyInfoOfObjectValidToGenerate);
+				},
+				(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
+				{
+					var itemPropertyValue
+					= itemPropertyGetInfo.GetPropertyValue();
+					var itemPropertyValueBytes = ConvertBaseValueToBytes(itemPropertyValue);
+					if (itemPropertyValueBytes != null)
+					{
+						// !!!
+						binaryWriter.Write(itemPropertyValueBytes);
+						binaryWriter.Write(propertyByteSeparator);
+						// !!!
+					}
+					return true;
+				});
+		}
+		objectItemBytes = memoryStream.ToArray();
 		{ }
 		return objectItemBytes;
 	}

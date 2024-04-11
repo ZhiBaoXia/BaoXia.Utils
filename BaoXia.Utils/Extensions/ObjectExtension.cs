@@ -335,7 +335,7 @@ public static class ObjectExtension
 					using var binaryWriter = new BinaryWriter(memoryStream);
 					foreach (var item in items)
 					{
-						var itemBytes 
+						var itemBytes
 							= ConvertBaseValueToBytes(item)
 							?? throw new Exception("将基础类型值转为字节数组失败，意外的错误。");
 						// !!!
@@ -385,7 +385,6 @@ public static class ObjectExtension
 		{
 			return BitConverter.GetBytes(int64Value);
 		}
-
 		if (baseValue is UInt16 uInt16Value)
 		{
 			return BitConverter.GetBytes(uInt16Value);
@@ -402,7 +401,6 @@ public static class ObjectExtension
 		{
 			return [byteValue];
 		}
-
 		if (baseValue is SByte sByteValue)
 		{
 			return [(byte)sByteValue];
@@ -419,7 +417,6 @@ public static class ObjectExtension
 		{
 			return Decimal.GetBits(decimalValue).SelectMany(BitConverter.GetBytes).ToArray();
 		}
-
 		if (baseValue is Char charValue)
 		{
 			return BitConverter.GetBytes(charValue);
@@ -483,34 +480,43 @@ public static class ObjectExtension
 		var itemType = item.GetType();
 		if (itemType.IsValueType)
 		{
-			return [];
+			if (itemType.IsPrimitive
+				|| itemType.IsEnum
+				|| itemType.Equals(typeof(DateTime)))
+			{
+				return [];
+			}
+			// !!! else 结构体按对象类型处理。 !!!
 		}
 		// 字符串对象的特殊处理。
-		if (itemType.Equals(typeof(string)))
+		else
 		{
-			return [];
-		}
-
-		// 容器对象的特殊处理。
-		if (item is IEnumerable childItems)
-		{
-			var chilItemPropertyGetInfes = new List<ItemPropertyGetInfo<object>>();
-			foreach (var childItem in childItems)
+			if (itemType.Equals(typeof(string)))
 			{
-				if (childItem.GetType().IsValueType)
-				{
-					return [];
-				}
-				else
-				{
-					chilItemPropertyGetInfes.Add(new ItemPropertyGetInfo<object>(
-						ItemPropertyGetInfoType.ObjectItemInIEnumerable,
-						item,
-						null,
-						childItem));
-				}
+				return [];
 			}
-			return chilItemPropertyGetInfes;
+
+			// 容器对象的特殊处理。
+			if (item is IEnumerable childItems)
+			{
+				var chilItemPropertyGetInfes = new List<ItemPropertyGetInfo<object>>();
+				foreach (var childItem in childItems)
+				{
+					if (childItem.GetType().IsValueType)
+					{
+						return [];
+					}
+					else
+					{
+						chilItemPropertyGetInfes.Add(new ItemPropertyGetInfo<object>(
+							ItemPropertyGetInfoType.ObjectItemInIEnumerable,
+							item,
+							null,
+							childItem));
+					}
+				}
+				return chilItemPropertyGetInfes;
+			}
 		}
 
 		// 普通的对象属性。
@@ -555,23 +561,22 @@ public static class ObjectExtension
 	/// <param name="objectItem">当前对象。</param>
 	/// <param name="propertyNamesExcepted">要排除生成的属性名称，大小写敏感。</param>
 	/// <param name="propertiesBindingFlags">要读取的属性绑定标志，如果指定为“System.Reflection.BindingFlags.Default”，则默认使用“System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.GetProperty”的组合。</param>
-	/// <param name="propertyByteSeparator">属性的字节分隔符。</param>
 	/// <param name="isGetPropertyInfesRecursivly">是否使用递归深度获取对象的属性信息。。</param>
 	/// <param name="toIsPropertyInfoOfObjectValidToGenerate">判断指定对象，指定属性是否参与字节生成的回调。</param>
+	/// <param name="propertyByteSeparator">属性的字节分隔符。</param>
 	/// <returns>返回由当前对象，所有值类型属性生成的字节数组。</returns>
-	public static byte[] GenerateBytesOfValueProperties(
+	public static byte[] GeneratePropertyValueBytes(
 		this object? objectItem,
 		string[]? propertyNamesExcepted = null,
 		System.Reflection.BindingFlags propertiesBindingFlags = System.Reflection.BindingFlags.Default,
-		byte propertyByteSeparator = 0,
 		bool isGetPropertyInfesRecursivly = false,
-		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null)
+		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
+		byte propertyByteSeparator = 0)
 	{
 		if (objectItem == null)
 		{
 			return [];
 		}
-
 
 		var memoryStream = new MemoryStream();
 		using var binaryWriter = new BinaryWriter(memoryStream);
@@ -617,11 +622,13 @@ public static class ObjectExtension
 				objectItemPropertyGetInfo,
 				(itemPropertyGetInfo) =>
 				{
-					return GetPropertyGetInfesOfItem(
+					var itemPropertyGetInfes = GetPropertyGetInfesOfItem(
 						itemPropertyGetInfo.GetPropertyValue(),
 						propertyNamesExcepted,
 						propertiesBindingFlags,
 						toIsPropertyInfoOfObjectValidToGenerate);
+					{ }
+					return itemPropertyGetInfes;
 				},
 				(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
 				{

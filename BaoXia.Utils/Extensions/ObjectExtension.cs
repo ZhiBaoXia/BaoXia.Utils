@@ -243,6 +243,66 @@ public static class ObjectExtension
 		return newObject;
 	}
 
+	@last
+	public static ObjectType CloneWithSamePropertiesRecursivly<ObjectType>(
+		this ObjectType item,
+		string[]? propertyNamesExcepted = null,
+		System.Reflection.BindingFlags propertiesBindingFlags = System.Reflection.BindingFlags.Default,
+		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null)
+		where ObjectType : new()
+	{
+		var itemCloned = new ObjectType();
+		var itemPropertyGetInfes = GetPropertyGetInfesOfItem(
+			item,
+			propertyNamesExcepted,
+			propertiesBindingFlags,
+			toIsPropertyInfoOfObjectValidToGenerate);
+		if (itemPropertyGetInfes == null
+			|| itemPropertyGetInfes.Count < 1)
+		{
+			return itemCloned;
+		}
+
+
+		foreach (var objectItemPropertyGetInfo in itemPropertyGetInfes)
+		{
+			RecursionUtil.RecursionEnumerate<ItemPropertyGetInfo<object>>(
+				objectItemPropertyGetInfo,
+				(itemPropertyGetInfo) =>
+				{
+					var itemPropertyGetInfes = GetPropertyGetInfesOfItem(
+						itemPropertyGetInfo.GetPropertyValue(),
+						propertyNamesExcepted,
+						propertiesBindingFlags,
+						toIsPropertyInfoOfObjectValidToGenerate);
+					{ }
+					return itemPropertyGetInfes;
+				},
+				(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
+				{
+					var itemPropertyValue
+					= itemPropertyGetInfo.GetPropertyValue();
+					var itemPropertyValueBytes = ConvertBaseValueToBytes(itemPropertyValue);
+					if (itemPropertyValueBytes != null)
+					{
+						// !!!
+						binaryWriter.Write(itemPropertyValueBytes);
+						binaryWriter.Write(propertyByteSeparator);
+						// !!!
+					}
+
+
+
+
+
+					return true;
+				});
+		}
+		return objectItemBytes;
+	}
+
+
+
 
 	public static ObjectType[]? CloneObjectsToArray<ObjectType>(this IEnumerable<ObjectType>? objects)
 		where ObjectType : class, new()

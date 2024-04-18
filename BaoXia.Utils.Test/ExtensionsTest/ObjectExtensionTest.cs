@@ -224,16 +224,21 @@ public class ObjectExtensionTest
 			"IntProperty",
 			"FloatProperty",
 			"DoubleProperty",
+			"DecimalProperty",
 			"StringProperty",
 			"DateTimeProperty",
-			"ItemInCollection",
+			"ObjectProperty",
 
 			"IntFieldProperty",
-			"FloatFieldProperty",
 			"StringFieldProperty"
 		};
 
-		var objectAllPublicSetableProperties = objectA.GetPublicSetablePropertyInfes();
+		var allPublicReadOnlyPropertyNames = new string[]
+		{
+			"FloatFieldProperty",
+		};
+
+		var objectAllPublicSetableProperties = objectA.GetPublicSettablePropertyInfes();
 
 		Assert.IsTrue(objectAllPublicSetableProperties?.Length == allPublisSetablePropertyNames.Length);
 		foreach (var objectPublicSetableProperty in objectAllPublicSetableProperties)
@@ -251,6 +256,9 @@ public class ObjectExtensionTest
 				Assert.IsTrue(
 					Array.IndexOf(allPublisSetablePropertyNames, objectPublicSetableProperty.Name)
 					>= 0);
+				Assert.IsTrue(
+					Array.IndexOf(allPublicReadOnlyPropertyNames, objectPublicSetableProperty.Name)
+					< 0);
 			}
 		}
 	}
@@ -345,7 +353,7 @@ public class ObjectExtensionTest
 		Assert.IsTrue(objectA.DateTimeProperty == objectB.DateTimeProperty);
 		Assert.IsTrue(objectA.ObjectProperty == objectB.ObjectProperty);
 
-		Assert.IsTrue(objectA.IntFieldProperty == objectB.IntFieldProperty);
+		Assert.IsTrue(objectA.IntFieldProperty == objectB.IntProperty);
 		Assert.IsTrue(objectA.FloatFieldProperty != objectB.FloatFieldProperty);
 		Assert.IsTrue(objectA.StringFieldProperty == objectB.StringFieldProperty);
 
@@ -422,59 +430,113 @@ public class ObjectExtensionTest
 
 	class ClassCloneTestA
 	{
-		//public int[]? ChildIntValues { get; set; }
+		public int IntProperty { get; set; }
 
-		//public string[]? ChildStringValues { get; set; }
+		public float FloatProperty { get; set; }
 
-		//public ClassCloneTestB[]? ChildObjectValues { get; set; }
+		public double DoubleProperty { get; set; }
 
-		public Dictionary<string, int>? ChildKeyValues { get; set; }
+		public decimal DecimalProperty { get; set; }
+
+		public string? StringProperty { get; set; }
+
+		public DateTime DateTimeProperty { get; set; }
+
+		public object? ObjectProperty { get; set; }
+
+		public int[]? IntItems { get; set; }
+
+		public float[]? FloatItems { get; set; }
+
+		public double[]? DoubleItems { get; set; }
+
+		public decimal[]? DecimalItems { get; set; }
+
+		public string[]? StringItems { get; set; }
+
+		public ClassCloneTestB[]? ObjectItems { get; set; }
+
+		public Dictionary<string, int>? KeyValueItems { get; set; }
 	}
 
 	class ClassCloneTestB
 	{
-		//public int BIntValue { get; set; }
+		public int BIntValue { get; set; }
 
-		//public float BFloatValue { get; set; }
+		public float BFloatValue { get; set; }
 
-		//public string? BStringValue { get; set; }
+		public string? BStringValue { get; set; }
 
+		public override bool Equals(object? obj)
+		{
+			return base.Equals(obj); @last
+		}
 	}
 
 	[TestMethod]
 	public void CloneWithSamePropertiesPropertiesRecursivlyTest()
 	{
-		var testObjectA = new ClassCloneTestA()
+		var item = new ClassCloneTestA()
 		{
-			//ChildIntValues =
-			//[
-			//	1,
-			//	2,
-			//	3
-			//],
-			//ChildStringValues =
-			//[
-			//	"A",
-			//	"b",
-			//	"c"
-			//],
-			//ChildObjectValues =
-			//[
-			//	new()
-			//	{
-			//		BIntValue = 101,
-			//		BFloatValue = 102.0F,
-			//		BStringValue = "B_Abc"
-			//	},
-			//	new()
-			//	{
-			//		BIntValue = 201,
-			//		BFloatValue = 202.0F,
-			//		BStringValue = "B_Def"
-			//	}
-			//]
-
-			ChildKeyValues = new()
+			IntProperty = 1,
+			FloatProperty = 2.0F,
+			DoubleProperty = 3.0,
+			DecimalProperty = 4.0M,
+			StringProperty = "Abc",
+			ObjectProperty = new ClassB()
+			{
+				IntProperty = 101,
+				FloatProperty = 102.0F,
+				DoubleProperty = 103.0,
+				DecimalProperty = 104.0M,
+				StringProperty = "10Abc"
+			},
+			IntItems =
+			[
+				1,
+				2,
+				3
+			],
+			FloatItems =
+			[
+				4.0F,
+				5.0F,
+				6.0F
+			],
+			DoubleItems =
+			[
+				7.0,
+				8.0,
+				9.0
+			],
+			DecimalItems =
+			[
+				10.0M,
+				11.0M,
+				12.0M
+			],
+			StringItems =
+			[
+				"A",
+				"b",
+				"c"
+			],
+			ObjectItems =
+			[
+				new()
+				{
+					BIntValue = 101,
+					BFloatValue = 102.0F,
+					BStringValue = "B_Abc"
+				},
+				new()
+				{
+					BIntValue = 201,
+					BFloatValue = 202.0F,
+					BStringValue = "B_Def"
+				}
+			],
+			KeyValueItems = new()
 			{
 				{ "Aaa", 1 },
 				{ "Bbb", 2 },
@@ -482,38 +544,34 @@ public class ObjectExtensionTest
 			}
 		};
 
-		var itemCloned = testObjectA.CloneWithSamePropertiesRecursivly();
+		var itemCloned = item.CloneWithSamePropertiesRecursivly();
+		////////////////////////////////////////////////
+		// 1/2，克隆后，默认属性一致：
+		////////////////////////////////////////////////
 		{
-			var a = 3;
-			@last
+			Assert.IsTrue(item.IntProperty == itemCloned.IntProperty);
+			Assert.IsTrue(item.FloatProperty == itemCloned.FloatProperty);
+			Assert.IsTrue(item.DoubleProperty == itemCloned.DoubleProperty);
+			Assert.IsTrue(item.DecimalProperty == itemCloned.DecimalProperty);
+			Assert.IsTrue(item.StringProperty!.Equals(itemCloned.StringProperty));
+
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.IntItems, itemCloned.IntItems));
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.FloatItems, itemCloned.FloatItems));
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.DoubleItems, itemCloned.DoubleItems));
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.DecimalItems, itemCloned.DecimalItems));
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.StringItems, itemCloned.StringItems));
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.ObjectItems, itemCloned.ObjectItems));
+
+			Assert.IsTrue(item.KeyValueItems!.Count == itemCloned.KeyValueItems!.Count);
 		}
 
-		//var item = new ClassA()
-		//{
-		//	IntFieldProperty = 1,
-		//	FloatProperty = 2.0F,
-		//	DoubleProperty = 3.0,
-		//	DecimalProperty = 4.0M,
-		//	StringProperty = "Abc",
-		//	ItemInCollection = new ClassB()
-		//	{
-		//		IntFieldProperty = 101,
-		//		FloatProperty = 102.0F,
-		//		DoubleProperty = 103.0,
-		//		DecimalProperty = 104.0M,
-		//		StringProperty = "10Abc"
-		//	}
-		//};
-		//var itemCloned = item.CloneWithSamePropertiesRecursivly();
-		//{
-		//	Assert.IsNotNull(item.IntFieldProperty == itemCloned.IntFieldProperty);
-		//	Assert.IsNotNull(item.FloatProperty == itemCloned.FloatProperty);
-		//	Assert.IsNotNull(item.DoubleProperty == itemCloned.DoubleProperty);
-		//	Assert.IsNotNull(item.DecimalProperty == itemCloned.DecimalProperty);
-		//	Assert.IsNotNull(item.StringProperty!.Equals(itemCloned.StringProperty));
-		//}
+		////////////////////////////////////////////////
+		// 2/2，克隆后，修改克隆对象，不影响原有对象：
+		////////////////////////////////////////////////
+		{
+			var a = 3;
+		}
 	}
-
 
 
 	protected struct StructA

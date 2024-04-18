@@ -48,14 +48,13 @@ public static class ArrayExtension
 			return false;
 		}
 
-		foreach (var item in items)
+		for (var itemIndex = 0; itemIndex < items.Length; itemIndex++)
 		{
-			foreach (var anotherItem in anotherItems)
+			var item = items[itemIndex];
+			var anotherItem = anotherItems[itemIndex];
+			if (object.Equals(item, anotherItem) == false)
 			{
-				if (object.Equals(item, anotherItem) == false)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 		return true;

@@ -52,7 +52,7 @@ public static class ObjectExtension
 		return @object;
 	}
 
-	public static PropertyInfo[]? GetPublicSetablePropertyInfes(
+	public static PropertyInfo[]? GetPublicSettablePropertyInfes(
 	    this object @object,
 	    BindingFlags propertiesBindingFlags = BindingFlags.Default)
 	{
@@ -66,7 +66,48 @@ public static class ObjectExtension
 				| BindingFlags.SetProperty;
 		}
 		var objectSetableProperties = objectType.GetProperties(propertiesBindingFlags);
-		{ }
+		bool isGetPropertyInfesGettable
+			= (propertiesBindingFlags & BindingFlags.GetProperty)
+			== BindingFlags.GetProperty;
+		bool isGetPropertyInfesSettable
+			= (propertiesBindingFlags & BindingFlags.SetProperty)
+			== BindingFlags.SetProperty;
+		if (objectSetableProperties.Length > 0
+			&& (isGetPropertyInfesGettable || isGetPropertyInfesSettable))
+		{
+			var objectSetablePropertiesCount = objectSetableProperties.Length;
+			for (var propertyInfoIndex = objectSetablePropertiesCount - 1;
+				propertyInfoIndex >= 0;
+				propertyInfoIndex--)
+			{
+				var propertyInfo = objectSetableProperties[propertyInfoIndex];
+				var isPropertyInfoValid = true;
+				if (isGetPropertyInfesGettable
+					&& propertyInfo.GetMethod == null)
+				{
+					isPropertyInfoValid = false;
+				}
+				if (isGetPropertyInfesSettable
+					&& propertyInfo.SetMethod == null)
+				{
+					isPropertyInfoValid = false;
+				}
+				if (isPropertyInfoValid == false)
+				{
+					Array.Copy(
+						objectSetableProperties,
+						propertyInfoIndex + 1,
+						objectSetableProperties,
+						propertyInfoIndex,
+						objectSetableProperties.Length - (propertyInfoIndex + 1));
+					objectSetablePropertiesCount--;
+				}
+			}
+			if (objectSetablePropertiesCount < objectSetableProperties.Length)
+			{
+				Array.Resize(ref objectSetableProperties, objectSetablePropertiesCount);
+			}
+		}
 		return objectSetableProperties;
 	}
 
@@ -124,7 +165,7 @@ public static class ObjectExtension
 	    this object objectA,
 	    object objectB,
 	    string[] propertyNamesExcepted,
-	    System.Reflection.BindingFlags propertiesBindingFlags)
+	    BindingFlags propertiesBindingFlags)
 	{
 		if (objectA == null
 		    || objectB == null)
@@ -139,7 +180,6 @@ public static class ObjectExtension
 			    | BindingFlags.Public
 			    | BindingFlags.SetProperty;
 		}
-
 
 		var objectAProperties = objectA.GetType().GetProperties(
 		    propertiesBindingFlags);
@@ -237,7 +277,7 @@ public static class ObjectExtension
 		    objectA,
 		    objectB,
 		    propertyNamesExcepted,
-		    System.Reflection.BindingFlags.Default);
+		    BindingFlags.Default);
 	}
 
 
@@ -261,11 +301,19 @@ public static class ObjectExtension
 	public static ObjectType CloneWithSamePropertiesRecursivly<ObjectType>(
 		this ObjectType item,
 		string[]? propertyNamesExcepted = null,
-		System.Reflection.BindingFlags propertiesBindingFlags = System.Reflection.BindingFlags.Default,
+		BindingFlags propertiesBindingFlags = BindingFlags.Default,
 		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null)
 		where ObjectType : new()
 	{
 		var itemCloned = new ObjectType();
+		if (propertiesBindingFlags == BindingFlags.Default)
+		{
+			propertiesBindingFlags
+				= BindingFlags.Instance
+				| BindingFlags.Public
+				| BindingFlags.GetProperty
+				| BindingFlags.SetProperty;
+		}
 		var itemPropertyGetInfes = GetPropertyGetInfesOfItem(
 			item,
 			propertyNamesExcepted,
@@ -327,7 +375,7 @@ public static class ObjectExtension
 								// !!!⚠
 								if (sourcePropertyValue is ICollection sourceChildItems)
 								{
-									
+
 									// 当前容器属性，类型为：数组类型。
 									if (sourceChildItems is Array sourceChildItemArray)
 									{
@@ -739,7 +787,7 @@ public static class ObjectExtension
 	public static List<ItemPropertyGetInfo<object>>? GetPropertyGetInfesOfItem(
 		object? item,
 		string[]? propertyNamesExcepted = null,
-		System.Reflection.BindingFlags propertiesBindingFlags = System.Reflection.BindingFlags.Default,
+		BindingFlags propertiesBindingFlags = BindingFlags.Default,
 		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null)
 	{
 		if (item == null)
@@ -829,13 +877,19 @@ public static class ObjectExtension
 
 
 		// 普通的对象属性。
-		if (propertiesBindingFlags == System.Reflection.BindingFlags.Default)
+		if (propertiesBindingFlags == BindingFlags.Default)
 		{
 			propertiesBindingFlags
-				= System.Reflection.BindingFlags.Instance
-				| System.Reflection.BindingFlags.Public
-				| System.Reflection.BindingFlags.GetProperty;
+				= BindingFlags.Instance
+				| BindingFlags.Public
+				| BindingFlags.GetProperty;
 		}
+		var isGetPropertyInfesGetable
+			= (propertiesBindingFlags & BindingFlags.GetProperty)
+			== BindingFlags.GetProperty;
+		var isGetPropertyInfesSetable
+			= (propertiesBindingFlags & BindingFlags.SetProperty)
+			== BindingFlags.SetProperty;
 		var itemPropertyInfes = itemType.GetProperties(propertiesBindingFlags);
 		if (itemPropertyInfes == null
 		|| itemPropertyInfes.Length < 1)
@@ -852,6 +906,16 @@ public static class ObjectExtension
 			if (toIsPropertyInfoOfObjectValidToGenerate?.Invoke(
 				item,
 				hostItemPropertyInfo) == false)
+			{
+				continue;
+			}
+			if (isGetPropertyInfesGetable
+				&& hostItemPropertyInfo.GetMethod == null)
+			{
+				continue;
+			}
+			if (isGetPropertyInfesSetable
+				&& hostItemPropertyInfo.SetMethod == null)
 			{
 				continue;
 			}
@@ -879,7 +943,7 @@ public static class ObjectExtension
 	public static byte[] GeneratePropertyValueBytes(
 		this object? objectItem,
 		string[]? propertyNamesExcepted = null,
-		System.Reflection.BindingFlags propertiesBindingFlags = System.Reflection.BindingFlags.Default,
+		BindingFlags propertiesBindingFlags = BindingFlags.Default,
 		bool isGetPropertyInfesRecursivly = false,
 		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
 		byte propertyByteSeparator = 0)

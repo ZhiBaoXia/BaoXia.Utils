@@ -243,7 +243,6 @@ public static class ObjectExtension
 		return newObject;
 	}
 
-	@last
 	public static ObjectType CloneWithSamePropertiesRecursivly<ObjectType>(
 		this ObjectType item,
 		string[]? propertyNamesExcepted = null,
@@ -280,25 +279,23 @@ public static class ObjectExtension
 				},
 				(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
 				{
-					var itemPropertyValue
-					= itemPropertyGetInfo.GetPropertyValue();
-					var itemPropertyValueBytes = ConvertBaseValueToBytes(itemPropertyValue);
-					if (itemPropertyValueBytes != null)
+					if (parentItemPropertyGetInfo == null)
 					{
 						// !!!
-						binaryWriter.Write(itemPropertyValueBytes);
-						binaryWriter.Write(propertyByteSeparator);
+						itemPropertyGetInfo.PropertyInfo?.SetValue(
+							itemCloned,
+							itemPropertyGetInfo.GetPropertyValue());
 						// !!!
 					}
-
-
-
-
+					else
+					{
+						parentItemPropertyGetInfo.GetPropertyValue
+					}
 
 					return true;
 				});
 		}
-		return objectItemBytes;
+		return itemCloned;
 	}
 
 

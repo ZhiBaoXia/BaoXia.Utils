@@ -417,6 +417,38 @@ public class ObjectExtensionTest
 	}
 
 
+
+	[TestMethod]
+	public void CloneWithSamePropertiesPropertiesRecursivlyTest()
+	{
+		var item = new ClassA()
+		{
+			IntFieldProperty = 1,
+			FloatProperty = 2.0F,
+			DoubleProperty = 3.0,
+			DecimalProperty = 4.0M,
+			StringProperty = "Abc",
+			ObjectProperty = new ClassA()
+			{
+				IntFieldProperty = 101,
+				FloatProperty = 2.0F,
+				DoubleProperty = 3.0,
+				DecimalProperty = 4.0M,
+				StringProperty = "Abc", @last
+			}
+		};
+		var itemCloned = item.CloneWithSamePropertiesRecursivly();
+		{
+			Assert.IsNotNull(item.IntFieldProperty == itemCloned.IntFieldProperty);
+			Assert.IsNotNull(item.FloatProperty == itemCloned.FloatProperty);
+			Assert.IsNotNull(item.DoubleProperty == itemCloned.DoubleProperty);
+			Assert.IsNotNull(item.DecimalProperty == itemCloned.DecimalProperty);
+			Assert.IsNotNull(item.StringProperty!.Equals(itemCloned.StringProperty));
+		}
+	}
+
+
+
 	protected struct StructA
 	{
 		public int IntProperty { get; set; }

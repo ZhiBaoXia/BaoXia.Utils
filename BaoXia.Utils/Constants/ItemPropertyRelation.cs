@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Constants;
 
-public enum ItemPropertyGetInfoType
+public enum ItemPropertyRelation
 {
 	Unknow = 0,
 
-	NormalProperty = 1,
+	Property = 1,
 
 	ValueItemInIEnumerable = 2,
 

@@ -1,6 +1,8 @@
 ﻿using BaoXia.Utils.Extensions;
+using Microsoft.Extensions.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -224,7 +226,7 @@ public class ObjectExtensionTest
 			"DoubleProperty",
 			"StringProperty",
 			"DateTimeProperty",
-			"ObjectProperty",
+			"ItemInCollection",
 
 			"IntFieldProperty",
 			"FloatFieldProperty",
@@ -309,7 +311,7 @@ public class ObjectExtensionTest
 
 			ObjectProperty = new ClassC()
 			{
-				Value = "ClassA.ObjectProperty"
+				Value = "ClassA.ItemInCollection"
 			}
 		};
 		var objectB = new ClassB()
@@ -326,7 +328,7 @@ public class ObjectExtensionTest
 
 			ObjectProperty = new ClassC()
 			{
-				Value = "ClassB.ObjectProperty"
+				Value = "ClassB.ItemInCollection"
 			}
 		};
 
@@ -420,7 +422,23 @@ public class ObjectExtensionTest
 
 	class ClassCloneTestA
 	{
-		public int[]? ChildIntValues { get; set; }
+		//public int[]? ChildIntValues { get; set; }
+
+		//public string[]? ChildStringValues { get; set; }
+
+		//public ClassCloneTestB[]? ChildObjectValues { get; set; }
+
+		public Dictionary<string, int>? ChildKeyValues { get; set; }
+	}
+
+	class ClassCloneTestB
+	{
+		//public int BIntValue { get; set; }
+
+		//public float BFloatValue { get; set; }
+
+		//public string? BStringValue { get; set; }
+
 	}
 
 	[TestMethod]
@@ -428,16 +446,46 @@ public class ObjectExtensionTest
 	{
 		var testObjectA = new ClassCloneTestA()
 		{
-			ChildIntValues = new int[3]
+			//ChildIntValues =
+			//[
+			//	1,
+			//	2,
+			//	3
+			//],
+			//ChildStringValues =
+			//[
+			//	"A",
+			//	"b",
+			//	"c"
+			//],
+			//ChildObjectValues =
+			//[
+			//	new()
+			//	{
+			//		BIntValue = 101,
+			//		BFloatValue = 102.0F,
+			//		BStringValue = "B_Abc"
+			//	},
+			//	new()
+			//	{
+			//		BIntValue = 201,
+			//		BFloatValue = 202.0F,
+			//		BStringValue = "B_Def"
+			//	}
+			//]
+
+			ChildKeyValues = new()
 			{
-				1,
-				2,
-				3
+				{ "Aaa", 1 },
+				{ "Bbb", 2 },
+				{ "Ccc", 3 }
 			}
 		};
+
 		var itemCloned = testObjectA.CloneWithSamePropertiesRecursivly();
 		{
 			var a = 3;
+			@last
 		}
 
 		//var item = new ClassA()
@@ -447,7 +495,7 @@ public class ObjectExtensionTest
 		//	DoubleProperty = 3.0,
 		//	DecimalProperty = 4.0M,
 		//	StringProperty = "Abc",
-		//	ObjectProperty = new ClassB()
+		//	ItemInCollection = new ClassB()
 		//	{
 		//		IntFieldProperty = 101,
 		//		FloatProperty = 102.0F,

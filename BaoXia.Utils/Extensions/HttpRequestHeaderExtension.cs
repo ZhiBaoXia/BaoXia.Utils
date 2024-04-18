@@ -30,7 +30,7 @@ namespace BaoXia.Utils.Extensions
 				HttpRequestHeader.ContentLocation => "Content-Location",
 				HttpRequestHeader.ContentMd5 => "Content-MD5",
 				HttpRequestHeader.ContentRange => "Content-Range",
-				HttpRequestHeader.ContentType => "Content-Type",
+				HttpRequestHeader.ContentType => "Content-PropertyRelation",
 				HttpRequestHeader.Cookie => "Cookie",
 				HttpRequestHeader.Date => "Date",
 				HttpRequestHeader.Expect => "Expect",

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BaoXia.Utils.Models;
 
 public class ItemPropertyGetInfo<ItemType>
-	(ItemPropertyGetInfoType type,
+	(ItemPropertyRelation propertyRelation,
 	ItemType hostItem,
 	PropertyInfo? propertyInfo,
 	object? objectProperty,
@@ -23,7 +23,7 @@ public class ItemPropertyGetInfo<ItemType>
 
 	#region 自身属性
 
-	public ItemPropertyGetInfoType Type { get; set; } = type;
+	public ItemPropertyRelation PropertyRelation { get; set; } = propertyRelation;
 
 	public ItemType HosttItem { get; set; } = hostItem;
 
@@ -32,11 +32,11 @@ public class ItemPropertyGetInfo<ItemType>
 
 	////////////////////////////////////////////////
 
-	public object? ObjectProperty { get; set; } = objectProperty;
+	public object? ItemInCollection { get; set; } = objectProperty;
 
-	public int ObjectProperty_Index { get; set; } = objectProperty_Index;
+	public int ItemInCollection_Index { get; set; } = objectProperty_Index;
 
-	public object? ObjectProperty_Key { get; set; } = objectProperty_Key;
+	public object? ItemInCollection_Key { get; set; } = objectProperty_Key;
 
 	////////////////////////////////////////////////
 
@@ -59,13 +59,13 @@ public class ItemPropertyGetInfo<ItemType>
 
 	public object? GetPropertyValue()
 	{
-		switch (Type)
+		switch (PropertyRelation)
 		{
 			default:
-			case ItemPropertyGetInfoType.Unknow:
-			case ItemPropertyGetInfoType.ValueItemInIEnumerable:
+			case ItemPropertyRelation.Unknow:
+			case ItemPropertyRelation.ValueItemInIEnumerable:
 				break;
-			case ItemPropertyGetInfoType.NormalProperty:
+			case ItemPropertyRelation.Property:
 				{
 					if (PropertyInfo != null)
 					{
@@ -73,11 +73,11 @@ public class ItemPropertyGetInfo<ItemType>
 					}
 				}
 				break;
-			case ItemPropertyGetInfoType.ObjectItemInIEnumerable:
+			case ItemPropertyRelation.ObjectItemInIEnumerable:
 				{
-					if (ObjectProperty != null)
+					if (ItemInCollection != null)
 					{
-						return ObjectProperty;
+						return ItemInCollection;
 					}
 				}
 				break;

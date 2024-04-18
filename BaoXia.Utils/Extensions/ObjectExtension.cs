@@ -23,17 +23,32 @@ public static class ObjectExtension
 
 	#region 类方法
 
-	public static ObjectType? CreateObject<ObjectType>()
-	{
-		var @object = Activator.CreateInstance<ObjectType>();
-		{ }
-		return @object;
-	}
 
 	public static object? CreateObject(Type objectType)
 	{
 		var @object = Activator.CreateInstance(objectType);
 		{ }
+		return @object;
+	}
+
+	public static ObjectType? CreateObject<ObjectType>()
+	{
+		return (ObjectType?)CreateObject(typeof(ObjectType));
+	}
+
+	public static object? CreateObject(object? @object)
+	{
+		if (@object == null)
+		{
+			return @object;
+		}
+		if (@object is string stringObject)
+		{
+			return new string(stringObject);
+		}
+		{
+			@object = Activator.CreateInstance(@object.GetType());
+		}
 		return @object;
 	}
 
@@ -279,116 +294,218 @@ public static class ObjectExtension
 				(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
 				{
 					////////////////////////////////////////////////
-					// 1/2，克隆新值：
-					////////////////////////////////////////////////
-					var sourcePropertyValue = itemPropertyGetInfo.GetPropertyValue();
-					int propertyValueClonedIndex = -1;
-					object? propertyValueClonedKey = null;
-					object? clonedPropertyValue = null;
-					if (itemPropertyGetInfo.PropertyInfo is PropertyInfo sourcePropertyValuePropertyInfo)
-					{
-						if (sourcePropertyValue is IEnumerable sourceChildItems)
-						{
-							if (sourceChildItems is Array sourceChildItemArray)
-							{
-								clonedPropertyValue
-								= Activator.CreateInstance(
-									sourceChildItemArray.GetType(),
-									sourceChildItemArray.Length);
-								if (sourceChildItemArray.Length > 0)
-								{
-									var childItemType = sourceChildItemArray.GetValue(0)!.GetType();
-									if (childItemType.IsValueType)
-									{
-										Array.Copy(
-											sourceChildItemArray,
-											(Array)clonedPropertyValue!,
-											sourceChildItemArray.Length);
-									}
-								}
-							}
-							else if (sourceChildItems is IList sourceChildItemList)
-							{
-								clonedPropertyValue
-								= Activator.CreateInstance(sourceChildItemList.GetType());
-								var clonedChildItemList
-								= (IList)clonedPropertyValue!;
-								if (sourceChildItemList.Count > 0)
-								{
-									var childItemType = sourceChildItemList[0]!.GetType();
-									if (childItemType.IsValueType)
-									{
-										foreach (var sourceChildItem in sourceChildItemList)
-										{
-											// !!!
-											clonedChildItemList.Insert(
-												clonedChildItemList.Count,
-												sourceChildItem);
-											// !!!
-										}
-									}
-								}
-							}
-							else if (sourceChildItems is IDictionary sourceChildItemDictionary)
-							{
-								//clonedPropertyValue
-								//= Activator.CreateInstance(sourceChildItemDictionary.GetType());
-							}
-						}
-						else
-						{
-							// !!!
-							clonedPropertyValue
-							= Activator.CreateInstance(sourcePropertyValuePropertyInfo.PropertyType);
-							// !!!
-						}
-					}
-					else if (itemPropertyGetInfo.ObjectProperty is object sourceProperty)
-					{
-						// !!!
-						clonedPropertyValue
-						= Activator.CreateInstance(sourceProperty.GetType());
-						// !!!
-					}
-					// !!!
-					itemPropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
-					// !!!
-
-
-					////////////////////////////////////////////////
-					// 2/2，赋值克隆后的新值：
+					// 1/，确定当前属性的宿主对象：
 					////////////////////////////////////////////////
 					var parentItemCloned
 					= parentItemPropertyGetInfo != null
 					? parentItemPropertyGetInfo.PropertyValueCloned
 					: itemCloned;
-					if (parentItemPropertyGetInfo == null)
+
+					////////////////////////////////////////////////
+					// 2/，克隆新值：
+					////////////////////////////////////////////////
+					var sourcePropertyValue = itemPropertyGetInfo.GetPropertyValue();
+					object? clonedPropertyValue = null;
+
+
+					switch (itemPropertyGetInfo.PropertyRelation)
 					{
-						itemPropertyGetInfo.PropertyInfo?.SetValue(
-							// !!!
-							parentItemCloned,
-							// !!!
-							clonedPropertyValue);
-					}
-					else if (itemPropertyGetInfo.ObjectProperty != null)
-					{
-						if (parentItemCloned is Array arrayHost)
-						{
-							//hostItem = arrayHost.GetValue(itemPropertyGetInfo.Index);
-						}
-						else if (hostItem is IList listHost)
-						{
-							;
-						}
-						else if (hostItem is IDictionary dictionaryHost)
-						{
-						}
+						default:
+						case ItemPropertyRelation.Unknow:
+						case ItemPropertyRelation.ValueItemInIEnumerable:
+							{ }
+							break;
+						////////////////////////////////////////////////
+						// 当前属性，【与父对象的关系】为：属性关系。
+						////////////////////////////////////////////////
+						case ItemPropertyRelation.Property:
+							{
+								var sourcePropertyValuePropertyInfo = itemPropertyGetInfo.PropertyInfo!;
+								// 当前属性，类型为：容器。
+								// !!!⚠
+								// !!!⚠ 注意这里一定是“容器（）”，而不能是“IEnumerable”，例子：string 类型。 ⚠!!!
+								// !!!⚠
+								if (sourcePropertyValue is ICollection sourceChildItems)
+								{
+									
+									// 当前容器属性，类型为：数组类型。
+									if (sourceChildItems is Array sourceChildItemArray)
+									{
+										clonedPropertyValue
+										= Activator.CreateInstance(
+											sourceChildItemArray.GetType(),
+											sourceChildItemArray.Length);
+										////////////////////////////////////////////////
+										itemPropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+										////////////////////////////////////////////////
+										// !!! 向父对象，设置新的值。 !!!
+										sourcePropertyValuePropertyInfo.SetValue(
+											parentItemCloned,
+											clonedPropertyValue);
+										////////////////////////////////////////////////
+										if (sourceChildItemArray.Length > 0)
+										{
+											var childItemType = sourceChildItemArray.GetValue(0)!.GetType();
+											// 值类型的数组，直接复制原始值即可：
+											if (childItemType.IsValueType)
+											{
+												Array.Copy(
+													sourceChildItemArray,
+													(Array)clonedPropertyValue!,
+													sourceChildItemArray.Length);
+											}
+											// 引用类型的数组，需要递归克隆：
+											else
+											{
+												// ...
+											}
+										}
+									}
+									// 当前容器属性，类型为：列表类型。
+									else if (sourceChildItems is IList sourceChildItemList)
+									{
+										clonedPropertyValue
+										= Activator.CreateInstance(
+											sourceChildItemList.GetType());
+										////////////////////////////////////////////////
+										itemPropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+										// !!! 向父对象，设置新的值。 !!!
+										sourcePropertyValuePropertyInfo.SetValue(
+											parentItemCloned,
+											clonedPropertyValue);
+										////////////////////////////////////////////////
+										var clonedChildItemList
+										= (IList)clonedPropertyValue!;
+										if (sourceChildItemList.Count > 0)
+										{
+											var childItemType = sourceChildItemList[0]!.GetType();
+											// 值类型的数组，直接复制原始值即可：
+											if (childItemType.IsValueType)
+											{
+												foreach (var sourceChildItem in sourceChildItemList)
+												{
+													// !!!
+													clonedChildItemList.Insert(
+														clonedChildItemList.Count,
+														sourceChildItem);
+													// !!!
+												}
+											}
+											// 引用类型的数组，需要递归克隆：
+											else
+											{
+												// ...
+											}
+										}
+									}
+									// 当前容器属性，类型为：字典类型。
+									else if (sourceChildItems is IDictionary sourceChildItemDictionary)
+									{
+										clonedPropertyValue
+										= Activator.CreateInstance(
+											sourceChildItemDictionary.GetType());
+										////////////////////////////////////////////////
+										itemPropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+										// !!! 向父对象，设置新的值。 !!!
+										sourcePropertyValuePropertyInfo.SetValue(
+											parentItemCloned,
+											clonedPropertyValue);
+										////////////////////////////////////////////////
+										var clonedChildItemList
+										= (IDictionary)clonedPropertyValue!;
+										if (sourceChildItemDictionary.Count > 0)
+										{
+											// @will
+										}
+									}
+								}
+								// 当前属性，类型为：非容器，
+								// 即：值类型，或引用类型。
+								else
+								{
+									// 当前属性，类型为：值类型。
+									if (sourcePropertyValuePropertyInfo.PropertyType.IsValueType)
+									{
+										// !!! 直接使用原始值。 !!!
+										clonedPropertyValue = sourcePropertyValue;
+										// !!!
+									}
+									// 当前属性，类型为：引用类型。
+									else
+									{
+										// !!! 创建新的对象，并向父对象，设置新的值。 !!!
+										clonedPropertyValue = CreateObject(sourcePropertyValue);
+										// !!!
+									}
+									////////////////////////////////////////////////
+									itemPropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+									////////////////////////////////////////////////
+									// !!! 向父对象，设置新的值。 !!!
+									sourcePropertyValuePropertyInfo.SetValue(
+										parentItemCloned,
+										clonedPropertyValue);
+								}
+							}
+							break;
+						////////////////////////////////////////////////
+						// 当前属性，【与父对象的关系】为：容器关系。
+						////////////////////////////////////////////////
+						case ItemPropertyRelation.ObjectItemInIEnumerable:
+							{
+								if (sourcePropertyValue is object sourcePropertyObjectValue)
+								{
+									// !!!
+									clonedPropertyValue = CreateObject(sourcePropertyObjectValue);
+									////////////////////////////////////////////////
+									itemPropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+									////////////////////////////////////////////////
+									// !!!
+
+									// 当前容器属性，类型为：数组类型。
+									if (parentItemCloned is Array parentArray)
+									{
+										var clonedPropertyValue_Index = itemPropertyGetInfo.ItemInCollection_Index;
+										if (clonedPropertyValue_Index < parentArray.Length)
+										{
+											// !!!
+											parentArray.SetValue(clonedPropertyValue, clonedPropertyValue_Index);
+											// !!!
+										}
+									}
+									// 当前容器属性，类型为：列表类型。
+									else if (parentItemCloned is IList parentList)
+									{
+										var clonedPropertyValue_Index = itemPropertyGetInfo.ItemInCollection_Index;
+										//if (clonedPropertyValue_Index < parentList.Count)
+										{
+											// !!!
+											parentList.Add(clonedPropertyValue);
+											// !!!
+										}
+									}
+									// 当前容器属性，类型为：字典类型。
+									else if (parentItemCloned is IDictionary parentDictionary)
+									{
+										var clonedPropertyValue_Key = itemPropertyGetInfo.ItemInCollection_Key;
+										if (clonedPropertyValue_Key != null)
+										{
+											// !!!
+											parentDictionary.Add(
+												clonedPropertyValue_Key,
+												clonedPropertyValue);
+											// !!!
+										}
+									}
+								}
+							}
+							break;
 					}
 					return true;
 				});
 		}
 		return itemCloned;
 	}
+
 
 
 
@@ -468,7 +585,10 @@ public static class ObjectExtension
 		}
 		else if (baseValue.GetType().IsValueType == false)
 		{
-			if (baseValue is IEnumerable items)
+			// !!!⚠
+			// !!!⚠ 注意这里一定是“容器（）”，而不能是“IEnumerable”，例子：string 类型。 ⚠!!!
+			// !!!⚠
+			if (baseValue is ICollection items)
 			{
 				var itemsEnumerator = items.GetEnumerator();
 				if (itemsEnumerator.MoveNext() == false)
@@ -667,7 +787,7 @@ public static class ObjectExtension
 				{
 					var childItemKeyValue = childItemDictionary[childItemKey];
 					chilItemPropertyGetInfes.Add(new ItemPropertyGetInfo<object>(
-						ItemPropertyGetInfoType.ObjectItemInIEnumerable,
+						ItemPropertyRelation.ObjectItemInIEnumerable,
 						item,
 						null,
 						childItemKeyValue,
@@ -676,7 +796,10 @@ public static class ObjectExtension
 				}
 				return chilItemPropertyGetInfes;
 			}
-			else if (item is IEnumerable childItems)
+			// !!!⚠
+			// !!!⚠ 注意这里一定是“容器（）”，而不能是“IEnumerable”，例子：string 类型。 ⚠!!!
+			// !!!⚠
+			else if (item is ICollection childItems)
 			{
 				var chilItemPropertyGetInfes = new List<ItemPropertyGetInfo<object>>();
 				var childItemIndex = 0;
@@ -689,7 +812,7 @@ public static class ObjectExtension
 					else
 					{
 						chilItemPropertyGetInfes.Add(new ItemPropertyGetInfo<object>(
-							ItemPropertyGetInfoType.ObjectItemInIEnumerable,
+							ItemPropertyRelation.ObjectItemInIEnumerable,
 							item,
 							null,
 							childItem,
@@ -733,7 +856,7 @@ public static class ObjectExtension
 				continue;
 			}
 			itemPropertyGetInfes.Add(new(
-				ItemPropertyGetInfoType.NormalProperty,
+				ItemPropertyRelation.Property,
 				item,
 				hostItemPropertyInfo,
 				null,
@@ -822,6 +945,18 @@ public static class ObjectExtension
 				{
 					var itemPropertyValue
 					= itemPropertyGetInfo.GetPropertyValue();
+					// 字典元素处理：
+					if (itemPropertyGetInfo.ItemInCollection_Key != null)
+					{
+						var itemPropertyKeyBytes = ConvertBaseValueToBytes(itemPropertyGetInfo.ItemInCollection_Key);
+						if (itemPropertyKeyBytes != null)
+						{
+							// !!!
+							binaryWriter.Write(itemPropertyKeyBytes);
+							binaryWriter.Write(propertyByteSeparator);
+							// !!!
+						}
+					}
 					var itemPropertyValueBytes = ConvertBaseValueToBytes(itemPropertyValue);
 					if (itemPropertyValueBytes != null)
 					{

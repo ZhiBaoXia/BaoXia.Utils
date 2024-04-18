@@ -278,59 +278,111 @@ public static class ObjectExtension
 				},
 				(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
 				{
+					////////////////////////////////////////////////
+					// 1/2，克隆新值：
+					////////////////////////////////////////////////
 					var sourcePropertyValue = itemPropertyGetInfo.GetPropertyValue();
+					int propertyValueClonedIndex = -1;
+					object? propertyValueClonedKey = null;
 					object? clonedPropertyValue = null;
 					if (itemPropertyGetInfo.PropertyInfo is PropertyInfo sourcePropertyValuePropertyInfo)
 					{
 						if (sourcePropertyValue is IEnumerable sourceChildItems)
 						{
-							foreach (var sourceChildItem in sourceChildItems)
+							if (sourceChildItems is Array sourceChildItemArray)
 							{
-								var childItemsCount = sourceChildItems.GetCount();
-								if (sourceChildItem.GetType().IsValueType)
+								clonedPropertyValue
+								= Activator.CreateInstance(
+									sourceChildItemArray.GetType(),
+									sourceChildItemArray.Length);
+								if (sourceChildItemArray.Length > 0)
 								{
-									// !!!
-									clonedPropertyValue = Activator.CreateInstance(
-										sourceChildItems.GetType(),
-										childItemsCount);
-
-									// !!!
-									break;
+									var childItemType = sourceChildItemArray.GetValue(0)!.GetType();
+									if (childItemType.IsValueType)
+									{
+										Array.Copy(
+											sourceChildItemArray,
+											(Array)clonedPropertyValue!,
+											sourceChildItemArray.Length);
+									}
 								}
-								else
+							}
+							else if (sourceChildItems is IList sourceChildItemList)
+							{
+								clonedPropertyValue
+								= Activator.CreateInstance(sourceChildItemList.GetType());
+								var clonedChildItemList
+								= (IList)clonedPropertyValue!;
+								if (sourceChildItemList.Count > 0)
 								{
-									// !!!
-									clonedPropertyValue = Activator.CreateInstance(
-										sourceChildItems.GetType(),
-										0);
-									// !!!
-									break;
+									var childItemType = sourceChildItemList[0]!.GetType();
+									if (childItemType.IsValueType)
+									{
+										foreach (var sourceChildItem in sourceChildItemList)
+										{
+											// !!!
+											clonedChildItemList.Insert(
+												clonedChildItemList.Count,
+												sourceChildItem);
+											// !!!
+										}
+									}
 								}
+							}
+							else if (sourceChildItems is IDictionary sourceChildItemDictionary)
+							{
+								//clonedPropertyValue
+								//= Activator.CreateInstance(sourceChildItemDictionary.GetType());
 							}
 						}
 						else
 						{
-							clonedPropertyValue = Activator.CreateInstance(sourcePropertyValuePropertyInfo.PropertyType);
+							// !!!
+							clonedPropertyValue
+							= Activator.CreateInstance(sourcePropertyValuePropertyInfo.PropertyType);
+							// !!!
 						}
 					}
-					else if (itemPropertyGetInfo.ObjectProperty is object sourcePropertyValueObjectProperty)
+					else if (itemPropertyGetInfo.ObjectProperty is object sourceProperty)
 					{
-						// clonedPropertyValue = Acti sourcePropertyValueObjectProperty;
+						// !!!
+						clonedPropertyValue
+						= Activator.CreateInstance(sourceProperty.GetType());
+						// !!!
 					}
 					// !!!
 					itemPropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
 					// !!!
 
+
+					////////////////////////////////////////////////
+					// 2/2，赋值克隆后的新值：
+					////////////////////////////////////////////////
+					var parentItemCloned
+					= parentItemPropertyGetInfo != null
+					? parentItemPropertyGetInfo.PropertyValueCloned
+					: itemCloned;
 					if (parentItemPropertyGetInfo == null)
 					{
 						itemPropertyGetInfo.PropertyInfo?.SetValue(
 							// !!!
-							itemCloned,
+							parentItemCloned,
 							// !!!
 							clonedPropertyValue);
 					}
-					else
+					else if (itemPropertyGetInfo.ObjectProperty != null)
 					{
+						if (parentItemCloned is Array arrayHost)
+						{
+							//hostItem = arrayHost.GetValue(itemPropertyGetInfo.Index);
+						}
+						else if (hostItem is IList listHost)
+						{
+							;
+						}
+						else if (hostItem is IDictionary dictionaryHost)
+						{
+						}
 					}
 					return true;
 				});
@@ -574,6 +626,7 @@ public static class ObjectExtension
 		{
 			return null;
 		}
+
 		var itemType = item.GetType();
 		if (itemType.IsValueType)
 		{
@@ -606,9 +659,27 @@ public static class ObjectExtension
 			}
 
 			// 容器对象的特殊处理。
-			if (item is IEnumerable childItems)
+			if (item is IDictionary childItemDictionary)
 			{
 				var chilItemPropertyGetInfes = new List<ItemPropertyGetInfo<object>>();
+				var childItemKeys = childItemDictionary.Keys;
+				foreach (var childItemKey in childItemKeys)
+				{
+					var childItemKeyValue = childItemDictionary[childItemKey];
+					chilItemPropertyGetInfes.Add(new ItemPropertyGetInfo<object>(
+						ItemPropertyGetInfoType.ObjectItemInIEnumerable,
+						item,
+						null,
+						childItemKeyValue,
+						-1,
+						childItemKey));
+				}
+				return chilItemPropertyGetInfes;
+			}
+			else if (item is IEnumerable childItems)
+			{
+				var chilItemPropertyGetInfes = new List<ItemPropertyGetInfo<object>>();
+				var childItemIndex = 0;
 				foreach (var childItem in childItems)
 				{
 					if (childItem.GetType().IsValueType)
@@ -621,12 +692,18 @@ public static class ObjectExtension
 							ItemPropertyGetInfoType.ObjectItemInIEnumerable,
 							item,
 							null,
-							childItem));
+							childItem,
+							childItemIndex,
+							null));
 					}
+					////////////////////////////////////////////////
+					childItemIndex++;
+					////////////////////////////////////////////////
 				}
 				return chilItemPropertyGetInfes;
 			}
 		}
+
 
 		// 普通的对象属性。
 		if (propertiesBindingFlags == System.Reflection.BindingFlags.Default)
@@ -659,6 +736,8 @@ public static class ObjectExtension
 				ItemPropertyGetInfoType.NormalProperty,
 				item,
 				hostItemPropertyInfo,
+				null,
+				-1,
 				null));
 		}
 		return itemPropertyGetInfes;

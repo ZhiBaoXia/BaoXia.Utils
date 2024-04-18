@@ -13,7 +13,9 @@ public class ItemPropertyGetInfo<ItemType>
 	(ItemPropertyGetInfoType type,
 	ItemType hostItem,
 	PropertyInfo? propertyInfo,
-	object? objectProperty)
+	object? objectProperty,
+	int objectProperty_Index,
+	object? objectProperty_Key)
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -27,7 +29,21 @@ public class ItemPropertyGetInfo<ItemType>
 
 	public PropertyInfo? PropertyInfo { get; set; } = propertyInfo;
 
+
+	////////////////////////////////////////////////
+
 	public object? ObjectProperty { get; set; } = objectProperty;
+
+	public int ObjectProperty_Index { get; set; } = objectProperty_Index;
+
+	public object? ObjectProperty_Key { get; set; } = objectProperty_Key;
+
+	////////////////////////////////////////////////
+
+
+	public int PropertyValueClonedIndex { get; set; }
+
+	public object? PropertyValueClonedKey { get; set; }
 
 	public object? PropertyValueCloned { get; set; }
 

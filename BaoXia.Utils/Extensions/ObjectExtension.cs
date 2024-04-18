@@ -262,7 +262,6 @@ public static class ObjectExtension
 			return itemCloned;
 		}
 
-
 		foreach (var objectItemPropertyGetInfo in itemPropertyGetInfes)
 		{
 			RecursionUtil.RecursionEnumerate<ItemPropertyGetInfo<object>>(
@@ -279,19 +278,60 @@ public static class ObjectExtension
 				},
 				(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
 				{
+					var sourcePropertyValue = itemPropertyGetInfo.GetPropertyValue();
+					object? clonedPropertyValue = null;
+					if (itemPropertyGetInfo.PropertyInfo is PropertyInfo sourcePropertyValuePropertyInfo)
+					{
+						if (sourcePropertyValue is IEnumerable sourceChildItems)
+						{
+							foreach (var sourceChildItem in sourceChildItems)
+							{
+								var childItemsCount = sourceChildItems.GetCount();
+								if (sourceChildItem.GetType().IsValueType)
+								{
+									// !!!
+									clonedPropertyValue = Activator.CreateInstance(
+										sourceChildItems.GetType(),
+										childItemsCount);
+
+									// !!!
+									break;
+								}
+								else
+								{
+									// !!!
+									clonedPropertyValue = Activator.CreateInstance(
+										sourceChildItems.GetType(),
+										0);
+									// !!!
+									break;
+								}
+							}
+						}
+						else
+						{
+							clonedPropertyValue = Activator.CreateInstance(sourcePropertyValuePropertyInfo.PropertyType);
+						}
+					}
+					else if (itemPropertyGetInfo.ObjectProperty is object sourcePropertyValueObjectProperty)
+					{
+						// clonedPropertyValue = Acti sourcePropertyValueObjectProperty;
+					}
+					// !!!
+					itemPropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+					// !!!
+
 					if (parentItemPropertyGetInfo == null)
 					{
-						// !!!
 						itemPropertyGetInfo.PropertyInfo?.SetValue(
+							// !!!
 							itemCloned,
-							itemPropertyGetInfo.GetPropertyValue());
-						// !!!
+							// !!!
+							clonedPropertyValue);
 					}
 					else
 					{
-						parentItemPropertyGetInfo.GetPropertyValue
 					}
-
 					return true;
 				});
 		}
@@ -538,12 +578,24 @@ public static class ObjectExtension
 		if (itemType.IsValueType)
 		{
 			if (itemType.IsPrimitive
-				|| itemType.IsEnum
+				|| itemType.IsEnum)
+			{
+				return [];
+			}
+			////////////////////////////////////////////////
+			// 其他均为结构体，
+			// 需要特殊处理的结构体：DateTime，decimal
+			////////////////////////////////////////////////
+			else if (itemType.Equals(typeof(decimal))
 				|| itemType.Equals(typeof(DateTime)))
 			{
 				return [];
 			}
-			// !!! else 结构体按对象类型处理。 !!!
+			////////////////////////////////////////////////
+			// !!! 其他结构体均按对象类型处理。 !!!
+			////////////////////////////////////////////////
+			else
+			{ }
 		}
 		// 字符串对象的特殊处理。
 		else

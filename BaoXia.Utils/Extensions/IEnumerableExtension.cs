@@ -1,6 +1,7 @@
 ﻿using BaoXia.Utils.ConcurrentTools;
 using BaoXia.Utils.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -10,14 +11,14 @@ namespace BaoXia.Utils.Extensions;
 
 public static class IEnumerableExtension
 {
-	public static int GetCount<ItemType>(this IEnumerable<ItemType>? items)
+	public static int GetCount(this IEnumerable? items)
 	{
 		if (items == null)
 		{
 			return 0;
 		}
 
-		if (items is ICollection<ItemType> collection)
+		if (items is ICollection collection)
 		{
 			return collection.Count;
 		}

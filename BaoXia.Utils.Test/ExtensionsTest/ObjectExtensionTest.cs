@@ -73,9 +73,11 @@ public class ObjectExtensionTest
 	{
 		public int IntProperty { get; set; }
 
-		public int FloatProperty { get; set; }
+		public float FloatProperty { get; set; }
 
 		public double DoubleProperty { get; set; }
+
+		public decimal DecimalProperty { get; set; }
 
 		public string? StringProperty { get; set; }
 
@@ -416,35 +418,52 @@ public class ObjectExtensionTest
 		//}
 	}
 
-
+	class ClassCloneTestA
+	{
+		public int[]? ChildIntValues { get; set; }
+	}
 
 	[TestMethod]
 	public void CloneWithSamePropertiesPropertiesRecursivlyTest()
 	{
-		var item = new ClassA()
+		var testObjectA = new ClassCloneTestA()
 		{
-			IntFieldProperty = 1,
-			FloatProperty = 2.0F,
-			DoubleProperty = 3.0,
-			DecimalProperty = 4.0M,
-			StringProperty = "Abc",
-			ObjectProperty = new ClassA()
+			ChildIntValues = new int[3]
 			{
-				IntFieldProperty = 101,
-				FloatProperty = 2.0F,
-				DoubleProperty = 3.0,
-				DecimalProperty = 4.0M,
-				StringProperty = "Abc", @last
+				1,
+				2,
+				3
 			}
 		};
-		var itemCloned = item.CloneWithSamePropertiesRecursivly();
+		var itemCloned = testObjectA.CloneWithSamePropertiesRecursivly();
 		{
-			Assert.IsNotNull(item.IntFieldProperty == itemCloned.IntFieldProperty);
-			Assert.IsNotNull(item.FloatProperty == itemCloned.FloatProperty);
-			Assert.IsNotNull(item.DoubleProperty == itemCloned.DoubleProperty);
-			Assert.IsNotNull(item.DecimalProperty == itemCloned.DecimalProperty);
-			Assert.IsNotNull(item.StringProperty!.Equals(itemCloned.StringProperty));
+			var a = 3;
 		}
+
+		//var item = new ClassA()
+		//{
+		//	IntFieldProperty = 1,
+		//	FloatProperty = 2.0F,
+		//	DoubleProperty = 3.0,
+		//	DecimalProperty = 4.0M,
+		//	StringProperty = "Abc",
+		//	ObjectProperty = new ClassB()
+		//	{
+		//		IntFieldProperty = 101,
+		//		FloatProperty = 102.0F,
+		//		DoubleProperty = 103.0,
+		//		DecimalProperty = 104.0M,
+		//		StringProperty = "10Abc"
+		//	}
+		//};
+		//var itemCloned = item.CloneWithSamePropertiesRecursivly();
+		//{
+		//	Assert.IsNotNull(item.IntFieldProperty == itemCloned.IntFieldProperty);
+		//	Assert.IsNotNull(item.FloatProperty == itemCloned.FloatProperty);
+		//	Assert.IsNotNull(item.DoubleProperty == itemCloned.DoubleProperty);
+		//	Assert.IsNotNull(item.DecimalProperty == itemCloned.DecimalProperty);
+		//	Assert.IsNotNull(item.StringProperty!.Equals(itemCloned.StringProperty));
+		//}
 	}
 
 

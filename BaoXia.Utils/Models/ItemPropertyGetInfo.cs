@@ -29,6 +29,8 @@ public class ItemPropertyGetInfo<ItemType>
 
 	public object? ObjectProperty { get; set; } = objectProperty;
 
+	public object? PropertyValueCloned { get; set; }
+
 	#endregion
 
 
@@ -39,7 +41,7 @@ public class ItemPropertyGetInfo<ItemType>
 
 	#region 自身实现
 
-	public object? GetPropertyValue() 
+	public object? GetPropertyValue()
 	{
 		switch (Type)
 		{
@@ -53,14 +55,16 @@ public class ItemPropertyGetInfo<ItemType>
 					{
 						return PropertyInfo.GetValue(HosttItem);
 					}
-				} break;
+				}
+				break;
 			case ItemPropertyGetInfoType.ObjectItemInIEnumerable:
 				{
 					if (ObjectProperty != null)
 					{
 						return ObjectProperty;
 					}
-				} break;
+				}
+				break;
 		}
 		return null;
 	}

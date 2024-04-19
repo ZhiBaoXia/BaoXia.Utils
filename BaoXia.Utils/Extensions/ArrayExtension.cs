@@ -61,6 +61,40 @@ public static class ArrayExtension
 	}
 
 	/// <summary>
+	/// 获取两个数组中相同元素的数量。
+	/// </summary>
+	/// <typeparam name="ItemType">指定的数组元素类型。</typeparam>
+	/// <param name="items">当前数组对象。</param>
+	/// <param name="isNullEqualsNone">另一个数组对象为“null”时，如果当前数组对象没有元素，是否视为相等，默认为“true”。</param>
+	/// <returns>两个数组中相同元素的数量。</returns>
+	public static int GetSameItemsCount<ItemType>(
+		this ItemType[]? items,
+		ItemType[]? anotherItems)
+	{
+		if (items == null
+			|| items.Length < 1
+			|| anotherItems == null
+			|| anotherItems.Length < 1)
+		{
+			return 0;
+		}
+
+		var sameItemsCount = 0;
+		foreach (var item in items)
+		{
+			foreach (var anotherItem in anotherItems)
+			{
+				if (object.Equals(item, anotherItem))
+				{
+					sameItemsCount++;
+					break;
+				}
+			}
+		}
+		return sameItemsCount;
+	}
+
+	/// <summary>
 	/// 获取目标元素在当前数组中第一次出现的索引值。
 	/// </summary>
 	/// <typeparam name="ItemType">当前数组元素类型。</typeparam>

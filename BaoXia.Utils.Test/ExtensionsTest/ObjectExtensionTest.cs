@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 
 namespace BaoXia.Utils.Test.ExtensionsTest;
@@ -469,7 +470,27 @@ public class ObjectExtensionTest
 
 		public override bool Equals(object? obj)
 		{
-			return base.Equals(obj); @last
+			if (obj is not ClassCloneTestB anotherObjectB)
+			{
+				return false;
+			}
+
+			if (BIntValue != anotherObjectB.BIntValue
+				|| BFloatValue != anotherObjectB.BFloatValue
+				|| BStringValue != anotherObjectB.BStringValue)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		public override int GetHashCode()
+		{
+			return (BIntValue
+				+ BFloatValue
+				+ BStringValue)
+				.GetHashCode();
 		}
 	}
 
@@ -545,6 +566,7 @@ public class ObjectExtensionTest
 		};
 
 		var itemCloned = item.CloneWithSamePropertiesRecursivly();
+		var itemCloned2 = item.CloneWithSamePropertiesRecursivly();
 		////////////////////////////////////////////////
 		// 1/2，克隆后，默认属性一致：
 		////////////////////////////////////////////////
@@ -563,14 +585,136 @@ public class ObjectExtensionTest
 			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.ObjectItems, itemCloned.ObjectItems));
 
 			Assert.IsTrue(item.KeyValueItems!.Count == itemCloned.KeyValueItems!.Count);
+			foreach (var keyValue in item.KeyValueItems)
+			{
+				var value2 = itemCloned.KeyValueItems.GetValueOrDefault(keyValue.Key);
+				//
+				Assert.IsTrue(value2.Equals(keyValue.Value));
+				//
+			}
+		}
+
+
+		////////////////////////////////////////////////
+		// 2/3，修改克隆对象，不影响原有对象：
+		////////////////////////////////////////////////
+		{
+			itemCloned2.IntProperty++;
+			itemCloned2.FloatProperty++;
+			itemCloned2.DoubleProperty++;
+			itemCloned2.DecimalProperty++;
+			itemCloned2.StringProperty += "+1";
+
+			for (var itemIndex = 0;
+				itemIndex < itemCloned2.IntItems!.Length;
+				itemIndex++)
+			{
+				itemCloned2.IntItems[itemIndex] = itemCloned2.IntItems[itemIndex] + 10;
+			}
+			for (var itemIndex = 0;
+				itemIndex < itemCloned2.FloatItems!.Length;
+				itemIndex++)
+			{
+				itemCloned2.FloatItems[itemIndex] = itemCloned2.FloatItems[itemIndex] + 10;
+			}
+			for (var itemIndex = 0;
+				itemIndex < itemCloned2.DoubleItems!.Length;
+				itemIndex++)
+			{
+				itemCloned2.DoubleItems[itemIndex] = itemCloned2.DoubleItems[itemIndex] + 10;
+			}
+			for (var itemIndex = 0;
+				itemIndex < itemCloned2.DecimalItems!.Length;
+				itemIndex++)
+			{
+				itemCloned2.DecimalItems[itemIndex] = itemCloned2.DecimalItems[itemIndex] + 10;
+			}
+			for (var itemIndex = 0;
+				itemIndex < itemCloned2.StringItems!.Length;
+				itemIndex++)
+			{
+				itemCloned2.StringItems[itemIndex] = itemCloned2.StringItems[itemIndex] + 10;
+			}
+			for (var itemIndex = 0;
+				itemIndex < itemCloned2.ObjectItems!.Length;
+				itemIndex++)
+			{
+				itemCloned2.ObjectItems[itemIndex].BIntValue
+					= itemCloned2.ObjectItems[itemIndex].BIntValue + 10;
+				itemCloned2.ObjectItems[itemIndex].BFloatValue
+					= itemCloned2.ObjectItems[itemIndex].BFloatValue + 10;
+				itemCloned2.ObjectItems[itemIndex].BStringValue
+					= itemCloned2.ObjectItems[itemIndex].BStringValue + "+10";
+			}
+
+			Dictionary<string, int> newKeyValues = new();
+			foreach (var keyValue in itemCloned2.KeyValueItems!)
+			{
+				newKeyValues.AddOrSet(
+					keyValue.Key,
+					keyValue.Value + 10);
+			}
+			foreach (var newKeyValue in newKeyValues)
+			{
+				itemCloned2.KeyValueItems.AddOrSet(
+					newKeyValue.Key,
+					newKeyValue.Value);
+			}
 		}
 
 		////////////////////////////////////////////////
-		// 2/2，克隆后，修改克隆对象，不影响原有对象：
+		// 3/3，克隆后，修改克隆对象，不影响原有对象：
 		////////////////////////////////////////////////
 		{
-			var a = 3;
+			Assert.IsTrue(item.IntProperty == itemCloned.IntProperty);
+			Assert.IsTrue(item.FloatProperty == itemCloned.FloatProperty);
+			Assert.IsTrue(item.DoubleProperty == itemCloned.DoubleProperty);
+			Assert.IsTrue(item.DecimalProperty == itemCloned.DecimalProperty);
+			Assert.IsTrue(item.StringProperty!.Equals(itemCloned.StringProperty));
+
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.IntItems, itemCloned.IntItems));
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.FloatItems, itemCloned.FloatItems));
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.DoubleItems, itemCloned.DoubleItems));
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.DecimalItems, itemCloned.DecimalItems));
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.StringItems, itemCloned.StringItems));
+			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.ObjectItems, itemCloned.ObjectItems));
+
+			Assert.IsTrue(item.KeyValueItems!.Count == itemCloned.KeyValueItems!.Count);
+			foreach (var keyValue in item.KeyValueItems)
+			{
+				var value2 = itemCloned.KeyValueItems.GetValueOrDefault(keyValue.Key);
+				//
+				Assert.IsTrue(value2.Equals(keyValue.Value));
+				//
+			}
+
+			////////////////////////////////////////////////
+
+
+			Assert.IsTrue(item.IntProperty != itemCloned2.IntProperty);
+			Assert.IsTrue(item.FloatProperty != itemCloned2.FloatProperty);
+			Assert.IsTrue(item.DoubleProperty != itemCloned2.DoubleProperty);
+			Assert.IsTrue(item.DecimalProperty != itemCloned2.DecimalProperty);
+			Assert.IsTrue(item.StringProperty!.Equals(itemCloned2.StringProperty) != true);
+
+			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.IntItems, itemCloned2.IntItems) == 0);
+			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.FloatItems, itemCloned2.FloatItems) == 0);
+			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.DoubleItems, itemCloned2.DoubleItems) == 0);
+			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.DecimalItems, itemCloned2.DecimalItems) == 0);
+			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.StringItems, itemCloned2.StringItems) == 0);
+			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.ObjectItems, itemCloned2.ObjectItems) == 0);
+
+			Assert.IsTrue(item.KeyValueItems!.Count == itemCloned2.KeyValueItems!.Count);
+			foreach (var keyValue in item.KeyValueItems)
+			{
+				var value2 = itemCloned.KeyValueItems.GetValueOrDefault(keyValue.Key);
+				//
+				Assert.IsTrue(value2.Equals(keyValue.Value) != true);
+				//
+			}
 		}
+
+		var a = 3;
 	}
 
 

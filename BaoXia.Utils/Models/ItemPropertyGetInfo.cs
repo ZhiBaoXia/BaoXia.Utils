@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 namespace BaoXia.Utils.Models;
 
 public class ItemPropertyGetInfo<ItemType>
-	(ItemPropertyRelation propertyRelation,
+	(int recursiveLayerIndex,
+	ItemPropertyRelation propertyRelation,
 	ItemType hostItem,
 	PropertyInfo? propertyInfo,
 	object? objectProperty,
@@ -22,6 +23,8 @@ public class ItemPropertyGetInfo<ItemType>
 	////////////////////////////////////////////////
 
 	#region 自身属性
+
+	public int PropertyLayerNumber { get; set; } = recursiveLayerIndex;
 
 	public ItemPropertyRelation PropertyRelation { get; set; } = propertyRelation;
 
@@ -39,7 +42,6 @@ public class ItemPropertyGetInfo<ItemType>
 	public object? ItemInCollection_Key { get; set; } = objectProperty_Key;
 
 	////////////////////////////////////////////////
-
 
 	public int PropertyValueClonedIndex { get; set; }
 

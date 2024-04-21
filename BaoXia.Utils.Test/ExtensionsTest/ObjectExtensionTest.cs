@@ -430,6 +430,116 @@ public class ObjectExtensionTest
 		//}
 	}
 
+
+	protected struct StructA
+	{
+		public int IntProperty { get; set; }
+
+		public string? StringProperty { get; set; }
+
+		public ClassForGeneratePropertyValueBytes2? ObjectProperty { get; set; }
+
+		public int[]? IntsProperty { get; set; }
+	}
+
+
+	protected class ClassForGeneratePropertyValueBytes2
+	{
+		public int IntProperty { get; set; }
+		public string? StringProperty { get; set; }
+
+		public string[]? StringsProperty { get; set; }
+	}
+
+	protected class ClassForGeneratePropertyValueBytes
+	{
+		public int IntProperty { get; set; }
+
+		public float FloatProperty { get; set; }
+
+		public double DoubleProperty { get; set; }
+
+		public decimal DecimalProperty { get; set; }
+
+		public string? StringProperty { get; set; }
+
+		public DateTime DateTimeProperty { get; set; }
+
+		public ClassForGeneratePropertyValueBytes2 ObjectProperty { get; set; } = new();
+
+		public StructA StructProperty { get; set; } = new();
+
+		public Dictionary<string, int> DictionaryProperty { get; set; } = new();
+
+	}
+
+
+
+	[TestMethod]
+	public void GeneratePropertyValueBytesTest()
+	{
+		var testObject = new ClassForGeneratePropertyValueBytes();
+		{
+			testObject.IntProperty = 1;
+			testObject.FloatProperty = 2.0F;
+			testObject.DoubleProperty = 3.0;
+			testObject.DecimalProperty = 4.0m;
+			testObject.StringProperty = "Abc";
+			testObject.DateTimeProperty = DateTime.Now;
+
+			testObject.ObjectProperty = new()
+			{
+				IntProperty = 11,
+				StringProperty = "Def",
+				StringsProperty = ["Xyz", "Xyz", "Xyz"]
+			};
+			testObject.DateTimeProperty = DateTime.Now;
+
+			testObject.StructProperty = new StructA()
+			{
+				IntProperty = 12,
+				StringProperty = "Ghi"
+			};
+
+			testObject.DictionaryProperty = new()
+			{
+				{ "A", 1 },
+				{ "B", 2 },
+				{ "C", 3 }
+			};
+		}
+		var testObjectPropertyValueBytesA
+			= testObject.GeneratePropertyValueBytes(
+				null,
+				System.Reflection.BindingFlags.Default,
+				true);
+		{
+			testObject.ObjectProperty.IntProperty = 13;
+		}
+		var testObjectPropertyValueBytesB
+			= testObject.GeneratePropertyValueBytes(
+				null,
+				System.Reflection.BindingFlags.Default,
+				true);
+		// !!!
+		Assert.IsTrue(testObjectPropertyValueBytesA.Length
+			== testObjectPropertyValueBytesB.Length);
+		// !!!
+		for (var byteIndex = 0;
+			byteIndex < testObjectPropertyValueBytesA.Length;
+			byteIndex++)
+		{
+			var byteA = testObjectPropertyValueBytesA[byteIndex];
+			var byteB = testObjectPropertyValueBytesB[byteIndex];
+			if (byteA != byteB)
+			{
+				// !!!
+				Assert.IsTrue(byteIndex == 57);
+				// !!!
+			}
+		}
+	}
+
 	class ClassCloneTestA
 	{
 		public int IntProperty { get; set; }
@@ -496,7 +606,7 @@ public class ObjectExtensionTest
 	}
 
 	[TestMethod]
-	public void CloneWithSamePropertiesPropertiesRecursivlyTest()
+	public void CloneTest()
 	{
 		var item = new ClassCloneTestA()
 		{
@@ -566,8 +676,8 @@ public class ObjectExtensionTest
 			}
 		};
 
-		var itemCloned = item.CloneWithSamePropertiesRecursivly();
-		var itemCloned2 = item.CloneWithSamePropertiesRecursivly();
+		var itemCloned = item.Clone();
+		var itemCloned2 = item.Clone();
 		////////////////////////////////////////////////
 		// 1/2，克隆后，默认属性一致：
 		////////////////////////////////////////////////
@@ -731,7 +841,7 @@ public class ObjectExtensionTest
 	}
 
 	[TestMethod]
-	public void CloneWithSamePropertiesPropertiesRecursivlyForRecursiveReferenceTest()
+	public void CloneForRecursiveReferenceTest()
 	{
 		var objectC = new ClassCloneTestC()
 		{
@@ -745,7 +855,7 @@ public class ObjectExtensionTest
 		objectC.ObjectD = objectD;
 		objectD.ObjectC = objectC;
 
-		var objectCCloned = objectC.CloneWithSamePropertiesRecursivly();
+		var objectCCloned = objectC.Clone();
 		var objectDCloned = objectCCloned.ObjectD!;
 		{
 			Assert.IsTrue(objectCCloned.Id == objectC.Id);
@@ -762,7 +872,7 @@ public class ObjectExtensionTest
 	}
 
 	[TestMethod]
-	public void CloneWithSamePropertiesPropertiesRecursivlyWithPropertyLayerIndexMaxTest()
+	public void CloneWithPropertyLayerIndexMaxTest()
 	{
 		var item = new ClassCloneTestA()
 		{
@@ -832,7 +942,7 @@ public class ObjectExtensionTest
 			}
 		};
 
-		var itemCloned = item.CloneWithSamePropertiesRecursivly(null, BindingFlags.Default, null, 1);
+		var itemCloned = item.Clone(null, BindingFlags.Default, null, 1);
 		{
 			Assert.IsTrue(item.IntProperty == itemCloned.IntProperty);
 			Assert.IsTrue(item.FloatProperty == itemCloned.FloatProperty);
@@ -872,112 +982,4 @@ public class ObjectExtensionTest
 		}
 	}
 
-	protected struct StructA
-	{
-		public int IntProperty { get; set; }
-
-		public string? StringProperty { get; set; }
-
-		public ClassForGeneratePropertyValueBytes2? ObjectProperty { get; set; }
-
-		public int[]? IntsProperty { get; set; }
-	}
-
-
-	protected class ClassForGeneratePropertyValueBytes2
-	{
-		public int IntProperty { get; set; }
-		public string? StringProperty { get; set; }
-
-		public string[]? StringsProperty { get; set; }
-	}
-
-	protected class ClassForGeneratePropertyValueBytes
-	{
-		public int IntProperty { get; set; }
-
-		public float FloatProperty { get; set; }
-
-		public double DoubleProperty { get; set; }
-
-		public decimal DecimalProperty { get; set; }
-
-		public string? StringProperty { get; set; }
-
-		public DateTime DateTimeProperty { get; set; }
-
-		public ClassForGeneratePropertyValueBytes2 ObjectProperty { get; set; } = new();
-
-		public StructA StructProperty { get; set; } = new();
-
-		public Dictionary<string, int> DictionaryProperty { get; set; } = new();
-
-	}
-
-
-
-	[TestMethod]
-	public void GeneratePropertyValueBytesTest()
-	{
-		var testObject = new ClassForGeneratePropertyValueBytes();
-		{
-			testObject.IntProperty = 1;
-			testObject.FloatProperty = 2.0F;
-			testObject.DoubleProperty = 3.0;
-			testObject.DecimalProperty = 4.0m;
-			testObject.StringProperty = "Abc";
-			testObject.DateTimeProperty = DateTime.Now;
-
-			testObject.ObjectProperty = new()
-			{
-				IntProperty = 11,
-				StringProperty = "Def",
-				StringsProperty = ["Xyz", "Xyz", "Xyz"]
-			};
-			testObject.DateTimeProperty = DateTime.Now;
-
-			testObject.StructProperty = new StructA()
-			{
-				IntProperty = 12,
-				StringProperty = "Ghi"
-			};
-
-			testObject.DictionaryProperty = new()
-			{
-				{ "A", 1 },
-				{ "B", 2 },
-				{ "C", 3 }
-			};
-		}
-		var testObjectPropertyValueBytesA
-			= testObject.GeneratePropertyValueBytes(
-				null,
-				System.Reflection.BindingFlags.Default,
-				true);
-		{
-			testObject.ObjectProperty.IntProperty = 13;
-		}
-		var testObjectPropertyValueBytesB
-			= testObject.GeneratePropertyValueBytes(
-				null,
-				System.Reflection.BindingFlags.Default,
-				true);
-		// !!!
-		Assert.IsTrue(testObjectPropertyValueBytesA.Length
-			== testObjectPropertyValueBytesB.Length);
-		// !!!
-		for (var byteIndex = 0;
-			byteIndex < testObjectPropertyValueBytesA.Length;
-			byteIndex++)
-		{
-			var byteA = testObjectPropertyValueBytesA[byteIndex];
-			var byteB = testObjectPropertyValueBytesB[byteIndex];
-			if (byteA != byteB)
-			{
-				// !!!
-				Assert.IsTrue(byteIndex == 57);
-				// !!!
-			}
-		}
-	}
 }

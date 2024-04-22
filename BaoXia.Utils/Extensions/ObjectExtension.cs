@@ -1216,7 +1216,7 @@ public static class ObjectExtension
 	/// <param name="itemsByteSeparator">子元素间的分隔字节。</param>
 	/// <param name="keyValueByteSeparator">键值间的分隔字节。</param>
 	/// <returns>返回由当前对象，所有值类型属性生成的字节数组。</returns>
-	public static byte[] GeneratePropertyValueBytes(
+	public static byte[] ToBytes(
 		this object? objectItem,
 		string[]? propertyNamesExcepted = null,
 		BindingFlags propertiesBindingFlags = BindingFlags.Default,
@@ -1357,6 +1357,6 @@ public static class ObjectExtension
 		{ }
 		return objectItemBytes;
 	}
-
+	
 	#endregion
 }

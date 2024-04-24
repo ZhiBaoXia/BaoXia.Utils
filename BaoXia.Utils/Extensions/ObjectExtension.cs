@@ -1263,7 +1263,7 @@ public static class ObjectExtension
 			{
 				var itemPropertyValue = objectItemPropertyGetInfo.GetPropertyValue();
 				var itemPropertyValueBytes = ConvertBaseValueToBytes(
-					objectItem,
+					itemPropertyValue,
 					itemsByteSeparator,
 					keyValueByteSeparator);
 				if (itemPropertyValueBytes != null)

@@ -1208,8 +1208,8 @@ public static class ObjectExtension
 	/// </summary>
 	/// <param name="objectItem">当前对象。</param>
 	/// <param name="propertyNamesExcepted">要排除生成的属性名称，大小写敏感。</param>
-	/// <param name="propertiesBindingFlags">要读取的属性绑定标志，如果指定为“System.Reflection.BindingFlags.Default”，则默认使用“System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.GetProperty”的组合。</param>
 	/// <param name="isGetPropertyInfesRecursivly">是否使用递归深度获取对象的属性信息。。</param>
+	/// <param name="propertiesBindingFlags">要读取的属性绑定标志，如果指定为“System.Reflection.BindingFlags.Default”，则默认使用“System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.GetProperty”的组合。</param>
 	/// <param name="toIsPropertyInfoOfObjectValidToGenerate">判断指定对象，指定属性是否参与字节生成的回调。</param>
 	/// <param name="propertyLayerNumberMax">要获取属性层数的最大值，小于“0”时，表示不限制。</param>
 	/// <param name="propertyByteSeparator">属性的字节分隔符。</param>
@@ -1219,8 +1219,8 @@ public static class ObjectExtension
 	public static byte[] ToBytes(
 		this object? objectItem,
 		string[]? propertyNamesExcepted = null,
-		BindingFlags propertiesBindingFlags = BindingFlags.Default,
 		bool isGetPropertyInfesRecursivly = false,
+		BindingFlags propertiesBindingFlags = BindingFlags.Default,
 		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
 		int propertyLayerNumberMax = -1,
 		byte propertyByteSeparator = 0,

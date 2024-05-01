@@ -509,18 +509,18 @@ public class ObjectExtensionTest
 			};
 		}
 		var testObjectPropertyValueBytesA
-			= testObject.GeneratePropertyValueBytes(
+			= testObject.ToBytes(
 				null,
-				System.Reflection.BindingFlags.Default,
-				true);
+				true,
+				System.Reflection.BindingFlags.Default);
 		{
 			testObject.ObjectProperty.IntProperty = 13;
 		}
 		var testObjectPropertyValueBytesB
-			= testObject.GeneratePropertyValueBytes(
+			= testObject.ToBytes(
 				null,
-				System.Reflection.BindingFlags.Default,
-				true);
+				true,
+				System.Reflection.BindingFlags.Default);
 		// !!!
 		Assert.IsTrue(testObjectPropertyValueBytesA.Length
 			== testObjectPropertyValueBytesB.Length);

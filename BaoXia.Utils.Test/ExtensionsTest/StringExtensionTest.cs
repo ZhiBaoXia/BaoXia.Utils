@@ -1055,6 +1055,12 @@ public class StringExtensionTest
 			Assert.IsTrue(privacytextString.Equals("138*****678"));
 		}
 
+
+		privacytextString = "baoxiaruanjian".ToPrivacyStringForAccount();
+		{
+			Assert.IsTrue(privacytextString.Equals("b************n"));
+		}
+
 		privacytextString = "130123456789012345".ToPrivacyStringForCNIdCardNumber();
 		{
 			Assert.IsTrue(privacytextString.Equals("1301**********2345"));

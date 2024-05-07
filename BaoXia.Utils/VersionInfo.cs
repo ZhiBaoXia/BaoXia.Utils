@@ -46,7 +46,7 @@ public class VersionInfo
 			_versionString = value;
 			VersionSectionNumbers = DidCreateVersionSectionNumbersFromString(_versionString);
 		}
-	} 
+	}
 
 	public int[] VersionSectionNumbers { get; private set; } = [];
 
@@ -78,20 +78,86 @@ public class VersionInfo
 		return versionInfoA!.CompareTo(versionInfoB) == 0;
 	}
 
-	public static bool operator !=(VersionInfo versionInfoA, VersionInfo versionInfoB)
+	public static bool operator !=(VersionInfo? versionInfoA, VersionInfo? versionInfoB)
 	{
-		return versionInfoA.CompareTo(versionInfoB) != 0;
+		var isVersionInfoA_Null = versionInfoA is null;
+		var isVersionInfoB_Null = versionInfoB is null;
+		if (isVersionInfoA_Null
+			&& isVersionInfoB_Null)
+		{
+			return false;
+		}
+		else if (isVersionInfoA_Null
+			|| isVersionInfoB_Null)
+		{
+			return true;
+		}
+		return versionInfoA!.CompareTo(versionInfoB) != 0;
 	}
 
-	public static bool operator >(VersionInfo versionInfoA, VersionInfo versionInfoB)
+	public static bool operator >(VersionInfo? versionInfoA, VersionInfo? versionInfoB)
 	{
-		return versionInfoA.CompareTo(versionInfoB) > 0;
+		var isVersionInfoA_Null = versionInfoA is null;
+		var isVersionInfoB_Null = versionInfoB is null;
+		if (isVersionInfoA_Null
+			&& isVersionInfoB_Null)
+		{
+			return false;
+		}
+		else if (isVersionInfoA_Null)
+		{
+			return false;
+		}
+		return versionInfoA!.CompareTo(versionInfoB) > 0;
 	}
 
 
-	public static bool operator <(VersionInfo versionInfoA, VersionInfo versionInfoB)
+	public static bool operator <(VersionInfo? versionInfoA, VersionInfo? versionInfoB)
 	{
-		return versionInfoA.CompareTo(versionInfoB) < 0;
+		var isVersionInfoA_Null = versionInfoA is null;
+		var isVersionInfoB_Null = versionInfoB is null;
+		if (isVersionInfoA_Null
+			&& isVersionInfoB_Null)
+		{
+			return false;
+		}
+		else if (isVersionInfoA_Null)
+		{
+			return true;
+		}
+		return versionInfoA!.CompareTo(versionInfoB) < 0;
+	}
+
+	public static bool operator >=(VersionInfo? versionInfoA, VersionInfo? versionInfoB)
+	{
+		var isVersionInfoA_Null = versionInfoA is null;
+		var isVersionInfoB_Null = versionInfoB is null;
+		if (isVersionInfoA_Null
+			&& isVersionInfoB_Null)
+		{
+			return true;
+		}
+		else if (isVersionInfoA_Null)
+		{
+			return false;
+		}
+		return versionInfoA!.CompareTo(versionInfoB) >= 0;
+	}
+
+	public static bool operator <=(VersionInfo? versionInfoA, VersionInfo? versionInfoB)
+	{
+		var isVersionInfoA_Null = versionInfoA is null;
+		var isVersionInfoB_Null = versionInfoB is null;
+		if (isVersionInfoA_Null
+			&& isVersionInfoB_Null)
+		{
+			return true;
+		}
+		else if (isVersionInfoA_Null)
+		{
+			return true;
+		}
+		return versionInfoA!.CompareTo(versionInfoB) <= 0;
 	}
 
 	#endregion

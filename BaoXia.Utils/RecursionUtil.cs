@@ -5,83 +5,91 @@ using System.Collections.Generic;
 namespace BaoXia.Utils;
 public class RecursionUtil
 {
-	public static void RecursionEnumerate<ItemType>(
-		ItemType? rootItem,
-		Func<ItemType, IList<ItemType>?> ToGetChildItems,
-		Func<ItemType?, ItemType, bool> ToEnumerateItem)
-	{
-		if (rootItem == null)
-		{
-			return;
-		}
+        ////////////////////////////////////////////////
+        // @类方法
+        ////////////////////////////////////////////////
 
-		var rootItems = new List<ItemType>();
-		{
-			rootItems.Add(rootItem);
-		}
+        #region 类方法
 
-		var recursionSteps = new Stack<RecursionStep<ItemType>>();
-		{
-			recursionSteps.Push(new(default, rootItems, 0));
-		}
+        public static void Enumerate<ItemType>(
+                ItemType? rootItem,
+                Func<ItemType, IList<ItemType>?> ToGetChildItems,
+                Func<ItemType?, ItemType, bool> ToEnumerateItem)
+        {
+                if (rootItem == null)
+                {
+                        return;
+                }
 
-		while (recursionSteps.Count > 0)
-		{
-			var currentRecursionStep = recursionSteps.Peek();
-			if (currentRecursionStep == null)
-			{
-				// !!!
-				recursionSteps.Pop();
-				continue;
-				// !!!
-			}
+                var rootItems = new List<ItemType>();
+                {
+                        rootItems.Add(rootItem);
+                }
 
-			var parentItem = currentRecursionStep.ParentItem;
-			var items = currentRecursionStep.Items;
-			var itemIndex = currentRecursionStep.NextItemIndex;
-			var itemsCount = items.Count;
-			if (itemIndex < 0
-				|| itemIndex >= itemsCount)
-			{
-				// !!!
-				recursionSteps.Pop();
-				continue;
-				// !!!
-			}
+                var recursionSteps = new Stack<RecursionStep<ItemType>>();
+                {
+                        recursionSteps.Push(new(default, rootItems, 0));
+                }
 
-			for (;
-				itemIndex < itemsCount;
-				itemIndex++)
-			{
-				var item = items[itemIndex];
+                while (recursionSteps.Count > 0)
+                {
+                        var currentRecursionStep = recursionSteps.Peek();
+                        if (currentRecursionStep == null)
+                        {
+                                // !!!
+                                recursionSteps.Pop();
+                                continue;
+                                // !!!
+                        }
 
-				////////////////////////////////////////////////
-				if (!ToEnumerateItem(parentItem, item))
-				{
-					return;
-				}
-				////////////////////////////////////////////////
+                        var parentItem = currentRecursionStep.ParentItem;
+                        var items = currentRecursionStep.Items;
+                        var itemIndex = currentRecursionStep.NextItemIndex;
+                        var itemsCount = items.Count;
+                        if (itemIndex < 0
+                                || itemIndex >= itemsCount)
+                        {
+                                // !!!
+                                recursionSteps.Pop();
+                                continue;
+                                // !!!
+                        }
 
-				var childItems = ToGetChildItems(item);
-				if (childItems == null
-					|| childItems.Count < 1)
-				{
-					continue;
-				}
+                        for (;
+                                itemIndex < itemsCount;
+                                itemIndex++)
+                        {
+                                var item = items[itemIndex];
 
-				// !!!
-				currentRecursionStep.NextItemIndex = itemIndex + 1;
-				// !!!
-				recursionSteps.Push(new(item, childItems, 0));
-				break;
-				// !!!
-			}
-			if (itemIndex >= itemsCount)
-			{
-				// !!!
-				recursionSteps.Pop();
-				// !!!
-			}
-		}
-	}
+                                ////////////////////////////////////////////////
+                                if (!ToEnumerateItem(parentItem, item))
+                                {
+                                        return;
+                                }
+                                ////////////////////////////////////////////////
+
+                                var childItems = ToGetChildItems(item);
+                                if (childItems == null
+                                        || childItems.Count < 1)
+                                {
+                                        continue;
+                                }
+
+                                // !!!
+                                currentRecursionStep.NextItemIndex = itemIndex + 1;
+                                // !!!
+                                recursionSteps.Push(new(item, childItems, 0));
+                                break;
+                                // !!!
+                        }
+                        if (itemIndex >= itemsCount)
+                        {
+                                // !!!
+                                recursionSteps.Pop();
+                                // !!!
+                        }
+                }
+        }
+
+        #endregion
 }

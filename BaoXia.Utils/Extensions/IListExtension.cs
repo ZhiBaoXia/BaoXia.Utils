@@ -631,7 +631,22 @@ public static class IListExtension
                         out _);
         }
 
-
+        public static ItemType? FirstItemOrDefault<ItemType>(this IList<ItemType> items)
+        {
+                if (items.Count > 0)
+                {
+                        return items[0];
+                }
+                return default;
+        }
+        public static ItemType? LastItemOrDefault<ItemType>(this IList<ItemType> items)
+        {
+                if (items.Count > 0)
+                {
+                        return items[^1];
+                }
+                return default;
+        }
 
         public static List<ItemType> GetPageItems<ItemType>(
             this IList<ItemType> items,

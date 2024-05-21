@@ -894,6 +894,22 @@ public static class ArrayExtension
         }
 
 
+        public static ItemType? FirstItemOrDefault<ItemType>(this ItemType[] items)
+        {
+                if (items.Length > 0)
+                {
+                        return items[0];
+                }
+                return default;
+        }
+        public static ItemType? LastItemOrDefault<ItemType>(this ItemType[] items)
+        {
+                if (items.Length > 0)
+                {
+                        return items[^1];
+                }
+                return default;
+        }
 
         public static List<ItemType> GetPageItems<ItemType>(
             this ItemType[] items,

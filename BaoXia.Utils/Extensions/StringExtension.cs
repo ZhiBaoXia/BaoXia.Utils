@@ -2785,8 +2785,13 @@ public static class StringExtension
                 StringPartType privacyStringPart = StringPartType.Center,
                 string? privacytext = "*")
         {
+                var privacyCharsCount = account.Length - plaintextCharsCount;
+                if (privacyCharsCount <= 0)
+                {
+                        privacyCharsCount = account.Length;
+                }
                 return account.ToPrivacyString(
-                        account.Length - plaintextCharsCount,
+                        privacyCharsCount,
                         privacyStringPart,
                         privacytext);
         }

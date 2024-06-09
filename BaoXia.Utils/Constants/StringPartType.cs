@@ -2,11 +2,11 @@
 
 public enum StringPartType
 {
-        Unknow = 0,
+	Unknow = 0,
 
-        Left = 1,
+	Left = 1,
 
-        Center = 2,
+	Center = 2,
 
-        Right = 3
+	Right = 3
 }

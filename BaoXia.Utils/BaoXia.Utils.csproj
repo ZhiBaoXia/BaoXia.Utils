@@ -7,12 +7,12 @@
 		<Company>石家庄宝匣软件科技有限公司</Company>
 		<Description>宝匣软件 .Net Core 公用工具集。</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Version>8.0.6</Version>
+		<Version>8.0.7</Version>
 		<PackageIcon>BaoXia_600x600@1x.png</PackageIcon>
 		<PackOnBuild>true</PackOnBuild>
-		<FileVersion>8.0.6</FileVersion>
+		<FileVersion>8.0.7</FileVersion>
 		<ReleaseVersion>1.1.11</ReleaseVersion>
-		<AssemblyVersion>8.0.6</AssemblyVersion>
+		<AssemblyVersion>8.0.7</AssemblyVersion>
 		<Nullable>enable</Nullable>
 		<Authors>石家庄宝匣软件科技有限公司</Authors>
 		<Title>宝匣软件 - 基础工具包</Title>

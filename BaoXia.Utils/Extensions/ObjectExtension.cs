@@ -279,321 +279,6 @@ public static class ObjectExtension
 		    BindingFlags.Default);
 	}
 
-
-	/// <summary>
-	/// 通过设置同名属性，克隆产生新对象。
-	/// </summary>
-	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
-	/// <param name="currentObject">当前对象。</param>
-	/// <returns>拥有相同属性的，克隆产生的新对象。</returns>
-	public static ObjectType CloneWithSameProperties<ObjectType>(this ObjectType currentObject)
-		where ObjectType
-		: class, new()
-	{
-		var newObject = new ObjectType();
-		{
-			newObject.SetPropertiesWithSameNameFrom((object)currentObject);
-		}
-		return newObject;
-	}
-
-	public static ObjectType[]? CloneItemsToArray<ObjectType>(this IEnumerable<ObjectType>? objects)
-		where ObjectType : class, new()
-	{
-		if (objects == null)
-		{
-			return null;
-		}
-
-		var objectArray = new ObjectType[objects.GetCount()];
-		var objectIndex = 0;
-		foreach (var obj in objects)
-		{
-			if (objectIndex < objectArray.Length)
-			{
-				objectArray[objectIndex] = obj.CloneWithSameProperties();
-			}
-			objectIndex++;
-		}
-		return objectArray;
-	}
-
-	public static List<ObjectType>? CloneItemsToList<ObjectType>(this IEnumerable<ObjectType>? objects)
-		where ObjectType : class, new()
-	{
-		if (objects == null)
-		{
-			return null;
-		}
-
-		var objectList = new List<ObjectType>();
-		foreach (var obj in objects)
-		{
-			objectList.Add(obj.CloneWithSameProperties());
-		}
-		return objectList;
-	}
-
-	/// <summary>
-	/// 将当前对象序列化为Json字符串。
-	/// </summary>
-	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
-	/// <param name="item">当前对象。</param>
-	/// <returns>对象序列化产生的Json字符串。</returns>
-	public static string ToJsonString<ObjectType>(
-		this ObjectType item,
-		JsonSerializerOptions? jsonSerializerOptions = null)
-	{
-		var jsonString = StringUtil.StringByJsonSerializeObject(
-			item,
-			jsonSerializerOptions);
-		{ }
-		return jsonString;
-	}
-
-	/// <summary>
-	/// 基本类型数据转为字节数组。
-	/// </summary>
-	/// <param name="baseValue">任意对象。</param>
-	/// <param name="itemsByteSeparator">子元素间的分隔字节。</param>
-	/// <param name="keyValueByteSeparator">键值间的分隔字节。</param>
-	/// <returns>如果任意对象是基本数据类型，则将基本类型数据转为字节数组。</returns>
-	public static byte[]? ConvertBaseValueToBytes(
-		object? baseValue,
-		byte itemsByteSeparator,
-		byte keyValueByteSeparator)
-	{
-		if (baseValue == null)
-		{
-			return null;
-		}
-
-		////////////////////////////////////////////////
-		// 1/2，优先，检查并返回，常用的【值类型】：
-		////////////////////////////////////////////////
-		if (baseValue is string stringValue)
-		{
-			return Encoding.UTF8.GetBytes(stringValue);
-		}
-		else if (baseValue.GetType().IsValueType == false)
-		{
-			// !!!⚠
-			// !!!⚠ 字典集合的特殊处理。 ⚠!!!
-			// !!!⚠
-			if (baseValue is IDictionary dictionary)
-			{
-				var values = dictionary.Values;
-				if (values.Count < 1)
-				{
-					return null;
-				}
-				foreach (var value in values)
-				{
-					var valueType = value.GetType();
-					if (valueType.IsValueType != true
-						&& valueType.Equals(typeof(string)) != true)
-					{
-						return null;
-					}
-					break;
-				}
-
-				var memoryStream = new MemoryStream();
-				using var binaryWriter = new BinaryWriter(memoryStream);
-				var keys = dictionary.Keys;
-				foreach (var key in keys)
-				{
-					var keyBytes = ConvertBaseValueToBytes(
-						key,
-						itemsByteSeparator,
-						keyValueByteSeparator);
-					if (keyBytes != null)
-					{
-						// !!!
-						binaryWriter.Write(keyBytes);
-						// !!!
-					}
-
-					// !!!
-					binaryWriter.Write(keyValueByteSeparator);
-					// !!!
-
-					var value = dictionary[key];
-					if (value != null)
-					{
-						var childItemBytes = ConvertBaseValueToBytes(
-							value,
-							itemsByteSeparator,
-							keyValueByteSeparator)
-						?? throw new Exception("将基础类型值（字典）转为字节数组失败，意外的错误。");
-						// !!!
-						binaryWriter.Write(childItemBytes);
-						binaryWriter.Write(itemsByteSeparator);
-						// !!!
-					}
-				}
-				return memoryStream.ToArray();
-			}
-			// !!!⚠
-			// !!!⚠ 注意这里一定是“容器（）”，而不能是“IEnumerable”，例子：string 类型。 ⚠!!!
-			// !!!⚠
-			else if (baseValue is ICollection items)
-			{
-				var itemsEnumerator = items.GetEnumerator();
-				if (itemsEnumerator.MoveNext() == false)
-				{
-					return null;
-				}
-				var firstItem = itemsEnumerator.Current;
-				var itemType = firstItem.GetType();
-				if (itemType.IsValueType != true
-					&& itemType == typeof(string) != true)
-				{
-					return null;
-				}
-
-				var memoryStream = new MemoryStream();
-				using var binaryWriter = new BinaryWriter(memoryStream);
-				foreach (var item in items)
-				{
-					var itemBytes
-						= ConvertBaseValueToBytes(
-							item,
-							itemsByteSeparator,
-							keyValueByteSeparator)
-						?? throw new Exception("将基础类型值（集合）转为字节数组失败，意外的错误。");
-					// !!!
-					binaryWriter.Write(itemBytes);
-					binaryWriter.Write(itemsByteSeparator);
-					// !!!
-				}
-				return memoryStream.ToArray();
-			}
-			return null;
-		}
-
-		if (baseValue is Boolean booleanValue)
-		{
-			return BitConverter.GetBytes(booleanValue);
-		}
-		if (baseValue is Int32 int32Value)
-		{
-			return BitConverter.GetBytes(int32Value);
-		}
-		if (baseValue is Single singleValue)
-		{
-			return BitConverter.GetBytes(singleValue);
-		}
-		if (baseValue is Double doubleValue)
-		{
-			return BitConverter.GetBytes(doubleValue);
-		}
-		if (baseValue is DateTime dateTimeValue)
-		{
-			return BitConverter.GetBytes(dateTimeValue.Ticks);
-		}
-
-		////////////////////////////////////////////////
-		// 2/2，优先，检查并返回，不常用的【值类型】：
-		////////////////////////////////////////////////
-
-		if (baseValue is Int16 int16Value)
-		{
-			return BitConverter.GetBytes(int16Value);
-		}
-		//if (baseValue is Int32 int32Value)
-		//{
-		//	return BitConverter.GetBytes(int32Value);
-		//}
-		if (baseValue is Int64 int64Value)
-		{
-			return BitConverter.GetBytes(int64Value);
-		}
-		if (baseValue is UInt16 uInt16Value)
-		{
-			return BitConverter.GetBytes(uInt16Value);
-		}
-		if (baseValue is UInt32 uInt32Value)
-		{
-			return BitConverter.GetBytes(uInt32Value);
-		}
-		if (baseValue is UInt64 uInt64Value)
-		{
-			return BitConverter.GetBytes(uInt64Value);
-		}
-		if (baseValue is Byte byteValue)
-		{
-			return [byteValue];
-		}
-		if (baseValue is SByte sByteValue)
-		{
-			return [(byte)sByteValue];
-		}
-		//if (baseValue is Single singleValue)
-		//{
-		//	return BitConverter.GetBytes(singleValue);
-		//}
-		//if (baseValue is Double doubleValue)
-		//{
-		//	return BitConverter.GetBytes(doubleValue);
-		//}
-		if (baseValue is Decimal decimalValue)
-		{
-			return Decimal.GetBits(decimalValue).SelectMany(BitConverter.GetBytes).ToArray();
-		}
-		if (baseValue is Char charValue)
-		{
-			return BitConverter.GetBytes(charValue);
-		}
-
-		//if (baseValue is Boolean booleanValue)
-		//{
-		//	return BitConverter.GetBytes(booleanValue);
-		//}
-
-		//if (baseValue is DateTime dateTimeValue)
-		//{
-		//	return BitConverter.GetBytes(dateTimeValue.Ticks);
-		//}
-
-		//if (baseValue is Guid guidValue)
-		//{
-		//	return guidValue.ToByteArray();
-		//}
-
-		//if (baseValue is string stringValue)
-		//{
-		//	return Encoding.UTF8.GetBytes(stringValue);
-		//}
-
-		//if (baseValue is byte[] byteArrayValue)
-		//{
-		//	return byteArrayValue;
-		//}
-
-		//if (baseValue is Array arrayValue)
-		//{
-		//	var memoryStream = new MemoryStream();
-		//	using var binaryWriter = new BinaryWriter(memoryStream);
-		//	foreach (var arrayItem in arrayValue)
-		//	{
-		//		var arrayItemBytes = ConvertBaseValueToBytes(
-		//		arrayItem,
-		//		itemsByteSeparator,
-		//		keyValueByteSeparator);
-		//		if (arrayItemBytes == null)
-		//		{
-		//			return null;
-		//		}
-		//		// !!!
-		//		binaryWriter.Write(arrayItemBytes);
-		//		// !!!
-		//	}
-		//	return memoryStream.ToArray();
-		//}
-		return null;
-	}
-
 	public static List<ItemPropertyGetInfo<object>>? GetPropertyGetInfes(
 		this object? item,
 		int propertyLayerNumber = 0,
@@ -789,7 +474,34 @@ public static class ObjectExtension
 		return itemPropertyGetInfes;
 	}
 
-	public static ObjectType Clone<ObjectType>(
+	/// <summary>
+	/// 浅拷贝，通过设置同名属性，克隆产生新对象。
+	/// </summary>
+	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
+	/// <param name="currentObject">当前对象。</param>
+	/// <returns>拥有相同属性的，克隆产生的新对象。</returns>
+	public static ObjectType CloneShallow<ObjectType>(this ObjectType currentObject)
+		where ObjectType
+		: class, new()
+	{
+		var newObject = new ObjectType();
+		{
+			newObject.SetPropertiesWithSameNameFrom((object)currentObject);
+		}
+		return newObject;
+	}
+
+	/// <summary>
+	/// 深拷贝。
+	/// </summary>
+	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
+	/// <param name="item">当前对象。</param>
+	/// <param name="propertyNamesExcepted">要排除的属性名称</param>
+	/// <param name="propertiesBindingFlags">要拷贝属性的绑定标志。</param>
+	/// <param name="toIsPropertyInfoOfObjectValidToGenerate">用于拷贝筛选属性的回调。</param>
+	/// <param name="propertyLayerNumberMax">深拷贝的层数，“-1”表示不限制层数。</param>
+	/// <returns>拥有相同属性的，克隆产生的新对象。</returns>
+	public static ObjectType CloneDeep<ObjectType>(
 		this ObjectType item,
 		string[]? propertyNamesExcepted = null,
 		BindingFlags propertiesBindingFlags = BindingFlags.Default,
@@ -1202,6 +914,317 @@ public static class ObjectExtension
 		return itemCloned;
 	}
 
+	public static ObjectType Clone<ObjectType>(
+		this ObjectType currentObject)
+		where ObjectType
+		: class, new()
+	{
+		return CloneShallow(currentObject);
+	}
+
+	public static ObjectType Clone<ObjectType>(
+		this ObjectType currentObject,
+		bool isDeepClone,
+		string[]? propertyNamesExcepted = null,
+		BindingFlags propertiesBindingFlags = BindingFlags.Default,
+		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
+		int propertyLayerNumberMax = -1)
+		where ObjectType
+		: class, new()
+	{
+		if (isDeepClone == false)
+		{
+			return CloneShallow(currentObject);
+		}
+		return CloneDeep(
+			currentObject,
+			propertyNamesExcepted,
+			propertiesBindingFlags,
+			toIsPropertyInfoOfObjectValidToGenerate,
+			propertyLayerNumberMax);
+	}
+
+	public static ObjectType[]? CloneItemsToArray<ObjectType>(this IEnumerable<ObjectType>? objects)
+		where ObjectType : class, new()
+	{
+		if (objects == null)
+		{
+			return null;
+		}
+
+		var objectArray = new ObjectType[objects.GetCount()];
+		var objectIndex = 0;
+		foreach (var obj in objects)
+		{
+			if (objectIndex < objectArray.Length)
+			{
+				objectArray[objectIndex] = obj.CloneShallow();
+			}
+			objectIndex++;
+		}
+		return objectArray;
+	}
+
+	public static List<ObjectType>? CloneItemsToList<ObjectType>(this IEnumerable<ObjectType>? objects)
+		where ObjectType : class, new()
+	{
+		if (objects == null)
+		{
+			return null;
+		}
+
+		var objectList = new List<ObjectType>();
+		foreach (var obj in objects)
+		{
+			objectList.Add(obj.CloneShallow());
+		}
+		return objectList;
+	}
+
+
+	/// <summary>
+	/// 基本类型数据转为字节数组。
+	/// </summary>
+	/// <param name="baseValue">任意对象。</param>
+	/// <param name="itemsByteSeparator">子元素间的分隔字节。</param>
+	/// <param name="keyValueByteSeparator">键值间的分隔字节。</param>
+	/// <returns>如果任意对象是基本数据类型，则将基本类型数据转为字节数组。</returns>
+	public static byte[]? ConvertBaseValueToBytes(
+		object? baseValue,
+		byte itemsByteSeparator,
+		byte keyValueByteSeparator)
+	{
+		if (baseValue == null)
+		{
+			return null;
+		}
+
+		////////////////////////////////////////////////
+		// 1/2，优先，检查并返回，常用的【值类型】：
+		////////////////////////////////////////////////
+		if (baseValue is string stringValue)
+		{
+			return Encoding.UTF8.GetBytes(stringValue);
+		}
+		else if (baseValue.GetType().IsValueType == false)
+		{
+			// !!!⚠
+			// !!!⚠ 字典集合的特殊处理。 ⚠!!!
+			// !!!⚠
+			if (baseValue is IDictionary dictionary)
+			{
+				var values = dictionary.Values;
+				if (values.Count < 1)
+				{
+					return null;
+				}
+				foreach (var value in values)
+				{
+					var valueType = value.GetType();
+					if (valueType.IsValueType != true
+						&& valueType.Equals(typeof(string)) != true)
+					{
+						return null;
+					}
+					break;
+				}
+
+				var memoryStream = new MemoryStream();
+				using var binaryWriter = new BinaryWriter(memoryStream);
+				var keys = dictionary.Keys;
+				foreach (var key in keys)
+				{
+					var keyBytes = ConvertBaseValueToBytes(
+						key,
+						itemsByteSeparator,
+						keyValueByteSeparator);
+					if (keyBytes != null)
+					{
+						// !!!
+						binaryWriter.Write(keyBytes);
+						// !!!
+					}
+
+					// !!!
+					binaryWriter.Write(keyValueByteSeparator);
+					// !!!
+
+					var value = dictionary[key];
+					if (value != null)
+					{
+						var childItemBytes = ConvertBaseValueToBytes(
+							value,
+							itemsByteSeparator,
+							keyValueByteSeparator)
+						?? throw new Exception("将基础类型值（字典）转为字节数组失败，意外的错误。");
+						// !!!
+						binaryWriter.Write(childItemBytes);
+						binaryWriter.Write(itemsByteSeparator);
+						// !!!
+					}
+				}
+				return memoryStream.ToArray();
+			}
+			// !!!⚠
+			// !!!⚠ 注意这里一定是“容器（）”，而不能是“IEnumerable”，例子：string 类型。 ⚠!!!
+			// !!!⚠
+			else if (baseValue is ICollection items)
+			{
+				var itemsEnumerator = items.GetEnumerator();
+				if (itemsEnumerator.MoveNext() == false)
+				{
+					return null;
+				}
+				var firstItem = itemsEnumerator.Current;
+				var itemType = firstItem.GetType();
+				if (itemType.IsValueType != true
+					&& itemType == typeof(string) != true)
+				{
+					return null;
+				}
+
+				var memoryStream = new MemoryStream();
+				using var binaryWriter = new BinaryWriter(memoryStream);
+				foreach (var item in items)
+				{
+					var itemBytes
+						= ConvertBaseValueToBytes(
+							item,
+							itemsByteSeparator,
+							keyValueByteSeparator)
+						?? throw new Exception("将基础类型值（集合）转为字节数组失败，意外的错误。");
+					// !!!
+					binaryWriter.Write(itemBytes);
+					binaryWriter.Write(itemsByteSeparator);
+					// !!!
+				}
+				return memoryStream.ToArray();
+			}
+			return null;
+		}
+
+		if (baseValue is Boolean booleanValue)
+		{
+			return BitConverter.GetBytes(booleanValue);
+		}
+		if (baseValue is Int32 int32Value)
+		{
+			return BitConverter.GetBytes(int32Value);
+		}
+		if (baseValue is Single singleValue)
+		{
+			return BitConverter.GetBytes(singleValue);
+		}
+		if (baseValue is Double doubleValue)
+		{
+			return BitConverter.GetBytes(doubleValue);
+		}
+		if (baseValue is DateTime dateTimeValue)
+		{
+			return BitConverter.GetBytes(dateTimeValue.Ticks);
+		}
+
+		////////////////////////////////////////////////
+		// 2/2，优先，检查并返回，不常用的【值类型】：
+		////////////////////////////////////////////////
+
+		if (baseValue is Int16 int16Value)
+		{
+			return BitConverter.GetBytes(int16Value);
+		}
+		//if (baseValue is Int32 int32Value)
+		//{
+		//	return BitConverter.GetBytes(int32Value);
+		//}
+		if (baseValue is Int64 int64Value)
+		{
+			return BitConverter.GetBytes(int64Value);
+		}
+		if (baseValue is UInt16 uInt16Value)
+		{
+			return BitConverter.GetBytes(uInt16Value);
+		}
+		if (baseValue is UInt32 uInt32Value)
+		{
+			return BitConverter.GetBytes(uInt32Value);
+		}
+		if (baseValue is UInt64 uInt64Value)
+		{
+			return BitConverter.GetBytes(uInt64Value);
+		}
+		if (baseValue is Byte byteValue)
+		{
+			return [byteValue];
+		}
+		if (baseValue is SByte sByteValue)
+		{
+			return [(byte)sByteValue];
+		}
+		//if (baseValue is Single singleValue)
+		//{
+		//	return BitConverter.GetBytes(singleValue);
+		//}
+		//if (baseValue is Double doubleValue)
+		//{
+		//	return BitConverter.GetBytes(doubleValue);
+		//}
+		if (baseValue is Decimal decimalValue)
+		{
+			return Decimal.GetBits(decimalValue).SelectMany(BitConverter.GetBytes).ToArray();
+		}
+		if (baseValue is Char charValue)
+		{
+			return BitConverter.GetBytes(charValue);
+		}
+
+		//if (baseValue is Boolean booleanValue)
+		//{
+		//	return BitConverter.GetBytes(booleanValue);
+		//}
+
+		//if (baseValue is DateTime dateTimeValue)
+		//{
+		//	return BitConverter.GetBytes(dateTimeValue.Ticks);
+		//}
+
+		//if (baseValue is Guid guidValue)
+		//{
+		//	return guidValue.ToByteArray();
+		//}
+
+		//if (baseValue is string stringValue)
+		//{
+		//	return Encoding.UTF8.GetBytes(stringValue);
+		//}
+
+		//if (baseValue is byte[] byteArrayValue)
+		//{
+		//	return byteArrayValue;
+		//}
+
+		//if (baseValue is Array arrayValue)
+		//{
+		//	var memoryStream = new MemoryStream();
+		//	using var binaryWriter = new BinaryWriter(memoryStream);
+		//	foreach (var arrayItem in arrayValue)
+		//	{
+		//		var arrayItemBytes = ConvertBaseValueToBytes(
+		//		arrayItem,
+		//		itemsByteSeparator,
+		//		keyValueByteSeparator);
+		//		if (arrayItemBytes == null)
+		//		{
+		//			return null;
+		//		}
+		//		// !!!
+		//		binaryWriter.Write(arrayItemBytes);
+		//		// !!!
+		//	}
+		//	return memoryStream.ToArray();
+		//}
+		return null;
+	}
+
 	/// <summary>
 	/// 生成当前对象，所有值类型属性的字节数组。
 	/// </summary>
@@ -1355,6 +1378,24 @@ public static class ObjectExtension
 		objectItemBytes = memoryStream.ToArray();
 		{ }
 		return objectItemBytes;
+	}
+
+
+	/// <summary>
+	/// 将当前对象序列化为Json字符串。
+	/// </summary>
+	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
+	/// <param name="item">当前对象。</param>
+	/// <returns>对象序列化产生的Json字符串。</returns>
+	public static string ToJsonString<ObjectType>(
+		this ObjectType item,
+		JsonSerializerOptions? jsonSerializerOptions = null)
+	{
+		var jsonString = StringUtil.StringByJsonSerializeObject(
+			item,
+			jsonSerializerOptions);
+		{ }
+		return jsonString;
 	}
 
 	#endregion

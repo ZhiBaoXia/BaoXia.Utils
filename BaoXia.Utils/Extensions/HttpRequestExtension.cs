@@ -7,6 +7,26 @@ namespace BaoXia.Utils.Extensions;
 
 public static class HttpRequestExtension
 {
+	////////////////////////////////////////////////
+	// @静态常量
+	////////////////////////////////////////////////
+
+	#region 静态常量
+
+	protected class HttpHeaderKeys
+	{
+		public const string BxService_Gateway_ClientIp = "BxService-Gateway-ClientIp";
+	}
+
+	#endregion
+
+
+	////////////////////////////////////////////////
+	// @类方法
+	////////////////////////////////////////////////
+
+	#region 类方法
+
 	/// <summary>
 	/// 获取当前请求的绝对地址。
 	/// </summary>
@@ -27,15 +47,13 @@ public static class HttpRequestExtension
 		return absoluteUri;
 	}
 
-	/// <summary>
-	/// 根据“Http_X_FORWARDED_FOR”字段，获取Http代理链，
-	/// 最终代理地址一定为“请求客户端地址”，
-	/// 用户没有代理时，代理链等于“请求客户端地址”。
-	/// </summary>
-	/// <param name="request">当前请求对象。</param>
-	/// <returns>代理链字符串。</returns>
-	public static List<string> GetClientConnectionAddressList(this HttpRequest request)
+	public static List<string> GetClientConnectionAddressList(
+		this HttpRequest request,
+		out bool isLastIpAddressGetFromBxGateway)
 	{
+		//
+		isLastIpAddressGetFromBxGateway = false;
+		//
 		var clientHttpProxyAddressList = new List<string>();
 		if (request.Headers is IHeaderDictionary requestHeaders)
 		{
@@ -92,7 +110,9 @@ public static class HttpRequestExtension
 			}
 		}
 		// 宝匣网关的客户端地址。
-		if (request.Headers?.TryGetValue("BxService-Gateway-ClientIp", out var bxService_Gateway_ClientIp) == true
+		if (request.Headers?.TryGetValue(
+			HttpHeaderKeys.BxService_Gateway_ClientIp,
+			out var bxService_Gateway_ClientIp) == true
 			&& bxService_Gateway_ClientIp.Count > 0)
 		{
 			foreach (var clientIp in bxService_Gateway_ClientIp)
@@ -107,6 +127,8 @@ public static class HttpRequestExtension
 						{
 							// !!!
 							clientHttpProxyAddressList.Add(clientIpAddressTrimed);
+							// !!!
+							isLastIpAddressGetFromBxGateway = true;
 							// !!!
 						}
 					}
@@ -123,14 +145,36 @@ public static class HttpRequestExtension
 	/// </summary>
 	/// <param name="request">当前请求对象。</param>
 	/// <returns>代理链字符串。</returns>
-	public static string? GetClientConnectionAddressesString(this HttpRequest request)
+	public static List<string> GetClientConnectionAddressList(
+		this HttpRequest request)
 	{
-		var clientHttpProxyAddressList = request.GetClientConnectionAddressList();
+		return GetClientConnectionAddressList(request, out _);
+	}
+
+	public static string? GetClientConnectionAddressesString(
+		this HttpRequest request,
+		out bool isLastIpAddressGetFromBxGateway)
+	{
+		var clientHttpProxyAddressList
+			= request.GetClientConnectionAddressList(
+				out isLastIpAddressGetFromBxGateway);
 		if (clientHttpProxyAddressList.Count > 0)
 		{
 			return StringUtil.StringWithStrings(clientHttpProxyAddressList);
 		}
 		return null;
+	}
+
+	/// <summary>
+	/// 根据“Http_X_FORWARDED_FOR”字段，获取Http代理链，
+	/// 最终代理地址一定为“请求客户端地址”，
+	/// 用户没有代理时，代理链等于“请求客户端地址”。
+	/// </summary>
+	/// <param name="request">当前请求对象。</param>
+	/// <returns>代理链字符串。</returns>
+	public static string? GetClientConnectionAddressesString(this HttpRequest request)
+	{
+		return GetClientConnectionAddressesString(request, out _);
 	}
 
 	/// <summary>
@@ -163,6 +207,29 @@ public static class HttpRequestExtension
 		return null;
 	}
 
+	public static bool TryGetClientConnectionPortFromIpAddress(
+		string? ipAddress,
+		out int clientConnectionPort)
+	{
+		clientConnectionPort = 0;
+		if (string.IsNullOrEmpty(ipAddress))
+		{
+			return false;
+		}
+		var ipAddresses = ipAddress?.Split(",", System.StringSplitOptions.RemoveEmptyEntries);
+		if (ipAddresses == null)
+		{
+			return false;
+		}
+		var lastIpAddress = ipAddresses[^1];
+		var lastIpPortString = lastIpAddress.SubstringBetween(":", null);
+		if (int.TryParse(lastIpPortString, out clientConnectionPort))
+		{
+			return true;
+		}
+		return false;
+	}
+
 	/// <summary>
 	/// 获取客户端连接的端口号。
 	/// </summary>
@@ -170,11 +237,23 @@ public static class HttpRequestExtension
 	/// <returns>当前请求对象的连接端口号。</returns>
 	public static int GetClientConnectionPortLast(this HttpRequest request)
 	{
-		if (request.HttpContext?.Connection != null)
+		var clientConnectionPortLast = request.HttpContext.Connection.RemotePort;
+		// 宝匣网关的客户端地址。
+		if (request.Headers?
+			.TryGetValue(
+				HttpHeaderKeys.BxService_Gateway_ClientIp,
+				out var bxService_Gateway_ClientIp) == true
+			&& bxService_Gateway_ClientIp.Count > 0)
 		{
-			return request.HttpContext.Connection.RemotePort;
+			var clientIp = bxService_Gateway_ClientIp[^1];
+			if (TryGetClientConnectionPortFromIpAddress(clientIp, out var clientIpPort))
+			{
+				// !!!
+				clientConnectionPortLast = clientIpPort;
+				// !!!
+			}
 		}
-		return 0;
+		return clientConnectionPortLast;
 	}
 
 	/// <summary>
@@ -190,12 +269,35 @@ public static class HttpRequestExtension
 			return new ClientIpInfo();
 		}
 
+		var ipAddressChain
+			= httpRequest
+			.GetClientConnectionAddressesString(
+				out var isLastIpAddressGetFromBxGateway);
+		var ipPortLast
+			= httpRequest.HttpContext.Connection.RemotePort;
+		if (isLastIpAddressGetFromBxGateway)
+		{
+			if (ipAddressChain?.LastIndexOf(':') is int lastIndexOfColonSymbol
+				&& lastIndexOfColonSymbol >= 0)
+			{
+				var ipPortLastString = ipAddressChain[(lastIndexOfColonSymbol + 1)..];
+				if (int.TryParse(ipPortLastString, out var ipPortLastIntValue))
+				{
+					// !!!
+					ipPortLast = ipPortLastIntValue;
+					// !!!
+				}
+			}
+		}
+
 		var endPointInfo = new ClientIpInfo()
 		{
-			IpAddressChain = httpRequest.GetClientConnectionAddressesString(),
-			IpPortLast = httpRequest.GetClientConnectionPortLast()
+			IpAddressChain = ipAddressChain,
+			IpPortLast = ipPortLast
 
 		};
 		return endPointInfo;
 	}
+
+	#endregion
 }

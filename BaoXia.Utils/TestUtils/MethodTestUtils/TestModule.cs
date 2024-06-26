@@ -28,8 +28,7 @@ public class TestModule(string name)
 
 			var testUnitsCount = 0;
 			var testUnitsCount_WaitingTest = 0;
-			var testUnitsCount_TestSuccess = 0;
-			var testUnitsCount_TestFailed = 0;
+			//var testUnitsCount_TestSuccess = 0;
 			foreach (var testUnitInfo in testUnitInfes)
 			{
 				testUnitsCount++;
@@ -51,34 +50,24 @@ public class TestModule(string name)
 						}
 					case TestUnitState.TestSuccess:
 						{
-							testUnitsCount_TestSuccess++;
+							// testUnitsCount_TestSuccess++;
 						}
 						break;
 					case TestUnitState.TestFailed:
 						{
-							testUnitsCount_TestFailed++;
+							return TestUnitState.TestFailed;
 						}
-						break;
 				}
 			}
 			if (testUnitsCount < 1)
 			{
 				return TestUnitState.Unknow;
 			}
-			if (testUnitsCount_TestSuccess + testUnitsCount_TestFailed == testUnitsCount)
+			if (testUnitsCount_WaitingTest > 0)
 			{
-				if (testUnitsCount_WaitingTest > 0)
-				{
-					return TestUnitState.WaitingTest;
-				}
-				if (testUnitsCount_TestFailed > 0)
-				{
-					return TestUnitState.TestFailed;
-				}
-				return TestUnitState.TestSuccess;
+				return TestUnitState.WaitingTest;
 			}
-
-			return TestUnitState.Unknow;
+			return TestUnitState.TestSuccess;
 		}
 	}
 

@@ -127,20 +127,21 @@ public static class ObjectExtension
 
 	public static string? GetPropertyNameWithPropertyValue(
 		this object @object,
-		object? propertyObject)
+		object? propertyValue,
+		BindingFlags propertiesBindingFlags = BindingFlags.Public | BindingFlags.Instance)
 	{
-		if (propertyObject == null)
+		if (propertyValue == null)
 		{
 			return null;
 		}
 
 		var objectType = @object.GetType();
-		var objectTypeProperties = objectType.GetProperties();
+		var objectTypeProperties = objectType.GetProperties(propertiesBindingFlags);
 		string? propertyName = null;
 		foreach (var objectTypeProperty in objectTypeProperties)
 		{
 			var objectProperty = objectTypeProperty.GetValue(@object);
-			if (objectProperty == propertyObject)
+			if (objectProperty == propertyValue)
 			{
 				// !!!
 				propertyName = objectTypeProperty.Name;

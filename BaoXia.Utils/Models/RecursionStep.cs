@@ -10,7 +10,7 @@ public class RecursionStep<ItemType>
 
 	public ItemType? ParentItem { get; set; }
 
-	public IList<ItemType> Items { get; set; }
+	public IList<ItemType> Items { get; set; } = default!;
 
 	public int NextItemIndex { get; set; }
 
@@ -18,6 +18,9 @@ public class RecursionStep<ItemType>
 	////////////////////////////////////////////////
 	// @自身实现
 	////////////////////////////////////////////////
+
+	public RecursionStep()
+	{ }
 
 	public RecursionStep(
 		ItemType? parentItem,

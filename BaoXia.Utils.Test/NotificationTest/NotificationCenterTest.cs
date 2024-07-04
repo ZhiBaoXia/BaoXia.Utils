@@ -52,7 +52,7 @@ namespace BaoXia.Utils.Test.NotificationTest
 
 			var testName = "PostAndListenNotificationTest";
 			var testDictionaryParam_Key = "测试关键字。";
-			var testDictionaryParam_Value = "测试值：" + StringUtil.StringWithRandomStringLength(8) + "。";
+			var testDictionaryParam_Value = "测试值：" + StringUtil.StringByFillRandomCharsToLength(8) + "。";
 			var testObjectParam = new Object();
 
 			String? receivedDictionaryParam_Value = null;
@@ -176,7 +176,7 @@ namespace BaoXia.Utils.Test.NotificationTest
 
 			var testName = "PostAndListenNotificationTestWithHighConcurrentTest";
 			var testDictionaryParam_Key = "测试关键字。";
-			var testDictionaryParam_Value = "测试值：" + StringUtil.StringWithRandomStringLength(8) + "。";
+			var testDictionaryParam_Value = "测试值：" + StringUtil.StringByFillRandomCharsToLength(8) + "。";
 
 			double testDurationSeconds = 1.0;
 			int testSendNotificationIntervalMiiliseconds = 50;
@@ -395,7 +395,7 @@ namespace BaoXia.Utils.Test.NotificationTest
 
 			var testName = "PostAsyncAndListenNotificationAsyncTest";
 			var testDictionaryParam_Key = "测试关键字。";
-			var testDictionaryParam_Value = "测试值：" + StringUtil.StringWithRandomStringLength(8) + "。";
+			var testDictionaryParam_Value = "测试值：" + StringUtil.StringByFillRandomCharsToLength(8) + "。";
 			var testObjectParam = new Object();
 
 			String? receivedDictionaryParam_Value = null;
@@ -522,7 +522,7 @@ namespace BaoXia.Utils.Test.NotificationTest
 
 			var testName = "PostAndListenNotificationTestWithHighConcurrentAsyncTest";
 			var testDictionaryParam_Key = "测试关键字。";
-			var testDictionaryParam_Value = "测试值：" + StringUtil.StringWithRandomStringLength(8) + "。";
+			var testDictionaryParam_Value = "测试值：" + StringUtil.StringByFillRandomCharsToLength(8) + "。";
 
 			double testDurationSeconds = 1.0;
 			int testSendNotificationIntervalMiiliseconds = 50;
@@ -746,7 +746,7 @@ namespace BaoXia.Utils.Test.NotificationTest
 			var testName = "PostAndListenNotificationWithTagsTest";
 			var testTagName = "测试标签";
 			var testDictionaryParam_Key = "测试关键字。";
-			var testDictionaryParam_Value = "测试值：" + StringUtil.StringWithRandomStringLength(8) + "。";
+			var testDictionaryParam_Value = "测试值：" + StringUtil.StringByFillRandomCharsToLength(8) + "。";
 			var testObjectParam = new Object();
 
 			String? receivedDictionaryParam_Value = null;

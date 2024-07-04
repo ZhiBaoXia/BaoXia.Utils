@@ -354,7 +354,7 @@ public class StringUtil
 	/// <param name="randomSeek">随机种子值，设置为“0”时，使用系统当前时间戳。</param>
 	/// <param name="isOnlyUppercase">是否只使用大写字符串。</param>
 	/// <returns>返回指定长度随机内容字符串，随机内容只包含英文字母和阿拉伯数字。</returns>
-	public static string StringWithRandomStringLength(
+	public static string StringByFillRandomCharsToLength(
 	    int randomStringLength,
 	    int randomSeek = 0,
 	    bool isOnlyUppercase = true)
@@ -393,6 +393,24 @@ public class StringUtil
 			}
 		}
 		return randomString;
+	}
+
+	/// <summary>
+	/// 生成指定长度的随机内容字符串，随机内容只包含英文字母和阿拉伯数字。
+	/// </summary>
+	/// <param name="randomStringLength">指定的随机字符串长度。</param>
+	/// <param name="randomSeek">随机种子值，设置为“0”时，使用系统当前时间戳。</param>
+	/// <param name="isOnlyUppercase">是否只使用大写字符串。</param>
+	/// <returns>返回指定长度随机内容字符串，随机内容只包含英文字母和阿拉伯数字。</returns>
+	public static string RandomStringInLength(
+	    int randomStringLength,
+	    int randomSeek = 0,
+	    bool isOnlyUppercase = true)
+	{
+		return StringByFillRandomCharsToLength(
+			randomStringLength,
+			randomSeek,
+			isOnlyUppercase);
 	}
 
 	/// <summary>

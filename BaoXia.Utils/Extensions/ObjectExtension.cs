@@ -22,7 +22,6 @@ public static class ObjectExtension
 
 	#region 类方法
 
-
 	public static object? CreateObject(Type objectType)
 	{
 		var @object = Activator.CreateInstance(objectType);
@@ -474,6 +473,211 @@ public static class ObjectExtension
 		}
 		return itemPropertyGetInfes;
 	}
+
+
+	public static List<ObjectPropertyInfo> GetPropertyInfesFrom(
+		this Type _,
+		PropertyInfo[] sourceEntityPropertyInfes,
+		Func<ObjectPropertyInfo, bool> isPropertyInfoValid,
+		BindingFlags propertyBindingFlags = BindingFlags.Instance | BindingFlags.Public)
+	{
+		var objectEntityPropertyInfes = new List<ObjectPropertyInfo>();
+		var objectEntityPropertyInfoId = 0;
+		foreach (var entityPropertyInfo in sourceEntityPropertyInfes)
+		{
+			// 非值类型，
+			// 并且没有可为空的标记，
+			// 则该类型不可为空，需要约束，
+			// 非字符串和非集合对象【需要】检查子属性：
+			RecursionUtil.Enumerate(
+				new ObjectPropertyInfo(0, entityPropertyInfo, []),
+				(entityPropertyInfo) =>
+				{
+					var entityPropertyType = entityPropertyInfo.PropertyType;
+
+					// 值类型，【不需要】检查子属性：
+					if (entityPropertyType.IsValueType)
+					{
+						return null;
+					}
+					// 字符串和集合对象，【不需要】检查子属性：
+					if (entityPropertyType.Equals(typeof(string))
+						|| entityPropertyType.IsAssignableTo(typeof(System.Collections.ICollection)))
+					{
+						return null;
+					}
+
+					// 非值类型，
+					// 且，非字符串和集合对象，
+					// 【需要】检查子属性：
+					var childEntityPropertyInfes = new List<ObjectPropertyInfo>();
+					var childPropertyInfes = entityPropertyType.GetProperties(propertyBindingFlags);
+					foreach (var childPropertyInfo in childPropertyInfes)
+					{
+						childEntityPropertyInfes.Add(
+							new ObjectPropertyInfo(
+								0,
+								childPropertyInfo,
+								[]));
+					}
+					return childEntityPropertyInfes;
+				},
+				(parentEntityPropertyInfo, entityPropertyInfo) =>
+				{
+					if (!isPropertyInfoValid(entityPropertyInfo))
+					{
+						return true;
+					}
+
+
+					objectEntityPropertyInfoId++;
+					entityPropertyInfo.Id = objectEntityPropertyInfoId;
+					if (parentEntityPropertyInfo == null)
+					{
+						// !!!
+						objectEntityPropertyInfes.Add(entityPropertyInfo);
+						// !!!
+					}
+					else
+					{
+						// !!!
+						parentEntityPropertyInfo.AddChildObjectPropertyInfo(
+							entityPropertyInfo);
+						// !!!
+					}
+					return true;
+				});
+		}
+		return objectEntityPropertyInfes;
+	}
+
+	public static List<ObjectPropertyInfo> GetObjectPropertyInfes(
+		this Type entityType,
+		Func<ObjectPropertyInfo, bool> isPropertyInfoValid,
+		BindingFlags propertyBindingFlags = BindingFlags.Instance | BindingFlags.Public)
+	{
+		var objectEntityPropertyInfes = new List<ObjectPropertyInfo>();
+		var objectEntityPropertyInfoId = 0;
+		PropertyInfo[] sourceEntityPropertyInfes = entityType.GetProperties(propertyBindingFlags);
+		foreach (var entityPropertyInfo in sourceEntityPropertyInfes)
+		{
+			// 非值类型，
+			// 并且没有可为空的标记，
+			// 则该类型不可为空，需要约束，
+			// 非字符串和非集合对象【需要】检查子属性：
+			RecursionUtil.Enumerate(
+				new ObjectPropertyInfo(0, entityPropertyInfo, []),
+				(entityPropertyInfo) =>
+				{
+					// 值类型，【不需要】检查子属性，
+					// 字符串，【不需要】检查子属性，
+					// 集合对象，【不需要】检查子属性：
+					if (entityPropertyInfo.IsPropertyTypeNoneChildProperties)
+					{
+						return null;
+					}
+
+					// 非值类型，
+					// 且，非字符串和集合对象，
+					// 【需要】检查子属性：
+					var childEntityPropertyInfes = new List<ObjectPropertyInfo>();
+					var childPropertyInfes = entityPropertyInfo.GetProperties(propertyBindingFlags);
+					foreach (var childPropertyInfo in childPropertyInfes)
+					{
+						childEntityPropertyInfes.Add(
+							new ObjectPropertyInfo(
+								0,
+								childPropertyInfo,
+								[]));
+					}
+					return childEntityPropertyInfes;
+				},
+				(parentEntityPropertyInfo, entityPropertyInfo) =>
+				{
+					if (!isPropertyInfoValid(entityPropertyInfo))
+					{
+						return true;
+					}
+
+					objectEntityPropertyInfoId++;
+					entityPropertyInfo.Id = objectEntityPropertyInfoId;
+					if (parentEntityPropertyInfo == null)
+					{
+						// !!!
+						objectEntityPropertyInfes.Add(entityPropertyInfo);
+						// !!!
+					}
+					else
+					{
+						// !!!
+						parentEntityPropertyInfo.AddChildObjectPropertyInfo(
+							entityPropertyInfo);
+						// !!!
+					}
+					return true;
+				});
+		}
+		return objectEntityPropertyInfes;
+	}
+
+	public static ObjectCheckResultType? CheckPropertyValuesWithObjectPropertyInfes<ObjectCheckResultType>(
+		this object entity,
+		ObjectPropertyInfo[] entityPropertyInfesNeedCheck,
+		Func<object, ObjectPropertyInfo, object?, ObjectCheckResultType?> toCheckEntityPropertyValue)
+		where ObjectCheckResultType : class
+	{
+		if (entityPropertyInfesNeedCheck.Length < 1)
+		{
+			return null;
+		}
+
+		ObjectCheckResultType? checkResult = null;
+		foreach (var entityPropertyInfoNeedCheck in entityPropertyInfesNeedCheck)
+		{
+			RecursionUtil.EnumerateWithRecursionStepType<ObjectPropertyInfo, ObjectPropertyRecursionStep>(
+				entityPropertyInfoNeedCheck,
+				(entityPropertyInfo, _) =>
+				{
+					return entityPropertyInfo.ChildObjectPropertyInfes;
+				},
+				(parentEntityPropertyInfo, propertyInfo, currentRecursionStep) =>
+				{
+					var propertyOwner
+						= currentRecursionStep.ParentEntity
+						?? entity;
+					var entityPropertyValue
+						= propertyInfo.GetValue(propertyOwner);
+
+					checkResult = toCheckEntityPropertyValue(
+						propertyOwner,
+						propertyInfo,
+						entityPropertyValue);
+					if (checkResult != null)
+					{
+						// !!!
+						return false;
+						// !!!
+					}
+					// !!!
+					currentRecursionStep.CurrentEntityPropertyValue = entityPropertyValue;
+					// !!!
+					return true;
+				},
+				(currentRecursionStep) =>
+				{
+					return new()
+					{
+						ParentEntity = currentRecursionStep.CurrentEntityPropertyValue
+					};
+				});
+			if (checkResult != null)
+			{
+				break;
+			}
+		}
+		return checkResult;
+	}
+
 
 	/// <summary>
 	/// 浅拷贝，通过设置同名属性，克隆产生新对象。

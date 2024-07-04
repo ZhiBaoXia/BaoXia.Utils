@@ -716,7 +716,7 @@ public class StringExtensionTest
 	{
 		const int randomStringLength = 512;
 
-		var randomString = StringUtil.StringWithRandomStringLength(randomStringLength);
+		var randomString = StringUtil.StringByFillRandomCharsToLength(randomStringLength);
 		{
 			System.Diagnostics.Trace.WriteLine("StringExtensionTest.ToRandomString():\r\n" + randomString);
 		}

@@ -12,10 +12,12 @@ public class RecursionUtil
 
 	#region 类方法
 
-	public static void Enumerate<ItemType>(
+	public static void EnumerateWithRecursionStepType<ItemType, RecursionStepType>(
 		ItemType? rootItem,
-		Func<ItemType, IList<ItemType>?> toGetChildItems,
-		Func<ItemType?, ItemType, bool> toEnumerateItem)
+		Func<ItemType, RecursionStepType, IList<ItemType>?> toGetChildItems,
+		Func<ItemType?, ItemType, RecursionStepType, bool> toEnumerateItem,
+		Func<RecursionStepType, RecursionStepType>? toCreateNextRecursionStepType)
+		where RecursionStepType : RecursionStep<ItemType>, new()
 	{
 		if (rootItem == null)
 		{
@@ -27,9 +29,14 @@ public class RecursionUtil
 			rootItems.Add(rootItem);
 		}
 
-		var recursionSteps = new Stack<RecursionStep<ItemType>>();
+		var recursionSteps = new Stack<RecursionStepType>();
 		{
-			recursionSteps.Push(new(default, rootItems, 0));
+			recursionSteps.Push(new()
+			{
+				ParentItem = default,
+				Items = rootItems,
+				NextItemIndex = 0
+			});
 		}
 
 		while (recursionSteps.Count > 0)
@@ -63,13 +70,13 @@ public class RecursionUtil
 				var item = items[itemIndex];
 
 				////////////////////////////////////////////////
-				if (!toEnumerateItem(parentItem, item))
+				if (!toEnumerateItem(parentItem, item, currentRecursionStep))
 				{
 					return;
 				}
 				////////////////////////////////////////////////
 
-				var childItems = toGetChildItems(item);
+				var childItems = toGetChildItems(item, currentRecursionStep);
 				if (childItems == null
 					|| childItems.Count < 1)
 				{
@@ -79,7 +86,16 @@ public class RecursionUtil
 				// !!!
 				currentRecursionStep.NextItemIndex = itemIndex + 1;
 				// !!!
-				recursionSteps.Push(new(item, childItems, 0));
+
+				var nextRecursionStep
+					= (toCreateNextRecursionStepType?.Invoke(currentRecursionStep)
+					?? new());
+				{
+					nextRecursionStep.ParentItem = item;
+					nextRecursionStep.Items = childItems;
+					nextRecursionStep.NextItemIndex = 0;
+				}
+				recursionSteps.Push(nextRecursionStep);
 				break;
 				// !!!
 			}
@@ -92,11 +108,12 @@ public class RecursionUtil
 		}
 	}
 
-
-	public static async Task EnumerateAsync<ItemType>(
+	public static async Task EnumerateWithRecursionStepTypeAsync<ItemType, RecursionStepType>(
 		ItemType? rootItem,
-		Func<ItemType, Task<IList<ItemType>?>> toGetChildItemsAsync,
-		Func<ItemType?, ItemType, Task<bool>> toEnumerateItemAsync)
+		Func<ItemType, RecursionStepType, Task<IList<ItemType>?>> toGetChildItemsAsync,
+		Func<ItemType?, ItemType, RecursionStepType, Task<bool>> toEnumerateItemAsync,
+		Func<RecursionStepType, RecursionStepType>? toCreateNextRecursionStepType)
+		where RecursionStepType : RecursionStep<ItemType>, new()
 	{
 		if (rootItem == null)
 		{
@@ -108,9 +125,14 @@ public class RecursionUtil
 			rootItems.Add(rootItem);
 		}
 
-		var recursionSteps = new Stack<RecursionStep<ItemType>>();
+		var recursionSteps = new Stack<RecursionStepType>();
 		{
-			recursionSteps.Push(new(default, rootItems, 0));
+			recursionSteps.Push(new()
+			{
+				ParentItem = default,
+				Items = rootItems,
+				NextItemIndex = 0
+			});
 		}
 
 		while (recursionSteps.Count > 0)
@@ -144,14 +166,13 @@ public class RecursionUtil
 				var item = items[itemIndex];
 
 				////////////////////////////////////////////////
-				var isEnumerateContinue = await toEnumerateItemAsync(parentItem, item);
-				if (!isEnumerateContinue)
+				if (!(await toEnumerateItemAsync(parentItem, item, currentRecursionStep)))
 				{
 					return;
 				}
 				////////////////////////////////////////////////
 
-				var childItems = await toGetChildItemsAsync(item);
+				var childItems = await toGetChildItemsAsync(item, currentRecursionStep);
 				if (childItems == null
 					|| childItems.Count < 1)
 				{
@@ -161,7 +182,16 @@ public class RecursionUtil
 				// !!!
 				currentRecursionStep.NextItemIndex = itemIndex + 1;
 				// !!!
-				recursionSteps.Push(new(item, childItems, 0));
+
+				var nextRecursionStep
+					= (toCreateNextRecursionStepType?.Invoke(currentRecursionStep)
+					?? new());
+				{
+					nextRecursionStep.ParentItem = item;
+					nextRecursionStep.Items = childItems;
+					nextRecursionStep.NextItemIndex = 0;
+				}
+				recursionSteps.Push(nextRecursionStep);
 				break;
 				// !!!
 			}
@@ -172,6 +202,42 @@ public class RecursionUtil
 				// !!!
 			}
 		}
+	}
+
+	public static void Enumerate<ItemType>(
+		ItemType? rootItem,
+		Func<ItemType, IList<ItemType>?> toGetChildItems,
+		Func<ItemType?, ItemType, bool> toEnumerateItem)
+	{
+		EnumerateWithRecursionStepType<ItemType, RecursionStep<ItemType>>(
+			rootItem,
+			(currentItem, _) =>
+			{
+				return toGetChildItems(currentItem);
+			},
+			(parentItem, currentItem, _) =>
+			{
+				return toEnumerateItem(parentItem, currentItem);
+			},
+			null);
+	}
+
+	public static async Task EnumerateAsync<ItemType>(
+		ItemType? rootItem,
+		Func<ItemType, Task<IList<ItemType>?>> toGetChildItemsAsync,
+		Func<ItemType?, ItemType, Task<bool>> toEnumerateItemAsync)
+	{
+		await EnumerateWithRecursionStepTypeAsync<ItemType, RecursionStep<ItemType>>(
+			rootItem,
+			async (currentItem, _) =>
+			{
+				return await toGetChildItemsAsync(currentItem);
+			},
+			async (parentItem, currentItem, _) =>
+			{
+				return await toEnumerateItemAsync(parentItem, currentItem);
+			},
+			null);
 	}
 
 	#endregion

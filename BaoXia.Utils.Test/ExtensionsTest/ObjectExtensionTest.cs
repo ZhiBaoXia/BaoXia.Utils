@@ -1,4 +1,5 @@
 ﻿using BaoXia.Utils.Extensions;
+using BaoXia.Utils.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -980,4 +981,192 @@ public class ObjectExtensionTest
 		}
 	}
 
+
+	public class TestEntity
+	{
+		public int Id { get; set; }
+
+		public int? Number { get; set; }
+
+		public string Name { get; set; } = default!;
+
+		public string? Description { get; set; }
+
+		public IpInfo IpInfoNotNull { get; set; } = default!;
+
+		public IpInfo? IpInfoNullable { get; set; }
+	}
+
+	public class IpInfo
+	{
+		public string IpAddress { get; set; } = default!;
+
+		public string? ProxyInfo { get; set; }
+	}
+
+
+	[TestMethod]
+	public void GetPropertyInfesFromTest()
+	{
+		var nullabilityInfoContext = new NullabilityInfoContext();
+		var testEntityPropertyInfesNotNull
+			= typeof(TestEntity).GetObjectPropertyInfes(
+			(objectPropertyInfo) =>
+			{
+				// 值类型，【不需要】非空约束：
+				if (objectPropertyInfo.IsPropertyTypeValue)
+				{
+					return false;
+				}
+				// 拥有【可为空特性】，
+				// 则该类型可为空，不需要约束： 
+				if (objectPropertyInfo.IsPropertyTypeNullable(nullabilityInfoContext))
+				{
+					return false;
+				}
+
+				////////////////////////////////////////////////
+				// 非值类型，
+				// 且，没有【可为空特性】，
+				// 【需要】非空约束：
+				//////////////////////////////////////////////// 
+				return true;
+			});
+
+		// “Name”，“IpInfoNotNull”
+		Assert.IsTrue(testEntityPropertyInfesNotNull.Count == 2);
+		Assert.IsTrue(testEntityPropertyInfesNotNull[0].Name.Equals(nameof(TestEntity.Name)));
+		Assert.IsTrue(testEntityPropertyInfesNotNull[1].Name.Equals(nameof(TestEntity.IpInfoNotNull)));
+		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes.Length == 1);
+		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes[0].Name.Equals(nameof(IpInfo.IpAddress)));
+	}
+	
+	[TestMethod]
+	public void NullabilityInfoContextTest()
+	{
+		var nullabilityInfoContext = new NullabilityInfoContext();
+		var testEntityPropertyInfesNotNull
+			= typeof(TestEntity).GetObjectPropertyInfes(
+			(objectPropertyInfo) =>
+			{
+				// 值类型，【不需要】非空约束：
+				if (objectPropertyInfo.IsPropertyTypeValue)
+				{
+					return false;
+				}
+				// 拥有【可为空特性】，
+				// 则该类型可为空，不需要约束： 
+				if (objectPropertyInfo.IsPropertyTypeNullable(nullabilityInfoContext))
+				{
+					return false;
+				}
+
+				////////////////////////////////////////////////
+				// 非值类型，
+				// 且，没有【可为空特性】，
+				// 【需要】非空约束：
+				//////////////////////////////////////////////// 
+				return true;
+			});
+		ObjectPropertyInfo[] testEntityPropertyInfoArrayNotNull = [.. testEntityPropertyInfesNotNull];
+
+
+		////////////////////////////////////////////////
+
+
+		var entityValid = new TestEntity()
+		{
+			Name = "TestEntity",
+			IpInfoNotNull = new IpInfo()
+			{
+				IpAddress = "TestIpAddress"
+			}
+		};
+		var checkError = entityValid.CheckPropertyValuesWithObjectPropertyInfes<string>(
+			testEntityPropertyInfoArrayNotNull,
+			(propertyOwner, propertyInfo, propertyValue) =>
+			{
+				if (propertyValue == null)
+				{
+					return $"数据无效，属性“{propertyInfo.Name}”为“null”。";
+				}
+				return null;
+			});
+		Assert.IsTrue(string.IsNullOrEmpty(checkError));
+
+
+		////////////////////////////////////////////////
+
+
+		var entityInvalid = new TestEntity()
+		{
+#pragma warning disable CS8625 // 无法将 null 字面量转换为非 null 的引用类型。
+			Name = null,
+#pragma warning restore CS8625 // 无法将 null 字面量转换为非 null 的引用类型。
+			IpInfoNotNull = new IpInfo()
+			{
+				IpAddress = "TestIpAddress"
+			}
+		};
+		checkError = entityInvalid.CheckPropertyValuesWithObjectPropertyInfes<string>(
+			testEntityPropertyInfoArrayNotNull,
+			(propertyOwner, propertyInfo, propertyValue) =>
+			{
+				if (propertyValue == null)
+				{
+					return $"数据无效，属性“{propertyInfo.Name}”为“null”。";
+				}
+				return null;
+			});
+		Assert.IsTrue(checkError?.Equals($"数据无效，属性“{nameof(TestEntity.Name)}”为“null”。"));
+
+
+		////////////////////////////////////////////////
+
+
+		entityInvalid = new TestEntity()
+		{
+			Name = "TestEntity",
+#pragma warning disable CS8625 // 无法将 null 字面量转换为非 null 的引用类型。
+			IpInfoNotNull = null
+#pragma warning restore CS8625 // 无法将 null 字面量转换为非 null 的引用类型。
+		};
+		checkError = entityInvalid.CheckPropertyValuesWithObjectPropertyInfes<string>(
+			testEntityPropertyInfoArrayNotNull,
+			(propertyOwner, propertyInfo, propertyValue) =>
+			{
+				if (propertyValue == null)
+				{
+					return $"数据无效，属性“{propertyInfo.Name}”为“null”。";
+				}
+				return null;
+			});
+		Assert.IsTrue(checkError?.Equals($"数据无效，属性“{nameof(TestEntity.IpInfoNotNull)}”为“null”。"));
+
+
+		////////////////////////////////////////////////
+
+
+		entityInvalid = new TestEntity()
+		{
+			Name = "TestEntity",
+			IpInfoNotNull = new IpInfo()
+			{
+#pragma warning disable CS8625 // 无法将 null 字面量转换为非 null 的引用类型。
+				IpAddress = null
+#pragma warning restore CS8625 // 无法将 null 字面量转换为非 null 的引用类型。
+			}
+		};
+		checkError = entityInvalid.CheckPropertyValuesWithObjectPropertyInfes<string>(
+			testEntityPropertyInfoArrayNotNull,
+			(propertyOwner, propertyInfo, propertyValue) =>
+			{
+				if (propertyValue == null)
+				{
+					return $"数据无效，属性“{propertyInfo.PropertyLinkName}”为“null”。";
+				}
+				return null;
+			});
+		Assert.IsTrue(checkError?.Equals($"数据无效，属性“{nameof(TestEntity.IpInfoNotNull)}.{nameof(IpInfo.IpAddress)}”为“null”。"));
+	}
 }

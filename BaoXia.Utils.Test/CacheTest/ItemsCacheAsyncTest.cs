@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace BaoXia.Utils.Test.CacheTest;
 
 [TestClass]
-public class ItemsCacheTest
+public class ItemsCacheAsyncTest
 {
 	////////////////////////////////////////////////
 	// @测试方法
@@ -21,7 +21,7 @@ public class ItemsCacheTest
 	public void AddUpdateAndQueryTest_IntKey()
 	{
 		var itemId = 0;
-		var tester = new ItemsCacheTester<int>(
+		var tester = new ItemsCacheAsyncTester<int>(
 			"整数Key",
 			() =>
 			{
@@ -36,7 +36,7 @@ public class ItemsCacheTest
 	public void GetSameKeyAtSameTimeTest_IntKey()
 	{
 		var itemId = 0;
-		var tester = new ItemsCacheTester<int>(
+		var tester = new ItemsCacheAsyncTester<int>(
 			"整数Key",
 			() =>
 			{
@@ -48,17 +48,17 @@ public class ItemsCacheTest
 	}
 
 	[TestMethod]
-	public void TryGetTest_IntKey()
+	public async Task TryGetTest_IntKey()
 	{
 		var itemId = 0;
-		var tester = new ItemsCacheTester<int>(
+		var tester = new ItemsCacheAsyncTester<int>(
 			"整数Key",
 			() =>
 			{
 				return Interlocked.Increment(ref itemId);
 			});
 		// !!!
-		tester.TryGetTest();
+		await tester.TryGetTest();
 		// !!!
 	}
 
@@ -66,7 +66,7 @@ public class ItemsCacheTest
 	public void AddUpdateAndQueryTest_StringKey()
 	{
 		var itemId = 0;
-		var tester = new ItemsCacheTester<string>(
+		var tester = new ItemsCacheAsyncTester<string>(
 			"字符串Key",
 			() =>
 			{
@@ -81,7 +81,7 @@ public class ItemsCacheTest
 	public void GetSameKeyAtSameTimeTest_StringKey()
 	{
 		var itemId = 0;
-		var tester = new ItemsCacheTester<string>(
+		var tester = new ItemsCacheAsyncTester<string>(
 			"字符串Key",
 			() =>
 			{
@@ -93,28 +93,29 @@ public class ItemsCacheTest
 	}
 
 	[TestMethod]
-	public void TryGetTest_StringKey()
+	public async Task TryGetTest_StringKey()
 	{
 		var itemId = 0;
-		var tester = new ItemsCacheTester<string>(
+		var tester = new ItemsCacheAsyncTester<string>(
 			"字符串Key",
 			() =>
 			{
 				return Interlocked.Increment(ref itemId).ToString();
 			});
 		// !!!
-		tester.TryGetTest();
+		await tester.TryGetTest();
 		// !!!
 	}
-
 
 	[TestMethod]
 	public void InitializeWithNullTest()
 	{
-		var itemCache = new ItemsCache<string, object, object>(
-			(key, _) =>
+		var itemCache = new ItemsCacheAsync<string, object, object>(
+			async (key, _) =>
 			{
-				return true;
+				await Task.Delay(1);
+
+				return null;
 			},
 			null,
 			null,
@@ -122,13 +123,24 @@ public class ItemsCacheTest
 		Assert.IsTrue(true);
 	}
 
+	class TestItem
+	{
+		public int Id { get; set; }
+		public DateTime CreateTime { get; set; }
+	}
+
 	[TestMethod]
 	public async Task AutoRemoveNoneReadCacheItems_AutoRemove()
 	{
-		var itemsCache = new ItemsCache<int, DateTime, object>(
-			(id, _) =>
+		var itemsCache = new ItemsCacheAsync<int, TestItem, object>(
+			async (id, _) =>
 			{
-				return DateTime.Now;
+				await Task.Delay(0);
+				return new TestItem
+				{
+					Id = id,
+					CreateTime = DateTime.Now
+				};
 			},
 			null,
 			() => 1.0);
@@ -136,7 +148,7 @@ public class ItemsCacheTest
 			itemId <= 100;
 			itemId++)
 		{
-			itemsCache.Add(itemId, DateTime.Now);
+			await itemsCache.GetAsync(itemId, null);
 		}
 
 		await Task.Delay(3000);
@@ -147,10 +159,15 @@ public class ItemsCacheTest
 	[TestMethod]
 	public async Task AutoRemoveNoneReadCacheItems_AutoUpdateReadTime()
 	{
-		var itemsCache = new ItemsCache<int, DateTime, object>(
-			(id, _) =>
+		var itemsCache = new ItemsCacheAsync<int, TestItem, object>(
+			async (id, _) =>
 			{
-				return DateTime.Now;
+				await Task.Delay(0);
+				return new TestItem
+				{
+					Id = id,
+					CreateTime = DateTime.Now
+				};
 			},
 			null,
 			() => 2.0);
@@ -160,7 +177,7 @@ public class ItemsCacheTest
 			itemId <= itemsCount;
 			itemId++)
 		{
-			itemsCache.Add(itemId, DateTime.Now);
+			await itemsCache.GetAsync(itemId, null);
 		}
 
 		var retainTaskCancelSource = new CancellationTokenSource();
@@ -173,7 +190,7 @@ public class ItemsCacheTest
 					itemId <= itemsCount;
 					itemId++)
 				{
-					_ = itemsCache.Get(itemId, null);
+					_ = await itemsCache.GetAsync(itemId, null);
 				}
 			}
 		});
@@ -277,10 +294,10 @@ public class ItemsCacheTest
 
 		////////////////////////////////////////////////
 
-		var itemsCache = new ItemsCache<int, TestItemForIndexTest, TestItemForIndexTest>(
-			(itemId, itemSpecified) =>
+		var itemsCache = new ItemsCacheAsync<int, TestItemForIndexTest, TestItemForIndexTest>(
+			async (itemId, itemSpecified) =>
 			{
-				return itemSpecified;
+				return await Task.FromResult(itemSpecified);
 			},
 			null,
 			null,
@@ -321,7 +338,8 @@ public class ItemsCacheTest
 			testItems[testItemIndex] = testItem;
 			////////////////////////////////////////////////
 			// !!!
-			itemsCache.Get(testItem.Id, testItem);
+			var getResult = itemsCache.GetAsync(testItem.Id, testItem);
+			getResult.Wait();
 			// !!!
 			////////////////////////////////////////////////
 
@@ -701,28 +719,29 @@ public class ItemsCacheTest
 
 		////////////////////////////////////////////////
 
-		var itemsCache = new ItemsCache<int, TestItemForIndexTest, TestItemForIndexTest>(
+		var itemsCache = new ItemsCacheAsync<int, TestItemForIndexTest, TestItemForIndexTest>(
+			async
 			(itemId, itemSpecified) =>
 			{
-				return itemSpecified;
+				return await Task.FromResult(itemSpecified);
 			},
 			null,
 			null,
 			[
 				itemIndexWith1Key,
-			itemIndexWith2Keys,
-			itemIndexWith3Keys,
-			itemIndexWith4Keys,
-			itemIndexWith5Keys,
-			itemIndexWith6Keys,
-			//
-			itemsIndexWith1Key,
-			itemsIndexWith2Keys,
-			itemsIndexWith3Keys,
-			itemsIndexWith4Keys,
-			itemsIndexWith5Keys,
-			itemsIndexWith6Keys
-				]);
+				itemIndexWith2Keys,
+				itemIndexWith3Keys,
+				itemIndexWith4Keys,
+				itemIndexWith5Keys,
+				itemIndexWith6Keys,
+				//
+				itemsIndexWith1Key,
+				itemsIndexWith2Keys,
+				itemsIndexWith3Keys,
+				itemsIndexWith4Keys,
+				itemsIndexWith5Keys,
+				itemsIndexWith6Keys
+			]);
 		var testItems = new TestItemForIndexTest[100];
 		var itemsGroupByProperty_1 = new Dictionary<string, List<TestItemForIndexTest>>();
 		var itemsGroupByProperty_1_2 = new Dictionary<string, List<TestItemForIndexTest>>();
@@ -745,7 +764,7 @@ public class ItemsCacheTest
 			testItems[testItemIndex] = testItem;
 			////////////////////////////////////////////////
 			// !!!
-			itemsCache.TryGet(testItem.Id, out _, true, testItem);
+			itemsCache.TryGetAsync(testItem.Id, true, testItem).Wait();
 			// !!!
 			////////////////////////////////////////////////
 
@@ -1145,10 +1164,10 @@ public class ItemsCacheTest
 
 		////////////////////////////////////////////////
 
-		var itemsCache = new ItemsCache<int, TestItemForIndexTest, TestItemForIndexTest>(
-			(itemId, itemSpecified) =>
+		var itemsCache = new ItemsCacheAsync<int, TestItemForIndexTest, TestItemForIndexTest>(
+			async (itemId, itemSpecified) =>
 			{
-				return itemSpecified;
+				return await Task.FromResult(itemSpecified);
 			},
 			null,
 			null,
@@ -1189,7 +1208,7 @@ public class ItemsCacheTest
 			testItems[testItemIndex] = testItem;
 			////////////////////////////////////////////////
 			// !!!
-			itemsCache.Add(testItem.Id, testItem);
+			itemsCache.AddAsync(testItem.Id, testItem).Wait();
 			// !!!
 			////////////////////////////////////////////////
 
@@ -1569,10 +1588,10 @@ public class ItemsCacheTest
 
 		////////////////////////////////////////////////
 
-		var itemsCache = new ItemsCache<int, TestItemForIndexTest, TestItemForIndexTest>(
-			(itemId, itemSpecified) =>
+		var itemsCache = new ItemsCacheAsync<int, TestItemForIndexTest, TestItemForIndexTest>(
+			async (itemId, itemSpecified) =>
 			{
-				return itemSpecified;
+				return await Task.FromResult(itemSpecified);
 			},
 			null,
 			null,
@@ -1596,9 +1615,10 @@ public class ItemsCacheTest
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
 
-		itemsCache.Add(
+		itemsCache.AddAsync(
 			1,
-			new(1, 1, 2, 3, 4, 5, 6));
+			new(1, 1, 2, 3, 4, 5, 6))
+			.Wait();
 		{
 			Assert.IsTrue(itemIndexWith1Key.GetItem(1)!.Id == 1);
 			Assert.IsTrue(itemIndexWith2Keys.GetItem(1, 2)!.Id == 1);
@@ -1607,9 +1627,10 @@ public class ItemsCacheTest
 			Assert.IsTrue(itemIndexWith5Keys.GetItem(1, 2, 3, 4, 5)!.Id == 1);
 			Assert.IsTrue(itemIndexWith6Keys.GetItem(1, 2, 3, 4, 5, 6)!.Id == 1);
 		}
-		itemsCache.Update(
+		itemsCache.UpdateAsync(
 			1,
-			new(1, 11, 12, 13, 14, 15, 16));
+			new(1, 11, 12, 13, 14, 15, 16))
+			.Wait();
 		{
 			Assert.IsTrue(itemIndexWith1Key.GetItem(1) == null);
 			Assert.IsTrue(itemIndexWith2Keys.GetItem(1, 2) == null);
@@ -1625,7 +1646,7 @@ public class ItemsCacheTest
 			Assert.IsTrue(itemIndexWith5Keys.GetItem(11, 12, 13, 14, 15)!.Id == 1);
 			Assert.IsTrue(itemIndexWith6Keys.GetItem(11, 12, 13, 14, 15, 16)!.Id == 1);
 		}
-		itemsCache.Remove(1);
+		itemsCache.RemoveAsync(1).Wait();
 		{
 			Assert.IsTrue(itemIndexWith1Key.GetItem(11) == null);
 			Assert.IsTrue(itemIndexWith2Keys.GetItem(11, 12) == null);
@@ -1639,12 +1660,14 @@ public class ItemsCacheTest
 		itemsCache.Clear();
 		////////////////////////////////////////////////
 
-		itemsCache.Add(
+		itemsCache.AddAsync(
 			1,
-			new(1, 1, 2, 3, 4, 5, 6));
-		itemsCache.Add(
+			new(1, 1, 2, 3, 4, 5, 6))
+			.Wait();
+		itemsCache.AddAsync(
 			2,
-			new(2, 1, 2, 3, 4, 5, 6));
+			new(2, 1, 2, 3, 4, 5, 6))
+			.Wait();
 		{
 			Assert.IsTrue(itemIndexWith1Key.GetItem(1)!.Id == 2);
 			Assert.IsTrue(itemIndexWith2Keys.GetItem(1, 2)!.Id == 2);
@@ -1661,9 +1684,10 @@ public class ItemsCacheTest
 			Assert.IsTrue(itemsIndexWith6Keys.GetItems(1, 2, 3, 4, 5, 6)!.Length == 2);
 
 		}
-		itemsCache.Update(
+		itemsCache.UpdateAsync(
 			1,
-			new(1, 11, 12, 13, 14, 15, 16));
+			new(1, 11, 12, 13, 14, 15, 16))
+			.Wait();
 		{
 			Assert.IsTrue(itemIndexWith1Key.GetItem(1) == null);
 			Assert.IsTrue(itemIndexWith2Keys.GetItem(1, 2) == null);
@@ -1686,7 +1710,8 @@ public class ItemsCacheTest
 			Assert.IsTrue(itemsIndexWith5Keys.GetItems(1, 2, 3, 4, 5)!.Length == 1);
 			Assert.IsTrue(itemsIndexWith6Keys.GetItems(1, 2, 3, 4, 5, 6)!.Length == 1);
 		}
-		itemsCache.Remove(1);
+		itemsCache.RemoveAsync(1)
+			.Wait();
 		{
 			Assert.IsTrue(itemIndexWith1Key.GetItem(11) == null);
 			Assert.IsTrue(itemIndexWith2Keys.GetItem(11, 12) == null);

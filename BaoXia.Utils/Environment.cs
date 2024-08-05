@@ -11,13 +11,13 @@ namespace BaoXia.Utils;
 
 public class Environment
 {
-
 	////////////////////////////////////////////////
 	// @静态常量
 	////////////////////////////////////////////////
 
 	#region 静态常量
 
+#if DEBUG
 	public static readonly JsonSerializerOptions JsonSerializerOptionsDefault = new()
 	{
 		AllowTrailingCommas = true,
@@ -27,9 +27,21 @@ public class Environment
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 		PropertyNameCaseInsensitive = true
 	};
+#else
+	public static readonly JsonSerializerOptions JsonSerializerOptionsDefault = new()
+	{
+		AllowTrailingCommas = true,
+		WriteIndented = false,
+
+		ReadCommentHandling = JsonCommentHandling.Skip,
+		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+		PropertyNameCaseInsensitive = true,
+
+		DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+	};
+#endif
 
 	#endregion
-
 
 
 	////////////////////////////////////////////////
@@ -153,11 +165,22 @@ public class Environment
 		+ "f5bd0e80c5064ee49575c4e37531ee80"
 		+ "058bf2804b774a2c8d6bbedf9fffee68";
 
+	private static System.Text.Json.JsonSerializerOptions? _jsonSerializerOptions = null;
 
 	/// <summary>
 	/// 全局的Json序列化选项。
 	/// </summary>
-	public static System.Text.Json.JsonSerializerOptions? JsonSerializerOptions { get; set; }
+	public static System.Text.Json.JsonSerializerOptions? JsonSerializerOptions
+	{
+		get
+		{
+			return _jsonSerializerOptions ?? JsonSerializerOptionsDefault;
+		}
+		set
+		{
+			_jsonSerializerOptions = value;
+		}
+	}
 
 	#endregion
 

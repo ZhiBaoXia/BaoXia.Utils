@@ -77,7 +77,6 @@ public class StringUtil
 	#endregion
 
 
-
 	////////////////////////////////////////////////
 	// @类方法，字符串比较。
 	////////////////////////////////////////////////
@@ -543,6 +542,27 @@ public class StringUtil
 			    jsonSerializerOptions ?? Environment.JsonSerializerOptions);
 		{ }
 		return str;
+	}
+
+	#endregion
+
+
+	////////////////////////////////////////////////
+	// @类方法，其他方法。
+	////////////////////////////////////////////////
+
+	#region 类方法
+
+	public static string? FirstNotEmpty(params string?[] strings)
+	{
+		foreach (var stringValue in strings)
+		{
+			if (!string.IsNullOrEmpty(stringValue))
+			{
+				return stringValue;
+			}
+		}
+		return null;
 	}
 
 	#endregion

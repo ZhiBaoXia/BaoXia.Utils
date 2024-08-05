@@ -117,7 +117,7 @@ public class ArrayExtensionTest
 			}
 		}
 
-		var arrayWithOrder = new int[0];
+		var arrayWithOrder = Array.Empty<int>();
 		foreach (var item in itemInRandomOrder)
 		{
 			arrayWithOrder
@@ -135,7 +135,7 @@ public class ArrayExtensionTest
 		////////////////////////////////////////////////
 		///
 
-		var arrayWithOrderDescending = new int[0];
+		var arrayWithOrderDescending = Array.Empty<int>();
 		foreach (var item in itemInRandomOrder)
 		{
 			arrayWithOrderDescending
@@ -175,14 +175,9 @@ public class ArrayExtensionTest
 
 	}
 
-	class TestItem
+	class TestItem(int index)
 	{
-		public int Index { get; set; }
-
-		public TestItem(int index)
-		{
-			this.Index = index;
-		}
+		public int Index { get; set; } = index;
 	}
 
 	[TestMethod]

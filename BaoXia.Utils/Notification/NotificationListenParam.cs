@@ -1,6 +1,6 @@
 ﻿namespace BaoXia.Utils.Notification;
 
-public class NotificationListenParams
+public class NotificationListenParam
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -25,7 +25,7 @@ public class NotificationListenParams
 
 	#region 自身属性
 
-	public NotificationListenParams(
+	public NotificationListenParam(
 		string? queueName,
 		string notificationName,
 		string[]? tagNamesWithIntersection,
@@ -37,7 +37,7 @@ public class NotificationListenParams
 		TagNamesWithUnion = tagNamesWithUnion;
 	}
 
-	public NotificationListenParams(
+	public NotificationListenParam(
 		string? queueName,
 		string notificationName)
 		: this(queueName,

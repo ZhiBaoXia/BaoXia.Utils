@@ -275,7 +275,7 @@ public static class IEnumerableExtension
 					objectItemsCount++;
 					// !!!
 					{
-						itemIndexesMatched ??= new List<int>();
+						itemIndexesMatched ??= [];
 					}
 					itemIndexesMatched.Add(itemIndexMatched);
 				}
@@ -397,12 +397,12 @@ public static class IEnumerableExtension
 				itemGroupKey,
 				out var itemGroup))
 			{
-				itemGroup = new List<ItemType>();
+				itemGroup = [];
 				itemGroups.AddOrSet(itemGroupKey, itemGroup);
 			}
 			itemGroup.Add(item);
 		}
-		return itemGroups.Values.ToArray();
+		return [.. itemGroups.Values];
 	}
 
 	public static Dictionary<KeyType, bool>? ToDictionaryWithValueTrue<KeyType>(
@@ -655,7 +655,7 @@ public static class IEnumerableExtension
 		itemsSearchedInPage = [];
 		if (isGetItemSearchMatchInfesInPage)
 		{
-			itemSearchMatchInfesInPage = new List<ItemSearchMatchInfo<ItemType>>();
+			itemSearchMatchInfesInPage = [];
 			for (var itemIndex = itemPageBeginItemIndex;
 			    itemIndex < itemPageEndItemIndex;
 			    itemIndex++)
@@ -850,7 +850,7 @@ public static class IEnumerableExtension
 		itemsSearchedInPage = [];
 		if (isGetItemSearchMatchInfesInPage)
 		{
-			itemSearchMatchInfesInPage = new List<ItemSearchMatchInfo<ItemType>>();
+			itemSearchMatchInfesInPage = [];
 			for (var itemIndex = itemPageBeginItemIndex;
 			    itemIndex < itemPageEndItemIndex;
 			    itemIndex++)

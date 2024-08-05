@@ -32,7 +32,7 @@ namespace BaoXia.Utils
 				}
 				else
 				{
-					bytes = value.ToArray();
+					bytes = [.. value];
 				}
 				// !!!
 				BytesBuffer.SetBuffer(bytes, bytes.Length);
@@ -358,8 +358,16 @@ namespace BaoXia.Utils
 
 		public DateTime ReadDateTime()
 		{
-			var dateTimeStamp = ReadLong();
-			var dateTime = DateTimeUtil.DateTimeWithMillisecondsFrom1970(dateTimeStamp);
+			var dateTimestamp = ReadLong();
+			var dateTime = DateTimeUtil.DateTimeWithMillisecondsAfter1970(dateTimestamp);
+			{ }
+			return dateTime;
+		}
+
+		public DateTimeOffset ReadDateTimeOffset()
+		{
+			var dateTimestamp = ReadLong();
+			var dateTime = DateTimeUtil.DateTimeWithMillisecondsAfter1970(dateTimestamp);
 			{ }
 			return dateTime;
 		}
@@ -549,11 +557,11 @@ namespace BaoXia.Utils
 			dateTimeValue = default;
 
 			var lastCursorPosition = CursorPosition;
-			if (!TryToReadLong(out var dateTimeStamp))
+			if (!TryToReadLong(out var dateTimestamp))
 			{
 				return false;
 			}
-			if (dateTimeStamp < 0)
+			if (dateTimestamp < 0)
 			{
 				// !!!
 				CursorPosition = lastCursorPosition;
@@ -561,7 +569,7 @@ namespace BaoXia.Utils
 				return false;
 			}
 			// !!!
-			dateTimeValue = DateTimeUtil.DateTimeWithMillisecondsFrom1970(dateTimeStamp);
+			dateTimeValue = DateTimeUtil.DateTimeWithMillisecondsAfter1970(dateTimestamp);
 			// !!!
 			return true;
 		}

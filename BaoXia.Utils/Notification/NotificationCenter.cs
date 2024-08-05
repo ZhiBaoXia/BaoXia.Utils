@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BaoXia.Utils.Interfaces;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
@@ -9,7 +10,7 @@ namespace BaoXia.Utils.Notification;
 /// <summary>
 /// 通知中心。
 /// </summary>
-public class NotificationCenter
+public class NotificationCenter : INotificationCenter
 {
 	////////////////////////////////////////////////
 	// @静态常量
@@ -24,6 +25,7 @@ public class NotificationCenter
 	public const double NotificationQueue_SendNotificationTimeoutSecondsMaxDefault = 1.0;
 
 	#endregion
+
 
 	////////////////////////////////////////////////
 	// @静态变量
@@ -47,6 +49,7 @@ public class NotificationCenter
 	protected NotificationQueue? _notificationQueueUndefined;
 
 	#endregion
+
 
 	////////////////////////////////////////////////
 	// @自身实现
@@ -110,6 +113,15 @@ public class NotificationCenter
 		}
 		return notificationQueue;
 	}
+
+	#endregion
+
+
+	////////////////////////////////////////////////
+	// @实现“INotificationCenter”
+	////////////////////////////////////////////////
+
+	#region 自身实现
 
 	public void PostNotification(
 		string? queueName,
@@ -180,7 +192,7 @@ public class NotificationCenter
 	}
 
 	public void Post(
-		NotificationListenParams listenParams,
+		NotificationListenParam listenParam,
 		object? paramObject,
 		object sender)
 	{
@@ -189,8 +201,8 @@ public class NotificationCenter
 			senderName = sender?.GetType().FullName ?? string.Empty;
 		}
 		PostNotification(
-			listenParams.QueueName,
-			listenParams.NotificationName,
+			listenParam.QueueName,
+			listenParam.NotificationName,
 			null,
 			null,
 			null,
@@ -318,20 +330,20 @@ public class NotificationCenter
 
 
 	public NotificationListener Listen(
-		NotificationListenParams listenParams,
+		NotificationListenParam listenParam,
 		Func<Notification, CancellationToken, object?>? toDidReceivedNotification)
 	{
 		return ListenNotification(
-			listenParams.QueueName,
-			listenParams.NotificationName,
-			listenParams.TagNamesWithIntersection,
-			listenParams.TagNamesWithUnion,
+			listenParam.QueueName,
+			listenParam.NotificationName,
+			listenParam.TagNamesWithIntersection,
+			listenParam.TagNamesWithUnion,
 			toDidReceivedNotification,
 			null);
 	}
 
 	public List<NotificationListener> Listen(
-		IEnumerable<NotificationListenParams> listenParams,
+		IEnumerable<NotificationListenParam> listenParams,
 		Func<Notification, CancellationToken, object?>? toDidReceivedNotification)
 	{
 		var notificationListeners = new List<NotificationListener>();
@@ -350,7 +362,7 @@ public class NotificationCenter
 
 	public List<NotificationListener> ListenTo(
 		Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
-		params NotificationListenParams[] listenParams)
+		params NotificationListenParam[] listenParams)
 	{
 		var notificationListeners = new List<NotificationListener>();
 		foreach (var listenParam in listenParams)
@@ -367,20 +379,20 @@ public class NotificationCenter
 	}
 
 	public NotificationListener ListenAsync(
-		NotificationListenParams listenParams,
+		NotificationListenParam listenParam,
 		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
 	{
 		return ListenNotification(
-			listenParams.QueueName,
-			listenParams.NotificationName,
-			listenParams.TagNamesWithIntersection,
-			listenParams.TagNamesWithUnion,
+			listenParam.QueueName,
+			listenParam.NotificationName,
+			listenParam.TagNamesWithIntersection,
+			listenParam.TagNamesWithUnion,
 			null,
 			toDidReceivedNotificationAsync);
 	}
 
 	public List<NotificationListener> ListenAsync(
-		IEnumerable<NotificationListenParams> listenParams,
+		IEnumerable<NotificationListenParam> listenParams,
 		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
 	{
 		var notificationListeners = new List<NotificationListener>();
@@ -399,7 +411,7 @@ public class NotificationCenter
 
 	public List<NotificationListener> ListenToAsync(
 		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync,
-		params NotificationListenParams[] listenParams)
+		params NotificationListenParam[] listenParams)
 	{
 		var notificationListeners = new List<NotificationListener>();
 		foreach (var listenParam in listenParams)

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Extensions;
 
@@ -297,6 +298,13 @@ public static class HttpRequestExtension
 
 		};
 		return endPointInfo;
+	}
+
+	public static async Task<string?> ReadStringAsync(
+		this Microsoft.AspNetCore.Http.HttpRequest httpRequest,
+		System.Text.Encoding? textEncoding = null)
+	{
+		return await httpRequest.BodyReader.ReadStringAsync(textEncoding);
 	}
 
 	#endregion

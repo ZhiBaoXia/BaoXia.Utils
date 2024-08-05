@@ -4,7 +4,7 @@ using System.Threading;
 namespace BaoXia.Utils.Test.CacheTest
 {
 	[TestClass]
-	public class AsyncListsCacheTest
+	public class ListsCacheAsyncTest
 	{
 		////////////////////////////////////////////////
 		// @测试方法
@@ -14,7 +14,7 @@ namespace BaoXia.Utils.Test.CacheTest
 		public void AddUpdateAndQueryTest_IntKey()
 		{
 			var listId = 0;
-			var cacheListTestAsync = new AsyncListsCacheTester<int>(
+			var cacheListTestAsync = new ListsCacheAsyncTester<int>(
 				"整数Key",
 				() =>
 				{
@@ -29,7 +29,7 @@ namespace BaoXia.Utils.Test.CacheTest
 		public void AddUpdateAndQueryTest_StringKey()
 		{
 			var listId = 0;
-			var cacheListTestAsync = new AsyncListsCacheTester<string>(
+			var cacheListTestAsync = new ListsCacheAsyncTester<string>(
 				"字符串Key",
 				() =>
 				{

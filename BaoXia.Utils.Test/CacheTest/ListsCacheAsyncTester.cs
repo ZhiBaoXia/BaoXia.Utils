@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test.CacheTest
 {
-	public class AsyncListsCacheTester<ListIdType> where ListIdType : IComparable
+	public class ListsCacheAsyncTester<ListIdType> where ListIdType : IComparable
 	{
 		////////////////////////////////////////////////
 		// @自身属性
@@ -41,7 +41,7 @@ namespace BaoXia.Utils.Test.CacheTest
 
 		#region 自身实现
 
-		public AsyncListsCacheTester(
+		public ListsCacheAsyncTester(
 			string testName,
 			Func<ListIdType> toDidCreateListId)
 		{

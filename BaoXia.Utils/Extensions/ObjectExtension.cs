@@ -1149,14 +1149,9 @@ public static class ObjectExtension
 			propertyLayerNumberMax);
 	}
 
-	public static ObjectType[]? CloneItemsToArray<ObjectType>(this IEnumerable<ObjectType>? objects)
+	public static ObjectType[] CloneItemsToArray<ObjectType>(this IEnumerable<ObjectType> objects)
 		where ObjectType : class, new()
 	{
-		if (objects == null)
-		{
-			return null;
-		}
-
 		var objectArray = new ObjectType[objects.GetCount()];
 		var objectIndex = 0;
 		foreach (var obj in objects)
@@ -1170,14 +1165,9 @@ public static class ObjectExtension
 		return objectArray;
 	}
 
-	public static List<ObjectType>? CloneItemsToList<ObjectType>(this IEnumerable<ObjectType>? objects)
+	public static List<ObjectType> CloneItemsToList<ObjectType>(this IEnumerable<ObjectType> objects)
 		where ObjectType : class, new()
 	{
-		if (objects == null)
-		{
-			return null;
-		}
-
 		var objectList = new List<ObjectType>();
 		foreach (var obj in objects)
 		{
@@ -1185,7 +1175,6 @@ public static class ObjectExtension
 		}
 		return objectList;
 	}
-
 
 	/// <summary>
 	/// 基本类型数据转为字节数组。

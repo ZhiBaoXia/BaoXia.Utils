@@ -8,19 +8,31 @@ namespace BaoXia.Utils.Extensions;
 /// </summary>
 public static class DateTimeExtension
 {
-	/// <summary>
-	/// 获取当前时间的UTC时间戳，当前时间的UTC时间距离1970年1月1日零时的毫秒数。
-	/// </summary>
-	/// <param name="dateTime">当前时间对象。</param>
-	/// <returns>返回当前时间的UTC时间距离1970年1月1日零时的毫秒数。</returns>
-	public static long MillisecondsFrom1970(this DateTime dateTime)
+	public static DateTime ToDateTimeInTimeZone(
+		this DateTime dateTime,
+		TimeZoneNumber timeZoneNumber)
 	{
-		var dateTimeUtc = TimeZoneInfo.ConvertTimeToUtc(dateTime);
-		var zeroTime = new DateTime(1970, 1, 1);
+		return DateTimeUtil.DateTimeByOffsetToTimeZone(
+			dateTime,
+			timeZoneNumber);
+	}
 
-		var millisecondsFrom1970 = (long)(dateTimeUtc - zeroTime).TotalMilliseconds;
-		{ }
-		return millisecondsFrom1970;
+	public static long MillisecondsFrom1970(
+		this DateTime dateTime,
+		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0)
+	{
+		return DateTimeUtil.GetMillisecondsFrom1970OfDateTime(
+			dateTime,
+			millisecondsZoneNumber);
+	}
+
+	public static long SecondsFrom1970(
+		this DateTime dateTime,
+		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0)
+	{
+		return DateTimeUtil.GetSecondsFrom1970OfDateTime(
+			dateTime,
+			secondsZoneNumber);
 	}
 
 	/// <summary>

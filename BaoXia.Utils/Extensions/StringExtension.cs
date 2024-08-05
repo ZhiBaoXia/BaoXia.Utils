@@ -704,6 +704,99 @@ public static class StringExtension
 		return originalString;
 	}
 
+	public static List<string> SplitWithOptionalSeparators(
+	    this string stringValue,
+	    bool isIgnoreCase,
+	    params char[] optionalSeparatorChars)
+	{
+		if (optionalSeparatorChars.Length < 1)
+		{
+			return [stringValue];
+		}
+
+		var substrings = new List<string>();
+		char finalSeperatorChar = '\0';
+		var isFinalSeperatorCharValid = false;
+		var stringValueCharsCount = stringValue.Length;
+		var currentSubstringBeginIndex = 0;
+		var stringValueLastCharIndex = stringValueCharsCount - 1;
+		for (var stringValueCharIndex = 0;
+		    stringValueCharIndex < stringValueCharsCount;
+		    stringValueCharIndex++)
+		{
+			var stringValueChar = stringValue[stringValueCharIndex];
+			var isStringValueCharSeperator = false;
+			if (isFinalSeperatorCharValid)
+			{
+				if (CharUtil.IsEquals(stringValueChar, finalSeperatorChar, isIgnoreCase))
+				{
+					// !!!
+					isStringValueCharSeperator = true;
+					// !!!
+				}
+			}
+			else
+			{
+				for (var optionalSeparatorCharIndex = 0;
+					optionalSeparatorCharIndex < optionalSeparatorChars.Length;
+					optionalSeparatorCharIndex++)
+				{
+					var optionalSeparatorChar = optionalSeparatorChars[optionalSeparatorCharIndex];
+					if (CharUtil.IsEquals(stringValueChar, optionalSeparatorChar, isIgnoreCase))
+					{
+						// !!!
+						finalSeperatorChar = optionalSeparatorChar;
+						isFinalSeperatorCharValid = true;
+						isStringValueCharSeperator = true;
+						break;
+						// !!!
+					}
+				}
+			}
+			if (!isStringValueCharSeperator)
+			{
+				if (stringValueCharIndex == stringValueLastCharIndex)
+				{
+					// !!!
+					stringValueCharIndex += 1;
+					// isStringValueCharSeperator = true;
+					// !!!
+				}
+				else
+				{
+					continue;
+				}
+			}
+
+			var substring = stringValue[currentSubstringBeginIndex..stringValueCharIndex];
+			{
+				// !!!
+				substrings.Add(substring);
+				// !!!
+			}
+			if (stringValueCharIndex == stringValueLastCharIndex
+				&& isStringValueCharSeperator)
+			{
+				// !!!
+				substrings.Add(string.Empty);
+				// !!!
+			}
+
+			currentSubstringBeginIndex = stringValueCharIndex + 1;
+		}
+		return substrings;
+	}
+
+	public static List<string> SplitWithOptionalSeparatorsIgnoreCase(
+	    this string stringValue,
+	    params char[] optionalSeparatorChars)
+	{
+		return SplitWithOptionalSeparators(
+			stringValue,
+			true,
+			optionalSeparatorChars);
+	}
+
 	/// <summary>
 	/// 由当前字符串，拆解成字符串数组。
 	/// </summary>
@@ -726,6 +819,7 @@ public static class StringExtension
 		{ }
 		return stringValues;
 	}
+
 
 	/// <summary>
 	/// 由当前字符串，拆解成字符串数组，去掉空白元素，并且为每个元素进行Trim操作。
@@ -1418,14 +1512,14 @@ public static class StringExtension
 		}
 
 		string? queryParams = null;
-		var indexOfQueryDelimiter = uri.IndexOf("?");
+		var indexOfQueryDelimiter = uri.IndexOf('?');
 		if (indexOfQueryDelimiter > 0)
 		{
 			queryParams = uri[indexOfQueryDelimiter..];
 			uri = uri[..indexOfQueryDelimiter];
 		}
 		string? fragments = null;
-		var indexOfFragmentDelimiter = uri.IndexOf("#");
+		var indexOfFragmentDelimiter = uri.IndexOf('#');
 		if (indexOfFragmentDelimiter > 0)
 		{
 			fragments = uri[indexOfFragmentDelimiter..];
@@ -1462,7 +1556,7 @@ public static class StringExtension
 		}
 
 		string? uriSuffix = null;
-		var indexOfSharpSymbolInUri = uri.IndexOf("#");
+		var indexOfSharpSymbolInUri = uri.IndexOf('#');
 		if (indexOfSharpSymbolInUri >= 0)
 		{
 			uriSuffix = uri[indexOfSharpSymbolInUri..];
@@ -1471,24 +1565,24 @@ public static class StringExtension
 
 		uriQueryParams = uriQueryParams.Trim('?', '&');
 		string? uriQueryParamsSuffix = null;
-		var indexOfSharpSymbolInUriQueryParams = uriQueryParams.IndexOf("#");
+		var indexOfSharpSymbolInUriQueryParams = uriQueryParams.IndexOf('#');
 		if (indexOfSharpSymbolInUriQueryParams >= 0)
 		{
 			uriQueryParamsSuffix = uriQueryParams[indexOfSharpSymbolInUriQueryParams..];
 			uriQueryParams = uriQueryParams[..indexOfSharpSymbolInUriQueryParams];
 		}
 
-		var indexOfQuestionMark = uri.IndexOf("?");
+		var indexOfQuestionMark = uri.IndexOf('?');
 		if (indexOfQuestionMark < 1)
 		{
-			uri += "?";
+			uri += '?';
 		}
 		else
 		{
 			if (indexOfQuestionMark < (uri.Length - 1)
-			&& uri.EndsWith("&") != true)
+			&& uri.EndsWith('&') != true)
 			{
-				uri += "&";
+				uri += '&';
 			}
 		}
 		uri += uriQueryParams;
@@ -1496,7 +1590,7 @@ public static class StringExtension
 		if (uriSuffix?.Length > 0
 			&& uriQueryParamsSuffix?.Length > 0)
 		{
-			uri += uriSuffix + "&" + uriQueryParamsSuffix.Trim("#");
+			uri += uriSuffix + '&' + uriQueryParamsSuffix.Trim('#');
 		}
 		else if (uriSuffix?.Length > 0)
 		{
@@ -2185,7 +2279,7 @@ public static class StringExtension
 		var pathEndCharIndex = uriString.Length;
 		if (!isIncludeQueryParams)
 		{
-			var indexOfQuestionMark = uriString.IndexOf("?", pathBeginCharIndex);
+			var indexOfQuestionMark = uriString.IndexOf('?', pathBeginCharIndex);
 			if (indexOfQuestionMark >= 0)
 			{
 				pathEndCharIndex = indexOfQuestionMark;
@@ -2250,7 +2344,7 @@ public static class StringExtension
 
 		if (isIncludeFragment)
 		{
-			uriString = uriString.Replace("#", "&");
+			uriString = uriString.Replace('#', '&');
 		}
 
 		var queryParamsString = GetQueryParamsInUri(
@@ -2262,7 +2356,7 @@ public static class StringExtension
 		}
 
 		var queryParamDictionary = new Dictionary<string, string?>();
-		var queryParamStrings = queryParamsString.Split("&");
+		var queryParamStrings = queryParamsString.Split('&');
 		if (queryParamStrings != null)
 		{
 			foreach (var queryParamString in queryParamStrings)
@@ -2272,7 +2366,7 @@ public static class StringExtension
 					continue;
 				}
 
-				var queryParamKeyValue = queryParamString.Split("=");
+				var queryParamKeyValue = queryParamString.Split('=');
 				if (queryParamKeyValue == null
 					|| queryParamKeyValue.Length < 1)
 				{
@@ -2344,7 +2438,7 @@ public static class StringExtension
 		var fileName = str[(lastIndexOfDirectorySeparatorChar + 1)..];
 		if (isContainsFileExtensionName != true)
 		{
-			var lastDotIndex = fileName.LastIndexOf(".");
+			var lastDotIndex = fileName.LastIndexOf('.');
 			if (lastDotIndex >= 0)
 			{
 				fileName = fileName[..lastDotIndex];
@@ -2352,12 +2446,12 @@ public static class StringExtension
 		}
 		if (fileName.Length > 0)
 		{
-			var questionSymbolIndex = fileName.IndexOf("?");
+			var questionSymbolIndex = fileName.IndexOf('?');
 			if (questionSymbolIndex >= 0)
 			{
 				fileName = fileName[..questionSymbolIndex];
 			}
-			var sharpSymbolIndex = fileName.IndexOf("#");
+			var sharpSymbolIndex = fileName.IndexOf('#');
 			if (sharpSymbolIndex >= 0)
 			{
 				fileName = fileName[..sharpSymbolIndex];
@@ -2397,8 +2491,8 @@ public static class StringExtension
 		}
 
 		var dotIndex = isGetFullExtensionName
-		    ? fileName.IndexOf(".")
-		    : fileName.LastIndexOf(".");
+		    ? fileName.IndexOf('.')
+		    : fileName.LastIndexOf('.');
 		if (dotIndex < 0)
 		{
 			return string.Empty;
@@ -2406,7 +2500,7 @@ public static class StringExtension
 
 		string fileExtensionName = fileName[(dotIndex + 1)..];
 		{
-			var questionMarkIndex = fileExtensionName.IndexOf("?");
+			var questionMarkIndex = fileExtensionName.IndexOf('?');
 			if (questionMarkIndex >= 0)
 			{
 				fileExtensionName = fileExtensionName[..questionMarkIndex];
@@ -3067,7 +3161,7 @@ public static class StringExtension
 	{
 		if (str?.Length > 0)
 		{
-			var dotIndex = str.IndexOf(".");
+			var dotIndex = str.IndexOf('.');
 			if (dotIndex > 1
 			    && dotIndex < (str.Length - 1))
 			{

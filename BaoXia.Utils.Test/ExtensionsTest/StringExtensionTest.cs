@@ -470,6 +470,72 @@ public class StringExtensionTest
 		// !!!
 	}
 
+
+	[TestMethod]
+	public void SplitWithOptionalSeparatorsIgnoreCaseTest()
+	{
+		var testString = "123@456#7@89";
+		var testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
+		{
+			Assert.IsTrue(testStrings.Count == 3);
+			Assert.IsTrue(testStrings[0].Equals("123"));
+			Assert.IsTrue(testStrings[1].Equals("456#7"));
+			Assert.IsTrue(testStrings[2].Equals("89"));
+		}
+
+		testString = "123@456#7@89@";
+		testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
+		{
+			Assert.IsTrue(testStrings.Count == 4);
+			Assert.IsTrue(testStrings[0].Equals("123"));
+			Assert.IsTrue(testStrings[1].Equals("456#7"));
+			Assert.IsTrue(testStrings[2].Equals("89"));
+			Assert.IsTrue(testStrings[3].Equals(string.Empty));
+		}
+
+		testString = "@123@456#7@89@";
+		testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
+		{
+			Assert.IsTrue(testStrings.Count == 5);
+			Assert.IsTrue(testStrings[0].Equals(string.Empty));
+			Assert.IsTrue(testStrings[1].Equals("123"));
+			Assert.IsTrue(testStrings[2].Equals("456#7"));
+			Assert.IsTrue(testStrings[3].Equals("89"));
+			Assert.IsTrue(testStrings[4].Equals(string.Empty));
+		}
+
+		testString = "123#456#7@89";
+		testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
+		{
+			Assert.IsTrue(testStrings.Count == 3);
+			Assert.IsTrue(testStrings[0].Equals("123"));
+			Assert.IsTrue(testStrings[1].Equals("456"));
+			Assert.IsTrue(testStrings[2].Equals("7@89"));
+		}
+
+		testString = "123#456#7@89#";
+		testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
+		{
+			Assert.IsTrue(testStrings.Count == 4);
+			Assert.IsTrue(testStrings[0].Equals("123"));
+			Assert.IsTrue(testStrings[1].Equals("456"));
+			Assert.IsTrue(testStrings[2].Equals("7@89"));
+			Assert.IsTrue(testStrings[3].Equals(string.Empty));
+		}
+
+
+		testString = "#123#456#7@89#";
+		testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
+		{
+			Assert.IsTrue(testStrings.Count == 5);
+			Assert.IsTrue(testStrings[0].Equals(string.Empty));
+			Assert.IsTrue(testStrings[1].Equals("123"));
+			Assert.IsTrue(testStrings[2].Equals("456"));
+			Assert.IsTrue(testStrings[3].Equals("7@89"));
+			Assert.IsTrue(testStrings[4].Equals(string.Empty));
+		}
+	}
+
 	[TestMethod]
 	public void ToAbsoluteFilePathInRootPath()
 	{
@@ -499,7 +565,7 @@ public class StringExtensionTest
 			// !!!
 		}
 
-		string testFilPath_2 = "";
+		string testFilPath_2 = string.Empty;
 		string testFilPath_2_AbsoluteFilePath = testRootPath;
 		{
 			var testResult
@@ -725,17 +791,11 @@ public class StringExtensionTest
 		// !!!
 	}
 
-	class ToObjectModel
+	class ToObjectModel(int id, string? name)
 	{
-		public int Id { get; set; }
+		public int Id { get; set; } = id;
 
-		public string? Name { get; set; }
-
-		public ToObjectModel(int id, string? name)
-		{
-			Id = id;
-			Name = name;
-		}
+		public string? Name { get; set; } = name;
 	}
 
 	[TestMethod]

@@ -1040,7 +1040,7 @@ public class ObjectExtensionTest
 		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes.Length == 1);
 		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes[0].Name.Equals(nameof(IpInfo.IpAddress)));
 	}
-	
+
 	[TestMethod]
 	public void NullabilityInfoContextTest()
 	{

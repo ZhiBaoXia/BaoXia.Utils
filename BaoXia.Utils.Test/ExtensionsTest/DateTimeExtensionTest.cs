@@ -8,24 +8,104 @@ namespace BaoXia.Utils.Test.ExtensionsTest;
 [TestClass]
 public class DateTimeExtensionTest
 {
+
+	////////////////////////////////////////////////
+	// @自身实现
+	////////////////////////////////////////////////
+
+	#region 自身实现
+
+	[TestMethod]
+	public void ToDateTimeInTimeZoneTest()
+	{
+		var localTimeZoneInfo = TimeZoneInfo.Local;
+		var localTimeZoneOffset = localTimeZoneInfo.BaseUtcOffset;
+
+		var dateTimeUnspecified = new DateTime(1970, 1, 2);
+		{
+			var dateTimeInEast8 = dateTimeUnspecified.ToDateTimeInTimeZone(TimeZoneNumber.East8);
+			// !!!
+			Assert.IsTrue(
+				(dateTimeInEast8 - dateTimeUnspecified).TotalHours
+				== (8.0 - localTimeZoneOffset.TotalHours));
+			// !!!
+
+			var dateTimeInWest8 = dateTimeUnspecified.ToDateTimeInTimeZone(TimeZoneNumber.West8);
+			// !!!
+			Assert.IsTrue(
+				(dateTimeInWest8 - dateTimeUnspecified).TotalHours
+				== (-8.0 - localTimeZoneOffset.TotalHours));
+			// !!!
+		}
+
+		var dateTimeUtc = DateTime.UtcNow;
+		{
+			var dateTimeInEast8 = dateTimeUtc.ToDateTimeInTimeZone(TimeZoneNumber.East8);
+			// !!!
+			Assert.IsTrue(
+				(dateTimeInEast8 - dateTimeUtc).TotalHours == 8);
+			// !!!
+
+			var dateTimeInWest8 = dateTimeUtc.ToDateTimeInTimeZone(TimeZoneNumber.West8);
+			// !!!
+			Assert.IsTrue(
+				(dateTimeInWest8 - dateTimeUtc).TotalHours == -8);
+			// !!!
+		}
+
+		var dateTimeNow = DateTime.Now;
+		{
+			var dateTimeInEast8 = dateTimeNow.ToDateTimeInTimeZone(TimeZoneNumber.East8);
+			// !!!
+			Assert.IsTrue(
+				(dateTimeInEast8 - dateTimeNow).TotalHours
+				== (8.0 - localTimeZoneOffset.TotalHours));
+			// !!!
+
+			var dateTimeInWest8 = dateTimeNow.ToDateTimeInTimeZone(TimeZoneNumber.West8);
+			// !!!
+			Assert.IsTrue(
+				(dateTimeInWest8 - dateTimeNow).TotalHours
+				== (-8.0 - localTimeZoneOffset.TotalHours));
+			// !!!
+		}
+	}
+
 	[TestMethod]
 	public void MillisecondsFrom1970Test()
 	{
-		var dateTime = DateTime.Now;
-
-		var dateTimeStamp = dateTime.MillisecondsFrom1970();
-
-		var dateTimeFromTimeStamp
-			= DateTimeUtil.DateTimeWithMillisecondsFrom1970(dateTimeStamp);
-
-		Assert.IsTrue(dateTime.Year == dateTimeFromTimeStamp.Year);
-		Assert.IsTrue(dateTime.Month == dateTimeFromTimeStamp.Month);
-		Assert.IsTrue(dateTime.Day == dateTimeFromTimeStamp.Day);
-		Assert.IsTrue(dateTime.Hour == dateTimeFromTimeStamp.Hour);
-		Assert.IsTrue(dateTime.Minute == dateTimeFromTimeStamp.Minute);
-		Assert.IsTrue(dateTime.Second == dateTimeFromTimeStamp.Second);
-		Assert.IsTrue(System.Math.Abs(dateTime.Millisecond - dateTimeFromTimeStamp.Millisecond) <= 1);
+		var now = new DateTime(2024, 7, 10, 12, 0, 0);
+		var millisecondsFrom1970InUtc0 = now.MillisecondsFrom1970(TimeZoneNumber.Utc0);
+		{
+			Assert.IsTrue(millisecondsFrom1970InUtc0 == 1720584000000);
+		}
+		var millisecondsFrom1970InEast8 = now.MillisecondsFrom1970(TimeZoneNumber.East8);
+		{
+			Assert.IsTrue((millisecondsFrom1970InEast8 - millisecondsFrom1970InUtc0)
+				== (1000 * 3600 * 8));
+		}
 	}
+
+	[TestMethod]
+	public void DateTimeWithSecondsAfter1970Test()
+	{
+		var utc1970_0_0_0_0_0 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+		var testHoursCount = 8;
+		var testSecondsCount = 3600 * testHoursCount;
+
+		var testTimeInLocal
+			= DateTimeUtil
+			.DateTimeWithSecondsAfter1970(
+			testSecondsCount,
+			TimeZoneNumber.Utc0);
+		// !!!
+		Assert.IsTrue(
+			(testTimeInLocal - utc1970_0_0_0_0_0).TotalHours
+			==
+			TimeZoneInfo.Local.BaseUtcOffset.TotalHours + testHoursCount);
+		// !!!
+	}
+
 
 	[TestMethod]
 	public void QuickDateTimeTest()
@@ -181,15 +261,15 @@ public class DateTimeExtensionTest
 		// !!!
 
 
-		dateTimes = new DateTime[]
-		{
+		dateTimes =
+		[
 			new(2024, 02, 25),
 			new(2024, 02, 24),
 			new(2024, 02, 23),
 			new(2024, 02, 22),
 			new(2024, 02, 21),
 			new(2024, 02, 19)
-		};
+		];
 
 		dateTimeContinuousCount = 0;
 		lastDateTime = dateTimes[0];
@@ -205,4 +285,6 @@ public class DateTimeExtensionTest
 		Assert.IsTrue(dateTimeContinuousCount == 5);
 		// !!!
 	}
+
+	#endregion
 }

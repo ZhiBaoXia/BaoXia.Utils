@@ -10,9 +10,7 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test.CacheTest;
 
-public class ItemsCacheTester<ItemIdType>(
-	string testName,
-	Func<ItemIdType> toDidCreateItemId) where ItemIdType : IComparable
+public class ItemsCacheAsyncTester<ItemIdType> where ItemIdType : IComparable
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -20,26 +18,22 @@ public class ItemsCacheTester<ItemIdType>(
 
 	#region 自身属性
 
-	protected string _testName = testName;
+	protected string _testName;
 
-	protected Func<ItemIdType> _toDidCreateItemId = toDidCreateItemId;
+	protected Func<ItemIdType> _toDidCreateItemId;
 
-	protected readonly ItemsCache<ItemIdType, CacheItem<ItemIdType>, object> _itemsCache = new(
-		(itemId, createListParam) =>
+	protected readonly ItemsCacheAsync<ItemIdType, CacheItem<ItemIdType>, object> _itemsCache = new(
+		async (itemId, _) =>
 		{
-			var createItemTask = CacheItem<ItemIdType>.CreateItemAsync(itemId);
-			// !!!
-			createItemTask.Wait();
-			// !!!
-			var item = createItemTask.Result;
+			var item = await CacheItem<ItemIdType>.CreateItemAsync(itemId);
 			{
 				Assert.IsTrue(item != null);
 			}
 			return item;
 		},
-		(listKey, lastList, currentList, itemCacheOperation) =>
+		async (listKey, lastList, currentList, listOperation) =>
 		{
-			return currentList;
+			return await Task.FromResult(currentList);
 		},
 		() => CacheTestConfig.NoneReadSecondsToClearItemCache);
 
@@ -51,6 +45,14 @@ public class ItemsCacheTester<ItemIdType>(
 	////////////////////////////////////////////////
 
 	#region 自身实现
+
+	public ItemsCacheAsyncTester(
+		string testName,
+		Func<ItemIdType> toDidCreateItemId)
+	{
+		_testName = testName;
+		_toDidCreateItemId = toDidCreateItemId;
+	}
 
 	public void AddUpdateAndQueryTest()
 	{
@@ -68,22 +70,22 @@ public class ItemsCacheTester<ItemIdType>(
 		var randomForInsert = new System.Random((int)DateTime.Now.Ticks);
 		var testRecorders_Insert = new CacheTestUnitRecorders();
 		Action insertAction = new(
-			() =>
+		   async () =>
 			{
 				var itemId = _toDidCreateItemId();
 				{ }
 				itemIds.Add(itemId);
 
-				var testRecorder = new CacheTestUnitRecorder("【同步元素缓存】（" + _testName + "）插入测试");
+				var testRecorder = new CacheTestUnitRecorder("【异步元素缓存】（" + _testName + "）插入测试");
 				testRecorder.BeginTest(itemId.ToString()!);
 				////////////////////////////////////////////////
-				_itemsCache.Add(
-				 itemId,
-				 new CacheItem<ItemIdType>()
-				 {
-					 Id = itemId,
-					 Title = "元素（" + itemId + "）"
-				 });
+				await _itemsCache.AddAsync(
+					itemId,
+					 new CacheItem<ItemIdType>()
+					 {
+						 Id = itemId,
+						 Title = "元素（" + itemId + "）"
+					 });
 				////////////////////////////////////////////////
 				testRecorder.EndTest();
 				testRecorders_Insert.AddRecorder(testRecorder);
@@ -92,22 +94,22 @@ public class ItemsCacheTester<ItemIdType>(
 
 		var randomForQueryItem = new System.Random((int)DateTime.Now.Ticks);
 		var testRecorders_Query = new CacheTestUnitRecorders();
-		Action queryFunc = new(
-			() =>
+		Func<Task> queryFunc = new(
+			async () =>
 			{
-				if (!itemIds.TryTake(out ItemIdType? itemId))
+				if (!itemIds.TryTake(out var itemId))
 				{
 					itemId = _toDidCreateItemId();
 				}
 
-				var testRecorder = new CacheTestUnitRecorder("【同步元素缓存】（" + _testName + "），查询测试");
+				var testRecorder = new CacheTestUnitRecorder("【异步元素缓存】（" + _testName + "），查询测试");
 				testRecorder.BeginTest(itemId.ToString()!);
 				////////////////////////////////////////////////
-				var item = _itemsCache.Get(itemId, null);
+				var item = await _itemsCache.GetAsync(itemId, null);
 				{
 					// !!!
 					Assert.IsTrue(item != null);
-					Assert.IsTrue(item?.Id?.Equals(itemId) == true);
+					Assert.IsTrue(item.Id?.Equals(itemId) == true);
 					// !!!
 				}
 				////////////////////////////////////////////////
@@ -137,7 +139,7 @@ public class ItemsCacheTester<ItemIdType>(
 					Thread.Sleep((int)(1000 * CacheTestConfig.InsertTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll([.. requestTasks]);
+				Task.WaitAll(requestTasks.ToArray());
 			}));
 
 			testTasks.Add(Task.Run(() =>
@@ -153,14 +155,13 @@ public class ItemsCacheTester<ItemIdType>(
 					Thread.Sleep((int)(1000 * CacheTestConfig.QueryTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll([.. requestTasks]);
+				Task.WaitAll(requestTasks.ToArray());
 			}));
 
 			// !!!
-			Task.WaitAll([.. testTasks]);
+			Task.WaitAll(testTasks.ToArray());
 			// !!!
 		}
-
 
 		////////////////////////////////////////////////
 		// 打印测试结果：
@@ -181,7 +182,7 @@ public class ItemsCacheTester<ItemIdType>(
 		var tasksCount = 0;
 		while (DateTime.Now < endTime)
 		{
-			tasksToGet.Add(Task.Run(() =>
+			tasksToGet.Add(Task.Run(async () =>
 			{
 				// !!!
 				lock (workThreadIds_0)
@@ -189,7 +190,7 @@ public class ItemsCacheTester<ItemIdType>(
 					workThreadIds_0.Add(System.Environment.CurrentManagedThreadId);
 				}
 				// !!!
-				var item = _itemsCache.Get(itemId, null);
+				var item = await _itemsCache.GetAsync(itemId, null);
 				// !!!
 				if (item != null)
 				{
@@ -198,6 +199,10 @@ public class ItemsCacheTester<ItemIdType>(
 					{
 						Assert.Fail();
 					}
+				}
+				else
+				{
+					Assert.Fail();
 				}
 			}));
 
@@ -210,14 +215,14 @@ public class ItemsCacheTester<ItemIdType>(
 			}
 		}
 		// !!!
-		Task.WaitAll([.. tasksToGet]);
+		Task.WaitAll(tasksToGet.ToArray());
 		// !!!
 
 		var now = DateTime.Now;
 		var durationMilliseconds = (now - beginTime).TotalMilliseconds;
 
 		System.Diagnostics.Debug.WriteLine(
-			"\r\n" + "【同步元素缓存】（" + _testName + "），同时获取同一Key"
+			"\r\n" + "【异步元素缓存】（" + _testName + "），同时获取同一Key"
 			+ "\r\n开始时间：" + beginTime.ToString("HH:mm fff")
 			+ "\r\n结束时间：" + now.ToString("HH:mm fff")
 			+ "\r\n测试耗时：" + durationMilliseconds + "ms");
@@ -234,7 +239,8 @@ public class ItemsCacheTester<ItemIdType>(
 			+ "\r\n");
 	}
 
-	public void TryGetTest()
+
+	public async Task TryGetTest()
 	{
 		var itemIdsAdded = new ConcurrentBag<ItemIdType>();
 		var itemIdsCreatedAsync = new ConcurrentBag<ItemIdType>();
@@ -243,20 +249,20 @@ public class ItemsCacheTester<ItemIdType>(
 		var randomForInsert = new System.Random((int)DateTime.Now.Ticks);
 		var testRecorders_Insert = new CacheTestUnitRecorders();
 		Action insertAction = new(
-			() =>
+			async () =>
 			{
 				var itemId = _toDidCreateItemId();
 
-				var testRecorder = new CacheTestUnitRecorder("【同步元素缓存】（" + _testName + "）“尝试”插入测试");
+				var testRecorder = new CacheTestUnitRecorder("【异步元素缓存】（" + _testName + "）“尝试”插入测试");
 				testRecorder.BeginTest(itemId.ToString()!);
 				////////////////////////////////////////////////
-				_itemsCache.Add(
-				 itemId,
-				 new CacheItem<ItemIdType>()
-				 {
-					 Id = itemId,
-					 Title = "元素（" + itemId + "）"
-				 });
+				await _itemsCache.AddAsync(
+					itemId,
+					new CacheItem<ItemIdType>()
+					{
+						Id = itemId,
+						Title = "元素（" + itemId + "）"
+					});
 				itemIdsAdded.Add(itemId);
 				////////////////////////////////////////////////
 				testRecorder.EndTest();
@@ -267,11 +273,11 @@ public class ItemsCacheTester<ItemIdType>(
 		var randomForQueryItem = new System.Random((int)DateTime.Now.Ticks);
 		var testRecorders_Query = new CacheTestUnitRecorders();
 		Action tryGetFunc = new(
-			() =>
+			async () =>
 			{
 				var isItemIdExisted = false;
 				if ((DateTime.Now.Ticks % 2) == 1
-					&& itemIdsAdded.TryTake(out ItemIdType? itemId))
+					&& itemIdsAdded.TryTake(out var itemId))
 				{
 					isItemIdExisted = true;
 				}
@@ -283,18 +289,20 @@ public class ItemsCacheTester<ItemIdType>(
 					// !!!
 				}
 
-				var testRecorder = new CacheTestUnitRecorder("【同步元素缓存】（" + _testName + "），“尝试”查询测试");
+				var testRecorder = new CacheTestUnitRecorder("【异步元素缓存】（" + _testName + "），“尝试”查询测试");
 				testRecorder.BeginTest(itemId.ToString()!);
 				////////////////////////////////////////////////
-				if (_itemsCache.TryGet(
+
+				var tryGetResult = await _itemsCache.TryGetAsync(
 					itemId,
-					out var item,
-					true))
+					true);
+				if (tryGetResult.IsGotSucess)
 				{
+					var item = tryGetResult.Item;
 					// !!!
 					//Assert.IsTrue(isItemIdExisted == true);
 					Assert.IsTrue(item != null);
-					Assert.IsTrue(item?.Id?.Equals(itemId) == true);
+					Assert.IsTrue(item.Id?.Equals(itemId));
 					// !!!
 				}
 				else
@@ -328,7 +336,7 @@ public class ItemsCacheTester<ItemIdType>(
 					Thread.Sleep((int)(1000 * CacheTestConfig.InsertTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll([.. requestTasks]);
+				Task.WaitAll(requestTasks.ToArray());
 			}));
 
 			testTasks.Add(Task.Run(() =>
@@ -344,17 +352,21 @@ public class ItemsCacheTester<ItemIdType>(
 					Thread.Sleep((int)(1000 * CacheTestConfig.QueryTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll([.. requestTasks]);
+				Task.WaitAll(requestTasks.ToArray());
 			}));
 
 			// !!!
-			Task.WaitAll([.. testTasks]);
+			Task.WaitAll(testTasks.ToArray());
 			// !!!
 		}
+
+		// 等待 1 秒后，所有“TryGet”建立的缓存，都应该建立完毕了。
+		await Task.Delay(1000);
 
 		////////////////////////////////////////////////
 		// 异步常见缓存测试：
 		////////////////////////////////////////////////
+		Task.Run(async () =>
 		{
 			const double waitSecondsMax = 10.0F;
 			var beginTime = DateTime.Now;
@@ -370,11 +382,14 @@ public class ItemsCacheTester<ItemIdType>(
 			{
 				foreach (var itemId in itemIdsCreatedAsync)
 				{
-					Assert.IsTrue(_itemsCache.TryGet(itemId, out var item));
+					var tryGetResult = await _itemsCache.TryGetAsync(itemId);
+					Assert.IsTrue(tryGetResult.IsGotSucess);
+					var item = tryGetResult.Item;
 					Assert.IsTrue(item?.Id?.Equals(itemId) == true);
 				}
 			}
-		}
+		})
+		.Wait();
 
 
 		////////////////////////////////////////////////

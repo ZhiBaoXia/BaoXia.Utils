@@ -304,7 +304,8 @@ public static class ObjectExtension
 			// 需要特殊处理的结构体：DateTime，decimal
 			////////////////////////////////////////////////
 			else if (itemType.Equals(typeof(decimal))
-				|| itemType.Equals(typeof(DateTime)))
+				|| itemType.Equals(typeof(DateTime))
+				|| itemType.Equals(typeof(DateTimeOffset)))
 			{
 				return null;
 			}
@@ -1317,6 +1318,10 @@ public static class ObjectExtension
 		{
 			return BitConverter.GetBytes(dateTimeValue.Ticks);
 		}
+		if (baseValue is DateTimeOffset dateTimeOffsetValue)
+		{
+			return BitConverter.GetBytes(dateTimeOffsetValue.Ticks);
+		}
 
 		////////////////////////////////////////////////
 		// 2/2，优先，检查并返回，不常用的【值类型】：
@@ -1379,6 +1384,11 @@ public static class ObjectExtension
 		//if (baseValue is DateTime dateTimeValue)
 		//{
 		//	return BitConverter.GetBytes(dateTimeValue.Ticks);
+		//}
+
+		//if (baseValue is DateTimeOffset dateTimeOffsetValue)
+		//{
+		//	return BitConverter.GetBytes(dateTimeOffsetValue.Ticks);
 		//}
 
 		//if (baseValue is Guid guidValue)

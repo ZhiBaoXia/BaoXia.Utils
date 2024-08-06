@@ -1,7 +1,13 @@
 ﻿using System;
 namespace BaoXia.Utils.Cache
 {
-	public class ItemCacheItemContainer<ItemKeyType, ItemType, ItemCacheCreateParamType>
+	public class ItemCacheItemContainer<ItemKeyType, ItemType, ItemCacheCreateParamType>(
+		ItemKeyType key,
+		ItemType? item,
+		Boolean isItemValid,
+		ItemCacheCreateParamType? itemCreateParam,
+		DateTime lastReadTime,
+		DateTime lastUpdateTime)
 	{
 
 		////////////////////////////////////////////////
@@ -10,9 +16,9 @@ namespace BaoXia.Utils.Cache
 
 		#region 自身属性
 
-		public ItemKeyType Key { get; set; }
+		public ItemKeyType Key { get; set; } = key;
 
-		public ItemType? _item;
+		public ItemType? _item = item;
 		public ItemType? Item
 		{
 			get
@@ -21,7 +27,7 @@ namespace BaoXia.Utils.Cache
 			}
 		}
 
-		public bool IsItemValid { get; set; }
+		public bool IsItemValid { get; set; } = isItemValid;
 
 		public Object ItemLocker
 		{
@@ -31,11 +37,11 @@ namespace BaoXia.Utils.Cache
 			}
 		}
 
-		public ItemCacheCreateParamType? ItemCreateParam { get; set; }
+		public ItemCacheCreateParamType? ItemCreateParam { get; set; } = itemCreateParam;
 
-		public DateTime LastReadTime { get; set; }
+		public DateTime LastReadTime { get; set; } = lastReadTime;
 
-		public DateTime LastUpdateTime { get; set; }
+		public DateTime LastUpdateTime { get; set; } = lastUpdateTime;
 
 		#endregion
 
@@ -44,22 +50,6 @@ namespace BaoXia.Utils.Cache
 		////////////////////////////////////////////////
 
 		#region 自身实现
-
-		public ItemCacheItemContainer(
-			ItemKeyType key,
-			ItemType? item,
-			Boolean isItemValid,
-			ItemCacheCreateParamType? itemCreateParam,
-			DateTime lastReadTime,
-			DateTime lastUpdateTime)
-		{
-			this.Key = key;
-			_item = item;
-			this.IsItemValid = isItemValid;
-			this.ItemCreateParam = itemCreateParam;
-			this.LastReadTime = lastReadTime;
-			this.LastUpdateTime = lastUpdateTime;
-		}
 
 		public ItemCacheItemContainer(
 			ItemKeyType key,

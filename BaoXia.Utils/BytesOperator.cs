@@ -246,6 +246,12 @@ namespace BaoXia.Utils
 			return this.Write(dateTime.MillisecondsFrom1970());
 		}
 
+		public int Write(
+			DateTimeOffset dateTimeOffset)
+		{
+			return this.Write(dateTimeOffset.MillisecondsFrom1970());
+		}
+
 		public Span<byte> ReadBytes(
 			int readBytesCount)
 		{

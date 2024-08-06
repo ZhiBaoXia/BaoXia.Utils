@@ -64,7 +64,7 @@ public class LogFile : IDisposable
 	/// <summary>
 	/// 全局日志文件对象集合。
 	/// </summary>
-	protected static readonly List<LogFile> _logFiles = new();
+	protected static readonly List<LogFile> _logFiles = [];
 
 	public static DateTime LastFlushLogBufferBeginTime { get; set; }
 
@@ -98,7 +98,7 @@ public class LogFile : IDisposable
 				LogFile[] logFiles;
 				lock (_logFiles)
 				{
-					logFiles = _logFiles.ToArray();
+					logFiles = [.. _logFiles];
 				}
 
 				if (logFiles?.Length > 0)
@@ -222,7 +222,7 @@ public class LogFile : IDisposable
 		LogFile[] logFiles;
 		lock (_logFiles)
 		{
-			logFiles = _logFiles.ToArray();
+			logFiles = [.. _logFiles];
 		}
 
 		var allLogRecordsCountInLogBuffer = 0;
@@ -244,7 +244,7 @@ public class LogFile : IDisposable
 		LogFile[] logFiles;
 		lock (_logFiles)
 		{
-			logFiles = _logFiles.ToArray();
+			logFiles = [.. _logFiles];
 		}
 
 		if (logFiles?.Length > 0)

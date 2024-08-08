@@ -16,14 +16,9 @@ public static class EnumExtension
 	/// <typeparam name="T">指定的枚举类型。</typeparam>
 	/// <param name="enumValue">指定的枚举值。</param>
 	/// <returns>指定枚举值对应的枚举值名称。</returns>
-	public static string? Name(this Enum enumValue)
+	public static string Name(this Enum enumValue)
 	{
-		var enumValueType
-		    = Enum.Parse(
-			enumValue.GetType(),
-			enumValue.ToString());
-		{ }
-		return enumValueType.ToString();
+		return EnumUtil.NameOf(enumValue);
 	}
 
 	#endregion

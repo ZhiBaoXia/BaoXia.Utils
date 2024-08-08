@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BaoXia.Utils.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace BaoXia.Utils;
@@ -58,11 +59,9 @@ public class EnumUtil
 	/// <returns>指定枚举值对应的枚举值名称。</returns>
 	public static string NameOf<T>(T enumValue) where T : Enum
 	{
-		var enumValueType = Enum.Parse(
-		    typeof(T),
-		    enumValue.ToString());
-		{ }
-		return enumValueType.ToString()!;
+		return Enum.GetName(
+			enumType: enumValue.GetType(),
+			enumValue)!;
 	}
 
 	/// <summary>

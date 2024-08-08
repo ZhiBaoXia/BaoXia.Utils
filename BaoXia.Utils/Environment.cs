@@ -225,10 +225,14 @@ public class Environment
 		if (currentExecutingAssembly != null)
 		{
 			Environment.CurrentApplicationAssembly = currentExecutingAssembly;
+			Environment.ApplicationName = currentExecutingAssembly.GetName().Name;
+			Environment.ApplicationFullName = currentExecutingAssembly.FullName;
 		}
-		Environment.ApplicationName = Assembly.GetExecutingAssembly().GetName().Name;
-		Environment.ApplicationFullName = Assembly.GetExecutingAssembly().GetName().ToString();
-
+		else if (Assembly.GetExecutingAssembly() is Assembly executingAssembly)
+		{
+			Environment.ApplicationName = executingAssembly.GetName().Name;
+			Environment.ApplicationFullName = executingAssembly.GetName().ToString();
+		}
 		Environment.ApplicationDirectoryPath
 			= AppContext.BaseDirectory.ToFileSystemDirectoryPath();
 		Environment.WebRootDirectoryPath

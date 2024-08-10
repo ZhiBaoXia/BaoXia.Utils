@@ -40,11 +40,11 @@ public class DateTimeOffsetExtensionTest
 	public void MillisecondsFrom1970Test()
 	{
 		var now = new DateTimeOffset(2024, 7, 10, 12, 0, 0, new TimeSpan((int)TimeZoneNumber.East8, 0, 0));
-		var millisecondsFrom1970InUtc0 = now.MillisecondsFrom1970(TimeZoneNumber.Utc0);
+		var millisecondsFrom1970InUtc0 = now.MillisecondsFrom1970(TimeZoneNumber.Utc0, true);
 		{
 			Assert.IsTrue(millisecondsFrom1970InUtc0 == 1720584000000);
 		}
-		var millisecondsFrom1970InEast8 = now.MillisecondsFrom1970(TimeZoneNumber.East8);
+		var millisecondsFrom1970InEast8 = now.MillisecondsFrom1970(TimeZoneNumber.East8, true);
 		{
 			Assert.IsTrue((millisecondsFrom1970InEast8 - millisecondsFrom1970InUtc0)
 				== (1000 * 3600 * 8));

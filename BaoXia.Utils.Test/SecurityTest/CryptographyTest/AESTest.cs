@@ -104,7 +104,7 @@ namespace BaoXia.Utils.Test.SecurityTest.CryptographyTest
 				}
 				this.ClientAddressPort = clientAddressPort;
 
-				this.LoginTimeStamp = loginTime.MillisecondsFrom1970();
+				this.LoginTimeStamp = loginTime.MillisecondsFrom1970(Utils.Constants.TimeZoneNumber.Utc0, true);
 			}
 
 			public SessionToken(string tokenString)

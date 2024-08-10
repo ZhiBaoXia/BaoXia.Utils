@@ -8,7 +8,6 @@ namespace BaoXia.Utils.Test.ExtensionsTest;
 [TestClass]
 public class DateTimeExtensionTest
 {
-
 	////////////////////////////////////////////////
 	// @自身实现
 	////////////////////////////////////////////////
@@ -74,12 +73,36 @@ public class DateTimeExtensionTest
 	[TestMethod]
 	public void MillisecondsFrom1970Test()
 	{
+		var zeroLocal = new DateTime();
+		{
+			Assert.IsTrue(zeroLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
+		}
+		var zeroLocalMillisecondsFrom1970 = zeroLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
+		var zeroLocal2 = DateTimeUtil.DateTimeWithMillisecondsAfter1970(zeroLocalMillisecondsFrom1970);
+		{
+			Assert.IsTrue(zeroLocal == zeroLocal2);
+		}
+
+
+		var zeroUtc = new DateTime(0, DateTimeKind.Utc);
+		{
+			Assert.IsTrue(zeroUtc.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
+		}
+		var zeroUtcMillisecondsFrom1970 = zeroLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
+		var zeroUtc2 = DateTimeUtil.DateTimeWithMillisecondsAfter1970(zeroLocalMillisecondsFrom1970);
+		{
+			Assert.IsTrue(zeroUtc == zeroUtc2);
+		}
+
+
+
+
 		var now = new DateTime(2024, 7, 10, 12, 0, 0);
-		var millisecondsFrom1970InUtc0 = now.MillisecondsFrom1970(TimeZoneNumber.Utc0);
+		var millisecondsFrom1970InUtc0 = now.MillisecondsFrom1970(TimeZoneNumber.Utc0, true);
 		{
 			Assert.IsTrue(millisecondsFrom1970InUtc0 == 1720584000000);
 		}
-		var millisecondsFrom1970InEast8 = now.MillisecondsFrom1970(TimeZoneNumber.East8);
+		var millisecondsFrom1970InEast8 = now.MillisecondsFrom1970(TimeZoneNumber.East8, true);
 		{
 			Assert.IsTrue((millisecondsFrom1970InEast8 - millisecondsFrom1970InUtc0)
 				== (1000 * 3600 * 8));

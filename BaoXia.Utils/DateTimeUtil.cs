@@ -1,11 +1,24 @@
-﻿using BaoXia.Utils.Constants;
-using BaoXia.Utils.Extensions;
+﻿using BaoXia.Utils.ConcurrentTools;
+using BaoXia.Utils.Constants;
 using System;
 
 namespace BaoXia.Utils;
 
 public class DateTimeUtil
 {
+	////////////////////////////////////////////////
+	// @静态常量
+	////////////////////////////////////////////////
+
+	#region 静态常量
+
+	public static readonly DateTime DateTimeAtUTCZero = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+	public static readonly DateTime DateTimeAtLocalZero = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Local);
+
+	#endregion
+
+
 	////////////////////////////////////////////////
 	// @类方法
 	////////////////////////////////////////////////
@@ -24,20 +37,33 @@ public class DateTimeUtil
 
 	public static long GetMillisecondsFrom1970OfDateTime(
 		DateTime dateTime,
-		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0)
+		TimeZoneNumber millisecondsZoneNumber,// = TimeZoneNumber.Utc0,
+		bool isMillisecondsMinZero)
 	{
-		var dateTimeInTimeZone = dateTime.ToDateTimeInTimeZone(millisecondsZoneNumber);
-		var dateTimeZero = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-		var milliseconds = (long)(dateTimeInTimeZone - dateTimeZero).TotalMilliseconds;
-		{ }
+		long dateTimeTicks = dateTime.Ticks - DateTimeAtUTCZero.Ticks;
+		if (dateTime.Kind != DateTimeKind.Utc)
+		{
+			dateTimeTicks -= TimeZoneInfo.Local.BaseUtcOffset.Ticks;
+		}
+
+		var milliseconds = dateTimeTicks / TimeSpan.TicksPerMillisecond;
+		if (milliseconds < 0
+			&& isMillisecondsMinZero)
+		{
+			milliseconds = 0;
+		}
 		return milliseconds;
 	}
 
 	public static long GetSecondsFrom1970OfDateTime(
 		DateTime dateTime,
-		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0)
+		TimeZoneNumber secondsZoneNumber,// = TimeZoneNumber.Utc0,
+		bool isMillisecondsMinZero)
 	{
-		return GetMillisecondsFrom1970OfDateTime(dateTime, secondsZoneNumber)
+		return GetMillisecondsFrom1970OfDateTime(
+			dateTime,
+			secondsZoneNumber,
+			isMillisecondsMinZero)
 			/ 1000;
 	}
 
@@ -45,17 +71,19 @@ public class DateTimeUtil
 		long milliseconds,
 		TimeZoneNumber millisecondsTimeZoneNumber = TimeZoneNumber.Utc0)
 	{
-		var dateTime
-			= new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Local)
-			.AddMilliseconds(milliseconds);
-		var timeSpanToObjectTimeZone
-			= GetTimeSpanFromLocalToObjectTimeZone(
-				millisecondsTimeZoneNumber);
-		if (timeSpanToObjectTimeZone.Ticks == 0)
+		var dateTimeTicks
+			= TimeSpan.TicksPerMicrosecond * milliseconds
+			- TimeSpan.TicksPerHour * (int)millisecondsTimeZoneNumber
+			+ TimeZoneInfo.Local.BaseUtcOffset.Ticks;
+		if (dateTimeTicks<DateTime.MinValue.Ticks)
 		{
-			return dateTime;
+			dateTimeTicks = DateTime.MinValue.Ticks;
 		}
-		dateTime = dateTime.Subtract(timeSpanToObjectTimeZone);
+		else if (dateTimeTicks > DateTime.MinValue.Ticks)
+		{
+			dateTimeTicks = DateTime.MaxValue.Ticks;
+		}
+		var dateTime = new DateTime(dateTimeTicks, DateTimeKind.Local);
 		{ }
 		return dateTime;
 	}
@@ -73,18 +101,30 @@ public class DateTimeUtil
 		DateTime dateTime,
 		TimeZoneNumber timeZoneNumber)
 	{
-		DateTime objectDateTime;
-		if (dateTime.Kind == DateTimeKind.Utc)
+		long dateTimeOffsetHours = 0;
+		int timeZoneNumberHours = (int)timeZoneNumber;
+		if (dateTime.Kind != DateTimeKind.Utc)
 		{
-			objectDateTime = dateTime.AddHours((int)timeZoneNumber);
+			dateTimeOffsetHours -= (long)TimeZoneInfo.Local.GetUtcOffset(dateTime).TotalHours;
 		}
-		else
+		dateTimeOffsetHours += timeZoneNumberHours;
+
+		var dateTimeOffsetTicks
+			= TimeSpan.TicksPerHour * dateTimeOffsetHours;
+		var dateTimeTicks
+			= dateTime.Ticks;
+		var objectDateTimeTicks
+			= dateTimeTicks + dateTimeOffsetTicks;
+		if (objectDateTimeTicks < DateTime.MinValue.Ticks)
 		{
-			objectDateTime
-				= dateTime.AddHours(
-					-TimeZoneInfo.Local.GetUtcOffset(dateTime).TotalHours
-					+ (int)timeZoneNumber);
+			objectDateTimeTicks = DateTime.MinValue.Ticks;
 		}
+		else if (objectDateTimeTicks > DateTime.MaxValue.Ticks)
+		{
+			objectDateTimeTicks = DateTime.MaxValue.Ticks;
+		}
+		var objectDateTime = new DateTime(objectDateTimeTicks, dateTime.Kind);
+		{ }
 		return objectDateTime;
 	}
 

@@ -7,6 +7,16 @@ namespace BaoXia.Utils;
 public class DateTimeOffsetUtil
 {
 	////////////////////////////////////////////////
+	// @静态常量
+	////////////////////////////////////////////////
+
+	#region 静态常量
+
+	public static readonly DateTimeOffset DateTimeOffsetAtUTCZero = new(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+	#endregion
+
+	////////////////////////////////////////////////
 	// @类方法
 	////////////////////////////////////////////////
 
@@ -24,12 +34,13 @@ public class DateTimeOffsetUtil
 
 	public static long GetMillisecondsFrom1970OfDateTimeOffset(
 		DateTimeOffset dateTimeOffset,
-		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0)
+		TimeZoneNumber millisecondsZoneNumber,// = TimeZoneNumber.Utc0)
+		bool isMillisecondsMinValueZero)
 	{
 		var dateTimeInTimeZone = DateTimeOffsetUtil.DateTimeOffsetByConvertToTimeZone(
 			dateTimeOffset,
 			millisecondsZoneNumber);
-		var dateTimeZero = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.FromHours((int)millisecondsZoneNumber));
+		var dateTimeZero = DateTimeOffsetAtUTCZero.AddHours((int)millisecondsZoneNumber);
 		var milliseconds = (long)(dateTimeInTimeZone - dateTimeZero).TotalMilliseconds;
 		{ }
 		return milliseconds;
@@ -37,9 +48,13 @@ public class DateTimeOffsetUtil
 
 	public static long GetSecondsFrom1970OfDateTimeOffset(
 		DateTimeOffset dateTimeOffset,
-		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0)
+		TimeZoneNumber secondsZoneNumber,// = TimeZoneNumber.Utc0)
+		bool isSecondsMinValueZero)
 	{
-		return GetMillisecondsFrom1970OfDateTimeOffset(dateTimeOffset, secondsZoneNumber)
+		return GetMillisecondsFrom1970OfDateTimeOffset(
+			dateTimeOffset,
+			secondsZoneNumber,
+			isSecondsMinValueZero)
 			/ 1000;
 	}
 
@@ -48,7 +63,7 @@ public class DateTimeOffsetUtil
 		TimeZoneNumber millisecondsTimeZoneNumber = TimeZoneNumber.Utc0)
 	{
 		var dateTimeOffset
-			= new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
+			= DateTimeOffsetAtUTCZero
 			.AddMilliseconds(milliseconds);
 		var timeSpanToObjectTimeZone
 			= GetTimeSpanFromLocalToObjectTimeZone(

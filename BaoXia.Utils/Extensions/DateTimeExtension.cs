@@ -19,20 +19,24 @@ public static class DateTimeExtension
 
 	public static long MillisecondsFrom1970(
 		this DateTime dateTime,
-		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0)
+		TimeZoneNumber millisecondsZoneNumber, // = TimeZoneNumber.Utc0
+		bool isMillisecondsMinZero)
 	{
 		return DateTimeUtil.GetMillisecondsFrom1970OfDateTime(
 			dateTime,
-			millisecondsZoneNumber);
+			millisecondsZoneNumber,
+			isMillisecondsMinZero);
 	}
 
 	public static long SecondsFrom1970(
 		this DateTime dateTime,
-		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0)
+		TimeZoneNumber secondsZoneNumber,// = TimeZoneNumber.Utc0)
+		bool isSecondsMinZero)
 	{
 		return DateTimeUtil.GetSecondsFrom1970OfDateTime(
 			dateTime,
-			secondsZoneNumber);
+			secondsZoneNumber,
+			isSecondsMinZero);
 	}
 
 	/// <summary>

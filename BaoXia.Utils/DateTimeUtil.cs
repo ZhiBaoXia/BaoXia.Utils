@@ -1,5 +1,4 @@
-﻿using BaoXia.Utils.ConcurrentTools;
-using BaoXia.Utils.Constants;
+﻿using BaoXia.Utils.Constants;
 using System;
 
 namespace BaoXia.Utils;
@@ -45,6 +44,7 @@ public class DateTimeUtil
 		{
 			dateTimeTicks -= TimeZoneInfo.Local.BaseUtcOffset.Ticks;
 		}
+		dateTimeTicks += TimeSpan.TicksPerHour * (int)millisecondsZoneNumber;
 
 		var milliseconds = dateTimeTicks / TimeSpan.TicksPerMillisecond;
 		if (milliseconds < 0
@@ -72,14 +72,15 @@ public class DateTimeUtil
 		TimeZoneNumber millisecondsTimeZoneNumber = TimeZoneNumber.Utc0)
 	{
 		var dateTimeTicks
-			= TimeSpan.TicksPerMicrosecond * milliseconds
+			= DateTimeAtUTCZero.Ticks
+			+ (TimeSpan.TicksPerMillisecond * milliseconds
 			- TimeSpan.TicksPerHour * (int)millisecondsTimeZoneNumber
-			+ TimeZoneInfo.Local.BaseUtcOffset.Ticks;
-		if (dateTimeTicks<DateTime.MinValue.Ticks)
+			+ TimeZoneInfo.Local.BaseUtcOffset.Ticks);
+		if (dateTimeTicks < DateTime.MinValue.Ticks)
 		{
 			dateTimeTicks = DateTime.MinValue.Ticks;
 		}
-		else if (dateTimeTicks > DateTime.MinValue.Ticks)
+		else if (dateTimeTicks > DateTime.MaxValue.Ticks)
 		{
 			dateTimeTicks = DateTime.MaxValue.Ticks;
 		}

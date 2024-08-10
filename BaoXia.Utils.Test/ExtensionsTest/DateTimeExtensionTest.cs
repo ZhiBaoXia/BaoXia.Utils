@@ -73,28 +73,33 @@ public class DateTimeExtensionTest
 	[TestMethod]
 	public void MillisecondsFrom1970Test()
 	{
-		var zeroLocal = new DateTime();
+		var dateTimeDefaultAtLocal = new DateTime(0, DateTimeKind.Local);
 		{
-			Assert.IsTrue(zeroLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
+			Assert.IsTrue(dateTimeDefaultAtLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
 		}
-		var zeroLocalMillisecondsFrom1970 = zeroLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
-		var zeroLocal2 = DateTimeUtil.DateTimeWithMillisecondsAfter1970(zeroLocalMillisecondsFrom1970);
+		var dateTimeDefaultAtLocal_MillisecondsFrom1970
+			= dateTimeDefaultAtLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
+		var dateTimeFromMillisecondsFrom1970
+			= DateTimeUtil.DateTimeWithMillisecondsAfter1970(
+				dateTimeDefaultAtLocal_MillisecondsFrom1970);
 		{
-			Assert.IsTrue(zeroLocal == zeroLocal2);
-		}
-
-
-		var zeroUtc = new DateTime(0, DateTimeKind.Utc);
-		{
-			Assert.IsTrue(zeroUtc.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
-		}
-		var zeroUtcMillisecondsFrom1970 = zeroLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
-		var zeroUtc2 = DateTimeUtil.DateTimeWithMillisecondsAfter1970(zeroLocalMillisecondsFrom1970);
-		{
-			Assert.IsTrue(zeroUtc == zeroUtc2);
+			Assert.IsTrue(dateTimeDefaultAtLocal == dateTimeFromMillisecondsFrom1970);
 		}
 
 
+		var dateTimeDefaultAtUtc = new DateTime(0, DateTimeKind.Utc);
+		{
+			Assert.IsTrue(dateTimeDefaultAtUtc.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
+		}
+		var dateTimeDefaultAtUtc_MillisecondsFrom1970 = dateTimeDefaultAtUtc.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
+		var dateTimeAtLocalFromMillisecondsFrom1970 = DateTimeUtil.DateTimeWithMillisecondsAfter1970(dateTimeDefaultAtUtc_MillisecondsFrom1970);
+		{
+			Assert.IsTrue((dateTimeAtLocalFromMillisecondsFrom1970 - dateTimeDefaultAtUtc) == TimeZoneInfo.Local.BaseUtcOffset);
+		}
+
+
+		////////////////////////////////////////////////
+		////////////////////////////////////////////////
 
 
 		var now = new DateTime(2024, 7, 10, 12, 0, 0);
@@ -106,6 +111,12 @@ public class DateTimeExtensionTest
 		{
 			Assert.IsTrue((millisecondsFrom1970InEast8 - millisecondsFrom1970InUtc0)
 				== (1000 * 3600 * 8));
+		}
+		var now2 = DateTimeOffsetUtil.DateTimeOffsetWithMillisecondsAfter1970(
+			millisecondsFrom1970InEast8,
+			TimeZoneNumber.East8);
+		{
+			Assert.IsTrue(now2 == now);
 		}
 	}
 

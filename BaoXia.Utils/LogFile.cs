@@ -517,7 +517,7 @@ public class LogFile : IDisposable
 #if DEBUG
 		var logName = this.Name ?? string.Empty;
 		var now = DateTime.Now;
-		var timestamp = now.MillisecondsFrom1970();
+		var timestamp = now.MillisecondsFrom1970(Constants.TimeZoneNumber.Utc0, true);
 		var timestampCaption = now.ToString("yyyy_MM_dd hh:mm:ss ms");
 		System.Diagnostics.Debug.WriteLine(
 			"\r\n"
@@ -607,7 +607,7 @@ public class LogFile : IDisposable
 				}
 
 				var logTime = logRecord.LogTime;
-				var logTimestamp = logTime.MillisecondsFrom1970();
+				var logTimestamp = logTime.MillisecondsFrom1970(Constants.TimeZoneNumber.Utc0, true);
 				var logTimestampCaption = logTime.ToString("yyyy_MM_dd HH:mm:ss fff");
 
 				if (logFileContent.Length > 0)

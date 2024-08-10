@@ -243,13 +243,17 @@ namespace BaoXia.Utils
 		public int Write(
 			DateTime dateTime)
 		{
-			return this.Write(dateTime.MillisecondsFrom1970());
+			return this.Write(dateTime.MillisecondsFrom1970(
+				Constants.TimeZoneNumber.Utc0,
+				true));
 		}
 
 		public int Write(
 			DateTimeOffset dateTimeOffset)
 		{
-			return this.Write(dateTimeOffset.MillisecondsFrom1970());
+			return this.Write(dateTimeOffset.MillisecondsFrom1970(
+				Constants.TimeZoneNumber.Utc0,
+				true));
 		}
 
 		public Span<byte> ReadBytes(

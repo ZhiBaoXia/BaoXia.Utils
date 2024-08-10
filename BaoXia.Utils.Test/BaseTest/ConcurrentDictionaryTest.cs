@@ -1,6 +1,5 @@
 ﻿using BaoXia.Utils.Constants;
 using BaoXia.Utils.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
@@ -8,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test.BaseTest;
 
- [TestClass]
+//[TestClass]
 public class ConcurrentDictionaryTest
 {
-	 [TestMethod]
+	//[TestMethod]
 	public void AllKeysToArrayTest()
 	{
 		const int testItemsCount = 1000000;

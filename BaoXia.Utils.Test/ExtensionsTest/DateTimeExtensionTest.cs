@@ -8,7 +8,6 @@ namespace BaoXia.Utils.Test.ExtensionsTest;
 [TestClass]
 public class DateTimeExtensionTest
 {
-
 	////////////////////////////////////////////////
 	// @自身实现
 	////////////////////////////////////////////////
@@ -74,15 +73,50 @@ public class DateTimeExtensionTest
 	[TestMethod]
 	public void MillisecondsFrom1970Test()
 	{
+		var dateTimeDefaultAtLocal = new DateTime(0, DateTimeKind.Local);
+		{
+			Assert.IsTrue(dateTimeDefaultAtLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
+		}
+		var dateTimeDefaultAtLocal_MillisecondsFrom1970
+			= dateTimeDefaultAtLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
+		var dateTimeFromMillisecondsFrom1970
+			= DateTimeUtil.DateTimeWithMillisecondsAfter1970(
+				dateTimeDefaultAtLocal_MillisecondsFrom1970);
+		{
+			Assert.IsTrue(dateTimeDefaultAtLocal == dateTimeFromMillisecondsFrom1970);
+		}
+
+
+		var dateTimeDefaultAtUtc = new DateTime(0, DateTimeKind.Utc);
+		{
+			Assert.IsTrue(dateTimeDefaultAtUtc.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
+		}
+		var dateTimeDefaultAtUtc_MillisecondsFrom1970 = dateTimeDefaultAtUtc.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
+		var dateTimeAtLocalFromMillisecondsFrom1970 = DateTimeUtil.DateTimeWithMillisecondsAfter1970(dateTimeDefaultAtUtc_MillisecondsFrom1970);
+		{
+			Assert.IsTrue((dateTimeAtLocalFromMillisecondsFrom1970 - dateTimeDefaultAtUtc) == TimeZoneInfo.Local.BaseUtcOffset);
+		}
+
+
+		////////////////////////////////////////////////
+		////////////////////////////////////////////////
+
+
 		var now = new DateTime(2024, 7, 10, 12, 0, 0);
-		var millisecondsFrom1970InUtc0 = now.MillisecondsFrom1970(TimeZoneNumber.Utc0);
+		var millisecondsFrom1970InUtc0 = now.MillisecondsFrom1970(TimeZoneNumber.Utc0, true);
 		{
 			Assert.IsTrue(millisecondsFrom1970InUtc0 == 1720584000000);
 		}
-		var millisecondsFrom1970InEast8 = now.MillisecondsFrom1970(TimeZoneNumber.East8);
+		var millisecondsFrom1970InEast8 = now.MillisecondsFrom1970(TimeZoneNumber.East8, true);
 		{
 			Assert.IsTrue((millisecondsFrom1970InEast8 - millisecondsFrom1970InUtc0)
 				== (1000 * 3600 * 8));
+		}
+		var now2 = DateTimeOffsetUtil.DateTimeOffsetWithMillisecondsAfter1970(
+			millisecondsFrom1970InEast8,
+			TimeZoneNumber.East8);
+		{
+			Assert.IsTrue(now2 == now);
 		}
 	}
 

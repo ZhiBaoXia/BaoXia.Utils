@@ -7,6 +7,16 @@ namespace BaoXia.Utils;
 public class DateTimeOffsetUtil
 {
 	////////////////////////////////////////////////
+	// @静态常量
+	////////////////////////////////////////////////
+
+	#region 静态常量
+
+	public static readonly DateTimeOffset DateTimeOffsetAtUTCZero = new(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+	#endregion
+
+	////////////////////////////////////////////////
 	// @类方法
 	////////////////////////////////////////////////
 
@@ -24,22 +34,33 @@ public class DateTimeOffsetUtil
 
 	public static long GetMillisecondsFrom1970OfDateTimeOffset(
 		DateTimeOffset dateTimeOffset,
-		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0)
+		TimeZoneNumber millisecondsZoneNumber,// = TimeZoneNumber.Utc0)
+		bool isMillisecondsMinValueZero)
 	{
-		var dateTimeInTimeZone = DateTimeOffsetUtil.DateTimeOffsetByConvertToTimeZone(
-			dateTimeOffset,
-			millisecondsZoneNumber);
-		var dateTimeZero = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.FromHours((int)millisecondsZoneNumber));
-		var milliseconds = (long)(dateTimeInTimeZone - dateTimeZero).TotalMilliseconds;
-		{ }
-		return milliseconds;
+		var ticks
+			= dateTimeOffset.Ticks
+			- dateTimeOffset.Offset.Ticks
+			- DateTimeOffsetAtUTCZero.Ticks
+			+ TimeSpan.TicksPerHour * (int)millisecondsZoneNumber;
+		var milliseconds
+			= ticks / TimeSpan.TicksPerMillisecond;
+		if (milliseconds < 0
+			&& isMillisecondsMinValueZero)
+		{
+			milliseconds = 0;
+		}
+		return (long)milliseconds;
 	}
 
 	public static long GetSecondsFrom1970OfDateTimeOffset(
 		DateTimeOffset dateTimeOffset,
-		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0)
+		TimeZoneNumber secondsZoneNumber,// = TimeZoneNumber.Utc0)
+		bool isSecondsMinValueZero)
 	{
-		return GetMillisecondsFrom1970OfDateTimeOffset(dateTimeOffset, secondsZoneNumber)
+		return GetMillisecondsFrom1970OfDateTimeOffset(
+			dateTimeOffset,
+			secondsZoneNumber,
+			isSecondsMinValueZero)
 			/ 1000;
 	}
 
@@ -47,17 +68,14 @@ public class DateTimeOffsetUtil
 		long milliseconds,
 		TimeZoneNumber millisecondsTimeZoneNumber = TimeZoneNumber.Utc0)
 	{
-		var dateTimeOffset
-			= new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
-			.AddMilliseconds(milliseconds);
-		var timeSpanToObjectTimeZone
-			= GetTimeSpanFromLocalToObjectTimeZone(
-				millisecondsTimeZoneNumber);
-		if (timeSpanToObjectTimeZone.Ticks == 0)
-		{
-			return dateTimeOffset;
-		}
-		dateTimeOffset = dateTimeOffset.Subtract(timeSpanToObjectTimeZone);
+		var ticks
+			= DateTimeOffsetAtUTCZero.Ticks
+			+ TimeSpan.TicksPerMillisecond * milliseconds
+			- TimeSpan.TicksPerHour * (int)millisecondsTimeZoneNumber;
+		var localTimeZoneBaseUtcOffset
+			= TimeZoneInfo.Local.BaseUtcOffset;
+		ticks += localTimeZoneBaseUtcOffset.Ticks;
+		var dateTimeOffset = new DateTimeOffset(ticks, localTimeZoneBaseUtcOffset);
 		{ }
 		return dateTimeOffset;
 	}

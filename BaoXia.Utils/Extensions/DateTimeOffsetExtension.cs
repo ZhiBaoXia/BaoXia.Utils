@@ -18,20 +18,24 @@ public static class DateTimeOffsetExtension
 	/// <returns>返回当前时间的UTC时间距离1970年1月1日零时的毫秒数。</returns>
 	public static long MillisecondsFrom1970(
 		this DateTimeOffset dateTimeOffset,
-		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0)
+		TimeZoneNumber millisecondsZoneNumber,// = TimeZoneNumber.Utc0)
+		bool isMillisecondsMinValueZero)
 	{
 		return DateTimeOffsetUtil.GetMillisecondsFrom1970OfDateTimeOffset(
 			dateTimeOffset,
-			millisecondsZoneNumber);
+			millisecondsZoneNumber,
+			isMillisecondsMinValueZero);
 	}
 
 	public static long SecondsFrom1970(
 		this DateTimeOffset dateTimeOffset,
-		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0)
+		TimeZoneNumber secondsZoneNumber,// = TimeZoneNumber.Utc0)
+		bool isSecondsMinValueZero)
 	{
 		return DateTimeOffsetUtil.GetSecondsFrom1970OfDateTimeOffset(
 			dateTimeOffset,
-			secondsZoneNumber);
+			secondsZoneNumber,
+			isSecondsMinValueZero);
 	}
 
 	/// <summary>

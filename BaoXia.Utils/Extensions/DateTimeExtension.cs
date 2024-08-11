@@ -19,8 +19,8 @@ public static class DateTimeExtension
 
 	public static long MillisecondsFrom1970(
 		this DateTime dateTime,
-		TimeZoneNumber millisecondsZoneNumber, // = TimeZoneNumber.Utc0
-		bool isMillisecondsMinZero)
+		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0,
+		bool isMillisecondsMinZero = true)
 	{
 		return DateTimeUtil.GetMillisecondsFrom1970OfDateTime(
 			dateTime,
@@ -30,8 +30,8 @@ public static class DateTimeExtension
 
 	public static long SecondsFrom1970(
 		this DateTime dateTime,
-		TimeZoneNumber secondsZoneNumber,// = TimeZoneNumber.Utc0)
-		bool isSecondsMinZero)
+		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0,
+		bool isSecondsMinZero = true)
 	{
 		return DateTimeUtil.GetSecondsFrom1970OfDateTime(
 			dateTime,

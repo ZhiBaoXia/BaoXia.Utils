@@ -34,8 +34,8 @@ public class DateTimeOffsetUtil
 
 	public static long GetMillisecondsFrom1970OfDateTimeOffset(
 		DateTimeOffset dateTimeOffset,
-		TimeZoneNumber millisecondsZoneNumber,// = TimeZoneNumber.Utc0)
-		bool isMillisecondsMinValueZero)
+		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0,
+		bool isMillisecondsMinValueZero = true)
 	{
 		var ticks
 			= dateTimeOffset.Ticks
@@ -54,8 +54,8 @@ public class DateTimeOffsetUtil
 
 	public static long GetSecondsFrom1970OfDateTimeOffset(
 		DateTimeOffset dateTimeOffset,
-		TimeZoneNumber secondsZoneNumber,// = TimeZoneNumber.Utc0)
-		bool isSecondsMinValueZero)
+		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0,
+		bool isSecondsMinValueZero = true)
 	{
 		return GetMillisecondsFrom1970OfDateTimeOffset(
 			dateTimeOffset,

@@ -36,8 +36,8 @@ public class DateTimeUtil
 
 	public static long GetMillisecondsFrom1970OfDateTime(
 		DateTime dateTime,
-		TimeZoneNumber millisecondsZoneNumber,// = TimeZoneNumber.Utc0,
-		bool isMillisecondsMinZero)
+		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0,
+		bool isMillisecondsMinZero = true)
 	{
 		long dateTimeTicks = dateTime.Ticks - DateTimeAtUTCZero.Ticks;
 		if (dateTime.Kind != DateTimeKind.Utc)
@@ -57,8 +57,8 @@ public class DateTimeUtil
 
 	public static long GetSecondsFrom1970OfDateTime(
 		DateTime dateTime,
-		TimeZoneNumber secondsZoneNumber,// = TimeZoneNumber.Utc0,
-		bool isMillisecondsMinZero)
+		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0,
+		bool isMillisecondsMinZero = true)
 	{
 		return GetMillisecondsFrom1970OfDateTime(
 			dateTime,

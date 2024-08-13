@@ -1,10 +1,8 @@
 ﻿using BaoXia.Utils.Cache.Index.Interfaces;
-using BaoXia.Utils.ConcurrentTools;
 using BaoXia.Utils.Extensions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Cache.Index;
 
@@ -273,185 +271,56 @@ public class ItemsIndexWith6Keys<ItemType,
 	////////////////////////////////////////////////
 
 	#region 实现”IDbSetMemoryCacheIndex“
-
-	public async Task CreateIndexOfItemsAsync(
-		IEnumerable<ItemType> items,
-		int tasksCountToCreateRecordIndexes)
+	public void UpdateIndexItemsByUpdateItemFrom(
+		ItemType? lastItem,
+		ItemType? currentItem)
 	{
-		// 临时使用“List”容器，加速缓存建立：
-		var tmpPrimaryIndexes
-			= new ConcurrentDictionary<
-				PrimaryIndexKeyType,
-				ConcurrentDictionary<SecondaryIndexKeyType,
-				ConcurrentDictionary<ThirdaryIndexKeyType,
-				ConcurrentDictionary<FourthIndexKeyType,
-				ConcurrentDictionary<FifthIndexKeyType,
-				ConcurrentDictionary<SixthIndexKeyType, List<ItemType>>>>>>>();
-		var tmpIndexesCreateQueue
-			= new ItemsConcurrentProcessQueue<ItemType>(tasksCountToCreateRecordIndexes);
-		foreach (var item in items)
+		var isLastItemValid = false;
+		PrimaryIndexKeyType lastPrimaryIndexKey = default!;
+		SecondaryIndexKeyType lastSecondaryIndexKey = default!;
+		ThirdaryIndexKeyType lastThirdaryIndexKey = default!;
+		FourthIndexKeyType lastFourthIndexKey = default!;
+		FifthIndexKeyType lastFifthIndexKey = default!;
+		SixthIndexKeyType lastSixthIndexKey = default!;
+		if (!EqualityComparer<ItemType>.Default.Equals(lastItem, default))
 		{
-			tmpIndexesCreateQueue.ProcessItem(
-				item,
-				(itemNeedProcess) =>
-				{
-					var primaryIndexKey = toGetPrimaryIndexKeyOfItem(itemNeedProcess);
-					var secondaryIndexes = tmpPrimaryIndexes.GetOrAdd(
-						primaryIndexKey,
-						(_) => []);
-					var secondaryIndexKey = toGetSecondaryIndexKeyOfItem(itemNeedProcess);
-					var thirdaryIndexes = secondaryIndexes.GetOrAdd(
-						secondaryIndexKey,
-						(_) => []);
-					var thirdaryIndexKey = toGetThirdaryIndexKeyOfItem(itemNeedProcess);
-					var fourthIndexes = thirdaryIndexes.GetOrAdd(
-						thirdaryIndexKey,
-						(_) => []);
-					var fourthIndexKey = toGetFourthIndexKeyOfItem(itemNeedProcess);
-					var fifthIndexes = fourthIndexes.GetOrAdd(
-						fourthIndexKey,
-						(_) => []);
-					var fifthIndexKey = toGetFifthIndexKeyOfItem(itemNeedProcess);
-					var sixthIndexes = fifthIndexes.GetOrAdd(
-						fifthIndexKey,
-						(_) => []);
-					var sixthIndexKey = toGetSixthIndexKeyOfItem(itemNeedProcess);
-					var tmpItemIndexNodeBuffer = sixthIndexes.GetOrAdd(
-						sixthIndexKey,
-						(_) => []);
-					////////////////////////////////////////////////
-					// !!!
-					lock (tmpItemIndexNodeBuffer)
-					{
-						tmpItemIndexNodeBuffer.InsertWithOrderDescending(
-							item,
-							toGetOrderOfIndexItems);
-					}
-					// !!!
-					////////////////////////////////////////////////
-				});
+			isLastItemValid = true;
+			lastPrimaryIndexKey = toGetPrimaryIndexKeyOfItem(lastItem!);
+			lastSecondaryIndexKey = toGetSecondaryIndexKeyOfItem(lastItem!);
+			lastThirdaryIndexKey = toGetThirdaryIndexKeyOfItem(lastItem!);
+			lastFourthIndexKey = toGetFourthIndexKeyOfItem(lastItem!);
+			lastFifthIndexKey = toGetFifthIndexKeyOfItem(lastItem!);
+			lastSixthIndexKey = toGetSixthIndexKeyOfItem(lastItem!);
 		}
-		////////////////////////////////////////////////
-		// !!!
-		await tmpIndexesCreateQueue.WhenAll();
-		// !!!
-		////////////////////////////////////////////////
-
-
-		var primaryIndexKeyQueue
-			= new ItemsConcurrentProcessQueue<PrimaryIndexKeyType>(tasksCountToCreateRecordIndexes);
-		var allPrimaryIndexKeys = tmpPrimaryIndexes.Keys;
-		foreach (var primaryIndexKey in allPrimaryIndexKeys)
-		{
-			var primaryIndexKeyNeedCreate = primaryIndexKey;
-			primaryIndexKeyQueue.ProcessItem(
-				primaryIndexKey,
-				(primaryIndexKey) =>
-				{
-					if (tmpPrimaryIndexes.TryGetValue(
-						primaryIndexKey,
-						out var tmpSecondaryIndexes))
-					{
-						var secondaryIndexes
-							= PrimaryIndexes.GetOrAdd(
-								primaryIndexKeyNeedCreate,
-								(_) => []);
-						foreach (var tmpSecondaryIndexInfo in tmpSecondaryIndexes)
-						{
-							var secondaryIndexKey = tmpSecondaryIndexInfo.Key;
-							var thirdaryIndexes = secondaryIndexes.GetOrAdd(
-								secondaryIndexKey,
-								(_) => []);
-							var tmpThirdaryIndexes = tmpSecondaryIndexInfo.Value;
-							foreach (var tmpThirdaryIndexInfo in tmpThirdaryIndexes)
-							{
-								var thirdaryIndexKey = tmpThirdaryIndexInfo.Key;
-								var fourthIndexes = thirdaryIndexes.GetOrAdd(
-									thirdaryIndexKey,
-									(_) => []);
-								var tmpFourthIndexes = tmpThirdaryIndexInfo.Value;
-								foreach (var tmpFourthIndexInfo in tmpFourthIndexes)
-								{
-									var fourthIndexKey = tmpFourthIndexInfo.Key;
-									var fifthIndexes = fourthIndexes.GetOrAdd(
-										fourthIndexKey,
-										(_) => []);
-									var tmpFifthIndexes = tmpFourthIndexInfo.Value;
-									foreach (var tmpFifthIndexInfo in tmpFifthIndexes)
-									{
-										var fifthIndexKey = tmpFifthIndexInfo.Key;
-										var sixthIndexes = fifthIndexes.GetOrAdd(
-											fifthIndexKey,
-											(_) => []);
-										var tmpSixthIndexes = tmpFifthIndexInfo.Value;
-										foreach (var tmpSixthIndexInfo in tmpSixthIndexes)
-										{
-											////////////////////////////////////////////////
-											// !!!
-											sixthIndexes.AddOrUpdateWithNewValue(
-												tmpSixthIndexInfo.Key,
-												new([.. tmpSixthIndexInfo.Value]));
-											// !!!
-											////////////////////////////////////////////////
-										}
-									}
-								}
-							}
-						}
-					}
-				});
-		}
-		////////////////////////////////////////////////
-		// !!!
-		await primaryIndexKeyQueue.WhenAll();
-		// !!!
-		////////////////////////////////////////////////
-	}
-
-	public void UpdateIndexItemsByInsertItem(ItemType item)
-	{
-		UpdateIndexItemsWithPrimaryIndexKey(
-			toGetPrimaryIndexKeyOfItem(item),
-			toGetSecondaryIndexKeyOfItem(item),
-			toGetThirdaryIndexKeyOfItem(item),
-			toGetFourthIndexKeyOfItem(item),
-			toGetFifthIndexKeyOfItem(item),
-			toGetSixthIndexKeyOfItem(item),
-			(indexItems) =>
-			{
-				indexItems = indexItems.ArrayByInsertWithOrder(
-					item,
-					toGetOrderOfIndexItems);
-				{ }
-				return indexItems;
-			});
-	}
-
-	public void UpdateIndexItemsByUpdateItemFrom(ItemType lastItem, ItemType currentItem)
-	{
-		var lastPrimaryIndexKey = toGetPrimaryIndexKeyOfItem(lastItem);
-		var lastSecondaryIndexKey = toGetSecondaryIndexKeyOfItem(lastItem);
-		var lastThirdaryIndexKey = toGetThirdaryIndexKeyOfItem(lastItem);
-		var lastFourthIndexKey = toGetFourthIndexKeyOfItem(lastItem);
-		var lastFifthIndexKey = toGetFifthIndexKeyOfItem(lastItem);
-		var lastSixthIndexKey = toGetSixthIndexKeyOfItem(lastItem);
 		//
-		var currentPrimaryIndexKey = toGetPrimaryIndexKeyOfItem(currentItem);
-		var currentSecondaryIndexKey = toGetSecondaryIndexKeyOfItem(currentItem);
-		var currentThirdaryIndexKey = toGetThirdaryIndexKeyOfItem(currentItem);
-		var currentFourthIndexKey = toGetFourthIndexKeyOfItem(currentItem);
-		var currentFifthIndexKey = toGetFifthIndexKeyOfItem(currentItem);
-		var currentSixthIndexKey = toGetSixthIndexKeyOfItem(currentItem);
+		var isCurrentItemValid = false;
+		PrimaryIndexKeyType currentPrimaryIndexKey = default!;
+		SecondaryIndexKeyType currentSecondaryIndexKey = default!;
+		ThirdaryIndexKeyType currentThirdaryIndexKey = default!;
+		FourthIndexKeyType currentFourthIndexKey = default!;
+		FifthIndexKeyType currentFifthIndexKey = default!;
+		SixthIndexKeyType currentSixthIndexKey = default!;
+		if (!EqualityComparer<ItemType>.Default.Equals(currentItem, default))
+		{
+			isCurrentItemValid = true;
+			currentPrimaryIndexKey = toGetPrimaryIndexKeyOfItem(currentItem!);
+			currentSecondaryIndexKey = toGetSecondaryIndexKeyOfItem(currentItem!);
+			currentThirdaryIndexKey = toGetThirdaryIndexKeyOfItem(currentItem!);
+			currentFourthIndexKey = toGetFourthIndexKeyOfItem(currentItem!);
+			currentFifthIndexKey = toGetFifthIndexKeyOfItem(currentItem!);
+			currentSixthIndexKey = toGetSixthIndexKeyOfItem(currentItem!);
+		}
 
 		////////////////////////////////////////////////
 		// 1/2，移除旧的索引：
 		////////////////////////////////////////////////
-		if (!lastPrimaryIndexKey.Equals(currentPrimaryIndexKey)
+		if (isLastItemValid
+			&& (!lastPrimaryIndexKey.Equals(currentPrimaryIndexKey)
 			|| !lastSecondaryIndexKey.Equals(currentSecondaryIndexKey)
 			|| !lastThirdaryIndexKey.Equals(currentThirdaryIndexKey)
 			|| !lastFourthIndexKey.Equals(currentFourthIndexKey)
 			|| !lastFifthIndexKey.Equals(currentFifthIndexKey)
-			|| !lastSixthIndexKey.Equals(currentSixthIndexKey))
+			|| !lastSixthIndexKey.Equals(currentSixthIndexKey)))
 		{
 			UpdateIndexItemsWithPrimaryIndexKey(
 				lastPrimaryIndexKey,
@@ -468,7 +337,7 @@ public class ItemsIndexWith6Keys<ItemType,
 					indexItemIndex++)
 					{
 						var indexItem = indexItems[indexItemIndex];
-						if (toEqualItems(indexItem, lastItem))
+						if (toEqualItems(indexItem, lastItem!))
 						{
 							// !!!
 							indexItems = indexItems.ArrayByRemoveAt(indexItemIndex);
@@ -485,66 +354,42 @@ public class ItemsIndexWith6Keys<ItemType,
 		// 注意：此时可能实体的其他属性发生了变化，
 		// 因此无论索引关键字是否发生变化，都应当进行更新：
 		////////////////////////////////////////////////
-		UpdateIndexItemsWithPrimaryIndexKey(
-			currentPrimaryIndexKey,
-			currentSecondaryIndexKey,
-			currentThirdaryIndexKey,
-			currentFourthIndexKey,
-			currentFifthIndexKey,
-			currentSixthIndexKey,
-			(indexItems) =>
-			{
-				var indexItemIndex = 0;
-				for (;
-				indexItemIndex < indexItems.Length;
-				indexItemIndex++)
+		if (isCurrentItemValid)
+		{
+			UpdateIndexItemsWithPrimaryIndexKey(
+				currentPrimaryIndexKey,
+				currentSecondaryIndexKey,
+				currentThirdaryIndexKey,
+				currentFourthIndexKey,
+				currentFifthIndexKey,
+				currentSixthIndexKey,
+				(indexItems) =>
 				{
-					var indexItem = indexItems[indexItemIndex];
-					if (toEqualItems(indexItem, currentItem))
+					var indexItemIndex = 0;
+					for (;
+					indexItemIndex < indexItems.Length;
+					indexItemIndex++)
 					{
-						// !!!
-						indexItems[indexItemIndex] = currentItem;
-						break;
-						// !!!
+						var indexItem = indexItems[indexItemIndex];
+						if (toEqualItems(indexItem, currentItem!))
+						{
+							// !!!
+							indexItems[indexItemIndex] = currentItem!;
+							break;
+							// !!!
+						}
 					}
-				}
-				if (indexItemIndex >= indexItems.Length)
-				{
-					indexItems = indexItems.ArrayByInsertWithOrderDescending(
-						currentItem,
-						toGetOrderOfIndexItems);
-				}
-				return indexItems;
-			});
+					if (indexItemIndex >= indexItems.Length)
+					{
+						indexItems = indexItems.ArrayByInsertWithOrderDescending(
+							currentItem!,
+							toGetOrderOfIndexItems);
+					}
+					return indexItems;
+				});
+		}
 	}
 
-	public void UpdateIndexItemsByRemoveItem(ItemType item)
-	{
-		UpdateIndexItemsWithPrimaryIndexKey(
-			toGetPrimaryIndexKeyOfItem(item),
-			toGetSecondaryIndexKeyOfItem(item),
-			toGetThirdaryIndexKeyOfItem(item),
-			toGetFourthIndexKeyOfItem(item),
-			toGetFifthIndexKeyOfItem(item),
-			toGetSixthIndexKeyOfItem(item),
-			(indexItems) =>
-			{
-				for (var indexItemIndex = 0;
-				indexItemIndex < indexItems.Length;
-				indexItemIndex++)
-				{
-					var indexItem = indexItems[indexItemIndex];
-					if (toEqualItems(indexItem, item))
-					{
-						// !!!
-						indexItems = indexItems.ArrayByRemoveAt(indexItemIndex);
-						break;
-						// !!!
-					}
-				}
-				return indexItems;
-			});
-	}
 
 	public void Clear()
 	{

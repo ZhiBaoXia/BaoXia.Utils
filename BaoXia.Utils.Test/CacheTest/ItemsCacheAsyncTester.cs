@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test.CacheTest;
 
-public class ItemsCacheAsyncTester<ItemIdType> where ItemIdType : IComparable
+public class ItemsCacheAsyncTester<ItemIdType>(
+	string testName,
+	Func<ItemIdType> toDidCreateItemId) where ItemIdType : IComparable
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -18,9 +20,9 @@ public class ItemsCacheAsyncTester<ItemIdType> where ItemIdType : IComparable
 
 	#region 自身属性
 
-	protected string _testName;
+	protected string _testName = testName;
 
-	protected Func<ItemIdType> _toDidCreateItemId;
+	protected Func<ItemIdType> _toDidCreateItemId = toDidCreateItemId;
 
 	protected readonly ItemsCacheAsync<ItemIdType, CacheItem<ItemIdType>, object> _itemsCache = new(
 		async (itemId, _) =>
@@ -31,10 +33,8 @@ public class ItemsCacheAsyncTester<ItemIdType> where ItemIdType : IComparable
 			}
 			return item;
 		},
-		async (listKey, lastList, currentList, listOperation) =>
-		{
-			return await Task.FromResult(currentList);
-		},
+		null,
+		null,
 		() => CacheTestConfig.NoneReadSecondsToClearItemCache);
 
 	#endregion
@@ -45,14 +45,6 @@ public class ItemsCacheAsyncTester<ItemIdType> where ItemIdType : IComparable
 	////////////////////////////////////////////////
 
 	#region 自身实现
-
-	public ItemsCacheAsyncTester(
-		string testName,
-		Func<ItemIdType> toDidCreateItemId)
-	{
-		_testName = testName;
-		_toDidCreateItemId = toDidCreateItemId;
-	}
 
 	public void AddUpdateAndQueryTest()
 	{
@@ -139,7 +131,7 @@ public class ItemsCacheAsyncTester<ItemIdType> where ItemIdType : IComparable
 					Thread.Sleep((int)(1000 * CacheTestConfig.InsertTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll(requestTasks.ToArray());
+				Task.WaitAll([.. requestTasks]);
 			}));
 
 			testTasks.Add(Task.Run(() =>
@@ -155,11 +147,11 @@ public class ItemsCacheAsyncTester<ItemIdType> where ItemIdType : IComparable
 					Thread.Sleep((int)(1000 * CacheTestConfig.QueryTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll(requestTasks.ToArray());
+				Task.WaitAll([.. requestTasks]);
 			}));
 
 			// !!!
-			Task.WaitAll(testTasks.ToArray());
+			Task.WaitAll([.. testTasks]);
 			// !!!
 		}
 
@@ -215,7 +207,7 @@ public class ItemsCacheAsyncTester<ItemIdType> where ItemIdType : IComparable
 			}
 		}
 		// !!!
-		Task.WaitAll(tasksToGet.ToArray());
+		Task.WaitAll([.. tasksToGet]);
 		// !!!
 
 		var now = DateTime.Now;
@@ -336,7 +328,7 @@ public class ItemsCacheAsyncTester<ItemIdType> where ItemIdType : IComparable
 					Thread.Sleep((int)(1000 * CacheTestConfig.InsertTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll(requestTasks.ToArray());
+				Task.WaitAll([.. requestTasks]);
 			}));
 
 			testTasks.Add(Task.Run(() =>
@@ -352,11 +344,11 @@ public class ItemsCacheAsyncTester<ItemIdType> where ItemIdType : IComparable
 					Thread.Sleep((int)(1000 * CacheTestConfig.QueryTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll(requestTasks.ToArray());
+				Task.WaitAll([.. requestTasks]);
 			}));
 
 			// !!!
-			Task.WaitAll(testTasks.ToArray());
+			Task.WaitAll([.. testTasks]);
 			// !!!
 		}
 

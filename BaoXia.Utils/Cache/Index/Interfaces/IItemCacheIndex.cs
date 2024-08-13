@@ -22,17 +22,9 @@ public interface IItemCacheIndex<ItemType>
 
 	#region 自身实现
 
-	public Task CreateIndexOfItemsAsync(
-	    IEnumerable<ItemType> items,
-	    int tasksCountToCreateRecordIndexes);
-
-	public void UpdateIndexItemsByInsertItem(ItemType itemInserted);
-
 	public void UpdateIndexItemsByUpdateItemFrom(
-	    ItemType lastItem,
-	    ItemType currentItem);
-
-	public void UpdateIndexItemsByRemoveItem(ItemType itemDeleted);
+	    ItemType? lastItem,
+	    ItemType? currentItem);
 
 	public void Clear();
 

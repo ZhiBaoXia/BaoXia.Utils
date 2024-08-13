@@ -98,99 +98,32 @@ public class ItemsIndexWith1Key<ItemType, PrimaryIndexKeyType>(
 
 	#region 实现”IDbSetMemoryCacheIndex“
 
-	public async Task CreateIndexOfItemsAsync(
-		IEnumerable<ItemType> items,
-		int tasksCountToCreateRecordIndexes)
+	public void UpdateIndexItemsByUpdateItemFrom(
+		ItemType? lastItem,
+		ItemType? currentItem)
 	{
-		// 临时使用“List”容器，加速缓存建立：
-		var tmpPrimaryIndexes
-			= new ConcurrentDictionary<
-				PrimaryIndexKeyType, List<ItemType>>();
-		var tmpIndexesCreateQueue
-			= new ItemsConcurrentProcessQueue<ItemType>(tasksCountToCreateRecordIndexes);
-		foreach (var item in items)
+		var isLastItemValid = false;
+		PrimaryIndexKeyType lastPrimaryIndexKey = default!;
+		if (!EqualityComparer<ItemType>.Default.Equals(lastItem, default))
 		{
-			tmpIndexesCreateQueue.ProcessItem(
-				item,
-				(itemNeedProcess) =>
-				{
-					var primaryIndexKey = toGetPrimaryIndexKeyOfItem(itemNeedProcess);
-					var tmpItemIndexNodeBuffer = tmpPrimaryIndexes.GetOrAdd(
-						primaryIndexKey,
-						(_) => []);
-					////////////////////////////////////////////////
-					// !!!
-					lock (tmpItemIndexNodeBuffer)
-					{
-						tmpItemIndexNodeBuffer.InsertWithOrderDescending(
-							item,
-							toGetOrderOfIndexItems);
-					}
-					// !!!
-					////////////////////////////////////////////////
-				});
+			isLastItemValid = true;
+			lastPrimaryIndexKey = toGetPrimaryIndexKeyOfItem(lastItem!);
 		}
-		////////////////////////////////////////////////
-		// !!!
-		await tmpIndexesCreateQueue.WhenAll();
-		// !!!
-		////////////////////////////////////////////////
-
-
-		var primaryIndexKeyQueue
-			= new ItemsConcurrentProcessQueue<PrimaryIndexKeyType>(tasksCountToCreateRecordIndexes);
-		var allPrimaryIndexKeys = tmpPrimaryIndexes.Keys;
-		foreach (var primaryIndexKey in allPrimaryIndexKeys)
-		{
-			primaryIndexKeyQueue.ProcessItem(
-				primaryIndexKey,
-				(primaryIndexKey) =>
-				{
-					if (tmpPrimaryIndexes.TryGetValue(
-						primaryIndexKey,
-						out var tmpItemIndexNodeBuffer))
-					{
-						////////////////////////////////////////////////
-						// !!!
-						PrimaryIndexes.AddOrUpdateWithNewValue(
-							primaryIndexKey,
-							new([.. tmpItemIndexNodeBuffer]));
-						// !!!
-						////////////////////////////////////////////////
-					}
-				});
-		}
-		////////////////////////////////////////////////
-		// !!!
-		await primaryIndexKeyQueue.WhenAll();
-		// !!!
-		////////////////////////////////////////////////
-	}
-
-	public void UpdateIndexItemsByInsertItem(ItemType item)
-	{
-		UpdateIndexItemsWithPrimaryIndexKey(
-			toGetPrimaryIndexKeyOfItem(item),
-			(indexItems) =>
-			{
-				indexItems = indexItems.ArrayByInsertWithOrder(
-					item,
-					toGetOrderOfIndexItems);
-				{ }
-				return indexItems;
-			});
-	}
-
-	public void UpdateIndexItemsByUpdateItemFrom(ItemType lastItem, ItemType currentItem)
-	{
-		var lastPrimaryIndexKey = toGetPrimaryIndexKeyOfItem(lastItem);
 		//
-		var currentPrimaryIndexKey = toGetPrimaryIndexKeyOfItem(currentItem);
+		var isCurrentItemValid = false;
+		PrimaryIndexKeyType currentPrimaryIndexKey = default!;
+		if (!EqualityComparer<ItemType>.Default.Equals(currentItem, default))
+		{
+			isCurrentItemValid = true;
+			currentPrimaryIndexKey = toGetPrimaryIndexKeyOfItem(currentItem!);
+		}
+
 
 		////////////////////////////////////////////////
 		// 1/2，移除旧的索引：
 		////////////////////////////////////////////////
-		if (!lastPrimaryIndexKey.Equals(currentPrimaryIndexKey))
+		if (isLastItemValid
+			&& !lastPrimaryIndexKey.Equals(currentPrimaryIndexKey))
 		{
 			UpdateIndexItemsWithPrimaryIndexKey(
 				lastPrimaryIndexKey,
@@ -201,7 +134,7 @@ public class ItemsIndexWith1Key<ItemType, PrimaryIndexKeyType>(
 					indexItemIndex++)
 					{
 						var indexItem = indexItems[indexItemIndex];
-						if (toEqualItems(indexItem, lastItem))
+						if (toEqualItems(indexItem, lastItem!))
 						{
 							// !!!
 							indexItems = indexItems.ArrayByRemoveAt(indexItemIndex);
@@ -217,55 +150,35 @@ public class ItemsIndexWith1Key<ItemType, PrimaryIndexKeyType>(
 		// 2/2，更新新的索引，
 		// 注意：此时可能实体的其他属性发生了变化，
 		// 因此无论索引关键字是否发生变化，都应当进行更新：
-		UpdateIndexItemsWithPrimaryIndexKey(
-			currentPrimaryIndexKey,
-			(indexItems) =>
-			{
-				var indexItemIndex = 0;
-				for (;
-				indexItemIndex < indexItems.Length;
-				indexItemIndex++)
+		if (isCurrentItemValid)
+		{
+			UpdateIndexItemsWithPrimaryIndexKey(
+				currentPrimaryIndexKey,
+				(indexItems) =>
 				{
-					var indexItem = indexItems[indexItemIndex];
-					if (toEqualItems(indexItem, currentItem))
+					var indexItemIndex = 0;
+					for (;
+					indexItemIndex < indexItems.Length;
+					indexItemIndex++)
 					{
-						// !!!
-						indexItems[indexItemIndex] = currentItem;
-						break;
-						// !!!
+						var indexItem = indexItems[indexItemIndex];
+						if (toEqualItems(indexItem, currentItem!))
+						{
+							// !!!
+							indexItems[indexItemIndex] = currentItem!;
+							break;
+							// !!!
+						}
 					}
-				}
-				if (indexItemIndex >= indexItems.Length)
-				{
-					indexItems = indexItems.ArrayByInsertWithOrderDescending(
-						currentItem,
-						toGetOrderOfIndexItems);
-				}
-				return indexItems;
-			});
-	}
-
-	public void UpdateIndexItemsByRemoveItem(ItemType item)
-	{
-		UpdateIndexItemsWithPrimaryIndexKey(
-			toGetPrimaryIndexKeyOfItem(item),
-			(indexItems) =>
-			{
-				for (var indexItemIndex = 0;
-				indexItemIndex < indexItems.Length;
-				indexItemIndex++)
-				{
-					var indexItem = indexItems[indexItemIndex];
-					if (toEqualItems(indexItem, item))
+					if (indexItemIndex >= indexItems.Length)
 					{
-						// !!!
-						indexItems = indexItems.ArrayByRemoveAt(indexItemIndex);
-						break;
-						// !!!
+						indexItems = indexItems.ArrayByInsertWithOrderDescending(
+							currentItem!,
+							toGetOrderOfIndexItems);
 					}
-				}
-				return indexItems;
-			});
+					return indexItems;
+				});
+		}
 	}
 
 	public void Clear()

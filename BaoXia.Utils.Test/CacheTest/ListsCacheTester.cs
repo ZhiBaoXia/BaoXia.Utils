@@ -56,10 +56,8 @@ namespace BaoXia.Utils.Test.CacheTest
 				}
 				return list;
 			},
-			(listKey, lastList, currentList, itemCacheOperation) =>
-			{
-				return currentList;
-			},
+			null,
+			null,
 			() => CacheTestConfig.NoneReadSecondsToClearItemCache);
 
 		#endregion

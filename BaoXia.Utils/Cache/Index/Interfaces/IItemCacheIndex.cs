@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace BaoXia.Utils.Cache.Index.Interfaces;
+﻿namespace BaoXia.Utils.Cache.Index.Interfaces;
 
 public interface IItemCacheIndex<ItemType>
 {
@@ -22,17 +19,9 @@ public interface IItemCacheIndex<ItemType>
 
 	#region 自身实现
 
-	public Task CreateIndexOfItemsAsync(
-	    IEnumerable<ItemType> items,
-	    int tasksCountToCreateRecordIndexes);
-
-	public void UpdateIndexItemsByInsertItem(ItemType itemInserted);
-
 	public void UpdateIndexItemsByUpdateItemFrom(
-	    ItemType lastItem,
-	    ItemType currentItem);
-
-	public void UpdateIndexItemsByRemoveItem(ItemType itemDeleted);
+	    ItemType? lastItem,
+	    ItemType? currentItem);
 
 	public void Clear();
 

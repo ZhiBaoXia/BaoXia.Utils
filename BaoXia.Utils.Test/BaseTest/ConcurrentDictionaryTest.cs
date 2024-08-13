@@ -11,7 +11,7 @@ namespace BaoXia.Utils.Test.BaseTest;
 public class ConcurrentDictionaryTest
 {
 	//[TestMethod]
-	public void AllKeysToArrayTest()
+	public static void AllKeysToArrayTest()
 	{
 		const int testItemsCount = 1000000;
 		var random = new System.Random();

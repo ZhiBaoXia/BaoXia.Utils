@@ -37,10 +37,8 @@ public class ItemsCacheTester<ItemIdType>(
 			}
 			return item;
 		},
-		(listKey, lastList, currentList, itemCacheOperation) =>
-		{
-			return currentList;
-		},
+		null,
+		null,
 		() => CacheTestConfig.NoneReadSecondsToClearItemCache);
 
 	#endregion
@@ -251,13 +249,17 @@ public class ItemsCacheTester<ItemIdType>(
 				testRecorder.BeginTest(itemId.ToString()!);
 				////////////////////////////////////////////////
 				_itemsCache.Add(
-				 itemId,
-				 new CacheItem<ItemIdType>()
-				 {
-					 Id = itemId,
-					 Title = "元素（" + itemId + "）"
-				 });
+					 itemId,
+					 new CacheItem<ItemIdType>()
+					 {
+						 Id = itemId,
+						 Title = "元素（" + itemId + "）"
+					 });
 				itemIdsAdded.Add(itemId);
+				//if (_itemsCache.TryGet(itemId, out _) == false)
+				//{
+				//	Assert.Fail();
+				//}
 				////////////////////////////////////////////////
 				testRecorder.EndTest();
 				testRecorders_Insert.AddRecorder(testRecorder);

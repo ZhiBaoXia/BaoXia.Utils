@@ -30,7 +30,7 @@ public class StringUtil
 		return !StringUtil.IsEmpty(str);
 	}
 
-	public static bool IsBlank([NotNullWhen(false)] string? str)
+	public static bool IsWhiteSpace([NotNullWhen(false)] string? str)
 	{
 		if (string.IsNullOrWhiteSpace(str))
 		{
@@ -39,9 +39,9 @@ public class StringUtil
 		return false;
 	}
 
-	public static bool IsNotBlank([NotNullWhen(true)] string? str)
+	public static bool IsNotWhiteSpace([NotNullWhen(true)] string? str)
 	{
-		return !StringUtil.IsBlank(str);
+		return !StringUtil.IsWhiteSpace(str);
 	}
 
 	public static bool IsIntegralNumber([NotNullWhen(true)] string? str)

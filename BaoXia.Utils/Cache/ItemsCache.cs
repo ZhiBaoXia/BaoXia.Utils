@@ -9,8 +9,9 @@ using System.Threading;
 
 namespace BaoXia.Utils.Cache;
 
-public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType> : IDisposable
-		where ItemKeyType : notnull
+public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
+	: IDisposable
+	where ItemKeyType : notnull
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -67,6 +68,9 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType> : IDisp
 	public Func<ItemKeyType, ItemCacheCreateParamType?, ItemType?> ToDidCreateItemCache { get; set; }
 
 	public Action<IEnumerable<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>>>? ToDidCreateItemsCache { get; set; }
+
+
+	public Func<ItemKeyType, ItemType?, ItemType?, ItemType?>? ToWillUpdateItemCache { get; set; }
 
 	public Action<ItemKeyType, ItemType?, ItemType?>? ToDidItemCacheUpdated { get; set; }
 
@@ -850,6 +854,13 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType> : IDisp
 		item = default;
 		// !!!
 		return true;
+	}
+	protected virtual ItemType? DidWillUpdateItemCache(
+		ItemKeyType itemKey,
+		ItemType? lastItem,
+		ItemType? currentItem)
+	{
+		return currentItem;
 	}
 
 	protected virtual void DidItemCacheUpdated(

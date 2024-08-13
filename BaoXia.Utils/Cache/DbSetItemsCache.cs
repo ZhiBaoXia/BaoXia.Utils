@@ -9,7 +9,7 @@ namespace BaoXia.Utils.Cache;
 /// </summary>
 public class DbSetItemsCache<ItemGroupKeyType, ItemKeyType, ItemType>(
 	    Func<ItemGroupKeyType, DbSet<ItemType>?, ItemType[]?> didCreateItemListCache,
-	    Action<ItemGroupKeyType, ItemType[]?, ItemType[]?, ItemCacheOperation> didItemListUpdated,
+	    Action<ItemGroupKeyType, ItemType[]?, ItemType[]?> didItemListUpdated,
 	    Func<double> didGetNoneReadSecondsToRemoveItemListCache,
 	    //
 	    Func<ItemKeyType, DbSet<ItemType>?, ItemType?> didCreateItemCache,
@@ -41,7 +41,7 @@ public class DbSetItemsCache<ItemGroupKeyType, ItemKeyType, ItemType>(
 
 	public DbSetItemsCache(
 	    Func<ItemGroupKeyType, DbSet<ItemType>?, ItemType[]?> didCreateItemListCache,
-	    Action<ItemGroupKeyType, ItemType[]?, ItemType[]?, ItemCacheOperation> didItemListUpdated,
+	    Action<ItemGroupKeyType, ItemType[]?, ItemType[]?> didItemListUpdated,
 	    //
 	    Func<ItemKeyType, DbSet<ItemType>?, ItemType?> didCreateItemCache,
 	    //

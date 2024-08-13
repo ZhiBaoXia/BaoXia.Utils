@@ -28,7 +28,7 @@ namespace BaoXia.Utils.Cache
 
 		public DbSetItemsCacheAsync(
 		    Func<ItemGroupKeyType, DbSet<ItemType>?, Task<ItemType[]?>> didCreateItemListCache,
-		    Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, ItemCacheOperation, Task<ItemType[]?>> didItemListUpdatedAsync,
+		    Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, Task<ItemType[]?>> didItemListUpdatedAsync,
 		    Func<double>? toDidGetIntervalSecondsToCleanItemListCache,
 		    Func<double> didGetNoneReadSecondsToRemoveItemListCache,
 		    //
@@ -51,7 +51,7 @@ namespace BaoXia.Utils.Cache
 
 		public DbSetItemsCacheAsync(
 		    Func<ItemGroupKeyType, DbSet<ItemType>?, Task<ItemType[]?>> didCreateItemListCache,
-		    Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, ItemCacheOperation, Task<ItemType[]?>> didItemListUpdatedAsync,
+		    Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, Task<ItemType[]?>> didItemListUpdatedAsync,
 		    //
 		    Func<double>? toDidGetIntervalSecondsToCleanItemListCache,
 		    Func<ItemKeyType, DbSet<ItemType>?, Task<ItemType?>> didCreateItemCache,

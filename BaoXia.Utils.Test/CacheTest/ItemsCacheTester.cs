@@ -37,7 +37,7 @@ public class ItemsCacheTester<ItemIdType>(
 			}
 			return item;
 		},
-		(listKey, lastList, currentList, itemCacheOperation) =>
+		(listKey, lastList, currentList) =>
 		{ },
 		() => CacheTestConfig.NoneReadSecondsToClearItemCache);
 

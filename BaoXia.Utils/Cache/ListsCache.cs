@@ -9,7 +9,7 @@ namespace BaoXia.Utils.Cache;
 /// </summary>
 public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 	    Func<ListKeyType, CreateListCacheParamType?, ListItemType[]?> didCreateList,
-	    Action<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation>? didListUpdated,
+	    Action<ListKeyType, ListItemType[]?, ListItemType[]?>? didListUpdated,
 	    Func<double>? toDidGetIntervalSecondsToCleanItemCache,
 	    Func<double>? didGetNoneReadSecondsToRemoveListCache,
 	    Func<double>? didGetNoneUpdateSecondsToUpdateItemCache,
@@ -46,7 +46,7 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 
 	public ListsCache(
 		Func<ListKeyType, CreateListCacheParamType?, ListItemType[]?> didCreateList,
-	    Action<ListKeyType, ListItemType[]?, ListItemType[]?, ItemCacheOperation>? didListUpdated,
+	    Action<ListKeyType, ListItemType[]?, ListItemType[]?>? didListUpdated,
 		Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
 		Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
 		Func<int>? toDidGetThreadsCountToCreateItemAsync = null)
@@ -163,8 +163,7 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 			DidItemCacheUpdated(
 				listKey,
 				lastList,
-				currentList,
-				ItemCacheOperation.Update);
+				currentList);
 			// !!!
 		}
 		return currentList;
@@ -217,8 +216,7 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 					DidItemCacheUpdated(
 						listKey,
 						lastList,
-						currentList,
-						ItemCacheOperation.Update);
+						currentList);
 					// !!!
 				}
 			}

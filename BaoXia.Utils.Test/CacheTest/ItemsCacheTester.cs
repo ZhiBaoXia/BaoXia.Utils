@@ -38,9 +38,7 @@ public class ItemsCacheTester<ItemIdType>(
 			return item;
 		},
 		(listKey, lastList, currentList, itemCacheOperation) =>
-		{
-			return currentList;
-		},
+		{ },
 		() => CacheTestConfig.NoneReadSecondsToClearItemCache);
 
 	#endregion

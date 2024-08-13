@@ -1,5 +1,4 @@
-﻿using BaoXia.Utils.Constants;
-using BaoXia.Utils.Extensions;
+﻿using BaoXia.Utils.Extensions;
 using System;
 
 namespace BaoXia.Utils.Cache;
@@ -9,13 +8,15 @@ namespace BaoXia.Utils.Cache;
 /// </summary>
 public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 	    Func<ListKeyType, CreateListCacheParamType?, ListItemType[]?> didCreateList,
-	    Action<ListKeyType, ListItemType[]?, ListItemType[]?>? didListUpdated,
+	    Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, ListItemType[]?>? didWillUpdateList,
+	    Action<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?>? didListUpdated,
 	    Func<double>? toDidGetIntervalSecondsToCleanItemCache,
 	    Func<double>? didGetNoneReadSecondsToRemoveListCache,
 	    Func<double>? didGetNoneUpdateSecondsToUpdateItemCache,
 	    Func<int>? toDidGetThreadsCountToCreateItemAsync)
 	: ItemsCache<ListKeyType, ListItemType[], CreateListCacheParamType>(didCreateList,
-		  didListUpdated,
+		didWillUpdateList,
+		didListUpdated,
 		  toDidGetIntervalSecondsToCleanItemCache,
 		  didGetNoneReadSecondsToRemoveListCache,
 		  didGetNoneUpdateSecondsToUpdateItemCache,
@@ -46,11 +47,13 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 
 	public ListsCache(
 		Func<ListKeyType, CreateListCacheParamType?, ListItemType[]?> didCreateList,
-	    Action<ListKeyType, ListItemType[]?, ListItemType[]?>? didListUpdated,
+		Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, ListItemType[]?>? didWillUpdateList,
+		Action<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?>? didListUpdated,
 		Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
 		Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
 		Func<int>? toDidGetThreadsCountToCreateItemAsync = null)
 		: this(didCreateList,
+			  didWillUpdateList,
 			  didListUpdated,
 			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
 			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
@@ -121,12 +124,13 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 		////////////////////////////////////////////////
 		// 1/3，尝试获取列表对象（容器）。
 		////////////////////////////////////////////////
-		var listContainerNeedAddItem = this.TryGet(
+		var listContainerNeedAddItem = TryGet(
 		    listKey,
 		    true,
 		    false,
 		    createListParam,
 		    false,
+		    default,
 		    default);
 		if (listContainerNeedAddItem == null)
 		{
@@ -146,7 +150,7 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 				currentList ??= [];
 			}
 			currentList
-				= this.RecreateListWithItemOperation(
+				= RecreateListWithItemOperation(
 			    currentList,
 			    newListItem,
 			    ItemOperation.InsertOrUpdate);
@@ -154,17 +158,37 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 			////////////////////////////////////////////////
 			// 3/3，触发列表更新事件。
 			////////////////////////////////////////////////
+
+			////////////////////////////////////////////////
 			// !!!
-			listContainerNeedAddItem.SetItem(
-				currentList,
-				createListParam,
-				isNeedUpdateItemLastReadTime);
-			// !!!
-			DidItemCacheUpdated(
+			currentList = DidWillUpdateItemCache(
 				listKey,
 				lastList,
-				currentList);
+				currentList,
+				createListParam);
 			// !!!
+			////////////////////////////////////////////////
+
+			if (currentList != null
+				|| IsNullValueValidToCache)
+			{
+				// !!!
+				listContainerNeedAddItem.SetItem(
+					currentList,
+					createListParam,
+					isNeedUpdateItemLastReadTime);
+				// !!!
+
+				////////////////////////////////////////////////
+				// !!!
+				DidItemCacheUpdated(
+					listKey,
+					lastList,
+					currentList,
+					createListParam);
+				// !!!
+				////////////////////////////////////////////////
+			}
 		}
 		return currentList;
 	}
@@ -194,29 +218,20 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 			////////////////////////////////////////////////
 			lock (listContainer)
 			{
-				currentList = this.Get(listKey, createListParam);
+				currentList = Get(listKey, createListParam);
 				if (currentList != null)
 				{
 					var lastList = currentList;
-					currentList = this.RecreateListWithItemOperation(
+					currentList = RecreateListWithItemOperation(
 					    currentList,
 					    item,
 					    ItemOperation.Remove);
-		
+
 					////////////////////////////////////////////////
 					// 3/4，更新列表缓存。
 					////////////////////////////////////////////////
 					// !!!
-					this.Add(listKey, currentList);
-					// !!!
-
-					////////////////////////////////////////////////
-					// 4/4，触发列表更新事件。
-					////////////////////////////////////////////////
-					DidItemCacheUpdated(
-						listKey,
-						lastList,
-						currentList);
+					Update(listKey, currentList, createListParam);
 					// !!!
 				}
 			}

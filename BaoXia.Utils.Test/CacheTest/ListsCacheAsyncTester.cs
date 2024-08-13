@@ -28,10 +28,8 @@ public class ListsCacheAsyncTester<ListIdType>(
 		{
 			return await CacheListItem<ListIdType>.CreateItemListAsync(listId);
 		},
-		async (listKey, lastList, currentList) =>
-		{
-			return await Task.FromResult(currentList);
-		},
+		null,
+		null,
 		() => CacheTestConfig.NoneReadSecondsToClearItemCache);
 
 	#endregion
@@ -135,7 +133,7 @@ public class ListsCacheAsyncTester<ListIdType>(
 					Thread.Sleep((int)(1000 * CacheTestConfig.InsertTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll([..requestTasks]);
+				Task.WaitAll([.. requestTasks]);
 			}));
 
 			testTasks.Add(Task.Run(() =>
@@ -151,11 +149,11 @@ public class ListsCacheAsyncTester<ListIdType>(
 					Thread.Sleep((int)(1000 * CacheTestConfig.QueryTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll([..requestTasks]);
+				Task.WaitAll([.. requestTasks]);
 			}));
 
 			// !!!
-			Task.WaitAll([..testTasks]);
+			Task.WaitAll([.. testTasks]);
 			// !!!
 		}
 

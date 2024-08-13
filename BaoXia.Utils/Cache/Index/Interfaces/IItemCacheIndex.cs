@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace BaoXia.Utils.Cache.Index.Interfaces;
+﻿namespace BaoXia.Utils.Cache.Index.Interfaces;
 
 public interface IItemCacheIndex<ItemType>
 {

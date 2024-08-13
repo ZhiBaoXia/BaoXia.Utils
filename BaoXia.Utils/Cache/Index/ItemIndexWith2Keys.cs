@@ -1,10 +1,7 @@
 ﻿using BaoXia.Utils.Cache.Index.Interfaces;
-using BaoXia.Utils.ConcurrentTools;
-using BaoXia.Utils.Extensions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Cache.Index;
 

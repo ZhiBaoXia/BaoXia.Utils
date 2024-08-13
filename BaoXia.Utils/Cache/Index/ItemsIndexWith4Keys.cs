@@ -1,10 +1,8 @@
 ﻿using BaoXia.Utils.Cache.Index.Interfaces;
-using BaoXia.Utils.ConcurrentTools;
 using BaoXia.Utils.Extensions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Cache.Index;
 
@@ -190,7 +188,7 @@ public class ItemsIndexWith4Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKe
 	#region 实现”IDbSetMemoryCacheIndex“
 
 	public void UpdateIndexItemsByUpdateItemFrom(
-		ItemType? lastItem, 
+		ItemType? lastItem,
 		ItemType? currentItem)
 	{
 		var isLastItemValid = false;

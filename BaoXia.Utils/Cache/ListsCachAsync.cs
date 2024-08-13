@@ -1,5 +1,4 @@
-﻿using BaoXia.Utils.Constants;
-using BaoXia.Utils.Extensions;
+﻿using BaoXia.Utils.Extensions;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
@@ -11,18 +10,21 @@ namespace BaoXia.Utils.Cache;
 /// 列表缓存。
 /// </summary>
 public class ListsCachAsync<ListKeyType, ListItemType, CreateListCacheParamType>(
-	    Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
-	    Func<ListKeyType, ListItemType[]?, ListItemType[]?, Task<ListItemType[]?>>? didListUpdatedAsync,
-	    Func<double>? toDidGetIntervalSecondsToCleanItemCache,
-	    Func<double>? toDidGetNoneReadSecondsToRemoveListCache,
-	    Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache,
-	    Func<int>? toDidGetThreadsCountToCreateItemAsync)
-	: ItemsCacheAsync<ListKeyType, ListItemType[], CreateListCacheParamType>(didCreateListAsync,
-		  didListUpdatedAsync,
-		  toDidGetIntervalSecondsToCleanItemCache,
-		  toDidGetNoneReadSecondsToRemoveListCache,
-		  toDidGetNoneUpdateSecondsToUpdateItemCache,
-		  toDidGetThreadsCountToCreateItemAsync)
+	Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
+	Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task<ListItemType[]?>>? toWillUpdateListUpdatedAsync,
+	Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task>? didListUpdatedAsync,
+	Func<double>? toDidGetIntervalSecondsToCleanItemCache,
+	Func<double>? toDidGetNoneReadSecondsToRemoveListCache,
+	Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache,
+	Func<int>? toDidGetThreadsCountToCreateItemAsync)
+	: ItemsCacheAsync<ListKeyType, ListItemType[], CreateListCacheParamType>(
+		didCreateListAsync,
+		toWillUpdateListUpdatedAsync,
+		didListUpdatedAsync,
+		toDidGetIntervalSecondsToCleanItemCache,
+		toDidGetNoneReadSecondsToRemoveListCache,
+		toDidGetNoneUpdateSecondsToUpdateItemCache,
+toDidGetThreadsCountToCreateItemAsync)
 	    where ListKeyType : notnull
 {
 	////////////////////////////////////////////////
@@ -60,11 +62,13 @@ public class ListsCachAsync<ListKeyType, ListItemType, CreateListCacheParamType>
 
 	public ListsCachAsync(
 		Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
-		Func<ListKeyType, ListItemType[]?, ListItemType[]?, Task<ListItemType[]?>>? didListUpdatedAsync,
+		Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task<ListItemType[]?>>? toWillUpdateListUpdatedAsync,
+		Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task>? didListUpdatedAsync,
 		Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
 		Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
 		Func<int>? toDidGetThreadsCountToCreateItemAs = null)
 		: this(didCreateListAsync,
+			  toWillUpdateListUpdatedAsync,
 			  didListUpdatedAsync,
 			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
 			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
@@ -136,12 +140,13 @@ public class ListsCachAsync<ListKeyType, ListItemType, CreateListCacheParamType>
 		// 1/3，尝试获取列表对象（容器）。
 		////////////////////////////////////////////////
 
-		var listContainerNeedAddItem = await this.TryGetAsync(
+		var listContainerNeedAddItem = await TryGetAsync(
 		    listKey,
 		    true,
 		    false,
 		    createListParam,
 		    false,
+		    default,
 		    default);
 		if (listContainerNeedAddItem == null)
 		{
@@ -179,21 +184,37 @@ public class ListsCachAsync<ListKeyType, ListItemType, CreateListCacheParamType>
 			////////////////////////////////////////////////
 			// 3/3，触发列表更新事件。
 			////////////////////////////////////////////////
-			var toDidItemCacheUpdatedAsync = this.ToDidItemCacheUpdatedAsync;
-			if (toDidItemCacheUpdatedAsync != null)
+
+			////////////////////////////////////////////////
+			// !!!
+			currentList = await DidWillUpdateItemCacheAsync(
+				listKey,
+				lastList,
+				currentList,
+				createListParam);
+			// !!!
+			////////////////////////////////////////////////
+
+			if (currentList != null
+				|| IsNullValueValidToCache)
 			{
-				currentList = await toDidItemCacheUpdatedAsync(
+				// !!!
+				listContainerNeedAddItem.SetItem(
+					currentList,
+					createListParam,
+					isNeedUpdateItemLastReadTime);
+				// !!!
+
+				////////////////////////////////////////////////
+				// !!!
+				await DidItemCacheUpdatedAsync(
 					listKey,
 					lastList,
-					currentList);
+					currentList,
+					createListParam);
+				// !!!
+				////////////////////////////////////////////////
 			}
-
-			// !!!
-			listContainerNeedAddItem.SetItem(
-				currentList,
-				createListParam,
-				isNeedUpdateItemLastReadTime);
-			// !!!
 		}
 		finally
 		{
@@ -219,12 +240,13 @@ public class ListsCachAsync<ListKeyType, ListItemType, CreateListCacheParamType>
 		////////////////////////////////////////////////
 		// 1/4，尝试获取列表对象（容器）。
 		////////////////////////////////////////////////
-		var listContainerNeedRemoveItem = await this.TryGetAsync(
+		var listContainerNeedRemoveItem = await TryGetAsync(
 		    listKey,
 		    true,
 		    false,
 		    createListParam,
 		    false,
+		    default,
 		    default);
 		if (listContainerNeedRemoveItem == null
 		    || listContainerNeedRemoveItem.Item == null)
@@ -250,31 +272,21 @@ public class ListsCachAsync<ListKeyType, ListItemType, CreateListCacheParamType>
 			var currentList = listContainerNeedRemoveItem.Item;
 			if (currentList != null)
 			{
-				var lastList = currentList;
 				currentList = this.RecreateListWithItemOperation(
 				    currentList,
 				    item,
 				    ItemOperation.Remove);
 
 				////////////////////////////////////////////////
-				// 3/4，触发列表更新事件。
+				// 3/4，更新列表缓存。
 				////////////////////////////////////////////////
-				var toDidItemCacheUpdatedAsync = this.ToDidItemCacheUpdatedAsync;
-				if (toDidItemCacheUpdatedAsync != null)
-				{
-					currentList = await toDidItemCacheUpdatedAsync(
-						listKey,
-						lastList,
-						currentList);
-				}
-
-				////////////////////////////////////////////////
-				// 4/4，更新列表缓存。
-				////////////////////////////////////////////////
-				listContainerNeedRemoveItem.SetItem(
+				// !!!
+				await UpdateAsync(
+					listKey,
 					currentList,
 					createListParam,
 					isNeedUpdateItemLastReadTime);
+				// !!!
 			}
 			return currentList;
 		}

@@ -131,6 +131,7 @@ public class ItemsCacheTest
 				return DateTime.Now;
 			},
 			null,
+			null,
 			() => 1.0);
 		for (var itemId = 1;
 			itemId <= 100;
@@ -152,6 +153,7 @@ public class ItemsCacheTest
 			{
 				return DateTime.Now;
 			},
+			null,
 			null,
 			() => 2.0);
 
@@ -282,6 +284,7 @@ public class ItemsCacheTest
 			{
 				return itemSpecified;
 			},
+			null,
 			null,
 			null,
 			[
@@ -708,21 +711,22 @@ public class ItemsCacheTest
 			},
 			null,
 			null,
+			null,
 			[
 				itemIndexWith1Key,
-			itemIndexWith2Keys,
-			itemIndexWith3Keys,
-			itemIndexWith4Keys,
-			itemIndexWith5Keys,
-			itemIndexWith6Keys,
-			//
-			itemsIndexWith1Key,
-			itemsIndexWith2Keys,
-			itemsIndexWith3Keys,
-			itemsIndexWith4Keys,
-			itemsIndexWith5Keys,
-			itemsIndexWith6Keys
-				]);
+				itemIndexWith2Keys,
+				itemIndexWith3Keys,
+				itemIndexWith4Keys,
+				itemIndexWith5Keys,
+				itemIndexWith6Keys,
+				//
+				itemsIndexWith1Key,
+				itemsIndexWith2Keys,
+				itemsIndexWith3Keys,
+				itemsIndexWith4Keys,
+				itemsIndexWith5Keys,
+				itemsIndexWith6Keys
+			]);
 		var testItems = new TestItemForIndexTest[100];
 		var itemsGroupByProperty_1 = new Dictionary<string, List<TestItemForIndexTest>>();
 		var itemsGroupByProperty_1_2 = new Dictionary<string, List<TestItemForIndexTest>>();
@@ -1152,6 +1156,7 @@ public class ItemsCacheTest
 			},
 			null,
 			null,
+			null,
 			[
 				itemIndexWith1Key,
 				itemIndexWith2Keys,
@@ -1576,6 +1581,7 @@ public class ItemsCacheTest
 			},
 			null,
 			null,
+			null,
 			[
 				itemIndexWith1Key,
 				itemIndexWith2Keys,
@@ -1703,4 +1709,5 @@ public class ItemsCacheTest
 			Assert.IsTrue(itemsIndexWith6Keys.GetItems(1, 2, 3, 4, 5, 6)!.Length == 1);
 		}
 	}
+
 }

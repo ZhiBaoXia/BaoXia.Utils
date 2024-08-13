@@ -33,10 +33,8 @@ public class ItemsCacheAsyncTester<ItemIdType>(
 			}
 			return item;
 		},
-		async (listKey, lastList, currentList) =>
-		{
-			return await Task.FromResult(currentList);
-		},
+		null,
+		null,
 		() => CacheTestConfig.NoneReadSecondsToClearItemCache);
 
 	#endregion
@@ -149,11 +147,11 @@ public class ItemsCacheAsyncTester<ItemIdType>(
 					Thread.Sleep((int)(1000 * CacheTestConfig.QueryTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll([..requestTasks]);
+				Task.WaitAll([.. requestTasks]);
 			}));
 
 			// !!!
-			Task.WaitAll([..testTasks]);
+			Task.WaitAll([.. testTasks]);
 			// !!!
 		}
 
@@ -209,7 +207,7 @@ public class ItemsCacheAsyncTester<ItemIdType>(
 			}
 		}
 		// !!!
-		Task.WaitAll([..tasksToGet]);
+		Task.WaitAll([.. tasksToGet]);
 		// !!!
 
 		var now = DateTime.Now;
@@ -330,7 +328,7 @@ public class ItemsCacheAsyncTester<ItemIdType>(
 					Thread.Sleep((int)(1000 * CacheTestConfig.InsertTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll([..requestTasks]);
+				Task.WaitAll([.. requestTasks]);
 			}));
 
 			testTasks.Add(Task.Run(() =>
@@ -346,11 +344,11 @@ public class ItemsCacheAsyncTester<ItemIdType>(
 					Thread.Sleep((int)(1000 * CacheTestConfig.QueryTestIntervalSeconds));
 					// !!!
 				}
-				Task.WaitAll([..requestTasks]);
+				Task.WaitAll([.. requestTasks]);
 			}));
 
 			// !!!
-			Task.WaitAll([..testTasks]);
+			Task.WaitAll([.. testTasks]);
 			// !!!
 		}
 

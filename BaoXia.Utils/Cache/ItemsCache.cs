@@ -1,6 +1,5 @@
 ﻿using BaoXia.Utils.Cache.Index.Interfaces;
 using BaoXia.Utils.ConcurrentTools;
-using BaoXia.Utils.Constants;
 using BaoXia.Utils.Extensions;
 using System;
 using System.Collections.Concurrent;
@@ -65,14 +64,15 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 
 	public bool IsNullValueValidToCache { get; set; } = false;
 
+
+
 	public Func<ItemKeyType, ItemCacheCreateParamType?, ItemType?> ToDidCreateItemCache { get; set; }
 
 	public Action<IEnumerable<ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>>>? ToDidCreateItemsCache { get; set; }
 
+	public Func<ItemKeyType, ItemType?, ItemType?, ItemCacheCreateParamType?, ItemType?>? ToWillUpdateItemCache { get; set; }
 
-	public Func<ItemKeyType, ItemType?, ItemType?, ItemType?>? ToWillUpdateItemCache { get; set; }
-
-	public Action<ItemKeyType, ItemType?, ItemType?>? ToDidItemCacheUpdated { get; set; }
+	public Action<ItemKeyType, ItemType?, ItemType?, ItemCacheCreateParamType?>? ToDidItemCacheUpdated { get; set; }
 
 
 
@@ -286,7 +286,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 
 	public ItemsCache(
 		Func<ItemKeyType, ItemCacheCreateParamType?, ItemType?> didCreateItemCache,
-		Action<ItemKeyType, ItemType?, ItemType?>? toDidItemCacheUpdated,
+		Func<ItemKeyType, ItemType?, ItemType?, ItemCacheCreateParamType?, ItemType?>? toWillUpdateItemCache,
+		Action<ItemKeyType, ItemType?, ItemType?, ItemCacheCreateParamType?>? toDidItemCacheUpdated,
 		Func<double>? toDidGetIntervalSecondsToCleanItemCache,
 		Func<double>? toDidGetNoneReadSecondsToRemoveItemCache,
 		Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache,
@@ -296,7 +297,10 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 		ItemCacheIndexes = itemCacheIndexes;
 
 		ToDidCreateItemCache = didCreateItemCache;
+
+		ToWillUpdateItemCache = toWillUpdateItemCache;
 		ToDidItemCacheUpdated = toDidItemCacheUpdated;
+
 		ToDidGetIntervalSecondsToCleanItemCache = toDidGetIntervalSecondsToCleanItemCache;
 		ToDidGetNoneReadSecondsToRemoveItemCache = toDidGetNoneReadSecondsToRemoveItemCache;
 		ToDidGetNoneUpdateSecondsToUpdateItemCache = toDidGetNoneUpdateSecondsToUpdateItemCache;
@@ -307,12 +311,14 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 
 	public ItemsCache(
 		Func<ItemKeyType, ItemCacheCreateParamType?, ItemType?> didCreateItemCache,
-		Action<ItemKeyType, ItemType?, ItemType?>? toDidItemCacheUpdated,
+		Func<ItemKeyType, ItemType?, ItemType?, ItemCacheCreateParamType?, ItemType?>? toWillUpdateItemCache,
+		Action<ItemKeyType, ItemType?, ItemType?, ItemCacheCreateParamType?>? toDidItemCacheUpdated,
 		Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
 		Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
 		Func<int>? toDidGetThreadsCountToCreateItemAsync = null,
 		params IItemCacheIndex<ItemType>[]? itemCacheIndexes)
 		: this(didCreateItemCache,
+			  toWillUpdateItemCache,
 			  toDidItemCacheUpdated,
 			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
 			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
@@ -323,10 +329,12 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 
 	public ItemsCache(
 		Func<ItemKeyType, ItemCacheCreateParamType?, ItemType?> didCreateItemCache,
-		Action<ItemKeyType, ItemType?, ItemType?>? toDidItemCacheUpdated,
+		Func<ItemKeyType, ItemType?, ItemType?, ItemCacheCreateParamType?, ItemType?>? toWillUpdateItemCache,
+		Action<ItemKeyType, ItemType?, ItemType?, ItemCacheCreateParamType?>? toDidItemCacheUpdated,
 		Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
 		params IItemCacheIndex<ItemType>[]? itemCacheIndexes)
 		: this(didCreateItemCache,
+			  toWillUpdateItemCache,
 			  toDidItemCacheUpdated,
 			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
 			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
@@ -358,11 +366,26 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 			return default;
 		}
 
+		this.TryGet(itemKey, out var lastItem);
+		////////////////////////////////////////////////
+		// !!!
+		var itemNeedAdd = DidWillUpdateItemCache(
+			itemKey,
+			lastItem,
+			item,
+			itemCreateParam);
+		// !!!
+		////////////////////////////////////////////////
+		if (itemNeedAdd == null
+			&& this.IsNullValueValidToCache != true)
+		{
+			return default;
+		}
 		var now = DateTime.Now;
 		var newItemContainer
 			= new ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>(
 				itemKey,
-				item,
+				itemNeedAdd,
 				true,
 				itemCreateParam,
 				now,
@@ -371,34 +394,22 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 			= _itemContainersCache.AddOrUpdateWithNewValue(
 				itemKey,
 				newItemContainer);
-		ItemType? lastItem = default;
-		////////////////////////////////////////////////
-		// !!!
-		item = DidWillUpdateItemCache(
-			itemKey,
-			lastItem,
-			item);
-		// !!!
-		////////////////////////////////////////////////
-		if (itemContainer != null
-			&& itemContainer != newItemContainer)
+		if (itemContainer != newItemContainer)
 		{
-			// !!!
-			lastItem = itemContainer.Item;
-			// !!!
-			itemContainer.SetItem(
-				item,
+			itemContainer?.SetItem(
+				itemNeedAdd,
 				itemCreateParam,
 				isNeedUpdateItemLastReadTime);
-			////////////////////////////////////////////////
-			// !!!
-			DidItemCacheUpdated(
-				itemKey,
-				lastItem,
-				item);
-			// !!!
-			////////////////////////////////////////////////
 		}
+		////////////////////////////////////////////////
+		// !!!
+		DidItemCacheUpdated(
+			itemKey,
+			lastItem,
+			itemNeedAdd,
+			itemCreateParam);
+		// !!!
+		////////////////////////////////////////////////
 		return item;
 	}
 
@@ -446,7 +457,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 			newItem = DidWillUpdateItemCache(
 				itemKey,
 				lastItem,
-				newItem);
+				newItem,
+				itemCreateParam);
 			// !!!
 			////////////////////////////////////////////////
 			if (newItem != null
@@ -462,7 +474,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 				DidItemCacheUpdated(
 					itemKey,
 					lastItem,
-					newItem);
+					newItem,
+					itemCreateParam);
 				// !!!
 				////////////////////////////////////////////////
 			}
@@ -502,7 +515,9 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 			isNeedUpdateItemLastReadTime);
 	}
 
-	public ItemType? Remove(ItemKeyType itemKey)
+	public ItemType? Remove(
+		ItemKeyType itemKey,
+		ItemCacheCreateParamType? itemCacheRemoveParamType = default)
 	{
 		if (typeof(ItemKeyType).IsPointer
 			&& itemKey == null)
@@ -510,7 +525,7 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 			return default;
 		}
 
-		if (this.TryGet(itemKey, out var itemNeedRemoved) != true)
+		if (TryGet(itemKey, out var itemNeedRemoved) != true)
 		{
 			return default;
 		}
@@ -520,8 +535,9 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 		itemNeedRemoved = DidWillUpdateItemCache(
 			itemKey,
 			itemNeedRemoved,
-			default);
-		if (itemNeedRemoved == null)
+			default,
+			itemCacheRemoveParamType);
+		if (!EqualityComparer<ItemType>.Default.Equals(itemNeedRemoved, default))
 		{
 			return default;
 		}
@@ -542,7 +558,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 		DidItemCacheUpdated(
 			itemKey,
 			itemRemoved,
-			default);
+			default,
+			itemCacheRemoveParamType);
 		// !!!
 		////////////////////////////////////////////////
 		return itemRemoved;
@@ -609,7 +626,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 		bool isNeedCreateItemAsync,
 		ItemCacheCreateParamType? itemCacheCreateParam,
 		bool isItemSpecifiedValid,
-		ItemType? itemSpecified)
+		ItemType? itemSpecified,
+		ItemCacheCreateParamType? itemSpecifiedCacheCreateParam)
 	{
 		if (typeof(ItemKeyType).IsPointer
 			&& itemCacheKey == null)
@@ -645,7 +663,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 						itemSpecified = DidWillUpdateItemCache(
 							itemCacheKey,
 							default,
-							itemSpecified);
+							itemSpecified,
+							itemSpecifiedCacheCreateParam);
 						// !!!
 						////////////////////////////////////////////////
 						if (itemSpecified == null
@@ -663,7 +682,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 						DidItemCacheUpdated(
 							itemCacheKey,
 							default,
-							itemSpecified);
+							itemSpecified,
+							itemSpecifiedCacheCreateParam);
 						// !!!
 						////////////////////////////////////////////////
 					}
@@ -728,7 +748,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 											itemSpecified = DidWillUpdateItemCache(
 												itemCacheKey,
 												default,
-												itemSpecified);
+												itemContainerNeedCreateItem.Item,
+												itemContainerNeedCreateItem.ItemCreateParam);
 											// !!!
 											////////////////////////////////////////////////
 											if (itemSpecified != null
@@ -736,7 +757,7 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 											{
 												// !!!
 												itemContainerNeedCreateItem.SetItem(
-													itemContainerNeedCreateItem.Item,
+													itemSpecified,
 													itemContainerNeedCreateItem.ItemCreateParam,
 													true);
 												// !!!
@@ -745,7 +766,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 												DidItemCacheUpdated(
 													itemContainerNeedCreateItem.Key,
 													default,
-													itemContainerNeedCreateItem.Item);
+													itemContainerNeedCreateItem.Item,
+													itemContainerNeedCreateItem.ItemCreateParam);
 												// !!!
 												////////////////////////////////////////////////
 											}
@@ -773,6 +795,16 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 												itemContainerNeedCreateItem.ItemCreateParam);
 										}
 
+										////////////////////////////////////////////////
+										// !!!
+										newItem = DidWillUpdateItemCache(
+											itemContainerNeedCreateItem.Key,
+											default,
+											newItem,
+											itemContainerNeedCreateItem.ItemCreateParam);
+										// !!!
+										////////////////////////////////////////////////
+
 										if (newItem != null
 										|| IsNullValueValidToCache == true)
 										{
@@ -787,7 +819,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 											DidItemCacheUpdated(
 												itemContainerNeedCreateItem.Key,
 												default,
-												newItem);
+												newItem,
+												itemContainerNeedCreateItem.ItemCreateParam);
 											// !!!
 											////////////////////////////////////////////////
 										}
@@ -817,7 +850,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 						newItem = DidWillUpdateItemCache(
 							itemCacheKey,
 							default,
-							newItem);
+							newItem,
+							itemCacheCreateParam);
 						// !!!
 						////////////////////////////////////////////////
 
@@ -835,7 +869,8 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 							DidItemCacheUpdated(
 								itemCacheKey,
 								default,
-								newItem);
+								newItem,
+								itemCacheCreateParam);
 							// !!!
 							////////////////////////////////////////////////
 						}
@@ -865,6 +900,7 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 			isNeedCreateItemAsync,
 			itemCacheCreateParam,
 			false,
+			default,
 			default);
 		if (itemContainer == null
 			|| itemContainer.IsItemValid == false)
@@ -902,6 +938,7 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 			false,
 			itemCacheCreateParam,
 			false,
+			default,
 			default);
 		if (itemContainer == null)
 		{
@@ -941,15 +978,25 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 	protected virtual ItemType? DidWillUpdateItemCache(
 		ItemKeyType itemKey,
 		ItemType? lastItem,
-		ItemType? currentItem)
+		ItemType? currentItem,
+		ItemCacheCreateParamType? currentItemCreateParam)
 	{
+		if (ToWillUpdateItemCache != null)
+		{
+			return ToWillUpdateItemCache(
+				itemKey,
+				lastItem,
+				currentItem,
+				currentItemCreateParam);
+		}
 		return currentItem;
 	}
 
 	protected virtual void DidItemCacheUpdated(
 		ItemKeyType itemKey,
 		ItemType? lastItem,
-		ItemType? currentItem)
+		ItemType? currentItem,
+		ItemCacheCreateParamType? currentItemCreateParam)
 	{
 		if (ItemCacheIndexes is IItemCacheIndex<ItemType>[] itemCacheIndexes)
 		{
@@ -962,13 +1009,14 @@ public class ItemsCache<ItemKeyType, ItemType, ItemCacheCreateParamType>
 		}
 
 		////////////////////////////////////////////////
-		// !!
+		////////////////////////////////////////////////
+		////////////////////////////////////////////////
+
 		ToDidItemCacheUpdated?.Invoke(
 				itemKey,
 				lastItem,
-				currentItem);
-		// !!!
-		////////////////////////////////////////////////
+				currentItem,
+				currentItemCreateParam);
 	}
 
 	protected virtual void DidUpdateAllItemCache(

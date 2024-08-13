@@ -143,6 +143,7 @@ public class ItemsCacheAsyncTest
 				};
 			},
 			null,
+			null,
 			() => 1.0);
 		for (var itemId = 1;
 			itemId <= 100;
@@ -169,6 +170,7 @@ public class ItemsCacheAsyncTest
 					CreateTime = DateTime.Now
 				};
 			},
+			null,
 			null,
 			() => 2.0);
 
@@ -299,6 +301,7 @@ public class ItemsCacheAsyncTest
 			{
 				return await Task.FromResult(itemSpecified);
 			},
+			null,
 			null,
 			null,
 			[
@@ -725,6 +728,7 @@ public class ItemsCacheAsyncTest
 			{
 				return await Task.FromResult(itemSpecified);
 			},
+			null,
 			null,
 			null,
 			[
@@ -1171,6 +1175,7 @@ public class ItemsCacheAsyncTest
 			},
 			null,
 			null,
+			null,
 			[
 				itemIndexWith1Key,
 				itemIndexWith2Keys,
@@ -1593,6 +1598,7 @@ public class ItemsCacheAsyncTest
 			{
 				return await Task.FromResult(itemSpecified);
 			},
+			null,
 			null,
 			null,
 			[

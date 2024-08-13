@@ -1,5 +1,4 @@
-﻿using BaoXia.Utils.Constants;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace BaoXia.Utils.Cache;
@@ -8,16 +7,17 @@ namespace BaoXia.Utils.Cache;
 /// 实体元素缓存。
 /// </summary>
 public class DbSetItemsCache<ItemGroupKeyType, ItemKeyType, ItemType>(
-	    Func<ItemGroupKeyType, DbSet<ItemType>?, ItemType[]?> didCreateItemListCache,
-	    Action<ItemGroupKeyType, ItemType[]?, ItemType[]?> didItemListUpdated,
-	    Func<double> didGetNoneReadSecondsToRemoveItemListCache,
-	    //
-	    Func<ItemKeyType, DbSet<ItemType>?, ItemType?> didCreateItemCache,
-	    Func<double> toDidGetNoneReadSecondsToRemoveItemCache,
-	    Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null)
-											where ItemGroupKeyType : notnull
-											where ItemKeyType : notnull
-											where ItemType : class
+	Func<ItemGroupKeyType, DbSet<ItemType>?, ItemType[]?> didCreateItemListCache,
+	Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, DbSet<ItemType>?, ItemType[]?> didWillUpdateItemList,
+	Action<ItemGroupKeyType, ItemType[]?, ItemType[]?, DbSet<ItemType>?> didItemListUpdated,
+	Func<double> didGetNoneReadSecondsToRemoveItemListCache,
+	//
+	Func<ItemKeyType, DbSet<ItemType>?, ItemType?> didCreateItemCache,
+	Func<double> toDidGetNoneReadSecondsToRemoveItemCache,
+	Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null)
+	where ItemGroupKeyType : notnull
+	where ItemKeyType : notnull
+	where ItemType : class
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -27,11 +27,13 @@ public class DbSetItemsCache<ItemGroupKeyType, ItemKeyType, ItemType>(
 
 	private readonly ListsCache<ItemGroupKeyType, ItemType, DbSet<ItemType>> _itemListsCache = new(
 		    didCreateItemListCache,
+		    didWillUpdateItemList,
 		    didItemListUpdated,
 		    didGetNoneReadSecondsToRemoveItemListCache);
 
 	private readonly ItemsCache<ItemKeyType, ItemType, DbSet<ItemType>> _itemsCache = new(
 		    didCreateItemCache,
+		    null,
 		    null,
 		    toDidGetNoneReadSecondsToRemoveItemCache,
 		    toDidGetNoneUpdateSecondsToUpdateItemCache);
@@ -40,18 +42,20 @@ public class DbSetItemsCache<ItemGroupKeyType, ItemKeyType, ItemType>(
 	#region 自身实现
 
 	public DbSetItemsCache(
-	    Func<ItemGroupKeyType, DbSet<ItemType>?, ItemType[]?> didCreateItemListCache,
-	    Action<ItemGroupKeyType, ItemType[]?, ItemType[]?> didItemListUpdated,
-	    //
-	    Func<ItemKeyType, DbSet<ItemType>?, ItemType?> didCreateItemCache,
-	    //
-	    Func<double> didGetNoneReadSecondsToRemoveItemCache) : this(
-		didCreateItemListCache,
-		didItemListUpdated,
-		didGetNoneReadSecondsToRemoveItemCache,
+		Func<ItemGroupKeyType, DbSet<ItemType>?, ItemType[]?> didCreateItemListCache,
+		Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, DbSet<ItemType>?, ItemType[]?> didWillUpdateItemList,
+		Action<ItemGroupKeyType, ItemType[]?, ItemType[]?, DbSet<ItemType>?> didItemListUpdated,
 		//
-		didCreateItemCache,
-		didGetNoneReadSecondsToRemoveItemCache)
+		Func<ItemKeyType, DbSet<ItemType>?, ItemType?> didCreateItemCache,
+		//
+		Func<double> didGetNoneReadSecondsToRemoveItemCache) : this(
+			didCreateItemListCache,
+			didWillUpdateItemList,
+			didItemListUpdated,
+			didGetNoneReadSecondsToRemoveItemCache,
+			//
+			didCreateItemCache,
+			didGetNoneReadSecondsToRemoveItemCache)
 	{ }
 
 	public ItemType[]? GetList(

@@ -403,7 +403,7 @@ public class Environment
 		Environment.InitializeWithServerName(
 			   Environment.ServerName,
 			   Environment.EnviromentName,
-			   null,
+			   Environment.CurrentApplicationAssembly,
 			   applicationBuilder,
 			   hostEnvironment,
 			   webRootDirectoryPath,

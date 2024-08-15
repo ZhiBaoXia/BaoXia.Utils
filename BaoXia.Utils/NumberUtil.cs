@@ -10,8 +10,25 @@ public class NumberUtil
 
 	#region 类方法
 
+	public static uint MinOne(uint number)
+	{
+		if (number >= 1)
+		{
+			return number;
+		}
+		return 1;
+	}
 
 	public static int MinOne(int number)
+	{
+		if (number >= 1)
+		{
+			return number;
+		}
+		return 1;
+	}
+
+	public static ulong MinOne(ulong number)
 	{
 		if (number >= 1)
 		{
@@ -39,6 +56,15 @@ public class NumberUtil
 	}
 
 	public static double MinOne(double number)
+	{
+		if (number >= 1)
+		{
+			return number;
+		}
+		return 1;
+	}
+
+	public static decimal MinOne(decimal number)
 	{
 		if (number >= 1)
 		{
@@ -349,6 +375,273 @@ public class NumberUtil
 			return hexNumber;
 		}
 		return defaultValue;
+	}
+
+	public static uint? MaxOf(params uint[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		uint maxNumber = uint.MinValue;
+		foreach (var nubmer in numbers)
+		{
+			if (maxNumber < nubmer)
+			{
+				maxNumber = nubmer;
+			}
+		}
+		return maxNumber;
+	}
+
+	public static int? MaxOf(params int[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		int maxNumber = int.MinValue;
+		foreach (var nubmer in numbers)
+		{
+			if (maxNumber < nubmer)
+			{
+				maxNumber = nubmer;
+			}
+		}
+		return maxNumber;
+	}
+
+	public static ulong? MaxOf(params ulong[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		ulong maxNumber = ulong.MinValue;
+		foreach (var nubmer in numbers)
+		{
+			if (maxNumber < nubmer)
+			{
+				maxNumber = nubmer;
+			}
+		}
+		return maxNumber;
+	}
+
+	public static long? MaxOf(params long[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		long maxNumber = long.MinValue;
+		foreach (var nubmer in numbers)
+		{
+			if (maxNumber < nubmer)
+			{
+				maxNumber = nubmer;
+			}
+		}
+		return maxNumber;
+	}
+
+	public static float? MaxOf(params float[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		float maxNumber = float.MinValue;
+		foreach (var nubmer in numbers)
+		{
+			if (maxNumber < nubmer)
+			{
+				maxNumber = nubmer;
+			}
+		}
+		return maxNumber;
+	}
+
+	public static double? MaxOf(params double[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		double maxNumber = double.MinValue;
+		foreach (var nubmer in numbers)
+		{
+			if (maxNumber < nubmer)
+			{
+				maxNumber = nubmer;
+			}
+		}
+		return maxNumber;
+	}
+
+	public static decimal? MaxOf(params decimal[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		decimal maxNumber = decimal.MinValue;
+		foreach (var nubmer in numbers)
+		{
+			if (maxNumber < nubmer)
+			{
+				maxNumber = nubmer;
+			}
+		}
+		return maxNumber;
+	}
+
+
+	public static uint? MinOf(params uint[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		uint minNumber = uint.MaxValue;
+		foreach (var nubmer in numbers)
+		{
+			if (minNumber > nubmer)
+			{
+				minNumber = nubmer;
+			}
+		}
+		return minNumber;
+	}
+
+	public static int? MinOf(params int[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		int minNumber = int.MaxValue;
+		foreach (var nubmer in numbers)
+		{
+			if (minNumber > nubmer)
+			{
+				minNumber = nubmer;
+			}
+		}
+		return minNumber;
+	}
+
+	public static ulong? MinOf(params ulong[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		ulong minNumber = ulong.MaxValue;
+		foreach (var nubmer in numbers)
+		{
+			if (minNumber > nubmer)
+			{
+				minNumber = nubmer;
+			}
+		}
+		return minNumber;
+	}
+
+	public static long? MinOf(params long[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		long minNumber = long.MaxValue;
+		foreach (var nubmer in numbers)
+		{
+			if (minNumber > nubmer)
+			{
+				minNumber = nubmer;
+			}
+		}
+		return minNumber;
+	}
+
+	public static float? MinOf(params float[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		float minNumber = float.MaxValue;
+		foreach (var nubmer in numbers)
+		{
+			if (minNumber > nubmer)
+			{
+				minNumber = nubmer;
+			}
+		}
+		return minNumber;
+	}
+
+	public static double? MinOf(params double[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		double minNumber = double.MaxValue;
+		foreach (var nubmer in numbers)
+		{
+			if (minNumber > nubmer)
+			{
+				minNumber = nubmer;
+			}
+		}
+		return minNumber;
+	}
+
+	public static decimal? MinOf(params decimal[]? numbers)
+	{
+		if (numbers == null
+			|| numbers.Length < 1)
+		{
+			return null;
+		}
+
+		decimal minNumber = decimal.MaxValue;
+		foreach (var nubmer in numbers)
+		{
+			if (minNumber > nubmer)
+			{
+				minNumber = nubmer;
+			}
+		}
+		return minNumber;
 	}
 
 	#endregion

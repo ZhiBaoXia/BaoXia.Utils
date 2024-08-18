@@ -364,7 +364,7 @@ public class NumberUtil
 
 		if (hexString.Length > 8)
 		{
-			hexString = hexString.Substring(0, 8);
+			hexString = hexString[..8];
 		}
 
 		if (uint.TryParse(hexString,

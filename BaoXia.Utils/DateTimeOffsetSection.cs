@@ -4,10 +4,10 @@ using System;
 
 namespace BaoXia.Utils;
 
-public class DateTimeSection(
+public class DateTimeOffsetSection(
 	TimeSectionType type = TimeSectionType.NotLoop,
-	DateTime? beginTime = null,
-	DateTime? endTime = null)
+	DateTimeOffset? beginTime = null,
+	DateTimeOffset? endTime = null)
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -17,9 +17,9 @@ public class DateTimeSection(
 
 	public TimeSectionType Type { get; set; } = type;
 
-	public DateTime? BeginTime { get; set; } = beginTime;
+	public DateTimeOffset? BeginTime { get; set; } = beginTime;
 
-	public DateTime? EndTime { get; set; } = endTime;
+	public DateTimeOffset? EndTime { get; set; } = endTime;
 
 	#endregion
 
@@ -31,10 +31,10 @@ public class DateTimeSection(
 	#region 类方法
 
 	public static bool IsTimeInSection(
-		DateTime dateTime,
+		DateTimeOffset dateTime,
 		TimeSectionType timeSectionType,
-		DateTime? beginTime,
-		DateTime? endTime)
+		DateTimeOffset? beginTime,
+		DateTimeOffset? endTime)
 	{
 		if (beginTime != null
 			&& endTime != null)
@@ -67,9 +67,9 @@ public class DateTimeSection(
 	}
 
 	private static bool DidIsTimeInSection(
-		DateTime dateTime,
-		DateTime beginTime,
-		DateTime endTime,
+		DateTimeOffset dateTime,
+		DateTimeOffset beginTime,
+		DateTimeOffset endTime,
 		TimeSectionType timeSectionType)
 	{
 		DateTimeCycle dateTimeCompareCycle;
@@ -162,8 +162,8 @@ public class DateTimeSection(
 	}
 
 	private static bool DidIsBeginTimeLessOrEqualTime(
-		DateTime dateTime,
-		DateTime beginTime,
+		DateTimeOffset dateTime,
+		DateTimeOffset beginTime,
 		TimeSectionType timeSectionType)
 	{
 		DateTimeCycle dateTimeCompareCycle;
@@ -223,8 +223,8 @@ public class DateTimeSection(
 	}
 
 	private static bool DidIsEndTimeGreatThanTime(
-		DateTime dateTime,
-		DateTime endTime,
+		DateTimeOffset dateTime,
+		DateTimeOffset endTime,
 		TimeSectionType timeSectionType)
 	{
 		DateTimeCycle dateTimeCompareCycle;
@@ -293,7 +293,7 @@ public class DateTimeSection(
 
 	#region 自身实现
 
-	public bool IsTimeInSection(DateTime dateTime)
+	public bool IsTimeInSection(DateTimeOffset dateTime)
 	{
 		return IsTimeInSection(
 			dateTime,

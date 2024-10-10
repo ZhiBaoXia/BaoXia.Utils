@@ -592,7 +592,7 @@ public static class ArrayExtension
 	/// 使用二分法查找目标元素在列表中的索引值。
 	/// </summary>
 	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
-	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
+	/// <param name="itemsSorted">要进行查找的列表对象，注意：元素集合必须是正序排列。</param>
 	/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
 	/// <param name="searchRangeLength">查找范围的对象数量。</param>
 	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
@@ -602,6 +602,7 @@ public static class ArrayExtension
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomyInRange<ItemType>(
 		this ItemType[]? itemsSorted,
+		bool isItemsSortedWithAscending,
 		int searchRangeBeginIndex,
 		int searchRangeLength,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
@@ -660,15 +661,22 @@ public static class ArrayExtension
 				{
 					break;
 				}
-				else if (resultOfComparerItemToObjectItem < 0)
+				else
 				{
-					searchRangeBeginIndex = searchShotIndex;
-					// searchRangeEndIndex = searchRangeEndIndex;
-				}
-				else if (resultOfComparerItemToObjectItem > 0)
-				{
-					// searchRangeBeginIndex = searchRangeBeginIndex;
-					searchRangeEndIndex = searchShotIndex;
+					if (isItemsSortedWithAscending == false)
+					{
+						resultOfComparerItemToObjectItem *= -1;
+					}
+					if (resultOfComparerItemToObjectItem < 0)
+					{
+						searchRangeBeginIndex = searchShotIndex;
+						// searchRangeEndIndex = searchRangeEndIndex;
+					}
+					else if (resultOfComparerItemToObjectItem > 0)
+					{
+						// searchRangeBeginIndex = searchRangeBeginIndex;
+						searchRangeEndIndex = searchShotIndex;
+					}
 				}
 			}
 		}
@@ -752,6 +760,7 @@ public static class ArrayExtension
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomy<ItemType>(
 		this ItemType[]? itemsSorted,
+		bool isItemsSortedWithAscending,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
 		out int itemIndexNearest,
@@ -759,6 +768,7 @@ public static class ArrayExtension
 	{
 		return ArrayExtension.FindItemIndexWithDichotomyInRange<ItemType>(
 			itemsSorted,
+			isItemsSortedWithAscending,
 			-1,
 			-1,
 			toComparerToObjectItemWith,
@@ -781,6 +791,7 @@ public static class ArrayExtension
 	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
 	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
 		this ItemType[]? itemsSorted,
+		bool isItemsSortedWithAscending,
 		int searchRangeBeginIndex,
 		int searchRangeEndIndex,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
@@ -790,6 +801,7 @@ public static class ArrayExtension
 	{
 		var itemIndex = ArrayExtension.FindItemIndexWithDichotomyInRange(
 			itemsSorted,
+			isItemsSortedWithAscending,
 			searchRangeBeginIndex,
 			searchRangeEndIndex,
 			toComparerToObjectItemWith,
@@ -817,6 +829,7 @@ public static class ArrayExtension
 	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
 	public static ItemType? FindItemWithDichotomy<ItemType>(
 		this ItemType[]? itemsSorted,
+		bool isItemsSortedWithAscending,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
 		out int itemIndexNearest,
@@ -824,6 +837,7 @@ public static class ArrayExtension
 	{
 		return ArrayExtension.FindItemWithDichotomyInRange<ItemType>(
 			itemsSorted,
+			isItemsSortedWithAscending,
 			-1,
 			-1,
 			toComparerToObjectItemWith,
@@ -835,12 +849,14 @@ public static class ArrayExtension
 
 	public static int FindItemIndexWithDichotomyInRange<ItemType>(
 		this ItemType[]? itemsSorted,
+		bool isItemsSortedWithAscending,
 		int searchRangeBeginIndex,
 		int searchRangeLength,
 		Func<ItemType, int, int> toComparerToObjectItemWith)
 	{
 		return FindItemIndexWithDichotomyInRange(
 			itemsSorted,
+			isItemsSortedWithAscending,
 			searchRangeBeginIndex,
 			searchRangeLength,
 			toComparerToObjectItemWith,
@@ -852,10 +868,12 @@ public static class ArrayExtension
 
 	public static int FindItemIndexWithDichotomy<ItemType>(
 		this ItemType[]? itemsSorted,
+		bool isItemsSortedWithAscending,
 		Func<ItemType, int, int> toComparerToObjectItemWith)
 	{
 		return FindItemIndexWithDichotomy(
 			itemsSorted,
+			isItemsSortedWithAscending,
 			toComparerToObjectItemWith,
 			//
 			true,
@@ -865,12 +883,14 @@ public static class ArrayExtension
 
 	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
 		this ItemType[]? itemsSorted,
+		bool isItemsSortedWithAscending,
 		int searchRangeBeginIndex,
 		int searchRangeEndIndex,
 		Func<ItemType, int, int> toComparerToObjectItemWith)
 	{
 		return FindItemWithDichotomyInRange(
 			itemsSorted,
+			isItemsSortedWithAscending,
 			searchRangeBeginIndex,
 			searchRangeEndIndex,
 			toComparerToObjectItemWith,
@@ -882,10 +902,12 @@ public static class ArrayExtension
 
 	public static ItemType? FindItemWithDichotomy<ItemType>(
 		this ItemType[]? itemsSorted,
+		bool isItemsSortedWithAscending,
 		Func<ItemType, int, int> toComparerToObjectItemWith)
 	{
 		return FindItemWithDichotomy(
 			itemsSorted,
+			isItemsSortedWithAscending,
 			toComparerToObjectItemWith,
 			//
 			true,

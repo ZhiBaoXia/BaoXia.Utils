@@ -182,6 +182,7 @@ public class ListExtensionTest
 		{
 			var objectTestItem = list[i];
 			var itemIndexFound = list.FindItemIndexWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
@@ -199,6 +200,7 @@ public class ListExtensionTest
 		{
 			var objectTestItem = list[i];
 			var itemIndexFound = list.FindItemIndexWithDichotomyInRange(
+				true,
 				testSearchRangeBeginIndex,
 				testSearchRangeLength,
 				(testItem, testItemIndex) =>
@@ -213,6 +215,7 @@ public class ListExtensionTest
 		{
 			var objectTestItem = list[i];
 			var itemFound = list.FindItemWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
@@ -230,6 +233,7 @@ public class ListExtensionTest
 		{
 			var objectTestItem = list[i];
 			var itemFound = list.FindItemWithDichotomyInRange(
+				true,
 				testSearchRangeBeginIndex,
 				testSearchRangeLength,
 				(testItem, testItemIndex) =>
@@ -270,6 +274,7 @@ public class ListExtensionTest
 			objectTestItemIndex++)
 		{
 			items.FindItemIndexWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.CompareTo(objectTestItemIndex);
@@ -318,6 +323,7 @@ public class ListExtensionTest
 			objectTestItemIndex++)
 		{
 			items.FindItemIndexWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.CompareTo(objectTestItemIndex);

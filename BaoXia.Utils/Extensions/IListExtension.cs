@@ -345,10 +345,10 @@ public static class IListExtension
 		int searchRangeLength,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
-		out int itemIndexNearest,
+		out int? itemNearestIndex,
 		out ItemType? itemNearest)
 	{
-		itemIndexNearest = -1;
+		itemNearestIndex = null;
 		itemNearest = default;
 
 		if (itemsSorted == null
@@ -369,7 +369,15 @@ public static class IListExtension
 		{
 			searchRangeEndIndex = itemsCount;
 		}
+		if (searchRangeEndIndex <= searchRangeBeginIndex)
+		{
+			return -1;
+		}
 
+		var compareNumberDirection
+			= isItemsSortedWithAscending
+			? 1
+			: -1;
 
 		var objectItemIndexMatched = -1;
 		while (searchRangeEndIndex > searchRangeBeginIndex)
@@ -381,7 +389,9 @@ public static class IListExtension
 				+ searchRangeLength / 2;
 
 			var item = items[searchShotIndex];
-			var resultOfComparerItemToObjectItem = toComparerToObjectItemWith(item, searchShotIndex);
+			var resultOfComparerItemToObjectItem
+				= toComparerToObjectItemWith(item, searchShotIndex)
+				* compareNumberDirection;
 			if (resultOfComparerItemToObjectItem == 0)
 			{
 				// !!!
@@ -392,7 +402,7 @@ public static class IListExtension
 			else
 			{
 				// !!! 不是目标时，记录最接近目标的元素信息。 !!!
-				itemIndexNearest = searchShotIndex;
+				itemNearestIndex = searchShotIndex;
 				itemNearest = item;
 				// !!!
 				if (searchRangeLength == 1)
@@ -401,10 +411,6 @@ public static class IListExtension
 				}
 				else
 				{
-					if (isItemsSortedWithAscending)
-					{
-						resultOfComparerItemToObjectItem *= -1;
-					}
 					if (resultOfComparerItemToObjectItem < 0)
 					{
 						searchRangeBeginIndex = searchShotIndex;
@@ -418,31 +424,32 @@ public static class IListExtension
 				}
 			}
 		}
+
+
 		if (isGetItemNearestLeft)
 		{
 			if (objectItemIndexMatched >= 0)
 			{
-				itemIndexNearest = objectItemIndexMatched - 1;
-				if (itemIndexNearest >= 0)
+				itemNearestIndex = objectItemIndexMatched - 1;
+				if (itemNearestIndex >= 0)
 				{
-					itemNearest = items[itemIndexNearest];
+					itemNearest = items[itemNearestIndex.Value];
 				}
 				else
 				{
 					itemNearest = default;
 				}
 			}
-			else if (itemNearest == null)
+			else if (
+				itemNearest != null
+				&& itemNearestIndex != null
+				&& (toComparerToObjectItemWith(itemNearest, itemNearestIndex.Value)
+				* compareNumberDirection) > 0)
 			{
-				itemIndexNearest = 0;
-				itemNearest = items[itemIndexNearest];
-			}
-			else if (toComparerToObjectItemWith(itemNearest, itemIndexNearest) > 0)
-			{
-				itemIndexNearest--;
-				if (itemIndexNearest >= 0)
+				itemNearestIndex--;
+				if (itemNearestIndex >= 0)
 				{
-					itemNearest = items[itemIndexNearest];
+					itemNearest = items[itemNearestIndex.Value];
 				}
 				else
 				{
@@ -452,30 +459,28 @@ public static class IListExtension
 		}
 		else
 		{
-
 			if (objectItemIndexMatched >= 0)
 			{
-				itemIndexNearest = objectItemIndexMatched + 1;
-				if (itemIndexNearest < items.Count)
+				itemNearestIndex = objectItemIndexMatched + 1;
+				if (itemNearestIndex < itemsCount)
 				{
-					itemNearest = items[itemIndexNearest];
+					itemNearest = items[itemNearestIndex.Value];
 				}
 				else
 				{
 					itemNearest = default;
 				}
 			}
-			else if (itemNearest == null)
+			else if (
+				itemNearest != null
+				&& itemNearestIndex != null
+				&& (toComparerToObjectItemWith(itemNearest, itemNearestIndex.Value)
+				* compareNumberDirection) < 0)
 			{
-				itemIndexNearest = items.Count;
-				itemNearest = default;
-			}
-			else if (toComparerToObjectItemWith(itemNearest, itemIndexNearest) < 0)
-			{
-				itemIndexNearest++;
-				if (itemIndexNearest < items.Count)
+				itemNearestIndex++;
+				if (itemNearestIndex < itemsCount)
 				{
-					itemNearest = items[itemIndexNearest];
+					itemNearest = items[itemNearestIndex.Value];
 				}
 				else
 				{
@@ -501,7 +506,7 @@ public static class IListExtension
 		bool isItemsSortedWithAscending,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
-		out int itemIndexNearest,
+		out int? itemIndexNearest,
 		out ItemType? itemNearest)
 	{
 		return IListExtension.FindItemIndexWithDichotomyInRange<ItemType>(
@@ -534,7 +539,7 @@ public static class IListExtension
 		int searchRangeEndIndex,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
-		out int itemIndexNearest,
+		out int? itemIndexNearest,
 		out ItemType? itemNearest)
 	{
 		var itemIndex = IListExtension.FindItemIndexWithDichotomyInRange(
@@ -570,7 +575,7 @@ public static class IListExtension
 		bool isItemsSortedWithAscending,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
-		out int itemIndexNearest,
+		out int? itemIndexNearest,
 		out ItemType? itemNearest)
 	{
 		return IListExtension.FindItemWithDichotomyInRange<ItemType>(
@@ -681,7 +686,7 @@ public static class IListExtension
 		int itemsCount = items.Count;
 		if (itemsCount < 1)
 		{
-			return new List<ItemType>();
+			return [];
 		}
 
 		var itemPageBeginItemIndex = pageIndex * pageSize;
@@ -697,7 +702,7 @@ public static class IListExtension
 		if (itemPageBeginItemIndex >= itemsCount
 		    || itemPageEndItemIndex <= itemPageBeginItemIndex)
 		{
-			return new List<ItemType>();
+			return [];
 		}
 
 		////////////////////////////////////////////////
@@ -707,7 +712,7 @@ public static class IListExtension
 		List<ItemType> pageItems;
 		if (toSortItems == null)
 		{
-			pageItems = new List<ItemType>();
+			pageItems = [];
 			var itemIndex = 0;
 			foreach (var item in items)
 			{
@@ -740,7 +745,7 @@ public static class IListExtension
 		////////////////////////////////////////////////
 		// 3/，根据搜索、排序后的结果进行分页。
 		////////////////////////////////////////////////
-		pageItems = new List<ItemType>();
+		pageItems = [];
 		for (var itemIndex = itemPageBeginItemIndex;
 		    itemIndex < itemPageEndItemIndex;
 		    itemIndex++)

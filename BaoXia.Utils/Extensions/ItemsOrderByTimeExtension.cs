@@ -14,8 +14,9 @@ public static class ItemsOrderByTimeExtension
 
 	#region 类方法
 
-	private static ItemType[]? GetItemsSortByTime_Asc_InTimeSection<ItemType>(
+	private static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
 		ItemType[] items,
+		bool isItemsSortedWithAscending,
 		DateTimeOffset beginTime,
 		DateTimeOffset endTime,
 		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem,
@@ -25,82 +26,126 @@ public static class ItemsOrderByTimeExtension
 		//
 		objectItemsCount = 0;
 		//
+		if (items.Length <= 0)
+		{
+			return null;
+		}
+		// 【注意】beginTime和endTime含义不同，不可互换。
+		if (beginTime >= endTime)
+		{
+			return null;
+		}
 
-		// 【注意】beginTime和endTime含义不同，不可呼唤。
-		//if (beginTime > endTime)
-		//{
-		//	(beginTime, endTime) = (endTime, beginTime);
-		//}
+		var itemsCount = items.Length;
 
-		var firstOrderIndexMatched = items.FindItemIndexWithDichotomy(
+		var firstItemIndex = items.FindItemIndexWithDichotomy(
+			isItemsSortedWithAscending,
 			(item, itemIndex) =>
 			{
 				return toCompareTimeWithItem(item, beginTime);
 			},
-			//
-			true,
-			out var firstOrderIndex,
+			// 无论升序、降序，
+			// 都要找到大于等于“beginTime”的第一个元素。
+			!isItemsSortedWithAscending,
+			out var firstItemIndex_NearestAndGreatThan,
 			out _);
-
-		if (firstOrderIndexMatched >= 0)
-		{
-			firstOrderIndex = firstOrderIndexMatched;
-		}
-		else if (firstOrderIndex < 0)
+		if (firstItemIndex_NearestAndGreatThan == null)
 		{
 			return null;
 		}
-		for (;
-			firstOrderIndex >= 0;
-			firstOrderIndex--)
+		if (firstItemIndex < 0)
 		{
-			var item = items[firstOrderIndex];
-			if (toCompareTimeWithItem(item, beginTime) < 0)
+			if (firstItemIndex_NearestAndGreatThan >= 0
+				&& firstItemIndex_NearestAndGreatThan < itemsCount)
 			{
-				// !!!
-				firstOrderIndex++;
-				break;
-				// !!!
+				firstItemIndex = firstItemIndex_NearestAndGreatThan.Value;
+			}
+			else if (isItemsSortedWithAscending)
+			{
+				if (firstItemIndex_NearestAndGreatThan < 0)
+				{
+					// 此时所有“items”都大于“beginTime”。
+					firstItemIndex = 0;
+				}
+				else if (firstItemIndex_NearestAndGreatThan >= itemsCount)
+				{
+					// 此时所有“items”都小于“beginTime”。
+					return null;
+				}
+			}
+			else
+			{
+				if (firstItemIndex_NearestAndGreatThan < 0)
+				{
+					// 此时所有“items”都小于“beginTime”。
+					return null;
+				}
+				else if (firstItemIndex_NearestAndGreatThan >= itemsCount)
+				{
+					// 此时所有“items”都小于“beginTime”。
+					firstItemIndex = itemsCount - 1;
+				}
 			}
 		}
-		var itemsCount = items.Length;
-		if (firstOrderIndex >= itemsCount)
-		{
-			return null;
-		}
 
-		var endOrderIndexMatched = items.FindItemIndexWithDichotomy(
+
+		var endItemIndex = items.FindItemIndexWithDichotomy(
+			isItemsSortedWithAscending,
 			(item, itemIndex) =>
 			{
 				return toCompareTimeWithItem(item, endTime);
 			},
 			//
-			true, // 注意这里是true
-			out var endOrderIndex,
+			// 无论升序、降序，
+			// 都要找到大于等于“endTime”的第一个元素。
+			!isItemsSortedWithAscending,
+			out var endItemIndex_NearestAndGreatThan,
 			out _);
-		if (endOrderIndexMatched >= 0)
-		{
-			endOrderIndex = endOrderIndexMatched;
-		}
-		else if (endOrderIndex < 0)
+		if (endItemIndex_NearestAndGreatThan == null)
 		{
 			return null;
 		}
-		for (;
-			endOrderIndex >= 0;
-			endOrderIndex--)
+		if (endItemIndex < 0)
 		{
-			var item = items[endOrderIndex];
-			if (toCompareTimeWithItem(item, endTime) < 0)
+			if (endItemIndex_NearestAndGreatThan >= 0
+				&& endItemIndex_NearestAndGreatThan < itemsCount)
 			{
-				// !!!
-				endOrderIndex++;
-				break;
-				// !!!
+				endItemIndex = endItemIndex_NearestAndGreatThan.Value;
+			}
+			else if (isItemsSortedWithAscending)
+			{
+				if (endItemIndex_NearestAndGreatThan < 0)
+				{
+					// 此时所有“items”都大于“endTime”。
+					return null;
+				}
+				else if (endItemIndex_NearestAndGreatThan >= itemsCount)
+				{
+					// 此时所有“items”都小于“endTime”。
+					endItemIndex = itemsCount;
+				}
+			}
+			else
+			{
+				if (endItemIndex_NearestAndGreatThan < 0)
+				{
+					// 此时所有“items”都小于“endTime”。
+					endItemIndex = -1;
+				}
+				else if (endItemIndex_NearestAndGreatThan >= itemsCount)
+				{
+					// 此时所有“items”大于“endTime”。
+					return null;
+				}
 			}
 		}
 
-		objectItemsCount = endOrderIndex - firstOrderIndex;
+
+		if (isItemsSortedWithAscending != true)
+		{
+			(firstItemIndex, endItemIndex) = (endItemIndex + 1, firstItemIndex + 1);
+		}
+		objectItemsCount = endItemIndex - firstItemIndex;
 		if (objectItemsCount <= 0
 			|| isGetObjectItemsCountOnly)
 		{
@@ -111,7 +156,7 @@ public static class ItemsOrderByTimeExtension
 		{
 			Array.Copy(
 				items,
-				firstOrderIndex,
+				firstItemIndex,
 				objectItems,
 				0,
 				objectItemsCount);
@@ -119,14 +164,16 @@ public static class ItemsOrderByTimeExtension
 		return objectItems;
 	}
 
-	public static ItemType[]? GetItemsSortByTime_Asc_InTimeSection<ItemType>(
+	public static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
 		this ItemType[] items,
+		bool isItemsSortedWithAscending,
 		DateTimeOffset beginTime,
 		DateTimeOffset endTime,
 		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		return GetItemsSortByTime_Asc_InTimeSection(
+		return GetItemsSortByTimeInTimeSection(
 			items,
+			isItemsSortedWithAscending,
 			beginTime,
 			endTime,
 			toCompareTimeWithItem,
@@ -134,14 +181,16 @@ public static class ItemsOrderByTimeExtension
 			out _);
 	}
 
-	public static int GetCountOfItemsSortByTime_Asc_InTimeSection<ItemType>(
+	public static int GetCountOfItemsSortByTimeInTimeSection<ItemType>(
 		this ItemType[] items,
+		bool isItemsSortedWithAscending,
 		DateTimeOffset beginTime,
 		DateTimeOffset endTime,
 		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		GetItemsSortByTime_Asc_InTimeSection<ItemType>(
+		GetItemsSortByTimeInTimeSection<ItemType>(
 			items,
+			isItemsSortedWithAscending,
 			beginTime,
 			endTime,
 			toCompareTimeWithItem,
@@ -151,8 +200,9 @@ public static class ItemsOrderByTimeExtension
 		return objectItemsCount;
 	}
 
-	private static ItemType[]? GetItemsSortByTime_Asc_InTimeSection<ItemType>(
-		List<ItemType> items,
+	private static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
+		IList<ItemType> items,
+		bool isItemsSortedWithAscending,
 		DateTimeOffset beginTime,
 		DateTimeOffset endTime,
 		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem,
@@ -162,81 +212,91 @@ public static class ItemsOrderByTimeExtension
 		//
 		objectItemsCount = 0;
 		//
+		var itemsCount = items.Count;
+		if (itemsCount <= 0)
+		{
+			return null;
+		}
+		// 【注意】beginTime和endTime含义不同，不可互换。
+		if (beginTime >= endTime)
+		{
+			return null;
+		}
 
-		// 【注意】beginTime和endTime含义不同，不可呼唤。
-		//if (beginTime > endTime)
-		//{
-		//	(beginTime, endTime) = (endTime, beginTime);
-		//}
 
-		var firstOrderIndexMatched = items.FindItemIndexWithDichotomy(
+		var firstItemIndex = items.FindItemIndexWithDichotomy(
+			isItemsSortedWithAscending,
 			(item, itemIndex) =>
 			{
 				return toCompareTimeWithItem(item, beginTime);
 			},
 			//
-			true,
-			out var firstOrderIndex,
+			!isItemsSortedWithAscending,
+			out var firstItemIndex_NearestAndGreatThan,
 			out _);
-		if (firstOrderIndexMatched >= 0)
-		{
-			firstOrderIndex = firstOrderIndexMatched;
-		}
-		else if (firstOrderIndex < 0)
+		if (firstItemIndex_NearestAndGreatThan == null)
 		{
 			return null;
 		}
-		for (;
-			firstOrderIndex >= 0;
-			firstOrderIndex--)
+		if (firstItemIndex < 0)
 		{
-			var item = items[firstOrderIndex];
-			if (toCompareTimeWithItem(item, beginTime) < 0)
+			if (firstItemIndex_NearestAndGreatThan >= 0
+				&& firstItemIndex_NearestAndGreatThan < itemsCount)
 			{
-				// !!!
-				firstOrderIndex++;
-				break;
-				// !!!
+				firstItemIndex = firstItemIndex_NearestAndGreatThan.Value;
+			}
+			else if (firstItemIndex_NearestAndGreatThan < 0)
+			{
+				// 此时所有“items”都大于“beginTime”。
+				firstItemIndex = 0;
+			}
+			else if (firstItemIndex_NearestAndGreatThan >= itemsCount)
+			{
+				// 此时所有“items”都小于“beginTime”。
+				return null;
 			}
 		}
-		var itemsCount = items.Count;
-		if (firstOrderIndex >= itemsCount)
-		{
-			return null;
-		}
 
-		var endOrderIndexMatched = items.FindItemIndexWithDichotomy(
+
+		var endItemIndex = items.FindItemIndexWithDichotomy(
+			isItemsSortedWithAscending,
 			(item, itemIndex) =>
 			{
 				return toCompareTimeWithItem(item, endTime);
 			},
 			//
-			true, // 注意这里是true
-			out var endOrderIndex,
+			!isItemsSortedWithAscending,
+			out var endItemIndex_NearestAndGreatThan,
 			out _);
-		if (endOrderIndexMatched >= 0)
-		{
-			endOrderIndex = endOrderIndexMatched;
-		}
-		else if (endOrderIndex < 0)
+		if (endItemIndex_NearestAndGreatThan == null)
 		{
 			return null;
 		}
-		for (;
-			endOrderIndex >= 0;
-			endOrderIndex--)
+		if (endItemIndex < 0)
 		{
-			var item = items[endOrderIndex];
-			if (toCompareTimeWithItem(item, endTime) < 0)
+			if (endItemIndex_NearestAndGreatThan >= 0
+				&& endItemIndex_NearestAndGreatThan < itemsCount)
 			{
-				// !!!
-				endOrderIndex++;
-				break;
-				// !!!
+				endItemIndex = endItemIndex_NearestAndGreatThan.Value;
+			}
+			else if (endItemIndex_NearestAndGreatThan < 0)
+			{
+				// 此时所有“items”都小于“endTime”。
+				return null;
+			}
+			else if (endItemIndex_NearestAndGreatThan >= itemsCount)
+			{
+				// 此时所有“items”都大于“endTime”。
+				return null;
 			}
 		}
 
-		objectItemsCount = endOrderIndex - firstOrderIndex;
+
+		if (isItemsSortedWithAscending != true)
+		{
+			(firstItemIndex, endItemIndex) = (endItemIndex + 1, firstItemIndex + 1);
+		}
+		objectItemsCount = endItemIndex - firstItemIndex;
 		if (objectItemsCount <= 0
 			|| isGetObjectItemsCountOnly)
 		{
@@ -247,19 +307,21 @@ public static class ItemsOrderByTimeExtension
 		{
 			items.CopyTo(
 				objectItems,
-				firstOrderIndex);
+				firstItemIndex);
 		}
 		return objectItems;
 	}
 
-	public static ItemType[]? GetItemsSortByTime_Asc_InTimeSection<ItemType>(
-		this List<ItemType> items,
+	public static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
+		this IList<ItemType> items,
+		bool isItemsSortedWithAscending,
 		DateTimeOffset beginTime,
 		DateTimeOffset endTime,
 		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		return GetItemsSortByTime_Asc_InTimeSection<ItemType>(
+		return GetItemsSortByTimeInTimeSection<ItemType>(
 			items,
+			isItemsSortedWithAscending,
 			beginTime,
 			endTime,
 			toCompareTimeWithItem,
@@ -267,307 +329,21 @@ public static class ItemsOrderByTimeExtension
 			out _);
 	}
 
-	public static int GetCountOfItemsSortByTime_Asc_InTimeSection<ItemType>(
-		this List<ItemType> items,
+	public static int GetCountOfItemsSortByTimeInTimeSection<ItemType>(
+		this IList<ItemType> items,
+		bool isItemsSortedWithAscending,
 		DateTimeOffset beginTime,
 		DateTimeOffset endTime,
 		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		GetItemsSortByTime_Asc_InTimeSection<ItemType>(
+		GetItemsSortByTimeInTimeSection<ItemType>(
 			items,
+			isItemsSortedWithAscending,
 			beginTime,
 			endTime,
 			toCompareTimeWithItem,
 			false,
 			out var objectItemsCount);
-		{ }
-		return objectItemsCount;
-	}
-
-	private static ItemType[]? GetItemsSortByTime_Desc_InTimeSection<ItemType>(
-		ItemType[] items,
-		DateTimeOffset beginTime,
-		DateTimeOffset endTime,
-		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem,
-		bool isGetObjectItemsCountOnly,
-		out int objectItemsCount)
-	{
-		//
-		objectItemsCount = 0;
-		//
-
-		// 【注意】beginTime和endTime含义不同，不可呼唤。
-		//if (beginTime > endTime)
-		//{
-		//	(beginTime, endTime) = (endTime, beginTime);
-		//}
-
-
-		var firstOrderIndexMatched = items.FindItemIndexWithDichotomy(
-			(item, itemIndex) =>
-			{
-				return -1 * toCompareTimeWithItem(
-					item,
-					// !!!
-					beginTime
-					// !!!
-					);
-			},
-			//
-			true,
-			out var firstOrderIndex,
-			out _);
-		if (firstOrderIndexMatched >= 0)
-		{
-			firstOrderIndex = firstOrderIndexMatched + 1;
-		}
-		else if (firstOrderIndex < 0)
-		{
-			return null;
-		}
-		for (;
-			firstOrderIndex >= 0;
-			firstOrderIndex--)
-		{
-			var item = items[firstOrderIndex];
-			if (toCompareTimeWithItem(item, beginTime) < 0)
-			{
-				// !!!
-				//firstOrderIndex += 0;
-				break;
-				// !!!
-			}
-		}
-		var itemsCount = items.Length;
-		if (firstOrderIndex >= itemsCount)
-		{
-			return null;
-		}
-
-		var endOrderIndexMatched = items.FindItemIndexWithDichotomy(
-			(item, itemIndex) =>
-			{
-				return -1 * toCompareTimeWithItem(
-					item,
-					// !!!
-					beginTime
-					// !!!
-					);
-			},
-			//
-			true, // 注意这里是true
-			out var endOrderIndex,
-			out _);
-		if (endOrderIndexMatched >= 0)
-		{
-			endOrderIndex = endOrderIndexMatched + 1;
-		}
-		else if (endOrderIndex < 0)
-		{
-			return null;
-		}
-		for (;
-			endOrderIndex < itemsCount;
-			endOrderIndex++)
-		{
-			var item = items[endOrderIndex];
-			if (toCompareTimeWithItem(item, beginTime) < 0)
-			{
-				// !!!
-				//endOrderIndex += 0;
-				break;
-				// !!!
-			}
-		}
-
-		objectItemsCount = endOrderIndex - firstOrderIndex;
-		if (objectItemsCount <= 0
-			|| isGetObjectItemsCountOnly)
-		{
-			return null;
-		}
-
-		var objectItems = new ItemType[objectItemsCount];
-		{
-			Array.Copy(
-				items,
-				firstOrderIndex,
-				objectItems,
-				0,
-				objectItemsCount);
-		}
-		return objectItems;
-	}
-
-	public static ItemType[]? GetItemsSortByTime_Desc_InTimeSection<ItemType>(
-		this ItemType[] items,
-		DateTimeOffset beginTime,
-		DateTimeOffset endTime,
-		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
-	{
-		return GetItemsSortByTime_Desc_InTimeSection(
-			items,
-			beginTime,
-			endTime,
-			toCompareTimeWithItem,
-			false,
-			out _);
-	}
-
-	public static int GetCountOfItemsSortByTime_Desc_InTimeSection<ItemType>(
-		this ItemType[] items,
-		DateTimeOffset beginTime,
-		DateTimeOffset endTime,
-		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
-	{
-		GetItemsSortByTime_Desc_InTimeSection(
-			items,
-			beginTime,
-			endTime,
-			toCompareTimeWithItem,
-			true,
-			out var objectItemsCount);
-		{ }
-		return objectItemsCount;
-	}
-
-	private static ItemType[]? GetItemsSortByTime_Desc_InTimeSection<ItemType>(
-		List<ItemType> items,
-		DateTimeOffset beginTime,
-		DateTimeOffset endTime,
-		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem,
-		bool isGetObjectItemsCountOnly,
-		out int objectItemsCount)
-	{
-		//
-		objectItemsCount = 0;
-		//
-		if (beginTime > endTime)
-		{
-			(beginTime, endTime) = (endTime, beginTime);
-		}
-
-		var firstOrderIndexMatched = items.FindItemIndexWithDichotomy(
-			(item, itemIndex) =>
-			{
-				return toCompareTimeWithItem(
-					item,
-					// !!!
-					endTime
-					// !!!
-					);
-			},
-			//
-			true,
-			out var firstOrderIndex,
-			out _);
-		if (firstOrderIndexMatched >= 0)
-		{
-			firstOrderIndex = firstOrderIndexMatched + 1;
-		}
-		else if (firstOrderIndex < 0)
-		{
-			return null;
-		}
-		var itemsCount = items.Count;
-		for (;
-			firstOrderIndex < itemsCount;
-			firstOrderIndex++)
-		{
-			var item = items[firstOrderIndex];
-			if (toCompareTimeWithItem(item, endTime) < 0)
-			{
-				// !!!
-				//firstOrderIndex += 0;
-				break;
-				// !!!
-			}
-		}
-		if (firstOrderIndex >= itemsCount)
-		{
-			return null;
-		}
-
-		var endOrderIndexMatched = items.FindItemIndexWithDichotomy(
-			(item, itemIndex) =>
-			{
-				return toCompareTimeWithItem(
-					item,
-					// !!!
-					beginTime
-					// !!!
-					);
-			},
-			//
-			true, // 注意这里是true
-			out var endOrderIndex,
-			out _);
-		if (endOrderIndexMatched >= 0)
-		{
-			endOrderIndex = endOrderIndexMatched + 1;
-		}
-		else if (endOrderIndex < 0)
-		{
-			return null;
-		}
-		for (;
-			endOrderIndex < itemsCount;
-			endOrderIndex++)
-		{
-			var item = items[endOrderIndex];
-			if (toCompareTimeWithItem(item, beginTime) < 0)
-			{
-				// !!!
-				//endOrderIndex += 0;
-				break;
-				// !!!
-			}
-		}
-
-		objectItemsCount = endOrderIndex - firstOrderIndex;
-		if (objectItemsCount <= 0
-			|| isGetObjectItemsCountOnly)
-		{
-			return null;
-		}
-
-		var objectItems = new ItemType[objectItemsCount];
-		{
-			items.CopyTo(
-				objectItems,
-				firstOrderIndex);
-		}
-		return objectItems;
-	}
-
-	public static ItemType[]? GetItemsSortByTime_Desc_InTimeSection<ItemType>(
-		this List<ItemType> items,
-		DateTimeOffset beginTime,
-		DateTimeOffset endTime,
-		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
-	{
-		return GetItemsSortByTime_Desc_InTimeSection<ItemType>(
-			items,
-			beginTime,
-			endTime,
-			toCompareTimeWithItem,
-			false,
-			out _);
-	}
-
-	public static int GetCountOfItemsSortByTime_Desc_InTimeSection<ItemType>(
-		this List<ItemType> items,
-		DateTimeOffset beginTime,
-		DateTimeOffset endTime,
-		Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
-	{
-		GetItemsSortByTime_Desc_InTimeSection<ItemType>(
-		       items,
-		       beginTime,
-		       endTime,
-		       toCompareTimeWithItem,
-		       true,
-		       out var objectItemsCount);
 		{ }
 		return objectItemsCount;
 	}

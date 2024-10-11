@@ -597,7 +597,7 @@ public static class ArrayExtension
 	/// <param name="searchRangeLength">查找范围的对象数量。</param>
 	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
 	/// <param name="isGetItemNearestLeft">是否获取最接近目标的左侧对象。</param>
-	/// <param name="itemIndexNearest">最接近目标的左侧对象索引值。</param>
+	/// <param name="itemNearestIndex">最接近目标的左侧对象索引值。</param>
 	/// <param name="itemNearest">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomyInRange<ItemType>(
@@ -607,10 +607,10 @@ public static class ArrayExtension
 		int searchRangeLength,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
-		out int itemIndexNearest,
+		out int? itemNearestIndex,
 		out ItemType? itemNearest)
 	{
-		itemIndexNearest = -1;
+		itemNearestIndex = null;
 		itemNearest = default;
 
 		if (itemsSorted == null
@@ -631,7 +631,15 @@ public static class ArrayExtension
 		{
 			searchRangeEndIndex = itemsCount;
 		}
+		if (searchRangeEndIndex <= searchRangeBeginIndex)
+		{
+			return -1;
+		}
 
+		var compareNumberDirection
+			= isItemsSortedWithAscending
+			? 1
+			: -1;
 
 		var objectItemIndexMatched = -1;
 		while (searchRangeEndIndex > searchRangeBeginIndex)
@@ -643,7 +651,9 @@ public static class ArrayExtension
 				+ searchRangeLength / 2;
 
 			var item = items[searchShotIndex];
-			var resultOfComparerItemToObjectItem = toComparerToObjectItemWith(item, searchShotIndex);
+			var resultOfComparerItemToObjectItem
+				= toComparerToObjectItemWith(item, searchShotIndex)
+				* compareNumberDirection;
 			if (resultOfComparerItemToObjectItem == 0)
 			{
 				// !!!
@@ -654,7 +664,7 @@ public static class ArrayExtension
 			else
 			{
 				// !!! 不是目标时，记录最接近目标的元素信息。 !!!
-				itemIndexNearest = searchShotIndex;
+				itemNearestIndex = searchShotIndex;
 				itemNearest = item;
 				// !!!
 				if (searchRangeLength == 1)
@@ -663,10 +673,6 @@ public static class ArrayExtension
 				}
 				else
 				{
-					if (isItemsSortedWithAscending == false)
-					{
-						resultOfComparerItemToObjectItem *= -1;
-					}
 					if (resultOfComparerItemToObjectItem < 0)
 					{
 						searchRangeBeginIndex = searchShotIndex;
@@ -680,31 +686,32 @@ public static class ArrayExtension
 				}
 			}
 		}
+
+
 		if (isGetItemNearestLeft)
 		{
 			if (objectItemIndexMatched >= 0)
 			{
-				itemIndexNearest = objectItemIndexMatched - 1;
-				if (itemIndexNearest >= 0)
+				itemNearestIndex = objectItemIndexMatched - 1;
+				if (itemNearestIndex >= 0)
 				{
-					itemNearest = items[itemIndexNearest];
+					itemNearest = items[itemNearestIndex.Value];
 				}
 				else
 				{
 					itemNearest = default;
 				}
 			}
-			else if (itemNearest == null)
+			else if (
+				itemNearest != null
+				&& itemNearestIndex != null
+				&& (toComparerToObjectItemWith(itemNearest, itemNearestIndex.Value)
+				* compareNumberDirection) > 0)
 			{
-				itemIndexNearest = 0;
-				itemNearest = items[itemIndexNearest];
-			}
-			else if (toComparerToObjectItemWith(itemNearest, itemIndexNearest) > 0)
-			{
-				itemIndexNearest--;
-				if (itemIndexNearest >= 0)
+				itemNearestIndex--;
+				if (itemNearestIndex >= 0)
 				{
-					itemNearest = items[itemIndexNearest];
+					itemNearest = items[itemNearestIndex.Value];
 				}
 				else
 				{
@@ -714,30 +721,28 @@ public static class ArrayExtension
 		}
 		else
 		{
-
 			if (objectItemIndexMatched >= 0)
 			{
-				itemIndexNearest = objectItemIndexMatched + 1;
-				if (itemIndexNearest < items.Length)
+				itemNearestIndex = objectItemIndexMatched + 1;
+				if (itemNearestIndex < itemsCount)
 				{
-					itemNearest = items[itemIndexNearest];
+					itemNearest = items[itemNearestIndex.Value];
 				}
 				else
 				{
 					itemNearest = default;
 				}
 			}
-			else if (itemNearest == null)
+			else if (
+				itemNearest != null
+				&& itemNearestIndex != null
+				&& (toComparerToObjectItemWith(itemNearest, itemNearestIndex.Value)
+				* compareNumberDirection) < 0)
 			{
-				itemIndexNearest = items.Length;
-				itemNearest = default;
-			}
-			else if (toComparerToObjectItemWith(itemNearest, itemIndexNearest) < 0)
-			{
-				itemIndexNearest++;
-				if (itemIndexNearest < items.Length)
+				itemNearestIndex++;
+				if (itemNearestIndex < itemsCount)
 				{
-					itemNearest = items[itemIndexNearest];
+					itemNearest = items[itemNearestIndex.Value];
 				}
 				else
 				{
@@ -763,7 +768,7 @@ public static class ArrayExtension
 		bool isItemsSortedWithAscending,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
-		out int itemIndexNearest,
+		out int? itemIndexNearest,
 		out ItemType? itemNearest)
 	{
 		return ArrayExtension.FindItemIndexWithDichotomyInRange<ItemType>(
@@ -796,7 +801,7 @@ public static class ArrayExtension
 		int searchRangeEndIndex,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
-		out int itemIndexNearest,
+		out int? itemIndexNearest,
 		out ItemType? itemNearest)
 	{
 		var itemIndex = ArrayExtension.FindItemIndexWithDichotomyInRange(
@@ -832,7 +837,7 @@ public static class ArrayExtension
 		bool isItemsSortedWithAscending,
 		Func<ItemType, int, int> toComparerToObjectItemWith,
 		bool isGetItemNearestLeft,
-		out int itemIndexNearest,
+		out int? itemIndexNearest,
 		out ItemType? itemNearest)
 	{
 		return ArrayExtension.FindItemWithDichotomyInRange<ItemType>(

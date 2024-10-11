@@ -1,4 +1,5 @@
-﻿using BaoXia.Utils.Extensions;
+﻿using BaoXia.Utils.Constants;
+using BaoXia.Utils.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -199,6 +200,7 @@ public class ArrayExtensionTest
 		{
 			var objectTestItem = items[i];
 			var itemIndexFound = items.FindItemIndexWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
@@ -216,6 +218,7 @@ public class ArrayExtensionTest
 		{
 			var objectTestItem = items[i];
 			var itemIndexFound = items.FindItemIndexWithDichotomyInRange(
+				true,
 				testSearchRangeBeginIndex,
 				testSearchRangeLength,
 				(testItem, testItemIndex) =>
@@ -230,6 +233,7 @@ public class ArrayExtensionTest
 		{
 			var objectTestItem = items[i];
 			var itemFound = items.FindItemWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
@@ -247,6 +251,7 @@ public class ArrayExtensionTest
 		{
 			var objectTestItem = items[i];
 			var itemFound = items.FindItemWithDichotomyInRange(
+				true,
 				testSearchRangeBeginIndex,
 				testSearchRangeLength,
 				(testItem, testItemIndex) =>
@@ -286,12 +291,13 @@ public class ArrayExtensionTest
 			objectTestItemIndex++)
 		{
 			items.FindItemIndexWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.CompareTo(objectTestItemIndex);
 				},
 				//
-				true,
+				DichotomyClosestItemType.LessThanObjectMax,
 				out var itemIndexNearestAtLeft,
 				out var itemNearestAtLeft);
 
@@ -334,12 +340,13 @@ public class ArrayExtensionTest
 			objectTestItemIndex++)
 		{
 			items.FindItemIndexWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.CompareTo(objectTestItemIndex);
 				},
 				//
-				false,
+				DichotomyClosestItemType.GreaterThanObjectMin,
 				out var itemIndexNearestAtRight,
 				out var itemNearestAtRight);
 			if ((objectTestItemIndex % 2) == 0)

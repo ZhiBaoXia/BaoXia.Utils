@@ -114,42 +114,42 @@ public class ListExtensionTest
 
 
 		// !!!
-		List<int> testList = [..TestItems];
+		List<int> testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(-1, 1) == 2);
 		// !!!
 
 		// !!!
-		testList = [..TestItems];
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(-1) == 5);
 		// !!!
 
 		// !!!
-		testList = [..TestItems];
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(0, 1) == 2);
 		// !!!
 
 		// !!!
-		testList = [..TestItems];
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(1) == 4);
 		// !!!
 
 		// !!!
-		testList = [..TestItems];
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(3, 5) == 2);
 		// !!!
 
 		// !!!
-		testList = [..TestItems];
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(3) == 2);
 		// !!!
 
 		// !!!
-		testList = [..TestItems];
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(4) == 1);
 		// !!!
 
 		// !!!
-		testList = [..TestItems];
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(5) == 0);
 		// !!!
 	}

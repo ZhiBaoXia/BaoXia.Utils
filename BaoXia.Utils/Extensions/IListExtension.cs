@@ -543,7 +543,7 @@ public static class IListExtension
 		return IListExtension.FindItemIndexWithDichotomyInRange<ItemType>(
 			itemsSorted,
 			isItemsSortedWithAscending,
-			- 1,
+			-1,
 			-1,
 			toComparerToObjectItemWith,
 			closestItemType,

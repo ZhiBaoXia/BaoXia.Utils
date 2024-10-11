@@ -1,4 +1,5 @@
-﻿using BaoXia.Utils.Extensions;
+﻿using BaoXia.Utils.Constants;
+using BaoXia.Utils.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -296,7 +297,7 @@ public class ArrayExtensionTest
 					return testItem.CompareTo(objectTestItemIndex);
 				},
 				//
-				true,
+				DichotomyClosestItemType.LessThanObjectMax,
 				out var itemIndexNearestAtLeft,
 				out var itemNearestAtLeft);
 
@@ -345,7 +346,7 @@ public class ArrayExtensionTest
 					return testItem.CompareTo(objectTestItemIndex);
 				},
 				//
-				false,
+				DichotomyClosestItemType.GreaterThanObjectMin,
 				out var itemIndexNearestAtRight,
 				out var itemNearestAtRight);
 			if ((objectTestItemIndex % 2) == 0)

@@ -15,8 +15,9 @@ public class DelayTask : IDisposable
 	protected Timer? _delayTimer;
 
 
-	protected DateTime _timeToRun;
-	public DateTime TimeToRun => _timeToRun;
+	protected DateTime _timeToRunPlaned;
+	public DateTime TimeToRunPlaned => _timeToRunPlaned;
+
 
 	#endregion
 
@@ -33,7 +34,7 @@ public class DelayTask : IDisposable
 		where TimerParamType : class
 	{
 		_delayTimer?.Dispose();
-		_timeToRun = DateTime.Now.Add(delay);
+		_timeToRunPlaned = DateTime.Now.Add(delay);
 		_delayTimer = new Timer(
 			(timerParam) =>
 			{
@@ -51,6 +52,7 @@ public class DelayTask : IDisposable
 		where TimerParamType : class
 	{
 		_delayTimer?.Dispose();
+		_timeToRunPlaned = DateTime.Now.Add(delay);
 		_delayTimer = new Timer(
 			async (timerParam) =>
 			{

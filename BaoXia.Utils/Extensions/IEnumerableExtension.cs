@@ -103,7 +103,7 @@ public static class IEnumerableExtension
 		}
 	}
 
-	public static bool IsEmpty<ItemType>(this IEnumerable<ItemType>? items)
+	public static bool IsEmpty<ItemType>([NotNullWhen(false)] this IEnumerable<ItemType>? items)
 	{
 		if (items == null
 			|| items.GetCount() < 1)

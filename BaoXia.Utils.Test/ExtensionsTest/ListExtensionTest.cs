@@ -1,4 +1,5 @@
-﻿using BaoXia.Utils.Extensions;
+﻿using BaoXia.Utils.Constants;
+using BaoXia.Utils.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,55 +114,50 @@ public class ListExtensionTest
 
 
 		// !!!
-		var testList = TestItems.ToList();
+		List<int> testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(-1, 1) == 2);
 		// !!!
 
 		// !!!
-		testList = TestItems.ToList();
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(-1) == 5);
 		// !!!
 
 		// !!!
-		testList = TestItems.ToList();
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(0, 1) == 2);
 		// !!!
 
 		// !!!
-		testList = TestItems.ToList();
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(1) == 4);
 		// !!!
 
 		// !!!
-		testList = TestItems.ToList();
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(3, 5) == 2);
 		// !!!
 
 		// !!!
-		testList = TestItems.ToList();
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(3) == 2);
 		// !!!
 
 		// !!!
-		testList = TestItems.ToList();
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(4) == 1);
 		// !!!
 
 		// !!!
-		testList = TestItems.ToList();
+		testList = [.. TestItems];
 		Assert.IsTrue(testList.RemoveFrom(5) == 0);
 		// !!!
 	}
 
 
-	class TestItem
+	class TestItem(int index)
 	{
-		public int Index { get; set; }
-
-		public TestItem(int index)
-		{
-			this.Index = index;
-		}
+		public int Index { get; set; } = index;
 	}
 
 	[TestMethod]
@@ -182,6 +178,7 @@ public class ListExtensionTest
 		{
 			var objectTestItem = list[i];
 			var itemIndexFound = list.FindItemIndexWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
@@ -199,6 +196,7 @@ public class ListExtensionTest
 		{
 			var objectTestItem = list[i];
 			var itemIndexFound = list.FindItemIndexWithDichotomyInRange(
+				true,
 				testSearchRangeBeginIndex,
 				testSearchRangeLength,
 				(testItem, testItemIndex) =>
@@ -213,6 +211,7 @@ public class ListExtensionTest
 		{
 			var objectTestItem = list[i];
 			var itemFound = list.FindItemWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
@@ -230,6 +229,7 @@ public class ListExtensionTest
 		{
 			var objectTestItem = list[i];
 			var itemFound = list.FindItemWithDichotomyInRange(
+				true,
 				testSearchRangeBeginIndex,
 				testSearchRangeLength,
 				(testItem, testItemIndex) =>
@@ -270,12 +270,13 @@ public class ListExtensionTest
 			objectTestItemIndex++)
 		{
 			items.FindItemIndexWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.CompareTo(objectTestItemIndex);
 				},
 				//
-				true,
+				DichotomyClosestItemType.LessThanObjectMax,
 				out var itemIndexNearestAtLeft,
 				out var itemNearestAtLeft);
 
@@ -318,12 +319,13 @@ public class ListExtensionTest
 			objectTestItemIndex++)
 		{
 			items.FindItemIndexWithDichotomy(
+				true,
 				(testItem, testItemIndex) =>
 				{
 					return testItem.CompareTo(objectTestItemIndex);
 				},
 				//
-				false,
+				DichotomyClosestItemType.GreaterThanObjectMin,
 				out var itemIndexNearestAtRight,
 				out var itemNearestAtRight);
 			if ((objectTestItemIndex % 2) == 0)

@@ -568,7 +568,7 @@ public static class ObjectExtension
 			// 非字符串和非集合对象【需要】检查子属性：
 			RecursionUtil.Enumerate(
 				new ObjectPropertyInfo(0, entityPropertyInfo, []),
-				(entityPropertyInfo) =>
+				(entityPropertyInfo, currentRecursionStep, _) =>
 				{
 					// 值类型，【不需要】检查子属性，
 					// 字符串，【不需要】检查子属性，
@@ -579,6 +579,24 @@ public static class ObjectExtension
 					}
 
 					// 非值类型，
+					// 单之前已经检查过的类型，
+					// 【不需要】再次检查子属性，
+					// （否则会产生死循环）：
+					var entityPropertyType = entityPropertyInfo.PropertyType;
+					for (var prevRecursionStep = currentRecursionStep.PrevRecursionStep;
+					prevRecursionStep != null;
+					prevRecursionStep = prevRecursionStep.PrevRecursionStep)
+					{
+						if (prevRecursionStep.CurrentItem?.PropertyType.
+						Equals(entityPropertyType) == true)
+						{
+							return null;
+						}
+					}
+
+
+					// 非值类型，
+					// 且，之前未检查过的类型，
 					// 且，非字符串和集合对象，
 					// 【需要】检查子属性：
 					var childEntityPropertyInfes = new List<ObjectPropertyInfo>();
@@ -593,7 +611,7 @@ public static class ObjectExtension
 					}
 					return childEntityPropertyInfes;
 				},
-				(parentEntityPropertyInfo, entityPropertyInfo) =>
+				(parentEntityPropertyInfo, entityPropertyInfo, _) =>
 				{
 					if (!isPropertyInfoValid(entityPropertyInfo))
 					{
@@ -740,9 +758,9 @@ public static class ObjectExtension
 		}
 
 
-		Dictionary<object, bool> sourcePropertyValueHadGetPropertyGetInfes = [];
+		HashSet<object> sourcePropertyValueHadGetPropertyGetInfes = [];
 		{
-			sourcePropertyValueHadGetPropertyGetInfes.Add(item!, true);
+			sourcePropertyValueHadGetPropertyGetInfes.Add(item!);
 		}
 		Dictionary<object, object?> sourcePropertyValueHadCloned = [];
 		{
@@ -772,8 +790,7 @@ public static class ObjectExtension
 					}
 					// !!!
 					sourcePropertyValueHadGetPropertyGetInfes.Add(
-						sourcePropertyValue,
-						true);
+						sourcePropertyValue);
 					// !!!
 
 

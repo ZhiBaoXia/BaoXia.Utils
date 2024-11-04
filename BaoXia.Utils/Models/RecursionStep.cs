@@ -8,9 +8,13 @@ public class RecursionStep<ItemType>
 	// @自身属性
 	////////////////////////////////////////////////
 
+	public RecursionStep<ItemType>? PrevRecursionStep { get; set; }
+
 	public ItemType? ParentItem { get; set; }
 
 	public IList<ItemType> Items { get; set; } = default!;
+
+	public ItemType? CurrentItem { get; set; }
 
 	public int NextItemIndex { get; set; }
 

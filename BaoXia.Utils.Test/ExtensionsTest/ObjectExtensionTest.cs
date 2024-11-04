@@ -468,7 +468,7 @@ public class ObjectExtensionTest
 
 		public StructA StructProperty { get; set; } = new();
 
-		public Dictionary<string, int> DictionaryProperty { get; set; } = new();
+		public Dictionary<string, int> DictionaryProperty { get; set; } = [];
 
 	}
 
@@ -757,7 +757,7 @@ public class ObjectExtensionTest
 					= itemCloned2.ObjectItems[itemIndex].BStringValue + "+10";
 			}
 
-			Dictionary<string, int> newKeyValues = new();
+			Dictionary<string, int> newKeyValues = [];
 			foreach (var keyValue in itemCloned2.KeyValueItems!)
 			{
 				newKeyValues.AddOrSet(
@@ -1004,7 +1004,6 @@ public class ObjectExtensionTest
 		public string? ProxyInfo { get; set; }
 	}
 
-
 	[TestMethod]
 	public void GetPropertyInfesFromTest()
 	{
@@ -1039,6 +1038,71 @@ public class ObjectExtensionTest
 		Assert.IsTrue(testEntityPropertyInfesNotNull[1].Name.Equals(nameof(TestEntity.IpInfoNotNull)));
 		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes.Length == 1);
 		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes[0].Name.Equals(nameof(IpInfo.IpAddress)));
+	}
+
+	public class TestEntityWithRecursionProperty
+	{
+		public int Id { get; set; }
+
+		public int? Number { get; set; }
+
+		public string Name { get; set; } = default!;
+
+		public string? Description { get; set; }
+
+		public IpInfo IpInfoNotNull { get; set; } = default!;
+
+		public IpInfo? IpInfoNullable { get; set; }
+
+		public TestEntityWithRecursionProperty ChildTestEntity { get; set; } = default!;
+	}
+
+	[TestMethod]
+	public void GetPropertyInfesFromWithRecursionPropertyTest()
+	{
+		var nullabilityInfoContext = new NullabilityInfoContext();
+		var testEntityPropertyInfesNotNull
+			= typeof(TestEntityWithRecursionProperty).GetObjectPropertyInfes(
+			(objectPropertyInfo) =>
+			{
+				// 值类型，【不需要】非空约束：
+				if (objectPropertyInfo.IsPropertyTypeValue)
+				{
+					return false;
+				}
+				// 拥有【可为空特性】，
+				// 则该类型可为空，不需要约束： 
+				if (objectPropertyInfo.IsPropertyTypeNullable(nullabilityInfoContext))
+				{
+					return false;
+				}
+
+				////////////////////////////////////////////////
+				// 非值类型，
+				// 且，没有【可为空特性】，
+				// 【需要】非空约束：
+				//////////////////////////////////////////////// 
+				return true;
+			});
+
+
+		////////////////////////////////////////////////
+		////////////////////////////////////////////////
+		////////////////////////////////////////////////
+		// !!! "如果没有合理含有递归子属性的类型， !!!
+		// !!! 则测试程序不会运行至此处。               !!!
+		////////////////////////////////////////////////
+		////////////////////////////////////////////////
+		////////////////////////////////////////////////
+
+
+		// “Name”，“IpInfoNotNull”
+		Assert.IsTrue(testEntityPropertyInfesNotNull.Count == 3);
+		Assert.IsTrue(testEntityPropertyInfesNotNull[0].Name.Equals(nameof(TestEntityWithRecursionProperty.Name)));
+		Assert.IsTrue(testEntityPropertyInfesNotNull[1].Name.Equals(nameof(TestEntityWithRecursionProperty.IpInfoNotNull)));
+		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes.Length == 1);
+		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes[0].Name.Equals(nameof(IpInfo.IpAddress)));
+		Assert.IsTrue(testEntityPropertyInfesNotNull[2].Name.Equals(nameof(TestEntityWithRecursionProperty.ChildTestEntity)));
 	}
 
 	[TestMethod]

@@ -311,6 +311,33 @@ public static class ArrayExtension
 	}
 
 	/// <summary>
+	/// 通过在新增多个元素，创建新的元素数组。
+	/// </summary>
+	/// <typeparam name="ItemType">数组元素类型。</typeparam>
+	/// <param name="items">当前数组。</param>
+	/// <param name="newItems">要加入的新的多个对象。</param>
+	/// <returns>新增元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。 </returns>
+	public static ItemType[]? ArrayByContact<ItemType>(
+		this ItemType[]? items,
+		ItemType[]? newItems)
+	{
+		if (items != null
+			&& newItems != null)
+		{
+			return items.ArrayByAdd(newItems);
+		}
+		if (items != null)
+		{
+			return items;
+		}
+		if (newItems != null)
+		{
+			return newItems;
+		}
+		return null;
+	}
+
+	/// <summary>
 	/// 通过移除指定位置上的元素，创建新的元素数组。
 	/// </summary>
 	/// <typeparam name="ItemType">数组元素类型。</typeparam>

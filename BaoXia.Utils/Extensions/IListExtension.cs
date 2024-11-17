@@ -366,7 +366,10 @@ public static class IListExtension
 		{
 			searchRangeBeginIndex = 0;
 		}
-		var searchRangeEndIndex = searchRangeBeginIndex + searchRangeLength;
+		var searchRangeEndIndex
+			= searchRangeLength < 0
+			? itemsCount
+			: (searchRangeBeginIndex + searchRangeLength);
 		if (searchRangeEndIndex < 0
 			|| searchRangeEndIndex > itemsCount)
 		{

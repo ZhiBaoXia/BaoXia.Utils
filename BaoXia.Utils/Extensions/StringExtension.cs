@@ -797,6 +797,14 @@ public static class StringExtension
 			optionalSeparatorChars);
 	}
 
+	public static string ToStringEndWithoutFullStop(
+	    this string originString)
+	{
+		return originString.TrimEnd(
+		    '.',
+		    '。');
+	}
+
 	/// <summary>
 	/// 由当前字符串，拆解成字符串数组。
 	/// </summary>
@@ -814,7 +822,7 @@ public static class StringExtension
 			return [];
 		}
 
-		var sections = str.Split(new string[] { spliter }, splitOptions);
+		var sections = str.Split([spliter], splitOptions);
 		var stringValues = sections;
 		{ }
 		return stringValues;
@@ -856,7 +864,7 @@ public static class StringExtension
 			return [];
 		}
 
-		var sections = str.Split(new string[] { spliter }, splitOptions);
+		var sections = str.Split([spliter], splitOptions);
 		var intValues = new int[sections.Length];
 		{
 			for (var sectionIndex = 0;
@@ -896,7 +904,7 @@ public static class StringExtension
 			return [];
 		}
 
-		var sections = str.Split(new string[] { spliter }, splitOptions);
+		var sections = str.Split([spliter], splitOptions);
 		var longValues = new long[sections.Length];
 		{
 			for (var sectionIndex = 0;
@@ -936,7 +944,7 @@ public static class StringExtension
 			return [];
 		}
 
-		var sections = str.Split(new string[] { spliter }, splitOptions);
+		var sections = str.Split([spliter], splitOptions);
 		var floatValues = new float[sections.Length];
 		{
 			for (var sectionIndex = 0;
@@ -976,7 +984,7 @@ public static class StringExtension
 			return [];
 		}
 
-		var sections = str.Split(new string[] { spliter }, splitOptions);
+		var sections = str.Split([spliter], splitOptions);
 		var doubleValues = new double[sections.Length];
 		{
 			for (var sectionIndex = 0;
@@ -1016,7 +1024,7 @@ public static class StringExtension
 			return [];
 		}
 
-		var sections = str.Split(new string[] { spliter }, splitOptions);
+		var sections = str.Split([spliter], splitOptions);
 		var decimalValues = new decimal[sections.Length];
 		{
 			for (var sectionIndex = 0;

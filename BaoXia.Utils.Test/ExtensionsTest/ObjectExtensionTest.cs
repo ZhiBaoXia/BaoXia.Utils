@@ -11,6 +11,35 @@ namespace BaoXia.Utils.Test.ExtensionsTest;
 [TestClass]
 public class ObjectExtensionTest
 {
+	[TestMethod]
+	public void CreateObjectTest()
+	{
+		var stringObject = ObjectExtension.CreateObject<string>();
+		{
+			Assert.IsTrue(stringObject == string.Empty);
+		}
+		var intObject = ObjectExtension.CreateObject<int>();
+		{
+			Assert.IsTrue(intObject == 0);
+		}
+		var floatObject = ObjectExtension.CreateObject<float>();
+		{
+			Assert.IsTrue(intObject == 0);
+		}
+		var doubleObject = ObjectExtension.CreateObject<double>();
+		{
+			Assert.IsTrue(intObject == 0);
+		}
+		var decimalObject = ObjectExtension.CreateObject<decimal>();
+		{
+			Assert.IsTrue(intObject == 0);
+		}
+		var dateTimeObject = ObjectExtension.CreateObject<DateTime>();
+		{
+			Assert.IsTrue(dateTimeObject == DateTime.MinValue);
+		}
+	}
+
 	protected class ClassA
 	{
 		public int IntProperty { get; set; }

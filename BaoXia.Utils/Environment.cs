@@ -68,12 +68,12 @@ public class Environment
 	/// <summary>
 	/// 当前应用程序名称。
 	/// </summary>
-	public static string? ApplicationName { get; set; }
+	public static string ApplicationName { get; set; } = string.Empty;
 
 	/// <summary>
 	/// 当前应用程序完整名称。
 	/// </summary>
-	public static string? ApplicationFullName { get; set; }
+	public static string ApplicationFullName { get; set; } = string.Empty;
 
 	/// <summary>
 	/// 当前应用程序所在文件夹绝对路径。
@@ -225,13 +225,13 @@ public class Environment
 		if (currentExecutingAssembly != null)
 		{
 			Environment.CurrentApplicationAssembly = currentExecutingAssembly;
-			Environment.ApplicationName = currentExecutingAssembly.GetName().Name;
-			Environment.ApplicationFullName = currentExecutingAssembly.FullName;
+			Environment.ApplicationName = currentExecutingAssembly.GetName().Name ?? string.Empty;
+			Environment.ApplicationFullName = currentExecutingAssembly.FullName ?? string.Empty;
 		}
 		else if (Assembly.GetExecutingAssembly() is Assembly executingAssembly)
 		{
-			Environment.ApplicationName = executingAssembly.GetName().Name;
-			Environment.ApplicationFullName = executingAssembly.GetName().ToString();
+			Environment.ApplicationName = executingAssembly.GetName().Name ?? string.Empty;
+			Environment.ApplicationFullName = executingAssembly.GetName().ToString() ?? string.Empty;
 		}
 		Environment.ApplicationDirectoryPath
 			= AppContext.BaseDirectory.ToFileSystemDirectoryPath();

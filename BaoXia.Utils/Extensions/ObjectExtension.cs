@@ -24,30 +24,17 @@ public static class ObjectExtension
 
 	public static object? CreateObject(Type objectType)
 	{
-		var @object = Activator.CreateInstance(objectType);
-		{ }
-		return @object;
+		return ObjectUtil.CreateObject(objectType);
 	}
 
 	public static ObjectType? CreateObject<ObjectType>()
 	{
-		return (ObjectType?)CreateObject(typeof(ObjectType));
+		return ObjectUtil.CreateObject<ObjectType>();
 	}
 
 	public static object? CreateObject(object? @object)
 	{
-		if (@object == null)
-		{
-			return @object;
-		}
-		if (@object is string stringObject)
-		{
-			return new string(stringObject);
-		}
-		{
-			@object = Activator.CreateInstance(@object.GetType());
-		}
-		return @object;
+		return ObjectUtil.CreateObject(@object);
 	}
 
 	public static PropertyInfo[]? GetPublicSettablePropertyInfes(
@@ -677,8 +664,12 @@ public static class ObjectExtension
 						return false;
 						// !!!
 					}
+					// !!! 如果当前继续检查，且当前属性值为“null”， !!!
+					// !!! 则重新获取属性值（有可能被检查函数赋值）。 !!!
+					entityPropertyValue ??= propertyInfo.GetValue(propertyOwner);
 					// !!!
-					currentRecursionStep.CurrentEntityPropertyValue = entityPropertyValue;
+					currentRecursionStep.CurrentEntityPropertyValue
+					= entityPropertyValue;
 					// !!!
 					return true;
 				},
@@ -1043,7 +1034,7 @@ public static class ObjectExtension
 											out clonedPropertyValue) != true)
 										{
 											// !!! 创建新的对象，并向父对象，设置新的值。 !!!
-											clonedPropertyValue = CreateObject(sourcePropertyValue);
+											clonedPropertyValue = ObjectUtil.CreateObject(sourcePropertyValue);
 											// !!!
 											sourcePropertyValueHadCloned.Add(
 												sourcePropertyValue,
@@ -1076,7 +1067,7 @@ public static class ObjectExtension
 										out clonedPropertyValue) != true)
 									{
 										// !!! 创建新的对象，并向父对象，设置新的值。 !!!
-										clonedPropertyValue = CreateObject(sourceObjectPropertyValue);
+										clonedPropertyValue = ObjectUtil.CreateObject(sourceObjectPropertyValue);
 										// !!!
 										sourcePropertyValueHadCloned.Add(
 											sourcePropertyValue,

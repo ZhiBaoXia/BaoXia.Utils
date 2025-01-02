@@ -12,8 +12,10 @@ namespace BaoXia.Utils;
 public class LogFile : IDisposable
 {
 	////////////////////////////////////////////////
-	// @静态常量
+	// @静态变量
 	////////////////////////////////////////////////
+
+	#region 静态变量				
 
 	/// <summary>
 	/// 日志文件扩展名。
@@ -133,10 +135,14 @@ public class LogFile : IDisposable
 		LogFile.ToGetAutoFlushLogBufferIntervalSeconds,
 		false);
 
+	#endregion
+
 
 	////////////////////////////////////////////////
 	// @类方法
 	////////////////////////////////////////////////
+
+	#region 类方法				
 
 	/// <summary>
 	/// 使用“日志名称”和“记录日志的时间”创建日志文件文件名。
@@ -256,11 +262,14 @@ public class LogFile : IDisposable
 		}
 	}
 
+	#endregion
+
 
 	////////////////////////////////////////////////
 	// @自身属性
 	////////////////////////////////////////////////
 
+	#region 自身属性
 
 	/// <summary>
 	/// 日志类型。
@@ -290,15 +299,22 @@ public class LogFile : IDisposable
 	/// </summary>
 	public string[]? KeysInLogContentToIgnoreLogs { get; set; }
 
+	public bool IsConsoleWriteEnable { get; set; }
+
 	/// <summary>
 	/// 日志文件上一次需要写入的内容，当文件写入失败时，会进行临时保存，写入成功时，会清空该值。
 	/// </summary>
 	//protected readonly List<LogRecord> _logRecordsNeedWriteToFileBuffer = new();
 
+	#endregion
+
+
+
 	////////////////////////////////////////////////
 	// @自身实现
 	////////////////////////////////////////////////
 
+	#region 自身实现
 
 	/// <summary>
 	/// 使用“日志根目录路径”，“日志类型”和“日志名称”构造日志文件对象。
@@ -513,21 +529,31 @@ public class LogFile : IDisposable
 
 		invokerFullName ??= invoker?.GetType()?.FullName;
 
-
+		void WriteToConsole()
+		{
+			var logName = this.Name ?? string.Empty;
+			var now = DateTime.Now;
+			var timestamp = now.MillisecondsFrom1970(Constants.TimeZoneNumber.Utc0, true);
+			var timestampCaption = now.ToString("yyyy_MM_dd hh:mm:ss ms");
+			System.Diagnostics.Debug.WriteLine(
+				System.Environment.NewLine
+				+ logName
+				+ " "
+				+ invokerFullName
+				+ " "
+				+ timestampCaption
+				+ System.Environment.NewLine
+				+ logContent);
+		}
+		if (IsConsoleWriteEnable)
+		{
+			WriteToConsole();
+		}
 #if DEBUG
-		var logName = this.Name ?? string.Empty;
-		var now = DateTime.Now;
-		var timestamp = now.MillisecondsFrom1970(Constants.TimeZoneNumber.Utc0, true);
-		var timestampCaption = now.ToString("yyyy_MM_dd hh:mm:ss ms");
-		System.Diagnostics.Debug.WriteLine(
-			"\r\n"
-			+ logName
-			+ " "
-			+ invokerFullName
-			+ " "
-			+ timestampCaption
-			+ "\r\n"
-			+ logContent);
+		else
+		{
+			WriteToConsole();
+		}
 #endif
 
 
@@ -540,9 +566,14 @@ public class LogFile : IDisposable
 		_logRecords.Enqueue(newLogRecord);
 	}
 
+	#endregion
+
+
 	////////////////////////////////////////////////
 	// @事件节点
 	////////////////////////////////////////////////
+
+	#region 事件节点
 
 	protected bool DidTryStorageLogRecords(List<LogRecord> logRecordsNeedStorage)
 	{
@@ -677,9 +708,14 @@ public class LogFile : IDisposable
 		return true;
 	}
 
+	#endregion
+
+
 	////////////////////////////////////////////////
-	// @实现“IDisposable”
+	// @实现“IDispose”
 	////////////////////////////////////////////////
+
+	#region 实现“IDispose”
 
 	public void Dispose()
 	{
@@ -692,4 +728,6 @@ public class LogFile : IDisposable
 		GC.SuppressFinalize(this);
 		////////////////////////////////////////////////
 	}
+
+	#endregion
 }

@@ -148,7 +148,7 @@ public static class DateTimeExtension
 	/// <returns>当前时间上一周（以周日为第一天的周）的第一天（零点）的时间对象。</returns>
 	public static DateTime FirstDayOfPrevWeekStartsWithSunday(this DateTime dateTime)
 	{
-		var prevWeek = dateTime.AddDays(-TimeConstants.DaysToWeek);
+		var prevWeek = dateTime.AddDays(-TimeConstants.DaysPerWeek);
 		var firstDayOfPrevWeek = prevWeek.FirstDayOfThisWeekStartsWithSunday();
 		{ }
 		return firstDayOfPrevWeek;
@@ -162,7 +162,7 @@ public static class DateTimeExtension
 	public static DateTime FirstDayOfNextWeekStartsWithSunday(this DateTime dateTime)
 	{
 
-		var nextWeek = dateTime.AddDays(TimeConstants.DaysToWeek);
+		var nextWeek = dateTime.AddDays(TimeConstants.DaysPerWeek);
 		var firstDayOfNextWeek = nextWeek.FirstDayOfThisWeekStartsWithSunday();
 		{ }
 		return firstDayOfNextWeek;
@@ -193,7 +193,7 @@ public static class DateTimeExtension
 	/// <returns>当前时间上一周（以周一为第一天的周）的第一天（零点）的时间对象。</returns>
 	public static DateTime FirstDayOfPrevWeekStartsWithMonday(this DateTime dateTime)
 	{
-		var prevWeek = dateTime.AddDays(-TimeConstants.DaysToWeek);
+		var prevWeek = dateTime.AddDays(-TimeConstants.DaysPerWeek);
 		var firstDayOfPrevWeek = prevWeek.FirstDayOfThisWeekStartsWithMonday();
 		{ }
 		return firstDayOfPrevWeek;
@@ -206,7 +206,7 @@ public static class DateTimeExtension
 	/// <returns>当前时间下一周（以周一为第一天的周）的第一天（零点）的时间对象。</returns>
 	public static DateTime FirstDayOfNextWeekStartsWithMonday(this DateTime dateTime)
 	{
-		var nextWeek = dateTime.AddDays(TimeConstants.DaysToWeek);
+		var nextWeek = dateTime.AddDays(TimeConstants.DaysPerWeek);
 		var firstDayOfNextWeek = nextWeek.FirstDayOfThisWeekStartsWithMonday();
 		{ }
 		return firstDayOfNextWeek;
@@ -280,7 +280,7 @@ public static class DateTimeExtension
 	public static DateTime FirstDayOfPrevSession(this DateTime dateTime)
 	{
 		return dateTime
-			.AddMonths(-TimeConstants.MonthsToSession)
+			.AddMonths(-TimeConstants.MonthsPerSession)
 			.FirstDayOfThisSession();
 	}
 
@@ -292,7 +292,7 @@ public static class DateTimeExtension
 	public static DateTime FirstDayOfNextSession(this DateTime dateTime)
 	{
 		return dateTime
-			.AddMonths(+TimeConstants.MonthsToSession)
+			.AddMonths(+TimeConstants.MonthsPerSession)
 			.FirstDayOfThisSession();
 	}
 
@@ -776,7 +776,7 @@ public static class DateTimeExtension
 		var currentWeekBeginTime
 			= currentWeek.FirstDayOfThisWeekStartsWithMonday();
 		var lastWeekBeginTime
-			= currentWeek.AddDays(-1 * TimeConstants.DaysToWeek);
+			= currentWeek.AddDays(-1 * TimeConstants.DaysPerWeek);
 		if (dateTime >= lastWeekBeginTime
 			&& dateTime < currentWeekBeginTime)
 		{
@@ -792,7 +792,7 @@ public static class DateTimeExtension
 		var nextWeekBeginTime
 			= currentWeek.FirstDayOfNextWeekStartsWithMonday();
 		var nextWeekEndTime
-			= nextWeekBeginTime.AddDays(TimeConstants.DaysToWeek);
+			= nextWeekBeginTime.AddDays(TimeConstants.DaysPerWeek);
 		if (dateTime >= nextWeekBeginTime
 			&& dateTime < nextWeekEndTime)
 		{

@@ -1,6 +1,5 @@
 ﻿using BaoXia.Utils.Extensions;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
 namespace BaoXia.Utils.Models;
@@ -32,9 +31,6 @@ public class ObjectPropertyInfo
 		IsPropertyTypeValue
 		|| IsPropertyTypeString
 		|| IsPropertyTypeCollection;
-
-
-	public bool IsPropertyTypeNotMapped => PropertyInfo.GetCustomAttribute<NotMappedAttribute>() != null;
 
 	public string Name => PropertyInfo.Name;
 

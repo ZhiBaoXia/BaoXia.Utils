@@ -130,6 +130,31 @@ public class StringUtil
 		return false;
 	}
 
+	public static int CompareStrings(
+	    string? strA,
+	    string? strB,
+	    StringComparison stringComparison = StringComparison.Ordinal)
+	{
+		//if (isNullEqualsEmpty)
+		//{
+		//	strA ??= string.Empty;
+		//	strB ??= string.Empty;
+		//}
+
+		//if (ReferenceEquals(strA, strB))
+		//{
+		//	return 0;
+		//}
+		//if (strA == null)
+		//{
+		//	return -1;
+		//}
+		//else if (strB == null)
+		//{
+		//	return 1;
+		//}
+		return string.Compare(strA, strB, stringComparison);
+	}
 
 	#endregion
 

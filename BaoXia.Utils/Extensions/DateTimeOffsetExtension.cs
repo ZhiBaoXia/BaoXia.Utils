@@ -38,6 +38,61 @@ public static class DateTimeOffsetExtension
 			isSecondsMinValueZero);
 	}
 
+	public static DateTimeOffset ZeroOf(
+		this DateTimeOffset dateTimeOffset,
+		DateTimeField dateTimeField)
+	{
+		switch (dateTimeField)
+		{
+			default:
+				{ }
+				break;
+			case DateTimeField.Year:
+				{
+					dateTimeOffset = new DateTimeOffset(
+					dateTimeOffset.Year, 1, 1, 0, 0, 0, dateTimeOffset.Offset);
+				}
+				break;
+			case DateTimeField.Month:
+				{
+					dateTimeOffset = new DateTimeOffset(
+					dateTimeOffset.Year, dateTimeOffset.Month, 1, 0, 0, 0, dateTimeOffset.Offset);
+				}
+				break;
+			case DateTimeField.Day:
+				{
+					dateTimeOffset = new DateTimeOffset(
+					dateTimeOffset.Year, dateTimeOffset.Month, dateTimeOffset.Day, 0, 0, 0, dateTimeOffset.Offset);
+				}
+				break;
+			case DateTimeField.Hour:
+				{
+					dateTimeOffset = new DateTimeOffset(
+					dateTimeOffset.Year, dateTimeOffset.Month, dateTimeOffset.Day, dateTimeOffset.Hour, 0, 0, dateTimeOffset.Offset);
+				}
+				break;
+			case DateTimeField.Minute:
+				{
+					dateTimeOffset = new DateTimeOffset(
+					dateTimeOffset.Year, dateTimeOffset.Month, dateTimeOffset.Day, dateTimeOffset.Hour, dateTimeOffset.Minute, 0, dateTimeOffset.Offset);
+				}
+				break;
+			case DateTimeField.Second:
+				{
+					dateTimeOffset = new DateTimeOffset(
+					dateTimeOffset.Year, dateTimeOffset.Month, dateTimeOffset.Day, dateTimeOffset.Hour, dateTimeOffset.Minute, dateTimeOffset.Second, dateTimeOffset.Offset);
+				}
+				break;
+			case DateTimeField.Millisecond:
+				{
+					dateTimeOffset = new DateTimeOffset(
+					dateTimeOffset.Year, dateTimeOffset.Month, dateTimeOffset.Day, dateTimeOffset.Hour, dateTimeOffset.Minute, dateTimeOffset.Second, 0, dateTimeOffset.Offset);
+				}
+				break;
+		}
+		return dateTimeOffset;
+	}
+
 	/// <summary>
 	/// 返回当前时间零点的时间对象。
 	/// </summary>
@@ -198,7 +253,7 @@ dateTimeOffset.Day,
 	/// <returns>当前时间上一周（以周日为第一天的周）的第一天（零点）的时间对象。</returns>
 	public static DateTimeOffset FirstDayOfPrevWeekStartsWithSunday(this DateTimeOffset dateTimeOffset)
 	{
-		var prevWeek = dateTimeOffset.AddDays(-TimeConstants.DaysToWeek);
+		var prevWeek = dateTimeOffset.AddDays(-TimeConstants.DaysPerWeek);
 		var firstDayOfPrevWeek = prevWeek.FirstDayOfThisWeekStartsWithSunday();
 		{ }
 		return firstDayOfPrevWeek;
@@ -212,7 +267,7 @@ dateTimeOffset.Day,
 	public static DateTimeOffset FirstDayOfNextWeekStartsWithSunday(this DateTimeOffset dateTimeOffset)
 	{
 
-		var nextWeek = dateTimeOffset.AddDays(TimeConstants.DaysToWeek);
+		var nextWeek = dateTimeOffset.AddDays(TimeConstants.DaysPerWeek);
 		var firstDayOfNextWeek = nextWeek.FirstDayOfThisWeekStartsWithSunday();
 		{ }
 		return firstDayOfNextWeek;
@@ -247,7 +302,7 @@ dateTimeOffset.Day,
 	/// <returns>当前时间上一周（以周一为第一天的周）的第一天（零点）的时间对象。</returns>
 	public static DateTimeOffset FirstDayOfPrevWeekStartsWithMonday(this DateTimeOffset dateTimeOffset)
 	{
-		var prevWeek = dateTimeOffset.AddDays(-TimeConstants.DaysToWeek);
+		var prevWeek = dateTimeOffset.AddDays(-TimeConstants.DaysPerWeek);
 		var firstDayOfPrevWeek = prevWeek.FirstDayOfThisWeekStartsWithMonday();
 		{ }
 		return firstDayOfPrevWeek;
@@ -260,7 +315,7 @@ dateTimeOffset.Day,
 	/// <returns>当前时间下一周（以周一为第一天的周）的第一天（零点）的时间对象。</returns>
 	public static DateTimeOffset FirstDayOfNextWeekStartsWithMonday(this DateTimeOffset dateTimeOffset)
 	{
-		var nextWeek = dateTimeOffset.AddDays(TimeConstants.DaysToWeek);
+		var nextWeek = dateTimeOffset.AddDays(TimeConstants.DaysPerWeek);
 		var firstDayOfNextWeek = nextWeek.FirstDayOfThisWeekStartsWithMonday();
 		{ }
 		return firstDayOfNextWeek;
@@ -348,7 +403,7 @@ dateTimeOffset.Day,
 	public static DateTimeOffset FirstDayOfPrevSession(this DateTimeOffset dateTimeOffset)
 	{
 		return dateTimeOffset
-			.AddMonths(-TimeConstants.MonthsToSession)
+			.AddMonths(-TimeConstants.MonthsPerSession)
 			.FirstDayOfThisSession();
 	}
 
@@ -360,7 +415,7 @@ dateTimeOffset.Day,
 	public static DateTimeOffset FirstDayOfNextSession(this DateTimeOffset dateTimeOffset)
 	{
 		return dateTimeOffset
-			.AddMonths(+TimeConstants.MonthsToSession)
+			.AddMonths(+TimeConstants.MonthsPerSession)
 			.FirstDayOfThisSession();
 	}
 
@@ -865,7 +920,7 @@ dateTimeOffset.Day,
 		var currentWeekBeginTime
 			= currentWeek.FirstDayOfThisWeekStartsWithMonday();
 		var lastWeekBeginTime
-			= currentWeek.AddDays(-1 * TimeConstants.DaysToWeek);
+			= currentWeek.AddDays(-1 * TimeConstants.DaysPerWeek);
 		if (dateTimeOffset >= lastWeekBeginTime
 			&& dateTimeOffset < currentWeekBeginTime)
 		{
@@ -881,7 +936,7 @@ dateTimeOffset.Day,
 		var nextWeekBeginTime
 			= currentWeek.FirstDayOfNextWeekStartsWithMonday();
 		var nextWeekEndTime
-			= nextWeekBeginTime.AddDays(TimeConstants.DaysToWeek);
+			= nextWeekBeginTime.AddDays(TimeConstants.DaysPerWeek);
 		if (dateTimeOffset >= nextWeekBeginTime
 			&& dateTimeOffset < nextWeekEndTime)
 		{

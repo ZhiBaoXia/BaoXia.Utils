@@ -164,5 +164,318 @@ public static class NumberExtension
 		return number.Value;
 	}
 
+
+	public static uint GreaterZeroOr(
+		this uint? currentValue,
+		uint defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static uint GreaterZeroOr(
+		this uint currentValue,
+		uint defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+	public static int GreaterZeroOr(
+		this int? currentValue,
+		int defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static int GreaterZeroOr(
+		this int currentValue,
+		int defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+	public static ulong GreaterZeroOr(
+		this ulong? currentValue,
+		ulong defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static ulong GreaterZeroOr(
+		this ulong currentValue,
+		ulong defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+	public static long GreaterZeroOr(
+		this long? currentValue,
+		long defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static long GreaterZeroOr(
+		this long currentValue,
+		long defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+	public static float GreaterZeroOr(
+		this float? currentValue,
+		float defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static float GreaterZeroOr(
+		this float currentValue,
+		float defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+	public static double GreaterZeroOr(
+		this double? currentValue,
+		double defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static double GreaterZeroOr(
+		this double currentValue,
+		double defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+	public static decimal GreaterZeroOr(
+		this decimal? currentValue,
+		decimal defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static decimal GreaterZeroOr(
+		this decimal currentValue,
+		decimal defaultValue)
+	{
+		if (currentValue > 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+
+
+
+	public static uint GreaterEqualZeroOr(
+		this uint? currentValue,
+		uint defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	//public static uint GreaterEqualZeroOr(
+	//	this uint currentValue,
+	//	uint defaultValue)
+	//{
+	//	if (currentValue >= 0)
+	//	{
+	//		return currentValue;
+	//	}
+	//	return defaultValue;
+	//}
+
+	public static int GreaterEqualZeroOr(
+		this int? currentValue,
+		int defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static int GreaterEqualZeroOr(
+		this int currentValue,
+		int defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+	public static ulong GreaterEqualZeroOr(
+		this ulong? currentValue,
+		ulong defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	//public static ulong GreaterEqualZeroOr(
+	//	this ulong currentValue,
+	//	ulong defaultValue)
+	//{
+	//	if (currentValue >= 0)
+	//	{
+	//		return currentValue;
+	//	}
+	//	return defaultValue;
+	//}
+
+	public static long GreaterEqualZeroOr(
+		this long? currentValue,
+		long defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static long GreaterEqualZeroOr(
+		this long currentValue,
+		long defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+	public static float GreaterEqualZeroOr(
+		this float? currentValue,
+		float defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static float GreaterEqualZeroOr(
+		this float currentValue,
+		float defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+	public static double GreaterEqualZeroOr(
+		this double? currentValue,
+		double defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static double GreaterEqualZeroOr(
+		this double currentValue,
+		double defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+	public static decimal GreaterEqualZeroOr(
+		this decimal? currentValue,
+		decimal defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue.Value;
+		}
+		return defaultValue;
+	}
+
+	public static decimal GreaterEqualZeroOr(
+		this decimal currentValue,
+		decimal defaultValue)
+	{
+		if (currentValue >= 0)
+		{
+			return currentValue;
+		}
+		return defaultValue;
+	}
+
+
 	#endregion
 }

@@ -10,6 +10,8 @@ public class RecursionStep<ItemType>
 
 	public RecursionStep<ItemType>? PrevRecursionStep { get; set; }
 
+	public int RecursionDepthIndex { get; set; }
+
 	public ItemType? ParentItem { get; set; }
 
 	public IList<ItemType> Items { get; set; } = default!;

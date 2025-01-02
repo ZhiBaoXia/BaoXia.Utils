@@ -629,7 +629,7 @@ public static class ObjectExtension
 	public static ObjectCheckResultType? CheckPropertyValuesWithObjectPropertyInfes<ObjectCheckResultType>(
 		this object entity,
 		ObjectPropertyInfo[] entityPropertyInfesNeedCheck,
-		Func<object, ObjectPropertyInfo, object?, ObjectCheckResultType?> toCheckEntityPropertyValue)
+		Func<object?, ObjectPropertyInfo, object?, ObjectCheckResultType?> toCheckEntityPropertyValue)
 		where ObjectCheckResultType : class
 	{
 		if (entityPropertyInfesNeedCheck.Length < 1)
@@ -649,10 +649,14 @@ public static class ObjectExtension
 				(parentEntityPropertyInfo, propertyInfo, currentRecursionStep) =>
 				{
 					var propertyOwner
-						= currentRecursionStep.ParentEntity
-						?? entity;
+						= currentRecursionStep.RecursionDepthIndex == 0
+						? entity
+						: currentRecursionStep.ParentEntity;
+
 					var entityPropertyValue
-						= propertyInfo.GetValue(propertyOwner);
+					= propertyOwner != null
+					? propertyInfo.GetValue(propertyOwner)
+					: null;
 
 					checkResult = toCheckEntityPropertyValue(
 						propertyOwner,
@@ -664,9 +668,14 @@ public static class ObjectExtension
 						return false;
 						// !!!
 					}
+
 					// !!! 如果当前继续检查，且当前属性值为“null”， !!!
 					// !!! 则重新获取属性值（有可能被检查函数赋值）。 !!!
-					entityPropertyValue ??= propertyInfo.GetValue(propertyOwner);
+					entityPropertyValue
+					??= propertyOwner != null
+						? propertyInfo.GetValue(propertyOwner)
+						: null;
+
 					// !!!
 					currentRecursionStep.CurrentEntityPropertyValue
 					= entityPropertyValue;
@@ -1377,7 +1386,7 @@ public static class ObjectExtension
 		//}
 		if (baseValue is Decimal decimalValue)
 		{
-			return Decimal.GetBits(decimalValue).SelectMany(BitConverter.GetBytes).ToArray();
+			return [.. Decimal.GetBits(decimalValue).SelectMany(BitConverter.GetBytes)];
 		}
 		if (baseValue is Char charValue)
 		{

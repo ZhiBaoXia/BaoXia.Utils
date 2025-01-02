@@ -43,7 +43,7 @@ public interface INotificationCenter
 		Func<List<Object>?, Task>? toNotificationSendedAsync = null);
 
 	public void Post(
-		NotificationListenParam listenParam,
+		INotificationListenParam listenParam,
 		object? paramObject,
 		object sender);
 
@@ -98,27 +98,27 @@ public interface INotificationCenter
 		Func<Notification, CancellationToken, Task<object?>> toDidReceivedNotificationAsync);
 
 	public NotificationListener Listen(
-		NotificationListenParam listenParam,
+		INotificationListenParam listenParam,
 		Func<Notification, CancellationToken, object?>? toDidReceivedNotification);
 
 	public List<NotificationListener> Listen(
-		IEnumerable<NotificationListenParam> listenParams,
+		IEnumerable<INotificationListenParam> listenParams,
 		Func<Notification, CancellationToken, object?>? toDidReceivedNotification);
 	public List<NotificationListener> ListenTo(
 		Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
-		params NotificationListenParam[] listenParams);
+		params INotificationListenParam[] listenParams);
 
 	public NotificationListener ListenAsync(
-		NotificationListenParam listenParam,
+		INotificationListenParam listenParam,
 		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync);
 
 	public List<NotificationListener> ListenAsync(
-		IEnumerable<NotificationListenParam> listenParams,
+		IEnumerable<INotificationListenParam> listenParams,
 		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync);
 
 	public List<NotificationListener> ListenToAsync(
 		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync,
-		params NotificationListenParam[] listenParams);
+		params INotificationListenParam[] listenParams);
 
 	public bool CancelListenWithListener(NotificationListener listener);
 

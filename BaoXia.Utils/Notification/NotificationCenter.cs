@@ -192,7 +192,7 @@ public class NotificationCenter : INotificationCenter
 	}
 
 	public void Post(
-		NotificationListenParam listenParam,
+		INotificationListenParam listenParam,
 		object? paramObject,
 		object sender)
 	{
@@ -330,7 +330,7 @@ public class NotificationCenter : INotificationCenter
 
 
 	public NotificationListener Listen(
-		NotificationListenParam listenParam,
+		INotificationListenParam listenParam,
 		Func<Notification, CancellationToken, object?>? toDidReceivedNotification)
 	{
 		return ListenNotification(
@@ -343,7 +343,7 @@ public class NotificationCenter : INotificationCenter
 	}
 
 	public List<NotificationListener> Listen(
-		IEnumerable<NotificationListenParam> listenParams,
+		IEnumerable<INotificationListenParam> listenParams,
 		Func<Notification, CancellationToken, object?>? toDidReceivedNotification)
 	{
 		var notificationListeners = new List<NotificationListener>();
@@ -362,7 +362,7 @@ public class NotificationCenter : INotificationCenter
 
 	public List<NotificationListener> ListenTo(
 		Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
-		params NotificationListenParam[] listenParams)
+		params INotificationListenParam[] listenParams)
 	{
 		var notificationListeners = new List<NotificationListener>();
 		foreach (var listenParam in listenParams)
@@ -379,7 +379,7 @@ public class NotificationCenter : INotificationCenter
 	}
 
 	public NotificationListener ListenAsync(
-		NotificationListenParam listenParam,
+		INotificationListenParam listenParam,
 		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
 	{
 		return ListenNotification(
@@ -392,7 +392,7 @@ public class NotificationCenter : INotificationCenter
 	}
 
 	public List<NotificationListener> ListenAsync(
-		IEnumerable<NotificationListenParam> listenParams,
+		IEnumerable<INotificationListenParam> listenParams,
 		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
 	{
 		var notificationListeners = new List<NotificationListener>();
@@ -411,7 +411,7 @@ public class NotificationCenter : INotificationCenter
 
 	public List<NotificationListener> ListenToAsync(
 		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync,
-		params NotificationListenParam[] listenParams)
+		params INotificationListenParam[] listenParams)
 	{
 		var notificationListeners = new List<NotificationListener>();
 		foreach (var listenParam in listenParams)

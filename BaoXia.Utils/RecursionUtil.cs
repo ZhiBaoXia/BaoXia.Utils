@@ -35,7 +35,9 @@ public class RecursionUtil
 			recursionSteps.Push(new()
 			{
 				PrevRecursionStep = null,
-				//
+				// !!!
+				RecursionDepthIndex = 0,
+				// !!!
 				ParentItem = default,
 				Items = rootItems,
 				NextItemIndex = 0
@@ -100,7 +102,9 @@ public class RecursionUtil
 					?? new());
 				{
 					nextRecursionStep.PrevRecursionStep = currentRecursionStep;
-					//
+					// !!!
+					nextRecursionStep.RecursionDepthIndex = currentRecursionStep.RecursionDepthIndex + 1;
+					// !!!
 					nextRecursionStep.ParentItem = item;
 					nextRecursionStep.Items = childItems;
 					nextRecursionStep.NextItemIndex = 0;

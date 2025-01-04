@@ -238,7 +238,7 @@ public class ArrayExtensionTest
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
-			Assert.IsTrue(itemFound?.Index == objectTestItem.Index);
+			Assert.AreEqual(objectTestItem.Index, itemFound?.Index);
 		}
 
 		testSearchRangeBeginIndex

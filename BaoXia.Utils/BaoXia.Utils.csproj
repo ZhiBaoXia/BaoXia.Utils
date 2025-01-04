@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<ApplicationIcon>Images\BaoXia_600x600@1x.ico</ApplicationIcon>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Company>石家庄宝匣软件科技有限公司</Company>
 		<Description>宝匣软件 .Net Core 公用工具集。</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Version>8.6.0</Version>
+		<Version>9.0.0</Version>
 		<PackageIcon>BaoXia_600x600@1x.png</PackageIcon>
 		<PackOnBuild>true</PackOnBuild>
-		<FileVersion>8.6.0</FileVersion>
+		<FileVersion>9.0.0</FileVersion>
 		<ReleaseVersion>1.1.11</ReleaseVersion>
-		<AssemblyVersion>8.6.0</AssemblyVersion>
+		<AssemblyVersion>9.0.0</AssemblyVersion>
 		<Nullable>enable</Nullable>
 		<Authors>石家庄宝匣软件科技有限公司</Authors>
 		<Title>宝匣软件 - 基础工具包</Title>
@@ -46,7 +46,7 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Cache\Index\" />

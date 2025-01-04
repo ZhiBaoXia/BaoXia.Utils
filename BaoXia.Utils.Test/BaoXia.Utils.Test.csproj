@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
     <ReleaseVersion>1.1.10</ReleaseVersion>
@@ -15,10 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BaoXia.Constants" Version="8.0.9" />
+    <PackageReference Include="BaoXia.Constants" Version="9.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.6.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.6.3" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.7.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.7.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaoXia.Utils.Test.DotNet9.MVC", "BaoXia.Utils.Test.DotNet9.MVC.csproj", "{1DEFF544-72B2-4FB8-B1EF-F530825006CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1DEFF544-72B2-4FB8-B1EF-F530825006CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DEFF544-72B2-4FB8-B1EF-F530825006CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DEFF544-72B2-4FB8-B1EF-F530825006CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DEFF544-72B2-4FB8-B1EF-F530825006CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6A67F4D1-89AE-4829-B30E-01B57F68B4E6}
+	EndGlobalSection
+EndGlobal

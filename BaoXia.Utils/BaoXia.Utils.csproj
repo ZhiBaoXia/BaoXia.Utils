@@ -21,7 +21,7 @@
 		<RepositoryUrl>https://github.com/BaoXiaRuanJian/BaoXia.Utils</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>工具集;字符串工具;并发工具</PackageTags>
-		<Copyright>版权所有 © 2024 石家庄宝匣软件科技有限公司</Copyright>
+		<Copyright>版权所有 © 2025 石家庄宝匣软件科技有限公司</Copyright>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<WarningLevel>4</WarningLevel>

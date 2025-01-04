@@ -10,7 +10,6 @@ namespace BaoXia.Utils.Test.ExtensionsTest;
 [TestClass]
 public class ArrayExtensionTest
 {
-	[TestMethod]
 	public static void CreateArrayByAddInsertAndRemoveTest<T>(
 		int testArrayLength,
 		params T[] newValues)
@@ -27,7 +26,7 @@ public class ArrayExtensionTest
 		{
 			items = items.ArrayByAdd(newValue);
 			// !!!
-			Assert.IsTrue(object.Equals(items[^1], newValue) == true);
+			Assert.IsTrue(object.Equals(items[^1], newValue));
 			// !!!
 		}
 
@@ -37,7 +36,7 @@ public class ArrayExtensionTest
 			0,
 			newValue);
 			// !!!
-			Assert.IsTrue(object.Equals(items[0], newValue) == true);
+			Assert.IsTrue(object.Equals(items[0], newValue));
 			// !!!
 		}
 
@@ -48,14 +47,14 @@ public class ArrayExtensionTest
 				insertIndex,
 				newValue);
 			// !!!
-			Assert.IsTrue(object.Equals(items[insertIndex], newValue) == true);
+			Assert.IsTrue(object.Equals(items[insertIndex], newValue));
 			// !!!
 
 			items = items.ArrayByRemoveAt(insertIndex);
 			items = items.ArrayByRemoveAt(0);
 			items = items.ArrayByRemoveAt(items.Length - 1);
 			// !!!
-			Assert.IsTrue(items.Length == testArrayLength);
+			Assert.AreEqual(testArrayLength, items.Length);
 			// !!!
 		}
 
@@ -91,7 +90,7 @@ public class ArrayExtensionTest
 	public void InsertByOrderTest()
 	{
 		int[] itemsInOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-		int[] itemsInOrderDescending = itemsInOrder.Reverse().ToArray();
+		int[] itemsInOrderDescending = [.. itemsInOrder.Reverse()];
 		var itemInRandomOrder = new int[itemsInOrder.Length];
 		for (int itemIndex = 0;
 			itemIndex < itemInRandomOrder.Length;
@@ -205,7 +204,7 @@ public class ArrayExtensionTest
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
-			Assert.IsTrue(itemIndexFound == i);
+			Assert.AreEqual(i, itemIndexFound);
 		}
 
 		var testSearchRangeBeginIndex
@@ -225,7 +224,7 @@ public class ArrayExtensionTest
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
-			Assert.IsTrue(itemIndexFound == i);
+			Assert.AreEqual(i, itemIndexFound);
 		}
 
 
@@ -238,7 +237,8 @@ public class ArrayExtensionTest
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
-			Assert.AreEqual(objectTestItem.Index, itemFound?.Index);
+			Assert.IsNotNull(itemFound);
+			Assert.AreEqual(objectTestItem.Index, itemFound.Index);
 		}
 
 		testSearchRangeBeginIndex
@@ -258,7 +258,8 @@ public class ArrayExtensionTest
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
-			Assert.IsTrue(itemFound?.Index == objectTestItem.Index);
+			Assert.IsNotNull(itemFound);
+			Assert.AreEqual(objectTestItem.Index, itemFound.Index);
 		}
 	}
 
@@ -304,14 +305,14 @@ public class ArrayExtensionTest
 
 			if ((objectTestItemIndex % 2) == 0)
 			{
-				Assert.IsTrue(itemIndexNearestAtLeft == (objectTestItemIndex / 2) - 1);
+				Assert.AreEqual((objectTestItemIndex / 2) - 1, itemIndexNearestAtLeft);
 				if (itemIndexNearestAtLeft >= 0)
 				{
-					Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 2);
+					Assert.AreEqual(objectTestItemIndex - 2, itemNearestAtLeft);
 				}
 				else if (itemIndexNearestAtLeft == -1)
 				{
-					Assert.IsTrue(itemNearestAtLeft == firsttTestItemEven);
+					Assert.AreEqual(firsttTestItemEven, itemNearestAtLeft);
 				}
 				else
 				{
@@ -320,8 +321,8 @@ public class ArrayExtensionTest
 			}
 			else
 			{
-				Assert.IsTrue(itemIndexNearestAtLeft == (objectTestItemIndex / 2));
-				Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 1);
+				Assert.AreEqual((objectTestItemIndex / 2), itemIndexNearestAtLeft);
+				Assert.AreEqual(objectTestItemIndex - 1, itemNearestAtLeft);
 			}
 		}
 
@@ -351,14 +352,14 @@ public class ArrayExtensionTest
 				out var itemNearestAtRight);
 			if ((objectTestItemIndex % 2) == 0)
 			{
-				Assert.IsTrue(itemIndexNearestAtRight == (objectTestItemIndex / 2) + 1);
+				Assert.AreEqual((objectTestItemIndex / 2) + 1, itemIndexNearestAtRight);
 				if (itemIndexNearestAtRight < items.Length)
 				{
-					Assert.IsTrue(itemNearestAtRight == objectTestItemIndex + 2);
+					Assert.AreEqual(objectTestItemIndex + 2, itemNearestAtRight);
 				}
 				else if (itemIndexNearestAtRight == items.Length)
 				{
-					Assert.IsTrue(objectTestItemIndex == lastTestItemEven);
+					Assert.AreEqual(lastTestItemEven, objectTestItemIndex);
 				}
 				else
 				{
@@ -367,14 +368,14 @@ public class ArrayExtensionTest
 			}
 			else
 			{
-				Assert.IsTrue(itemIndexNearestAtRight == (objectTestItemIndex / 2) + 1);
+				Assert.AreEqual((objectTestItemIndex / 2) + 1, itemIndexNearestAtRight);
 				if (itemIndexNearestAtRight < items.Length)
 				{
-					Assert.IsTrue(itemNearestAtRight == objectTestItemIndex + 1);
+					Assert.AreEqual(objectTestItemIndex + 1, itemNearestAtRight);
 				}
 				else if (itemIndexNearestAtRight == items.Length)
 				{
-					Assert.IsTrue(objectTestItemIndex == lastTestItemOdd);
+					Assert.AreEqual(lastTestItemOdd, objectTestItemIndex);
 				}
 				else
 				{
@@ -430,7 +431,7 @@ public class ArrayExtensionTest
 				Number = 5
 			});
 		// !!!
-		Assert.IsTrue(testItems.Length == testItemsOriginally.Length);
+		Assert.AreEqual(testItemsOriginally.Length, testItems.Length);
 		// !!!
 
 
@@ -439,14 +440,14 @@ public class ArrayExtensionTest
 			= testItemsOriginally.ArrayByRemove(
 				testItemsOriginally[removeItemIndex]);
 		// !!!
-		Assert.IsTrue((testItems.Length + 1) == testItemsOriginally.Length);
+		Assert.AreEqual(testItemsOriginally.Length, (testItems.Length + 1));
 		// !!!
 		foreach (var item in testItemsOriginally)
 		{
 			if (testItems.IndexOf(item) < 0)
 			{
 				// !!!
-				Assert.IsTrue(testItemsOriginally.IndexOf(item) == removeItemIndex);
+				Assert.AreEqual(removeItemIndex, testItemsOriginally.IndexOf(item));
 				// !!!
 			}
 		}
@@ -465,14 +466,14 @@ public class ArrayExtensionTest
 					return false;
 				});
 		// !!!
-		Assert.IsTrue((testItems.Length + 1) == testItemsOriginally.Length);
+		Assert.AreEqual(testItemsOriginally.Length, (testItems.Length + 1));
 		// !!!
 		foreach (var item in testItemsOriginally)
 		{
 			if (testItems.IndexOf(item) < 0)
 			{
 				// !!!
-				Assert.IsTrue(item.Number == removeItemNumber);
+				Assert.AreEqual(removeItemNumber, item.Number);
 				// !!!
 			}
 		}
@@ -495,7 +496,7 @@ public class ArrayExtensionTest
 		}
 		var testItems = testItemsOriginally.ArrayByRemoveDuplicateItems();
 		// !!!
-		Assert.IsTrue(testItems.Length * sameItemsRate == testItemsOriginally.Length);
+		Assert.AreEqual(testItemsOriginally.Length, testItems.Length * sameItemsRate);
 		// !!!
 
 
@@ -508,7 +509,7 @@ public class ArrayExtensionTest
 		}
 		testItems = testItemsOriginally.ArrayByRemoveDuplicateItems();
 		// !!!
-		Assert.IsTrue(testItems.Length == testItemsOriginally.Length);
+		Assert.AreEqual(testItemsOriginally.Length, testItems.Length);
 		// !!!
 
 
@@ -526,7 +527,7 @@ public class ArrayExtensionTest
 					return false;
 				});
 		// !!!
-		Assert.IsTrue(testItems.Length + removeItemsCount == testItemsOriginally.Length);
+		Assert.AreEqual(testItemsOriginally.Length, testItems.Length + removeItemsCount);
 		// !!!
 
 	}

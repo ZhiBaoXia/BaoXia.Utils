@@ -58,7 +58,7 @@ public class ItemPropertyGetInfo<ItemType>
 		switch (PropertyRelation)
 		{
 			default:
-			case ItemPropertyRelation.Unknow:
+			case ItemPropertyRelation.Unknown:
 			case ItemPropertyRelation.ValueItemInIEnumerable:
 				break;
 			case ItemPropertyRelation.Property:

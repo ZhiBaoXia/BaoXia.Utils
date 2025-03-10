@@ -4,7 +4,7 @@ namespace BaoXia.Utils
 {
 	public enum StringMatchRuleType
 	{
-		Unknow = 0,
+		Unknown = 0,
 
 		Default_SameChars = 1,
 
@@ -15,7 +15,7 @@ namespace BaoXia.Utils
 
 	public class StringMatchRule
 	{
-		public StringMatchRuleType Type { get; set; } = StringMatchRuleType.Unknow;
+		public StringMatchRuleType Type { get; set; } = StringMatchRuleType.Unknown;
 
 		public string? Chars { get; set; }
 

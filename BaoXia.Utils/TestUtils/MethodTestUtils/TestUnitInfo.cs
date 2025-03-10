@@ -31,7 +31,7 @@ public class TestUnitInfo
 			switch (State)
 			{
 				default:
-				case TestUnitState.Unknow:
+				case TestUnitState.Unknown:
 					{
 						return 0.0;
 					}

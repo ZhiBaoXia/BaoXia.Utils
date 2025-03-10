@@ -18,7 +18,7 @@ namespace BaoXia.Utils.MathTools
 
 		public enum OperatorId
 		{
-			Unknow,
+			Unknown,
 
 			SectionBegin,
 			SectionEnd,
@@ -796,7 +796,7 @@ namespace BaoXia.Utils.MathTools
 			switch (calculationOperator.Id)
 			{
 				default:
-				case OperatorId.Unknow:
+				case OperatorId.Unknown:
 					{
 						throw new ArgumentException("计算表达式失败，未知的计算符号。");
 					}

@@ -2,7 +2,7 @@
 
 public enum ItemPropertyRelation
 {
-	Unknow = 0,
+	Unknown = 0,
 
 	Property = 1,
 

@@ -843,7 +843,7 @@ public static class ObjectExtension
 					switch (sourcePropertyGetInfo.PropertyRelation)
 					{
 						default:
-						case ItemPropertyRelation.Unknow:
+						case ItemPropertyRelation.Unknown:
 						case ItemPropertyRelation.ValueItemInIEnumerable:
 							{ }
 							break;

@@ -68,7 +68,7 @@ namespace BaoXia.Utils
 				}
 
 
-				StringMatchRuleType lastRuleType = StringMatchRuleType.Unknow;
+				StringMatchRuleType lastRuleType = StringMatchRuleType.Unknown;
 				int lastRuleBeginIndex = 0;
 				// int lastRuleEndIndex = 0;
 				for (var expressionCharIndex = 0;
@@ -150,7 +150,7 @@ namespace BaoXia.Utils
 								_matchRules.Add(rule);
 							}
 							// !!!
-							lastRuleType = StringMatchRuleType.Unknow;
+							lastRuleType = StringMatchRuleType.Unknown;
 							// !!!
 						}
 					}
@@ -274,7 +274,7 @@ namespace BaoXia.Utils
 				switch (rule.Type)
 				{
 					default:
-					case StringMatchRuleType.Unknow:
+					case StringMatchRuleType.Unknown:
 						{
 							throw new InvalidOperationException("未知的匹配规则类型。");
 						}

@@ -2,7 +2,7 @@
 
 public enum TestUnitState
 {
-	Unknow = 0,
+	Unknown = 0,
 
 	WaitingTest = 1,
 

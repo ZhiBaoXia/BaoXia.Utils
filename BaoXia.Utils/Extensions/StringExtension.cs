@@ -2780,7 +2780,7 @@ public static class StringExtension
 		switch (privacyStringPart)
 		{
 			default:
-			case StringPartType.Unknow:
+			case StringPartType.Unknown:
 				{
 					return str;
 				}

@@ -2,7 +2,7 @@
 
 public enum StringPartType
 {
-	Unknow = 0,
+	Unknown = 0,
 
 	Left = 1,
 

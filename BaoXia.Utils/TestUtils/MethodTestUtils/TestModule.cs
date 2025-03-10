@@ -23,7 +23,7 @@ public class TestModule(string name)
 		{
 			if (TestUnitInfes is not IEnumerable<TestUnitInfo> testUnitInfes)
 			{
-				return TestUnitState.Unknow;
+				return TestUnitState.Unknown;
 			}
 
 			var testUnitsCount = 0;
@@ -35,9 +35,9 @@ public class TestModule(string name)
 				switch (testUnitInfo.State)
 				{
 					default:
-					case TestUnitState.Unknow:
+					case TestUnitState.Unknown:
 						{
-							return TestUnitState.Unknow;
+							return TestUnitState.Unknown;
 						}
 					case TestUnitState.WaitingTest:
 						{
@@ -61,7 +61,7 @@ public class TestModule(string name)
 			}
 			if (testUnitsCount < 1)
 			{
-				return TestUnitState.Unknow;
+				return TestUnitState.Unknown;
 			}
 			if (testUnitsCount_WaitingTest > 0)
 			{
@@ -83,7 +83,7 @@ public class TestModule(string name)
 	{
 		get
 		{
-			return _currentTestUnitInfo?.State ?? TestUnitState.Unknow;
+			return _currentTestUnitInfo?.State ?? TestUnitState.Unknown;
 		}
 	}
 
@@ -103,7 +103,7 @@ public class TestModule(string name)
 		{
 			//
 			testInfo.Description = description;
-			if (testInfo.State == TestUnitState.Unknow
+			if (testInfo.State == TestUnitState.Unknown
 				|| testInfo.State == TestUnitState.WaitingTest)
 			{
 				testInfo.State = TestUnitState.InTesting;

@@ -42,7 +42,7 @@ public abstract class TestService(string testModuleTitle)
 
 		switch (TestModule.State)
 		{
-			case TestUnitState.Unknow:
+			case TestUnitState.Unknown:
 			case TestUnitState.TestSuccess:
 				{ }
 				break;
@@ -57,7 +57,7 @@ public abstract class TestService(string testModuleTitle)
 		await _testLocker.WaitAsync();
 		try
 		{
-			while (TestModule.State == TestUnitState.Unknow)
+			while (TestModule.State == TestUnitState.Unknown)
 			{
 				TestBeginTime = DateTime.Now;
 				var now = DateTime.Now;

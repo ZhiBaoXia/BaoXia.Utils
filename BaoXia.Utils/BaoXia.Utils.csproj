@@ -7,18 +7,18 @@
 		<Company>石家庄宝匣软件科技有限公司</Company>
 		<Description>宝匣软件 .Net Core 公用工具集。</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Version>9.0.1</Version>
+		<Version>9.0.2</Version>
 		<PackageIcon>BaoXia_600x600@1x.png</PackageIcon>
 		<PackOnBuild>true</PackOnBuild>
-		<FileVersion>9.0.1</FileVersion>
+		<FileVersion>9.0.2</FileVersion>
 		<ReleaseVersion>1.1.11</ReleaseVersion>
-		<AssemblyVersion>9.0.1</AssemblyVersion>
+		<AssemblyVersion>9.0.2</AssemblyVersion>
 		<Nullable>enable</Nullable>
 		<Authors>石家庄宝匣软件科技有限公司</Authors>
 		<Title>宝匣软件 - 基础工具包</Title>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageProjectUrl>https://github.com/BaoXiaRuanJian/BaoXia.Utils</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/BaoXiaRuanJian/BaoXia.Utils</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/ZhiBaoXia/BaoXia.Utils</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/ZhiBaoXia/BaoXia.Utils</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>工具集;字符串工具;并发工具</PackageTags>
 		<Copyright>版权所有 © 2025 石家庄宝匣软件科技有限公司</Copyright>

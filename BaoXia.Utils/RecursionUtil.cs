@@ -13,7 +13,7 @@ public class RecursionUtil
 	#region 类方法
 
 
-	public static void EnumerateWithRecursionStepsType<ItemType, RecursionStepType>(
+	public static void EnumerateWithRecursionStepType<ItemType, RecursionStepType>(
 		ItemType? rootItem,
 		Func<ItemType, RecursionStepType, Stack<RecursionStepType>, IList<ItemType>?> toGetChildItems,
 		Func<ItemType?, ItemType, RecursionStepType, bool> toEnumerateItem,
@@ -129,7 +129,7 @@ public class RecursionUtil
 		Func<RecursionStepType, RecursionStepType>? toCreateNextRecursionStepType)
 		where RecursionStepType : RecursionStep<ItemType>, new()
 	{
-		EnumerateWithRecursionStepsType<ItemType, RecursionStepType>(
+		EnumerateWithRecursionStepType<ItemType, RecursionStepType>(
 			rootItem,
 			(item, currentRecursionStep, _) =>
 			{
@@ -266,7 +266,7 @@ public class RecursionUtil
 		Func<ItemType, RecursionStep<ItemType>, Stack<RecursionStep<ItemType>>, IList<ItemType>?> toGetChildItems,
 		Func<ItemType?, ItemType, RecursionStep<ItemType>, bool> toEnumerateItem)
 	{
-		EnumerateWithRecursionStepsType<ItemType, RecursionStep<ItemType>>(
+		EnumerateWithRecursionStepType<ItemType, RecursionStep<ItemType>>(
 			rootItem,
 			(currentItem, currentRecursionStep, recursionSteps) =>
 			{
@@ -284,7 +284,7 @@ public class RecursionUtil
 		Func<ItemType, IList<ItemType>?> toGetChildItems,
 		Func<ItemType?, ItemType, bool> toEnumerateItem)
 	{
-		EnumerateWithRecursionStepsType<ItemType, RecursionStep<ItemType>>(
+		EnumerateWithRecursionStepType<ItemType, RecursionStep<ItemType>>(
 			rootItem,
 			(currentItem, _, _) =>
 			{

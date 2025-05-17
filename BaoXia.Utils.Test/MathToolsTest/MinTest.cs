@@ -48,7 +48,7 @@ namespace BaoXia.Utils.Test.MathToolsTest
 					},
 					numberList)
 				?.Number;
-			Assert.IsTrue(minOfNumberList == numbersMin);
+			Assert.AreEqual(numbersMin, minOfNumberList);
 
 			numbersMin = 32;
 			minOfNumberList
@@ -65,7 +65,7 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				new TestNumberObject<int>(32),
 				new TestNumberObject<int>(64),
 				new TestNumberObject<int>(128))?.Number;
-			Assert.IsTrue(minOfNumberList == numbersMin);
+			Assert.AreEqual(numbersMin, minOfNumberList);
 		}
 
 		[TestMethod]
@@ -86,11 +86,11 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				numberList.Add(number);
 			}
 			var minOfNumberList = Min.OfList(numberList);
-			Assert.IsTrue(minOfNumberList == numbersMin);
+			Assert.AreEqual(numbersMin, minOfNumberList);
 
 			numbersMin = 32;
 			minOfNumberList = Min.Of(32, 64, 128);
-			Assert.IsTrue(minOfNumberList == numbersMin);
+			Assert.AreEqual(numbersMin, minOfNumberList);
 		}
 
 		[TestMethod]
@@ -111,11 +111,11 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				numberList.Add(number);
 			}
 			var minOfNumberList = Min.OfList(numberList);
-			Assert.IsTrue(minOfNumberList == numbersMin);
+			Assert.AreEqual(numbersMin, minOfNumberList);
 
 			numbersMin = 32.0F;
 			minOfNumberList = Min.Of(32.0F, 64.0F, 128.0F);
-			Assert.IsTrue(minOfNumberList == numbersMin);
+			Assert.AreEqual(numbersMin, minOfNumberList);
 		}
 
 		[TestMethod]
@@ -136,11 +136,11 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				numberList.Add(number);
 			}
 			var minOfNumberList = Min.OfList(numberList);
-			Assert.IsTrue(minOfNumberList == numbersMin);
+			Assert.AreEqual(numbersMin, minOfNumberList);
 
 			numbersMin = 32.0;
 			minOfNumberList = Min.Of(32.0, 64.0, 128.0);
-			Assert.IsTrue(minOfNumberList == numbersMin);
+			Assert.AreEqual(numbersMin, minOfNumberList);
 		}
 	}
 }

@@ -27,9 +27,9 @@ public class DateTimeSectionTest
 		};
 		foreach (var testCase in testCases)
 		{
-			Assert.IsTrue(
-				timeSection.IsTimeInSection(testCase.Time)
-				== testCase.TestResult);
+			Assert.AreEqual(
+testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
+);
 		}
 	}
 
@@ -53,9 +53,9 @@ public class DateTimeSectionTest
 		};
 		foreach (var testCase in testCases)
 		{
-			Assert.IsTrue(
-				timeSection.IsTimeInSection(testCase.Time)
-				== testCase.TestResult);
+			Assert.AreEqual(
+testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
+);
 		}
 	}
 
@@ -78,9 +78,9 @@ public class DateTimeSectionTest
 		};
 		foreach (var testCase in testCases)
 		{
-			Assert.IsTrue(
-				timeSection.IsTimeInSection(testCase.Time)
-				== testCase.TestResult);
+			Assert.AreEqual(
+testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
+);
 		}
 	}
 
@@ -103,9 +103,9 @@ public class DateTimeSectionTest
 		};
 		foreach (var testCase in testCases)
 		{
-			Assert.IsTrue(
-				timeSection.IsTimeInSection(testCase.Time)
-				== testCase.TestResult);
+			Assert.AreEqual(
+testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
+);
 		}
 	}
 
@@ -153,9 +153,9 @@ public class DateTimeSectionTest
 		{
 			foreach (var testCase in testCases)
 			{
-				Assert.IsTrue(
-					timeSection.IsTimeInSection(testCase.Time)
-					== testCase.TestResult);
+				Assert.AreEqual(
+testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
+);
 			}
 		}
 	}
@@ -203,9 +203,9 @@ public class DateTimeSectionTest
 		{
 			foreach (var testCase in testCases)
 			{
-				Assert.IsTrue(
-					timeSection.IsTimeInSection(testCase.Time)
-					== testCase.TestResult);
+				Assert.AreEqual(
+testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
+);
 			}
 		}
 	}

@@ -126,8 +126,8 @@ public class ItemsCachesSyncTest
 		}
 		Task.WaitAll([.. testTasks]);
 		// !!!
-		Assert.IsTrue(itemsWithIdKey.Count == testsCount);
-		Assert.IsTrue(itemsWithIdentityKey.Count == testsCount);
+		Assert.AreEqual(testsCount, itemsWithIdKey.Count);
+		Assert.AreEqual(testsCount, itemsWithIdentityKey.Count);
 		// !!!
 
 
@@ -162,8 +162,8 @@ public class ItemsCachesSyncTest
 		}
 		Task.WaitAll([.. testTasks]);
 		// !!!
-		Assert.IsTrue(itemsWithIdKey.Count == testsCount);
-		Assert.IsTrue(itemsWithIdentityKey.Count == testsCount);
+		Assert.AreEqual(testsCount, itemsWithIdKey.Count);
+		Assert.AreEqual(testsCount, itemsWithIdentityKey.Count);
 		// !!!
 
 
@@ -198,8 +198,8 @@ public class ItemsCachesSyncTest
 		}
 		Task.WaitAll([.. testTasks]);
 		// !!!
-		Assert.IsTrue(itemsWithIdKey.Count == 0);
-		Assert.IsTrue(itemsWithIdentityKey.Count == 0);
+		Assert.AreEqual(0, itemsWithIdKey.Count);
+		Assert.AreEqual(0, itemsWithIdentityKey.Count);
 		// !!!
 	}
 }

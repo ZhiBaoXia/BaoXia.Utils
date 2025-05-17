@@ -29,7 +29,7 @@ public class ItemsCacheAsyncTester<ItemIdType>(
 		{
 			var item = await CacheItem<ItemIdType>.CreateItemAsync(itemId);
 			{
-				Assert.IsTrue(item != null);
+				Assert.IsNotNull(item);
 			}
 			return item;
 		},
@@ -100,8 +100,8 @@ public class ItemsCacheAsyncTester<ItemIdType>(
 				var item = await _itemsCache.GetAsync(itemId, null);
 				{
 					// !!!
-					Assert.IsTrue(item != null);
-					Assert.IsTrue(item.Id?.Equals(itemId) == true);
+					Assert.IsNotNull(item);
+					Assert.IsTrue(item.Id?.Equals(itemId));
 					// !!!
 				}
 				////////////////////////////////////////////////
@@ -293,13 +293,13 @@ public class ItemsCacheAsyncTester<ItemIdType>(
 					var item = tryGetResult.Item;
 					// !!!
 					//Assert.IsTrue(isItemIdExisted == true);
-					Assert.IsTrue(item != null);
+					Assert.IsNotNull(item);
 					Assert.IsTrue(item.Id?.Equals(itemId));
 					// !!!
 				}
 				else
 				{
-					Assert.IsTrue(isItemIdExisted == false);
+					Assert.IsFalse(isItemIdExisted);
 				}
 				////////////////////////////////////////////////
 				testRecorder.EndTest();
@@ -377,7 +377,7 @@ public class ItemsCacheAsyncTester<ItemIdType>(
 					var tryGetResult = await _itemsCache.TryGetAsync(itemId);
 					Assert.IsTrue(tryGetResult.IsGotSucess);
 					var item = tryGetResult.Item;
-					Assert.IsTrue(item?.Id?.Equals(itemId) == true);
+					Assert.IsTrue(item?.Id?.Equals(itemId));
 				}
 			}
 		})

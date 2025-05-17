@@ -16,27 +16,27 @@ public class ObjectExtensionTest
 	{
 		var stringObject = ObjectExtension.CreateObject<string>();
 		{
-			Assert.IsTrue(stringObject == string.Empty);
+			Assert.AreEqual(string.Empty, stringObject);
 		}
 		var intObject = ObjectExtension.CreateObject<int>();
 		{
-			Assert.IsTrue(intObject == 0);
+			Assert.AreEqual(0, intObject);
 		}
 		var floatObject = ObjectExtension.CreateObject<float>();
 		{
-			Assert.IsTrue(intObject == 0);
+			Assert.AreEqual(0, floatObject);
 		}
 		var doubleObject = ObjectExtension.CreateObject<double>();
 		{
-			Assert.IsTrue(intObject == 0);
+			Assert.AreEqual(0, doubleObject);
 		}
 		var decimalObject = ObjectExtension.CreateObject<decimal>();
 		{
-			Assert.IsTrue(intObject == 0);
+			Assert.AreEqual(0, decimalObject);
 		}
 		var dateTimeObject = ObjectExtension.CreateObject<DateTime>();
 		{
-			Assert.IsTrue(dateTimeObject == DateTime.MinValue);
+			Assert.AreEqual(DateTime.MinValue, dateTimeObject);
 		}
 	}
 
@@ -269,7 +269,8 @@ public class ObjectExtensionTest
 
 		var objectAllPublicSetableProperties = objectA.GetPublicSettablePropertyInfes();
 
-		Assert.IsTrue(objectAllPublicSetableProperties?.Length == allPublisSetablePropertyNames.Length);
+		Assert.IsNotNull(objectAllPublicSetableProperties);
+		Assert.AreEqual(allPublisSetablePropertyNames.Length, objectAllPublicSetableProperties!.Length);
 		foreach (var objectPublicSetableProperty in objectAllPublicSetableProperties)
 		{
 			if (objectPublicSetableProperty.Name.EqualsIgnoreCase("ReadOnlyProperty"))
@@ -327,7 +328,7 @@ public class ObjectExtensionTest
 		}
 		var nameOfProperty = testObject.GetPropertyNameWithPropertyValue(testObject.StringProperty);
 		{
-			Assert.IsTrue(nameof(ClassA.StringProperty) == nameOfProperty);
+			Assert.AreEqual(nameof(ClassA.StringProperty), nameOfProperty);
 		}
 	}
 
@@ -375,17 +376,17 @@ public class ObjectExtensionTest
 
 		////////////////////////////////////////////////
 
-		Assert.IsTrue(objectA.IntProperty == objectB.IntProperty);
-		Assert.IsTrue(objectA.FloatProperty == objectB.FloatProperty);
-		Assert.IsTrue(objectA.DoubleProperty == objectB.DoubleProperty);
-		Assert.IsTrue(objectA.StringProperty == objectB.StringProperty);
-		Assert.IsTrue(objectA.DateTimeProperty == objectB.DateTimeProperty);
-		Assert.IsTrue(objectA.ObjectProperty == objectB.ObjectProperty);
+		Assert.AreEqual(objectB.IntProperty, objectA.IntProperty);
+		Assert.AreEqual(objectB.FloatProperty, objectA.FloatProperty);
+		Assert.AreEqual(objectB.DoubleProperty, objectA.DoubleProperty);
+		Assert.AreEqual(objectB.StringProperty, objectA.StringProperty);
+		Assert.AreEqual(objectB.DateTimeProperty, objectA.DateTimeProperty);
+		Assert.AreEqual(objectB.ObjectProperty, objectA.ObjectProperty);
 
-		Assert.IsTrue(objectA.IntFieldProperty == objectB.IntProperty);
+		Assert.AreEqual(objectB.IntProperty, objectA.IntFieldProperty);
 		// FloatFieldProperty 只有 get 方法。
-		Assert.IsTrue(objectA.FloatFieldProperty != objectB.FloatFieldProperty);
-		Assert.IsTrue(objectA.StringFieldProperty == objectB.StringFieldProperty);
+		Assert.AreNotEqual(objectB.FloatFieldProperty, objectA.FloatFieldProperty);
+		Assert.AreEqual(objectB.StringFieldProperty, objectA.StringFieldProperty);
 
 		////////////////////////////////////////////////
 
@@ -401,10 +402,10 @@ public class ObjectExtensionTest
 		var objB = objA.CloneShallow();
 
 		// !!!
-		Assert.IsTrue(objA != objB);
+		Assert.AreNotEqual(objB, objA);
 		// !!!
 		// !!!
-		Assert.IsTrue(objA.StringProperty == objB?.StringProperty);
+		Assert.AreEqual(objB!.StringProperty, objA.StringProperty);
 		Assert.IsTrue(objA.StringProperty.Equals(objB?.StringProperty));
 		// !!!
 	}
@@ -550,8 +551,8 @@ public class ObjectExtensionTest
 				true,
 				System.Reflection.BindingFlags.Default);
 		// !!!
-		Assert.IsTrue(testObjectPropertyValueBytesA.Length
-			== testObjectPropertyValueBytesB.Length);
+		Assert.AreEqual(testObjectPropertyValueBytesB.Length, testObjectPropertyValueBytesA.Length
+);
 		// !!!
 		for (var byteIndex = 0;
 			byteIndex < testObjectPropertyValueBytesA.Length;
@@ -562,7 +563,7 @@ public class ObjectExtensionTest
 			if (byteA != byteB)
 			{
 				// !!!
-				Assert.IsTrue(byteIndex == 57);
+				Assert.AreEqual(57, byteIndex);
 				// !!!
 			}
 		}
@@ -710,10 +711,10 @@ public class ObjectExtensionTest
 		// 1/2，克隆后，默认属性一致：
 		////////////////////////////////////////////////
 		{
-			Assert.IsTrue(item.IntProperty == itemCloned.IntProperty);
-			Assert.IsTrue(item.FloatProperty == itemCloned.FloatProperty);
-			Assert.IsTrue(item.DoubleProperty == itemCloned.DoubleProperty);
-			Assert.IsTrue(item.DecimalProperty == itemCloned.DecimalProperty);
+			Assert.AreEqual(itemCloned.IntProperty, item.IntProperty);
+			Assert.AreEqual(itemCloned.FloatProperty, item.FloatProperty);
+			Assert.AreEqual(itemCloned.DoubleProperty, item.DoubleProperty);
+			Assert.AreEqual(itemCloned.DecimalProperty, item.DecimalProperty);
 			Assert.IsTrue(item.StringProperty!.Equals(itemCloned.StringProperty));
 
 			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.IntItems, itemCloned.IntItems));
@@ -723,7 +724,7 @@ public class ObjectExtensionTest
 			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.StringItems, itemCloned.StringItems));
 			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.ObjectItems, itemCloned.ObjectItems));
 
-			Assert.IsTrue(item.KeyValueItems!.Count == itemCloned.KeyValueItems!.Count);
+			Assert.AreEqual(itemCloned.KeyValueItems!.Count, item.KeyValueItems!.Count);
 			foreach (var keyValue in item.KeyValueItems)
 			{
 				var value2 = itemCloned.KeyValueItems.GetValueOrDefault(keyValue.Key);
@@ -805,10 +806,10 @@ public class ObjectExtensionTest
 		// 3/3，克隆后，修改克隆对象，不影响原有对象：
 		////////////////////////////////////////////////
 		{
-			Assert.IsTrue(item.IntProperty == itemCloned.IntProperty);
-			Assert.IsTrue(item.FloatProperty == itemCloned.FloatProperty);
-			Assert.IsTrue(item.DoubleProperty == itemCloned.DoubleProperty);
-			Assert.IsTrue(item.DecimalProperty == itemCloned.DecimalProperty);
+			Assert.AreEqual(itemCloned.IntProperty, item.IntProperty);
+			Assert.AreEqual(itemCloned.FloatProperty, item.FloatProperty);
+			Assert.AreEqual(itemCloned.DoubleProperty, item.DoubleProperty);
+			Assert.AreEqual(itemCloned.DecimalProperty, item.DecimalProperty);
 			Assert.IsTrue(item.StringProperty!.Equals(itemCloned.StringProperty));
 
 			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.IntItems, itemCloned.IntItems));
@@ -818,7 +819,7 @@ public class ObjectExtensionTest
 			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.StringItems, itemCloned.StringItems));
 			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.ObjectItems, itemCloned.ObjectItems));
 
-			Assert.IsTrue(item.KeyValueItems!.Count == itemCloned.KeyValueItems!.Count);
+			Assert.AreEqual(itemCloned.KeyValueItems!.Count, item.KeyValueItems!.Count);
 			foreach (var keyValue in item.KeyValueItems)
 			{
 				var value2 = itemCloned.KeyValueItems.GetValueOrDefault(keyValue.Key);
@@ -830,25 +831,25 @@ public class ObjectExtensionTest
 			////////////////////////////////////////////////
 
 
-			Assert.IsTrue(item.IntProperty != itemCloned2.IntProperty);
-			Assert.IsTrue(item.FloatProperty != itemCloned2.FloatProperty);
-			Assert.IsTrue(item.DoubleProperty != itemCloned2.DoubleProperty);
-			Assert.IsTrue(item.DecimalProperty != itemCloned2.DecimalProperty);
-			Assert.IsTrue(item.StringProperty!.Equals(itemCloned2.StringProperty) != true);
+			Assert.AreNotEqual(itemCloned2.IntProperty, item.IntProperty);
+			Assert.AreNotEqual(itemCloned2.FloatProperty, item.FloatProperty);
+			Assert.AreNotEqual(itemCloned2.DoubleProperty, item.DoubleProperty);
+			Assert.AreNotEqual(itemCloned2.DecimalProperty, item.DecimalProperty);
+			Assert.AreNotEqual(true, item.StringProperty!.Equals(itemCloned2.StringProperty));
 
-			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.IntItems, itemCloned2.IntItems) == 0);
-			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.FloatItems, itemCloned2.FloatItems) == 0);
-			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.DoubleItems, itemCloned2.DoubleItems) == 0);
-			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.DecimalItems, itemCloned2.DecimalItems) == 0);
-			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.StringItems, itemCloned2.StringItems) == 0);
-			Assert.IsTrue(ArrayExtension.GetSameItemsCount(item.ObjectItems, itemCloned2.ObjectItems) == 0);
+			Assert.AreEqual(0, ArrayExtension.GetSameItemsCount(item.IntItems, itemCloned2.IntItems));
+			Assert.AreEqual(0, ArrayExtension.GetSameItemsCount(item.FloatItems, itemCloned2.FloatItems));
+			Assert.AreEqual(0, ArrayExtension.GetSameItemsCount(item.DoubleItems, itemCloned2.DoubleItems));
+			Assert.AreEqual(0, ArrayExtension.GetSameItemsCount(item.DecimalItems, itemCloned2.DecimalItems));
+			Assert.AreEqual(0, ArrayExtension.GetSameItemsCount(item.StringItems, itemCloned2.StringItems));
+			Assert.AreEqual(0, ArrayExtension.GetSameItemsCount(item.ObjectItems, itemCloned2.ObjectItems));
 
-			Assert.IsTrue(item.KeyValueItems!.Count == itemCloned2.KeyValueItems!.Count);
+			Assert.AreEqual(itemCloned2.KeyValueItems!.Count, item.KeyValueItems!.Count);
 			foreach (var keyValue in item.KeyValueItems)
 			{
 				var value2 = itemCloned2.KeyValueItems.GetValueOrDefault(keyValue.Key);
 				//
-				Assert.IsTrue(value2.Equals(keyValue.Value) != true);
+				Assert.AreNotEqual(true, value2.Equals(keyValue.Value));
 				//
 			}
 		}
@@ -886,16 +887,16 @@ public class ObjectExtensionTest
 		var objectCCloned = objectC.CloneDeep();
 		var objectDCloned = objectCCloned.ObjectD!;
 		{
-			Assert.IsTrue(objectCCloned.Id == objectC.Id);
-			Assert.IsTrue(objectDCloned.Id == objectD.Id);
+			Assert.AreEqual(objectC.Id, objectCCloned.Id);
+			Assert.AreEqual(objectD.Id, objectDCloned.Id);
 		}
 		{
 			objectCCloned.Id += 1;
 			objectDCloned.Id += 1;
 		}
 		{
-			Assert.IsTrue(objectCCloned.Id == (objectC.Id + 1));
-			Assert.IsTrue(objectDCloned.Id == (objectD.Id + 1));
+			Assert.AreEqual(objectC.Id + 1, objectCCloned.Id);
+			Assert.AreEqual(objectD.Id + 1, objectDCloned.Id);
 		}
 	}
 
@@ -972,10 +973,10 @@ public class ObjectExtensionTest
 
 		var itemCloned = item.CloneDeep(null, BindingFlags.Default, null, 1);
 		{
-			Assert.IsTrue(item.IntProperty == itemCloned.IntProperty);
-			Assert.IsTrue(item.FloatProperty == itemCloned.FloatProperty);
-			Assert.IsTrue(item.DoubleProperty == itemCloned.DoubleProperty);
-			Assert.IsTrue(item.DecimalProperty == itemCloned.DecimalProperty);
+			Assert.AreEqual(itemCloned.IntProperty, item.IntProperty);
+			Assert.AreEqual(itemCloned.FloatProperty, item.FloatProperty);
+			Assert.AreEqual(itemCloned.DoubleProperty, item.DoubleProperty);
+			Assert.AreEqual(itemCloned.DecimalProperty, item.DecimalProperty);
 			Assert.IsTrue(item.StringProperty!.Equals(itemCloned.StringProperty));
 
 			// 基础类型的容器，设为值类型。
@@ -985,26 +986,25 @@ public class ObjectExtensionTest
 			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.DecimalItems, itemCloned.DecimalItems));
 			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.StringItems, itemCloned.StringItems));
 
-			Assert.IsTrue(item.ObjectItems!.Length == itemCloned.ObjectItems!.Length);
-			Assert.IsTrue(ArrayExtension.IsItemsEqual(item.ObjectItems, itemCloned.ObjectItems)
-				 // !!!
-				 != true
+			Assert.AreEqual(itemCloned.ObjectItems!.Length, item.ObjectItems!.Length);
+			Assert.AreNotEqual(true
+, ArrayExtension.IsItemsEqual(item.ObjectItems, itemCloned.ObjectItems)
 				// !!!
 				);
 			foreach (var objectB in itemCloned.ObjectItems)
 			{
-				Assert.IsTrue(objectB.BIntValue == 0);
-				Assert.IsTrue(objectB.BFloatValue == 0);
-				Assert.IsTrue(objectB.BFloatValue == 0);
-				Assert.IsTrue(objectB.BStringValue == null);
+				Assert.AreEqual(0, objectB.BIntValue);
+				Assert.AreEqual(0, objectB.BFloatValue);
+				Assert.AreEqual(0, objectB.BFloatValue);
+				Assert.IsNull(objectB.BStringValue);
 			}
 
-			Assert.IsTrue(item.KeyValueItems!.Count == itemCloned.KeyValueItems!.Count);
+			Assert.AreEqual(itemCloned.KeyValueItems!.Count, item.KeyValueItems!.Count);
 			foreach (var keyValue in item.KeyValueItems)
 			{
 				var valueCloned = itemCloned.KeyValueItems.GetValueOrDefault(keyValue.Key);
 				//
-				Assert.IsTrue(valueCloned.Equals(keyValue.Value) == true);
+				Assert.IsTrue(valueCloned.Equals(keyValue.Value));
 				//
 			}
 		}
@@ -1062,10 +1062,10 @@ public class ObjectExtensionTest
 			});
 
 		// “Name”，“IpInfoNotNull”
-		Assert.IsTrue(testEntityPropertyInfesNotNull.Count == 2);
+		Assert.AreEqual(2, testEntityPropertyInfesNotNull.Count);
 		Assert.IsTrue(testEntityPropertyInfesNotNull[0].Name.Equals(nameof(TestEntity.Name)));
 		Assert.IsTrue(testEntityPropertyInfesNotNull[1].Name.Equals(nameof(TestEntity.IpInfoNotNull)));
-		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes.Length == 1);
+		Assert.AreEqual(1, testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes.Length);
 		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes[0].Name.Equals(nameof(IpInfo.IpAddress)));
 	}
 
@@ -1126,10 +1126,10 @@ public class ObjectExtensionTest
 
 
 		// “Name”，“IpInfoNotNull”
-		Assert.IsTrue(testEntityPropertyInfesNotNull.Count == 3);
+		Assert.AreEqual(3, testEntityPropertyInfesNotNull.Count);
 		Assert.IsTrue(testEntityPropertyInfesNotNull[0].Name.Equals(nameof(TestEntityWithRecursionProperty.Name)));
 		Assert.IsTrue(testEntityPropertyInfesNotNull[1].Name.Equals(nameof(TestEntityWithRecursionProperty.IpInfoNotNull)));
-		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes.Length == 1);
+		Assert.AreEqual(1, testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes.Length);
 		Assert.IsTrue(testEntityPropertyInfesNotNull[1].ChildObjectPropertyInfes[0].Name.Equals(nameof(IpInfo.IpAddress)));
 		Assert.IsTrue(testEntityPropertyInfesNotNull[2].Name.Equals(nameof(TestEntityWithRecursionProperty.ChildTestEntity)));
 	}
@@ -1211,7 +1211,7 @@ public class ObjectExtensionTest
 				}
 				return null;
 			});
-		Assert.IsTrue(checkError?.Equals($"数据无效，属性“{nameof(TestEntity.Name)}”为“null”。"));
+		Assert.IsTrue(checkError!.Equals($"数据无效，属性“{nameof(TestEntity.Name)}”为“null”。"));
 
 
 		////////////////////////////////////////////////
@@ -1234,7 +1234,7 @@ public class ObjectExtensionTest
 				}
 				return null;
 			});
-		Assert.IsTrue(checkError?.Equals($"数据无效，属性“{nameof(TestEntity.IpInfoNotNull)}”为“null”。"));
+		Assert.IsTrue(checkError!.Equals($"数据无效，属性“{nameof(TestEntity.IpInfoNotNull)}”为“null”。"));
 
 
 		////////////////////////////////////////////////
@@ -1260,6 +1260,6 @@ public class ObjectExtensionTest
 				}
 				return null;
 			});
-		Assert.IsTrue(checkError?.Equals($"数据无效，属性“{nameof(TestEntity.IpInfoNotNull)}.{nameof(IpInfo.IpAddress)}”为“null”。"));
+		Assert.IsTrue(checkError!.Equals($"数据无效，属性“{nameof(TestEntity.IpInfoNotNull)}.{nameof(IpInfo.IpAddress)}”为“null”。"));
 	}
 }

@@ -13,52 +13,52 @@ public class DateTimeOffsetUtilTest
 		var dateTimeStringInRFC3339 = "2021-09-01T01:02:03+08:00";
 		var dateTimeOffset = DateTimeOffsetUtil.DateTimeOffsetFromStringInRFC3339(dateTimeStringInRFC3339);
 		{
-			Assert.IsTrue(dateTimeOffset.Year == 2021);
-			Assert.IsTrue(dateTimeOffset.Month == 9);
-			Assert.IsTrue(dateTimeOffset.Day == 1);
-			Assert.IsTrue(dateTimeOffset.Hour == 1);
-			Assert.IsTrue(dateTimeOffset.Minute == 2);
-			Assert.IsTrue(dateTimeOffset.Second == 3);
-			Assert.IsTrue(dateTimeOffset.Offset.Hours == 8);
+			Assert.AreEqual(2021, dateTimeOffset.Year);
+			Assert.AreEqual(9, dateTimeOffset.Month);
+			Assert.AreEqual(1, dateTimeOffset.Day);
+			Assert.AreEqual(1, dateTimeOffset.Hour);
+			Assert.AreEqual(2, dateTimeOffset.Minute);
+			Assert.AreEqual(3, dateTimeOffset.Second);
+			Assert.AreEqual(8, dateTimeOffset.Offset.Hours);
 		}
 
 		dateTimeStringInRFC3339 = "2021/09/01T01:02:03+08:00";
 		dateTimeOffset = DateTimeOffsetUtil.DateTimeOffsetFromStringInRFC3339(dateTimeStringInRFC3339);
 		{
-			Assert.IsTrue(dateTimeOffset.Year == 2021);
-			Assert.IsTrue(dateTimeOffset.Month == 9);
-			Assert.IsTrue(dateTimeOffset.Day == 1);
-			Assert.IsTrue(dateTimeOffset.Hour == 1);
-			Assert.IsTrue(dateTimeOffset.Minute == 2);
-			Assert.IsTrue(dateTimeOffset.Second == 3);
-			Assert.IsTrue(dateTimeOffset.Offset.Hours == 8);
+			Assert.AreEqual(2021, dateTimeOffset.Year);
+			Assert.AreEqual(9, dateTimeOffset.Month);
+			Assert.AreEqual(1, dateTimeOffset.Day);
+			Assert.AreEqual(1, dateTimeOffset.Hour);
+			Assert.AreEqual(2, dateTimeOffset.Minute);
+			Assert.AreEqual(3, dateTimeOffset.Second);
+			Assert.AreEqual(8, dateTimeOffset.Offset.Hours);
 		}
 
 
 		dateTimeStringInRFC3339 = "2021/09/01T01:02:03";
 		dateTimeOffset = DateTimeOffsetUtil.DateTimeOffsetFromStringInRFC3339(dateTimeStringInRFC3339);
 		{
-			Assert.IsTrue(dateTimeOffset.Year == 2021);
-			Assert.IsTrue(dateTimeOffset.Month == 9);
-			Assert.IsTrue(dateTimeOffset.Day == 1);
-			Assert.IsTrue(dateTimeOffset.Hour == 1);
-			Assert.IsTrue(dateTimeOffset.Minute == 2);
-			Assert.IsTrue(dateTimeOffset.Second == 3);
+			Assert.AreEqual(2021, dateTimeOffset.Year);
+			Assert.AreEqual(9, dateTimeOffset.Month);
+			Assert.AreEqual(1, dateTimeOffset.Day);
+			Assert.AreEqual(1, dateTimeOffset.Hour);
+			Assert.AreEqual(2, dateTimeOffset.Minute);
+			Assert.AreEqual(3, dateTimeOffset.Second);
 			//
-			Assert.IsTrue(dateTimeOffset.Offset.Hours == 0);
+			Assert.AreEqual(0, dateTimeOffset.Offset.Hours);
 			//
 		}
 
 		dateTimeOffset = dateTimeOffset.ToDateTimeOffsetByConvertToTimeZone(TimeZoneNumber.East8);
 		{
-			Assert.IsTrue(dateTimeOffset.Year == 2021);
-			Assert.IsTrue(dateTimeOffset.Month == 9);
-			Assert.IsTrue(dateTimeOffset.Day == 1);
-			Assert.IsTrue(dateTimeOffset.Hour == 9);
-			Assert.IsTrue(dateTimeOffset.Minute == 2);
-			Assert.IsTrue(dateTimeOffset.Second == 3);
+			Assert.AreEqual(2021, dateTimeOffset.Year);
+			Assert.AreEqual(9, dateTimeOffset.Month);
+			Assert.AreEqual(1, dateTimeOffset.Day);
+			Assert.AreEqual(9, dateTimeOffset.Hour);
+			Assert.AreEqual(2, dateTimeOffset.Minute);
+			Assert.AreEqual(3, dateTimeOffset.Second);
 			//
-			Assert.IsTrue(dateTimeOffset.Offset.Hours == 8);
+			Assert.AreEqual(8, dateTimeOffset.Offset.Hours);
 			//
 		}
 	}

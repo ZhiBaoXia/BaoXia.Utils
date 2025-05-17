@@ -43,7 +43,7 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				},
 				numberList)
 				?.Number;
-			Assert.IsTrue(sumOfNumberList == numbersSum);
+			Assert.AreEqual(numbersSum, sumOfNumberList);
 
 			numbersSum = (32 + 64 + 128);
 			sumOfNumberList
@@ -58,7 +58,7 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				new TestNumberObject<int>(32),
 				new TestNumberObject<int>(64),
 				new TestNumberObject<int>(128))?.Number;
-			Assert.IsTrue(sumOfNumberList == numbersSum);
+			Assert.AreEqual(numbersSum, sumOfNumberList);
 		}
 
 		[TestMethod]
@@ -76,11 +76,11 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				numberList.Add(number);
 			}
 			var sumOfNumberList = Sum.OfList(numberList);
-			Assert.IsTrue(sumOfNumberList == numbersSum);
+			Assert.AreEqual(numbersSum, sumOfNumberList);
 
 			numbersSum = (32 + 64 + 128);
 			sumOfNumberList = Sum.Of(32, 64, 128);
-			Assert.IsTrue(sumOfNumberList == numbersSum);
+			Assert.AreEqual(numbersSum, sumOfNumberList);
 		}
 
 		[TestMethod]
@@ -98,11 +98,11 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				numberList.Add(number);
 			}
 			var sumOfNumberList = Sum.OfList(numberList);
-			Assert.IsTrue(sumOfNumberList == numbersSum);
+			Assert.AreEqual(numbersSum, sumOfNumberList);
 
 			numbersSum = (32.0F + 64.0F + 128.0F);
 			sumOfNumberList = Sum.Of(32.0F, 64.0F, 128.0F);
-			Assert.IsTrue(sumOfNumberList == numbersSum);
+			Assert.AreEqual(numbersSum, sumOfNumberList);
 		}
 
 		[TestMethod]
@@ -120,11 +120,11 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				numberList.Add(number);
 			}
 			var sumOfNumberList = Sum.OfList(numberList);
-			Assert.IsTrue(sumOfNumberList == numbersSum);
+			Assert.AreEqual(numbersSum, sumOfNumberList);
 
 			numbersSum = 32.0 + 64.0 + 128.0;
 			sumOfNumberList = Sum.Of(32.0, 64.0, 128.0);
-			Assert.IsTrue(sumOfNumberList == numbersSum);
+			Assert.AreEqual(numbersSum, sumOfNumberList);
 		}
 	}
 }

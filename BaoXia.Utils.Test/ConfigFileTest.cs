@@ -55,17 +55,17 @@ namespace BaoXia.Utils.Test
 
 					if (testConfigFile.IntValue == 1)
 					{
-						Assert.IsTrue(testConfigFile.IntValue == 1);
-						Assert.IsTrue(testConfigFile.FloatValue == 2.0F);
-						Assert.IsTrue(testConfigFile.DoubleValue == 3.0);
-						Assert.IsTrue(testConfigFile.StringValue == "4.0");
+						Assert.AreEqual(1, testConfigFile.IntValue);
+						Assert.AreEqual(2.0F, testConfigFile.FloatValue);
+						Assert.AreEqual(3.0, testConfigFile.DoubleValue);
+						Assert.AreEqual("4.0", testConfigFile.StringValue);
 					}
 					else
 					{
-						Assert.IsTrue(testConfigFile.IntValue == 2);
-						Assert.IsTrue(testConfigFile.FloatValue == 3.0F);
-						Assert.IsTrue(testConfigFile.DoubleValue == 4.0);
-						Assert.IsTrue(testConfigFile.StringValue == "4.0+1.0");
+						Assert.AreEqual(2, testConfigFile.IntValue);
+						Assert.AreEqual(3.0F, testConfigFile.FloatValue);
+						Assert.AreEqual(4.0, testConfigFile.DoubleValue);
+						Assert.AreEqual("4.0+1.0", testConfigFile.StringValue);
 					}
 				});
 			}
@@ -124,11 +124,11 @@ namespace BaoXia.Utils.Test
 			System.Threading.Thread.Sleep(500);
 			{
 				// !!!
-				Assert.IsTrue(configFileForLoad.IntValue == configFileForSave.IntValue);
-				Assert.IsTrue(configFileForLoad.FloatValue == configFileForSave.FloatValue);
-				Assert.IsTrue(configFileForLoad.DoubleValue == configFileForSave.DoubleValue);
+				Assert.AreEqual(configFileForSave.IntValue, configFileForLoad.IntValue);
+				Assert.AreEqual(configFileForSave.FloatValue, configFileForLoad.FloatValue);
+				Assert.AreEqual(configFileForSave.DoubleValue, configFileForLoad.DoubleValue);
 				Assert.IsTrue(configFileForLoad.StringValue?.Equals(configFileForSave.StringValue));
-				Assert.IsTrue(configFileForLoad.DateTimeValue == configFileForSave.DateTimeValue);
+				Assert.AreEqual(configFileForSave.DateTimeValue, configFileForLoad.DateTimeValue);
 				// !!!
 			}
 
@@ -154,11 +154,11 @@ namespace BaoXia.Utils.Test
 			System.Threading.Thread.Sleep(500);
 			{
 				// !!!
-				Assert.IsTrue(configFileForLoad.IntValue == configFileForSave.IntValue);
-				Assert.IsTrue(configFileForLoad.FloatValue == configFileForSave.FloatValue);
-				Assert.IsTrue(configFileForLoad.DoubleValue == configFileForSave.DoubleValue);
+				Assert.AreEqual(configFileForSave.IntValue, configFileForLoad.IntValue);
+				Assert.AreEqual(configFileForSave.FloatValue, configFileForLoad.FloatValue);
+				Assert.AreEqual(configFileForSave.DoubleValue, configFileForLoad.DoubleValue);
 				Assert.IsTrue(configFileForLoad.StringValue?.Equals(configFileForSave.StringValue));
-				Assert.IsTrue(configFileForLoad.DateTimeValue == configFileForSave.DateTimeValue);
+				Assert.AreEqual(configFileForSave.DateTimeValue, configFileForLoad.DateTimeValue);
 				// !!!
 			}
 		}
@@ -181,7 +181,7 @@ namespace BaoXia.Utils.Test
 				string finalConfigFile = configFileForLoad.FinalFilePath!;
 				{
 					// !!!
-					Assert.IsTrue(originalConfigFilePath.IsEquals(finalConfigFile) == true);
+					Assert.IsTrue(originalConfigFilePath.IsEquals(finalConfigFile));
 					// !!!
 				}
 
@@ -198,7 +198,7 @@ namespace BaoXia.Utils.Test
 					////////////////////////////////////////////////
 					// !!!
 					finalConfigFile = configFileForLoad.FinalFilePath!;
-					Assert.IsTrue(originalConfigFilePath.IsEquals(finalConfigFile) == true);
+					Assert.IsTrue(originalConfigFilePath.IsEquals(finalConfigFile));
 					// !!!
 
 					////////////////////////////////////////////////
@@ -206,8 +206,8 @@ namespace BaoXia.Utils.Test
 					////////////////////////////////////////////////
 					// !!!
 					finalConfigFile = configFileForLoad.FinalFilePath!;
-					Assert.IsTrue(originalConfigFilePath.IsEquals(finalConfigFile) != true);
-					Assert.IsTrue(finalConfigFileAccurate.IsEquals(finalConfigFile) == true);
+					Assert.AreNotEqual(true, originalConfigFilePath.IsEquals(finalConfigFile));
+					Assert.IsTrue(finalConfigFileAccurate.IsEquals(finalConfigFile));
 					// !!!
 				}
 			}

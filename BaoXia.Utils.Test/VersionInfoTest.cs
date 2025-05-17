@@ -25,9 +25,9 @@ public class VersionInfoTest
 		var version_1_0_0_0 = new VersionInfo { VersionString = "1.0.0.0" };
 
 #pragma warning disable CS1718 // 对同一变量进行了比较
-		Assert.IsTrue(version_1_0_0 == version_1_0_0);
+		Assert.AreEqual(version_1_0_0, version_1_0_0);
 #pragma warning restore CS1718 // 对同一变量进行了比较
-		Assert.IsTrue(version_1_0_0 == version_1_0_0b);
+		Assert.AreEqual(version_1_0_0b, version_1_0_0);
 		Assert.IsTrue(version_1_0_0 < version_1_0_1);
 		Assert.IsTrue(version_1_0_0 < version_1_1_0);
 		Assert.IsTrue(version_1_0_0 < version_1_1_1);
@@ -36,9 +36,9 @@ public class VersionInfoTest
 		Assert.IsTrue(version_1_0_0 < version_1_0_0_0);
 
 #pragma warning disable CS1718 // 对同一变量进行了比较
-		Assert.IsTrue(version_1_0_0 == version_1_0_0);
+		Assert.AreEqual(version_1_0_0, version_1_0_0);
 #pragma warning restore CS1718 // 对同一变量进行了比较
-		Assert.IsTrue(version_1_0_0 == version_1_0_0b);
+		Assert.AreEqual(version_1_0_0b, version_1_0_0);
 		Assert.IsTrue(version_1_0_0 <= version_1_0_1);
 		Assert.IsTrue(version_1_0_0 <= version_1_1_0);
 		Assert.IsTrue(version_1_0_0 <= version_1_1_1);
@@ -50,7 +50,7 @@ public class VersionInfoTest
 		Assert.IsTrue(version_1_1_1 > version_1_0_1);
 		Assert.IsTrue(version_1_1_1 > version_1_1_0);
 #pragma warning disable CS1718 // 对同一变量进行了比较
-		Assert.IsTrue(version_1_1_1 == version_1_1_1);
+		Assert.AreEqual(version_1_1_1, version_1_1_1);
 #pragma warning restore CS1718 // 对同一变量进行了比较
 		Assert.IsTrue(version_1_1_1 < version_2_1_1);
 		Assert.IsTrue(version_1_1_1 > version_1_0);
@@ -61,7 +61,7 @@ public class VersionInfoTest
 		Assert.IsTrue(version_1_1_1 >= version_1_0_1);
 		Assert.IsTrue(version_1_1_1 >= version_1_1_0);
 #pragma warning disable CS1718 // 对同一变量进行了比较
-		Assert.IsTrue(version_1_1_1 == version_1_1_1);
+		Assert.AreEqual(version_1_1_1, version_1_1_1);
 #pragma warning restore CS1718 // 对同一变量进行了比较
 		Assert.IsTrue(version_1_1_1 <= version_2_1_1);
 		Assert.IsTrue(version_1_1_1 >= version_1_0);

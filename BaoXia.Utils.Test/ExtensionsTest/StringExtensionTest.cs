@@ -24,7 +24,7 @@ public class StringExtensionTest
 		var stringAfterJoin = StringUtil.StringWithStrings(
 			strings);
 		{
-			Assert.IsTrue(stringAfterJoin == "00,11,22,33,44,55");
+			Assert.AreEqual("00,11,22,33,44,55", stringAfterJoin);
 		}
 	}
 
@@ -38,15 +38,15 @@ public class StringExtensionTest
 		}
 		stringFound = testString.SubstringBefore("Abc");
 		{
-			Assert.IsTrue(stringFound?.Equals("0123") == true);
+			Assert.IsTrue(stringFound!.Equals("0123"));
 		}
 		stringFound = testString.SubstringBefore("456");
 		{
-			Assert.IsTrue(stringFound?.Equals("0123Abc") == true);
+			Assert.IsTrue(stringFound!.Equals("0123Abc"));
 		}
 		stringFound = testString.SubstringBefore("Def");
 		{
-			Assert.IsTrue(stringFound?.Equals("0123Abc456") == true);
+			Assert.IsTrue(stringFound!.Equals("0123Abc456"));
 		}
 	}
 
@@ -56,15 +56,15 @@ public class StringExtensionTest
 		var testString = "0123Abc456Def";
 		var stringFound = testString.SubstringAfter("0123");
 		{
-			Assert.IsTrue(stringFound?.Equals("Abc456Def") == true);
+			Assert.IsTrue(stringFound!.Equals("Abc456Def"));
 		}
 		stringFound = testString.SubstringAfter("Abc");
 		{
-			Assert.IsTrue(stringFound?.Equals("456Def") == true);
+			Assert.IsTrue(stringFound!.Equals("456Def"));
 		}
 		stringFound = testString.SubstringAfter("456");
 		{
-			Assert.IsTrue(stringFound?.Equals("Def") == true);
+			Assert.IsTrue(stringFound!.Equals("Def"));
 		}
 		stringFound = testString.SubstringAfter("Def");
 		{
@@ -81,7 +81,7 @@ public class StringExtensionTest
 		{
 			keyWords = testStringA_0.SubstringBetween("{", "}");
 		}
-		Assert.IsTrue(keyWords?.Equals(kKeyWordsA_0));
+		Assert.IsTrue(keyWords!.Equals(kKeyWordsA_0));
 
 		const string kKeyWordsA_1 = "";
 		var testStringA_1 = "left words {" + kKeyWordsA_1 + "} right words";
@@ -97,7 +97,7 @@ public class StringExtensionTest
 		{
 			keyWords = testStringB_0.SubstringBetween("{", "}", true);
 		}
-		Assert.IsTrue(keyWords?.Equals(kKeyWordsB_0));
+		Assert.IsTrue(keyWords!.Equals(kKeyWordsB_0));
 
 
 		const string kKeyWordsB_1 = "{}";
@@ -105,7 +105,7 @@ public class StringExtensionTest
 		{
 			keyWords = testStringB_1.SubstringBetween("{", "}", true);
 		}
-		Assert.IsTrue(keyWords?.Equals(kKeyWordsB_1));
+		Assert.IsTrue(keyWords!.Equals(kKeyWordsB_1));
 	}
 
 
@@ -115,32 +115,32 @@ public class StringExtensionTest
 		var testUri = "https://www.baoxiaruanjian.com";
 		var testRelativePath = "/search/index";
 		var testUriAfterAppended = "https://www.baoxiaruanjian.com/search/index";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		testUri = "https://www.baoxiaruanjian.com/";
 		testRelativePath = "/search/index";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/search/index";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		////////////////////////////////////////////////
 
 		testUri = "https://www.baoxiaruanjian.com/global";
 		testRelativePath = "/search/index";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/global/search/index";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		testUri = "https://www.baoxiaruanjian.com/global/";
 		testRelativePath = "/search/index";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/global/search/index";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
@@ -148,32 +148,32 @@ public class StringExtensionTest
 		testUri = "https://www.baoxiaruanjian.com";
 		testRelativePath = "/search/index?searchKey=Abc&pageIndex=0&pageSize=20";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/search/index?searchKey=Abc&pageIndex=0&pageSize=20";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		testUri = "https://www.baoxiaruanjian.com/";
 		testRelativePath = "/search/index?searchKey=Abc&pageIndex=0&pageSize=20";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/search/index?searchKey=Abc&pageIndex=0&pageSize=20";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		////////////////////////////////////////////////
 
 		testUri = "https://www.baoxiaruanjian.com/global";
 		testRelativePath = "/search/index?searchKey=Abc&pageIndex=0&pageSize=20";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/global/search/index?searchKey=Abc&pageIndex=0&pageSize=20";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		testUri = "https://www.baoxiaruanjian.com/global/";
 		testRelativePath = "/search/index?searchKey=Abc&pageIndex=0&pageSize=20";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/global/search/index?searchKey=Abc&pageIndex=0&pageSize=20";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
@@ -181,32 +181,32 @@ public class StringExtensionTest
 		testUri = "https://www.baoxiaruanjian.com";
 		testRelativePath = "/search/index?searchKey=Abc&pageIndex=0&pageSize=20#type=book";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/search/index?searchKey=Abc&pageIndex=0&pageSize=20#type=book";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		testUri = "https://www.baoxiaruanjian.com/";
 		testRelativePath = "/search/index?searchKey=Abc&pageIndex=0&pageSize=20#type=book";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/search/index?searchKey=Abc&pageIndex=0&pageSize=20#type=book";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		////////////////////////////////////////////////
 
 		testUri = "https://www.baoxiaruanjian.com/global";
 		testRelativePath = "/search/index?searchKey=Abc&pageIndex=0&pageSize=20#type=book";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/global/search/index?searchKey=Abc&pageIndex=0&pageSize=20#type=book";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		testUri = "https://www.baoxiaruanjian.com/global/";
 		testRelativePath = "/search/index?searchKey=Abc&pageIndex=0&pageSize=20#type=book";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/global/search/index?searchKey=Abc&pageIndex=0&pageSize=20#type=book";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
@@ -214,32 +214,32 @@ public class StringExtensionTest
 		testUri = "https://www.baoxiaruanjian.com";
 		testRelativePath = "/search/index#type=book?searchKey=Abc&pageIndex=0&pageSize=20";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/search/index#type=book?searchKey=Abc&pageIndex=0&pageSize=20";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		testUri = "https://www.baoxiaruanjian.com/";
 		testRelativePath = "/search/index#type=book?searchKey=Abc&pageIndex=0&pageSize=20";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/search/index#type=book?searchKey=Abc&pageIndex=0&pageSize=20";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		////////////////////////////////////////////////
 
 		testUri = "https://www.baoxiaruanjian.com/global";
 		testRelativePath = "/search/index#type=book?searchKey=Abc&pageIndex=0&pageSize=20";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/global/search/index#type=book?searchKey=Abc&pageIndex=0&pageSize=20";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		testUri = "https://www.baoxiaruanjian.com/global/";
 		testRelativePath = "/search/index#type=book?searchKey=Abc&pageIndex=0&pageSize=20";
 		testUriAfterAppended = "https://www.baoxiaruanjian.com/global/search/index#type=book?searchKey=Abc&pageIndex=0&pageSize=20";
-		Assert.IsTrue(
-			testUri.StringByUriAppendRelativePath(testRelativePath)
-			== testUriAfterAppended);
+		Assert.AreEqual(
+testUriAfterAppended, testUri.StringByUriAppendRelativePath(testRelativePath)
+);
 
 		////////////////////////////////////////////////
 	}
@@ -251,17 +251,17 @@ public class StringExtensionTest
 		var testUriQueryParams = "searchKey=key&searchType=type";
 		var testUriWithQueryParams = testUri + "?" + testUriQueryParams;
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams(testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams(testUriQueryParams)
+);
 
-		Assert.IsTrue(
-			(testUri + "?").StringByUriAppendQueryParams(testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, (testUri + "?").StringByUriAppendQueryParams(testUriQueryParams)
+);
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams("?" + testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams("?" + testUriQueryParams)
+);
 
 
 		////////////////////////////////////////////////
@@ -271,17 +271,17 @@ public class StringExtensionTest
 		testUriQueryParams = "searchType=type";
 		testUriWithQueryParams = testUri + "&" + testUriQueryParams;
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams(testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams(testUriQueryParams)
+);
 
-		Assert.IsTrue(
-			(testUri + "&").StringByUriAppendQueryParams(testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, (testUri + "&").StringByUriAppendQueryParams(testUriQueryParams)
+);
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
+);
 
 
 		////////////////////////////////////////////////
@@ -291,13 +291,13 @@ public class StringExtensionTest
 		testUriQueryParams = "searchType=type";
 		testUriWithQueryParams = "https://www.baoxiaruanjian.com?searchType=type#pageAnchorPoint=bottom"; ;
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams(testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams(testUriQueryParams)
+);
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
+);
 
 
 		////////////////////////////////////////////////
@@ -307,13 +307,13 @@ public class StringExtensionTest
 		testUriQueryParams = "searchType=type";
 		testUriWithQueryParams = "https://www.baoxiaruanjian.com?searchKey=key&searchType=type#pageAnchorPoint=bottom"; ;
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams(testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams(testUriQueryParams)
+);
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
+);
 
 
 		////////////////////////////////////////////////
@@ -323,13 +323,13 @@ public class StringExtensionTest
 		testUriQueryParams = "searchType=type#pageRef=home";
 		testUriWithQueryParams = "https://www.baoxiaruanjian.com?searchType=type#pageRef=home"; ;
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams(testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams(testUriQueryParams)
+);
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
+);
 
 
 		////////////////////////////////////////////////
@@ -339,13 +339,13 @@ public class StringExtensionTest
 		testUriQueryParams = "searchType=type#pageRef=home";
 		testUriWithQueryParams = "https://www.baoxiaruanjian.com?searchType=type#pageAnchorPoint=bottom&pageRef=home"; ;
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams(testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams(testUriQueryParams)
+);
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
+);
 
 
 
@@ -357,13 +357,13 @@ public class StringExtensionTest
 		testUriQueryParams = "searchType=type#pageRef=home";
 		testUriWithQueryParams = "https://www.baoxiaruanjian.com?searchKey=Abc&searchType=type#pageRef=home"; ;
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams(testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams(testUriQueryParams)
+);
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
+);
 
 
 		////////////////////////////////////////////////
@@ -373,13 +373,13 @@ public class StringExtensionTest
 		testUriQueryParams = "searchType=type#pageRef=home";
 		testUriWithQueryParams = "https://www.baoxiaruanjian.com?searchKey=Abc&searchType=type#pageAnchorPoint=bottom&pageRef=home"; ;
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams(testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams(testUriQueryParams)
+);
 
-		Assert.IsTrue(
-			testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
-			== testUriWithQueryParams);
+		Assert.AreEqual(
+testUriWithQueryParams, testUri.StringByUriAppendQueryParams("&" + testUriQueryParams)
+);
 	}
 
 
@@ -462,8 +462,8 @@ public class StringExtensionTest
 				return null;
 			});
 		// !!!
-		Assert.IsTrue(testItemsContained != null);
-		Assert.IsTrue(testItemsContained.Count == 3);
+		Assert.IsNotNull(testItemsContained);
+		Assert.AreEqual(3, testItemsContained.Count);
 		Assert.IsTrue(testItemsContained.Contains("111"));
 		Assert.IsTrue(testItemsContained.Contains("333"));
 		Assert.IsTrue(testItemsContained.Contains("555"));
@@ -477,7 +477,7 @@ public class StringExtensionTest
 		var testString = "123@456#7@89";
 		var testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
 		{
-			Assert.IsTrue(testStrings.Count == 3);
+			Assert.AreEqual(3, testStrings.Count);
 			Assert.IsTrue(testStrings[0].Equals("123"));
 			Assert.IsTrue(testStrings[1].Equals("456#7"));
 			Assert.IsTrue(testStrings[2].Equals("89"));
@@ -486,7 +486,7 @@ public class StringExtensionTest
 		testString = "123@456#7@89@";
 		testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
 		{
-			Assert.IsTrue(testStrings.Count == 4);
+			Assert.AreEqual(4, testStrings.Count);
 			Assert.IsTrue(testStrings[0].Equals("123"));
 			Assert.IsTrue(testStrings[1].Equals("456#7"));
 			Assert.IsTrue(testStrings[2].Equals("89"));
@@ -496,7 +496,7 @@ public class StringExtensionTest
 		testString = "@123@456#7@89@";
 		testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
 		{
-			Assert.IsTrue(testStrings.Count == 5);
+			Assert.AreEqual(5, testStrings.Count);
 			Assert.IsTrue(testStrings[0].Equals(string.Empty));
 			Assert.IsTrue(testStrings[1].Equals("123"));
 			Assert.IsTrue(testStrings[2].Equals("456#7"));
@@ -507,7 +507,7 @@ public class StringExtensionTest
 		testString = "123#456#7@89";
 		testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
 		{
-			Assert.IsTrue(testStrings.Count == 3);
+			Assert.AreEqual(3, testStrings.Count);
 			Assert.IsTrue(testStrings[0].Equals("123"));
 			Assert.IsTrue(testStrings[1].Equals("456"));
 			Assert.IsTrue(testStrings[2].Equals("7@89"));
@@ -516,7 +516,7 @@ public class StringExtensionTest
 		testString = "123#456#7@89#";
 		testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
 		{
-			Assert.IsTrue(testStrings.Count == 4);
+			Assert.AreEqual(4, testStrings.Count);
 			Assert.IsTrue(testStrings[0].Equals("123"));
 			Assert.IsTrue(testStrings[1].Equals("456"));
 			Assert.IsTrue(testStrings[2].Equals("7@89"));
@@ -527,7 +527,7 @@ public class StringExtensionTest
 		testString = "#123#456#7@89#";
 		testStrings = testString.SplitWithOptionalSeparatorsIgnoreCase('@', '#');
 		{
-			Assert.IsTrue(testStrings.Count == 5);
+			Assert.AreEqual(5, testStrings.Count);
 			Assert.IsTrue(testStrings[0].Equals(string.Empty));
 			Assert.IsTrue(testStrings[1].Equals("123"));
 			Assert.IsTrue(testStrings[2].Equals("456"));
@@ -610,7 +610,7 @@ public class StringExtensionTest
 		var numbers = new int[] { 0, 1, 2, 3, 4, 5 };
 		var numbersString = StringUtil.StringWithInts(numbers);
 		{
-			Assert.IsTrue(numbersString == "0,1,2,3,4,5");
+			Assert.AreEqual("0,1,2,3,4,5", numbersString);
 			var numberArray = numbersString.ToIntArray();
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0, 1, 2];
@@ -619,7 +619,7 @@ public class StringExtensionTest
 		}
 		numbersString = StringUtil.StringWithInts(numbers, "|");
 		{
-			Assert.IsTrue(numbersString == "0|1|2|3|4|5");
+			Assert.AreEqual("0|1|2|3|4|5", numbersString);
 			var numberArray = numbersString.ToIntArray("|");
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0, 1, 2];
@@ -627,11 +627,11 @@ public class StringExtensionTest
 		}
 		numbersString = StringUtil.StringWithInts(numbers, null);
 		{
-			Assert.IsTrue(numbersString == "012345");
+			Assert.AreEqual("012345", numbersString);
 		}
 		numbersString = StringUtil.StringWithInts(numbers, ",", "D2");
 		{
-			Assert.IsTrue(numbersString == "00,01,02,03,04,05");
+			Assert.AreEqual("00,01,02,03,04,05", numbersString);
 			var numberArray = numbersString.ToIntArray();
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0, 1, 2];
@@ -645,7 +645,7 @@ public class StringExtensionTest
 		var numbers = new long[] { 0, 1, 2, 3, 4, 5 };
 		var numbersString = StringUtil.StringWithLongs(numbers);
 		{
-			Assert.IsTrue(numbersString == "0,1,2,3,4,5");
+			Assert.AreEqual("0,1,2,3,4,5", numbersString);
 			var numberArray = numbersString.ToLongArray();
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0, 1, 2];
@@ -653,7 +653,7 @@ public class StringExtensionTest
 		}
 		numbersString = StringUtil.StringWithLongs(numbers, "|");
 		{
-			Assert.IsTrue(numbersString == "0|1|2|3|4|5");
+			Assert.AreEqual("0|1|2|3|4|5", numbersString);
 			var numberArray = numbersString.ToLongArray("|");
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0, 1, 2];
@@ -661,11 +661,11 @@ public class StringExtensionTest
 		}
 		numbersString = StringUtil.StringWithLongs(numbers, null);
 		{
-			Assert.IsTrue(numbersString == "012345");
+			Assert.AreEqual("012345", numbersString);
 		}
 		numbersString = StringUtil.StringWithLongs(numbers, ",", "D2");
 		{
-			Assert.IsTrue(numbersString == "00,01,02,03,04,05");
+			Assert.AreEqual("00,01,02,03,04,05", numbersString);
 			var numberArray = numbersString.ToLongArray();
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0, 1, 2];
@@ -679,7 +679,7 @@ public class StringExtensionTest
 		var numbers = new float[] { 0.0F, 1.4F, 2.5F, 3.4F, 4.5F, 5.4F };
 		var numbersString = StringUtil.StringWithFloats(numbers);
 		{
-			Assert.IsTrue(numbersString == "0,1.4,2.5,3.4,4.5,5.4");
+			Assert.AreEqual("0,1.4,2.5,3.4,4.5,5.4", numbersString);
 			var numberArray = numbersString.ToFloatArray();
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0.0F, 1.4F, 2.5F];
@@ -687,7 +687,7 @@ public class StringExtensionTest
 		}
 		numbersString = StringUtil.StringWithFloats(numbers, "|");
 		{
-			Assert.IsTrue(numbersString == "0|1.4|2.5|3.4|4.5|5.4");
+			Assert.AreEqual("0|1.4|2.5|3.4|4.5|5.4", numbersString);
 			var numberArray = numbersString.ToFloatArray("|");
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0.0F, 1.4F, 2.5F];
@@ -695,11 +695,11 @@ public class StringExtensionTest
 		}
 		numbersString = StringUtil.StringWithFloats(numbers, null);
 		{
-			Assert.IsTrue(numbersString == "01.42.53.44.55.4");
+			Assert.AreEqual("01.42.53.44.55.4", numbersString);
 		}
 		numbersString = StringUtil.StringWithFloats(numbers, ",", "F2");
 		{
-			Assert.IsTrue(numbersString == "0.00,1.40,2.50,3.40,4.50,5.40");
+			Assert.AreEqual("0.00,1.40,2.50,3.40,4.50,5.40", numbersString);
 			var numberArray = numbersString.ToFloatArray();
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0.0F, 1.4F, 2.5F];
@@ -714,7 +714,7 @@ public class StringExtensionTest
 		var numbers = new double[] { 0.0, 1.4, 2.5, 3.4, 4.5, 5.4 };
 		var numbersString = StringUtil.StringWithDoubles(numbers);
 		{
-			Assert.IsTrue(numbersString == "0,1.4,2.5,3.4,4.5,5.4");
+			Assert.AreEqual("0,1.4,2.5,3.4,4.5,5.4", numbersString);
 			var numberArray = numbersString.ToDoubleArray();
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0.0, 1.4, 2.5];
@@ -722,7 +722,7 @@ public class StringExtensionTest
 		}
 		numbersString = StringUtil.StringWithDoubles(numbers, "|");
 		{
-			Assert.IsTrue(numbersString == "0|1.4|2.5|3.4|4.5|5.4");
+			Assert.AreEqual("0|1.4|2.5|3.4|4.5|5.4", numbersString);
 			var numberArray = numbersString.ToDoubleArray("|");
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0.0, 1.4, 2.5];
@@ -730,11 +730,11 @@ public class StringExtensionTest
 		}
 		numbersString = StringUtil.StringWithDoubles(numbers, null);
 		{
-			Assert.IsTrue(numbersString == "01.42.53.44.55.4");
+			Assert.AreEqual("01.42.53.44.55.4", numbersString);
 		}
 		numbersString = StringUtil.StringWithDoubles(numbers, ",", "F2");
 		{
-			Assert.IsTrue(numbersString == "0.00,1.40,2.50,3.40,4.50,5.40");
+			Assert.AreEqual("0.00,1.40,2.50,3.40,4.50,5.40", numbersString);
 			var numberArray = numbersString.ToDoubleArray();
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0.0, 1.4, 2.5];
@@ -749,7 +749,7 @@ public class StringExtensionTest
 		var numbers = new decimal[] { 0.0M, 1.4M, 2.5M, 3.4M, 4.5M, 5.4M };
 		var numbersString = StringUtil.StringWithDicemals(numbers);
 		{
-			Assert.IsTrue(numbersString == "0.0,1.4,2.5,3.4,4.5,5.4");
+			Assert.AreEqual("0.0,1.4,2.5,3.4,4.5,5.4", numbersString);
 			var numberArray = numbersString.ToDecimalArray();
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0.0M, 1.4M, 2.5M];
@@ -757,7 +757,7 @@ public class StringExtensionTest
 		}
 		numbersString = StringUtil.StringWithDicemals(numbers, "|");
 		{
-			Assert.IsTrue(numbersString == "0.0|1.4|2.5|3.4|4.5|5.4");
+			Assert.AreEqual("0.0|1.4|2.5|3.4|4.5|5.4", numbersString);
 			var numberArray = numbersString.ToDecimalArray("|");
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0.0M, 1.4M, 2.5M];
@@ -765,11 +765,11 @@ public class StringExtensionTest
 		}
 		numbersString = StringUtil.StringWithDicemals(numbers, null);
 		{
-			Assert.IsTrue(numbersString == "0.01.42.53.44.55.4");
+			Assert.AreEqual("0.01.42.53.44.55.4", numbersString);
 		}
 		numbersString = StringUtil.StringWithDicemals(numbers, ",", "F2");
 		{
-			Assert.IsTrue(numbersString == "0.00,1.40,2.50,3.40,4.50,5.40");
+			Assert.AreEqual("0.00,1.40,2.50,3.40,4.50,5.40", numbersString);
 			var numberArray = numbersString.ToDecimalArray();
 			Assert.IsTrue(numbers.IsEquals(numberArray));
 			numberArray = [0.0M, 1.4M, 2.5M];
@@ -787,7 +787,7 @@ public class StringExtensionTest
 			System.Diagnostics.Trace.WriteLine("StringExtensionTest.ToRandomString():\r\n" + randomString);
 		}
 		// !!!
-		Assert.IsTrue(randomString.Length == randomStringLength);
+		Assert.AreEqual(randomStringLength, randomString.Length);
 		// !!!
 	}
 
@@ -804,13 +804,13 @@ public class StringExtensionTest
 		var testUri = "https://www.baoxiaruanjian.com";
 		var scheme = testUri.GetSchemeInUri();
 		{
-			Assert.IsTrue(scheme?.Equals("https") == true);
+			Assert.IsTrue(scheme!.Equals("https"));
 		}
 
 		testUri = "www.baoxiaruanjian.com:80";
 		scheme = testUri.GetSchemeInUri();
 		{
-			Assert.IsTrue(string.IsNullOrEmpty(scheme) == true);
+			Assert.IsTrue(string.IsNullOrEmpty(scheme));
 		}
 	}
 
@@ -820,18 +820,18 @@ public class StringExtensionTest
 		var testUri = "https://www.baoxiaruanjian.com";
 		var host = testUri.GetHostInUri(true);
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com"));
 		}
 
 		testUri = "https://www.baoxiaruanjian.com:80";
 		host = testUri.GetHostInUri(true);
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com:80") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com:80"));
 		}
 		testUri = "https://www.baoxiaruanjian.com:80";
 		host = testUri.GetHostInUri();
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com"));
 		}
 
 		////////////////////////////////////////////////
@@ -841,18 +841,18 @@ public class StringExtensionTest
 		testUri = "https://www.baoxiaruanjian.com?searchKey=Abc#pageAnchorPoint=bottom";
 		host = testUri.GetHostInUri(true);
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com"));
 		}
 
 		testUri = "https://www.baoxiaruanjian.com:80?searchKey=Abc#pageAnchorPoint=bottom";
 		host = testUri.GetHostInUri(true);
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com:80") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com:80"));
 		}
 		testUri = "https://www.baoxiaruanjian.com:80?searchKey=Abc#pageAnchorPoint=bottom";
 		host = testUri.GetHostInUri();
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com"));
 		}
 
 		////////////////////////////////////////////////
@@ -862,18 +862,18 @@ public class StringExtensionTest
 		testUri = "http://www.baoxiaruanjian.com?searchKey=Abc#pageAnchorPoint=bottom";
 		host = testUri.GetHostInUri(true);
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com"));
 		}
 
 		testUri = "http://www.baoxiaruanjian.com:80?searchKey=Abc#pageAnchorPoint=bottom";
 		host = testUri.GetHostInUri(true);
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com:80") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com:80"));
 		}
 		testUri = "http://www.baoxiaruanjian.com:80?searchKey=Abc#pageAnchorPoint=bottom";
 		host = testUri.GetHostInUri();
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com"));
 		}
 
 		////////////////////////////////////////////////
@@ -883,18 +883,18 @@ public class StringExtensionTest
 		testUri = "www.baoxiaruanjian.com?searchKey=Abc#pageAnchorPoint=bottom";
 		host = testUri.GetHostInUri(true);
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com"));
 		}
 
 		testUri = "www.baoxiaruanjian.com:80?searchKey=Abc#pageAnchorPoint=bottom";
 		host = testUri.GetHostInUri(true);
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com:80") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com:80"));
 		}
 		testUri = "www.baoxiaruanjian.com:80?searchKey=Abc#pageAnchorPoint=bottom";
 		host = testUri.GetHostInUri();
 		{
-			Assert.IsTrue(host?.Equals("www.baoxiaruanjian.com") == true);
+			Assert.IsTrue(host!.Equals("www.baoxiaruanjian.com"));
 		}
 	}
 
@@ -904,22 +904,22 @@ public class StringExtensionTest
 		var testUri = "https://www.baoxiaruanjian.com";
 		var path = testUri.GetPathInUri(true);
 		{
-			Assert.IsTrue(string.IsNullOrEmpty(path) == true);
+			Assert.IsTrue(string.IsNullOrEmpty(path));
 		}
 		testUri = "https://www.baoxiaruanjian.com/search?searchKey=Abc#pageAnchorPoint=bottom";
 		path = testUri.GetPathInUri(true);
 		{
-			Assert.IsTrue(path?.Equals("/search?searchKey=Abc#pageAnchorPoint=bottom") == true);
+			Assert.IsTrue(path!.Equals("/search?searchKey=Abc#pageAnchorPoint=bottom"));
 		}
 		testUri = "https://www.baoxiaruanjian.com/search/?searchKey=Abc#pageAnchorPoint=bottom";
 		path = testUri.GetPathInUri(true);
 		{
-			Assert.IsTrue(path?.Equals("/search/?searchKey=Abc#pageAnchorPoint=bottom") == true);
+			Assert.IsTrue(path!.Equals("/search/?searchKey=Abc#pageAnchorPoint=bottom"));
 		}
 		testUri = "https://www.baoxiaruanjian.com/search/news?searchKey=Abc#pageAnchorPoint=bottom";
 		path = testUri.GetPathInUri(true);
 		{
-			Assert.IsTrue(path?.Equals("/search/news?searchKey=Abc#pageAnchorPoint=bottom") == true);
+			Assert.IsTrue(path!.Equals("/search/news?searchKey=Abc#pageAnchorPoint=bottom"));
 		}
 
 		////////////////////////////////////////////////
@@ -929,22 +929,22 @@ public class StringExtensionTest
 		testUri = "www.baoxiaruanjian.com";
 		path = testUri.GetPathInUri(true);
 		{
-			Assert.IsTrue(string.IsNullOrEmpty(path) == true);
+			Assert.IsTrue(string.IsNullOrEmpty(path));
 		}
 		testUri = "www.baoxiaruanjian.com/search?searchKey=Abc#pageAnchorPoint=bottom";
 		path = testUri.GetPathInUri(true);
 		{
-			Assert.IsTrue(path?.Equals("/search?searchKey=Abc#pageAnchorPoint=bottom") == true);
+			Assert.IsTrue(path!.Equals("/search?searchKey=Abc#pageAnchorPoint=bottom"));
 		}
 		testUri = "www.baoxiaruanjian.com/search/?searchKey=Abc#pageAnchorPoint=bottom";
 		path = testUri.GetPathInUri(true);
 		{
-			Assert.IsTrue(path?.Equals("/search/?searchKey=Abc#pageAnchorPoint=bottom") == true);
+			Assert.IsTrue(path!.Equals("/search/?searchKey=Abc#pageAnchorPoint=bottom"));
 		}
 		testUri = "www.baoxiaruanjian.com/search/news?searchKey=Abc#pageAnchorPoint=bottom";
 		path = testUri.GetPathInUri(true);
 		{
-			Assert.IsTrue(path?.Equals("/search/news?searchKey=Abc#pageAnchorPoint=bottom") == true);
+			Assert.IsTrue(path!.Equals("/search/news?searchKey=Abc#pageAnchorPoint=bottom"));
 		}
 
 		////////////////////////////////////////////////
@@ -954,17 +954,17 @@ public class StringExtensionTest
 		testUri = "https://www.baoxiaruanjian.com/search?searchKey=Abc#pageAnchorPoint=bottom";
 		path = testUri.GetPathInUri();
 		{
-			Assert.IsTrue(path?.Equals("/search") == true);
+			Assert.IsTrue(path!.Equals("/search"));
 		}
 		testUri = "https://www.baoxiaruanjian.com/search/?searchKey=Abc#pageAnchorPoint=bottom";
 		path = testUri.GetPathInUri();
 		{
-			Assert.IsTrue(path?.Equals("/search/") == true);
+			Assert.IsTrue(path!.Equals("/search/"));
 		}
 		testUri = "https://www.baoxiaruanjian.com/search/news?searchKey=Abc#pageAnchorPoint=bottom";
 		path = testUri.GetPathInUri();
 		{
-			Assert.IsTrue(path?.Equals("/search/news") == true);
+			Assert.IsTrue(path!.Equals("/search/news"));
 		}
 	}
 
@@ -974,31 +974,31 @@ public class StringExtensionTest
 		var testUri = "https://www.baoxiaruanjian.com";
 		var fragment = testUri.GetQueryParamsInUri(true);
 		{
-			Assert.IsTrue(string.IsNullOrEmpty(fragment) == true);
+			Assert.IsTrue(string.IsNullOrEmpty(fragment));
 		}
 
 		testUri = "https://www.baoxiaruanjian.com?query=searchKey";
 		fragment = testUri.GetQueryParamsInUri(true);
 		{
-			Assert.IsTrue(fragment?.Equals("query=searchKey") == true);
+			Assert.IsTrue(fragment!.Equals("query=searchKey"));
 		}
 
 		testUri = "https://www.baoxiaruanjian.com?query=searchKey#anchor=news";
 		fragment = testUri.GetQueryParamsInUri(true);
 		{
-			Assert.IsTrue(fragment?.Equals("query=searchKey#anchor=news") == true);
+			Assert.IsTrue(fragment!.Equals("query=searchKey#anchor=news"));
 		}
 
 		testUri = "https://www.baoxiaruanjian.com?query=searchKey";
 		fragment = testUri.GetQueryParamsInUri();
 		{
-			Assert.IsTrue(fragment?.Equals("query=searchKey") == true);
+			Assert.IsTrue(fragment!.Equals("query=searchKey"));
 		}
 
 		testUri = "https://www.baoxiaruanjian.com?query=searchKey#anchor=news";
 		fragment = testUri.GetQueryParamsInUri();
 		{
-			Assert.IsTrue(fragment?.Equals("query=searchKey") == true);
+			Assert.IsTrue(fragment!.Equals("query=searchKey"));
 		}
 
 
@@ -1007,31 +1007,31 @@ public class StringExtensionTest
 		testUri = "www.baoxiaruanjian.com";
 		fragment = testUri.GetQueryParamsInUri(true);
 		{
-			Assert.IsTrue(string.IsNullOrEmpty(fragment) == true);
+			Assert.IsTrue(string.IsNullOrEmpty(fragment));
 		}
 
 		testUri = "www.baoxiaruanjian.com?query=searchKey";
 		fragment = testUri.GetQueryParamsInUri(true);
 		{
-			Assert.IsTrue(fragment?.Equals("query=searchKey") == true);
+			Assert.IsTrue(fragment!.Equals("query=searchKey"));
 		}
 
 		testUri = "www.baoxiaruanjian.com?query=searchKey#anchor=news";
 		fragment = testUri.GetQueryParamsInUri(true);
 		{
-			Assert.IsTrue(fragment?.Equals("query=searchKey#anchor=news") == true);
+			Assert.IsTrue(fragment!.Equals("query=searchKey#anchor=news"));
 		}
 
 		testUri = "www.baoxiaruanjian.com?query=searchKey";
 		fragment = testUri.GetQueryParamsInUri();
 		{
-			Assert.IsTrue(fragment?.Equals("query=searchKey") == true);
+			Assert.IsTrue(fragment!.Equals("query=searchKey"));
 		}
 
 		testUri = "www.baoxiaruanjian.com?query=searchKey#anchor=news";
 		fragment = testUri.GetQueryParamsInUri();
 		{
-			Assert.IsTrue(fragment?.Equals("query=searchKey") == true);
+			Assert.IsTrue(fragment!.Equals("query=searchKey"));
 		}
 	}
 
@@ -1042,19 +1042,19 @@ public class StringExtensionTest
 		var testUri = "https://www.baoxiaruanjian.com";
 		var fragment = testUri.GetFragmentInUri();
 		{
-			Assert.IsTrue(string.IsNullOrEmpty(fragment) == true);
+			Assert.IsTrue(string.IsNullOrEmpty(fragment));
 		}
 
 		testUri = "https://www.baoxiaruanjian.com#anchor=news";
 		fragment = testUri.GetFragmentInUri();
 		{
-			Assert.IsTrue(fragment?.Equals("anchor=news") == true);
+			Assert.IsTrue(fragment!.Equals("anchor=news"));
 		}
 
 		testUri = "https://www.baoxiaruanjian.com?query=searchKey#anchor=news";
 		fragment = testUri.GetFragmentInUri();
 		{
-			Assert.IsTrue(fragment?.Equals("anchor=news") == true);
+			Assert.IsTrue(fragment!.Equals("anchor=news"));
 		}
 
 		////////////////////////////////////////////////
@@ -1062,19 +1062,19 @@ public class StringExtensionTest
 		testUri = "www.baoxiaruanjian.com";
 		fragment = testUri.GetFragmentInUri();
 		{
-			Assert.IsTrue(string.IsNullOrEmpty(fragment) == true);
+			Assert.IsTrue(string.IsNullOrEmpty(fragment));
 		}
 
 		testUri = "www.baoxiaruanjian.com#anchor=news";
 		fragment = testUri.GetFragmentInUri();
 		{
-			Assert.IsTrue(fragment?.Equals("anchor=news") == true);
+			Assert.IsTrue(fragment!.Equals("anchor=news"));
 		}
 
 		testUri = "www.baoxiaruanjian.com?query=searchKey#anchor=news";
 		fragment = testUri.GetFragmentInUri();
 		{
-			Assert.IsTrue(fragment?.Equals("anchor=news") == true);
+			Assert.IsTrue(fragment!.Equals("anchor=news"));
 		}
 	}
 
@@ -1086,9 +1086,9 @@ public class StringExtensionTest
 		var testObjectAJson = testObjectA.ToJsonString();
 		Assert.IsTrue(testObjectAJson.TryToObjectByJsonDeserialize<ToObjectModel>(
 			out var testObjectB));
-		Assert.IsTrue(testObjectB != null);
+		Assert.IsNotNull(testObjectB);
 		Assert.IsTrue(testObjectB.Id.Equals(testObjectA.Id));
-		Assert.IsTrue(testObjectB.Name?.Equals(testObjectA.Name) == true);
+		Assert.IsTrue(testObjectB.Name!.Equals(testObjectA.Name));
 	}
 
 	[TestMethod]
@@ -1107,14 +1107,14 @@ public class StringExtensionTest
 			StringPartType.Center,
 			"*");
 		{
-			Assert.IsTrue(privacytextString.Equals("138******78"));
+			Assert.IsTrue(privacytextString.Equals("13******678"));
 		}
 		privacytextString = plaintextString.ToPrivacyString(
 			0,
 			StringPartType.Center,
 			"*");
 		{
-			Assert.IsTrue(privacytextString.Equals("13812345678"));
+			Assert.IsTrue(privacytextString.Equals("***********"));
 		}
 		privacytextString = plaintextString.ToPrivacyString(
 			11,
@@ -1146,25 +1146,25 @@ public class StringExtensionTest
 			Assert.IsTrue(privacytextString.Equals("138123MAskM"));
 		}
 
-		privacytextString = plaintextString.ToPrivacyStringForPhoneNumber();
+		privacytextString = plaintextString.ToPrivacyStringForPhoneNumber(null);
 		{
-			Assert.IsTrue(privacytextString.Equals("138*****678"));
+			Assert.IsTrue(privacytextString.Equals("138****5678"));
 		}
 
-		privacytextString = "baoxiaruanjian".ToPrivacyStringForAccount();
+		privacytextString = "baoxiaruanjian".ToPrivacyStringForAccount(null);
 		{
 			Assert.IsTrue(privacytextString.Equals("b************n"));
 		}
 
-		privacytextString = "bx".ToPrivacyStringForAccount();
+		privacytextString = "bx".ToPrivacyStringForAccount(null);
 		{
 			Assert.IsTrue(privacytextString.Equals("**"));
 		}
 
 
-		privacytextString = "130123456789012345".ToPrivacyStringForCNIdCardNumber();
+		privacytextString = "130123456789012345".ToPrivacyStringForCNIdCardNumber(null);
 		{
-			Assert.IsTrue(privacytextString.Equals("1301**********2345"));
+			Assert.IsTrue(privacytextString.Equals("130***********2345"));
 		}
 	}
 }

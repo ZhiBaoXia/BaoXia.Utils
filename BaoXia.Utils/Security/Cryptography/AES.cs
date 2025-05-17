@@ -55,7 +55,8 @@ public class AES
 			aes.BlockSize = 128;
 			aes.Mode = CipherMode.CBC;
 			aes.Padding = PaddingMode.PKCS7;
-		};
+		}
+		;
 		using var encryptor = aes.CreateEncryptor(
 			keyBytes,
 			ivBytes);
@@ -95,7 +96,8 @@ public class AES
 			aes.BlockSize = 128;
 			aes.Mode = CipherMode.CBC;
 			aes.Padding = PaddingMode.PKCS7;
-		};
+		}
+		;
 		using var decryptor = aes.CreateDecryptor(
 			keyBytes,
 			ivBytes);
@@ -130,7 +132,8 @@ public class AES
 			aes.Key = keyBytes;
 			aes.Mode = CipherMode.ECB;
 			aes.Padding = PaddingMode.PKCS7;
-		};
+		}
+		;
 		using var encryptor = aes.CreateEncryptor();
 		var ciphertextBytes = encryptor.TransformFinalBlock(
 			plaintextBytes,
@@ -163,7 +166,8 @@ public class AES
 			aes.Key = keyBytes;
 			aes.Mode = CipherMode.ECB;
 			aes.Padding = PaddingMode.PKCS7;
-		};
+		}
+		;
 		using var decryptor = aes.CreateDecryptor();
 		byte[] plaintextBytes = decryptor.TransformFinalBlock(
 			ciphertextBytes,

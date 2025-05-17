@@ -48,7 +48,7 @@ namespace BaoXia.Utils.Test.MathToolsTest
 					},
 					numberList)
 				?.Number;
-			Assert.IsTrue(maxOfNumberList == numbersMax);
+			Assert.AreEqual(numbersMax, maxOfNumberList);
 
 			numbersMax = 128;
 			maxOfNumberList
@@ -65,7 +65,7 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				new TestNumberObject<int>(32),
 				new TestNumberObject<int>(64),
 				new TestNumberObject<int>(128))?.Number;
-			Assert.IsTrue(maxOfNumberList == numbersMax);
+			Assert.AreEqual(numbersMax, maxOfNumberList);
 		}
 
 		[TestMethod]
@@ -86,11 +86,11 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				numberList.Add(number);
 			}
 			var maxOfNumberList = Max.OfList(numberList);
-			Assert.IsTrue(maxOfNumberList == numbersMax);
+			Assert.AreEqual(numbersMax, maxOfNumberList);
 
 			numbersMax = 128;
 			maxOfNumberList = Max.Of(32, 64, 128);
-			Assert.IsTrue(maxOfNumberList == numbersMax);
+			Assert.AreEqual(numbersMax, maxOfNumberList);
 		}
 
 		[TestMethod]
@@ -111,11 +111,11 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				numberList.Add(number);
 			}
 			var maxOfNumberList = Max.OfList(numberList);
-			Assert.IsTrue(maxOfNumberList == numbersMax);
+			Assert.AreEqual(numbersMax, maxOfNumberList);
 
 			numbersMax = 128.0F;
 			maxOfNumberList = Max.Of(32.0F, 64.0F, 128.0F);
-			Assert.IsTrue(maxOfNumberList == numbersMax);
+			Assert.AreEqual(numbersMax, maxOfNumberList);
 		}
 
 		[TestMethod]
@@ -136,11 +136,11 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				numberList.Add(number);
 			}
 			var maxOfNumberList = Max.OfList(numberList);
-			Assert.IsTrue(maxOfNumberList == numbersMax);
+			Assert.AreEqual(numbersMax, maxOfNumberList);
 
 			numbersMax = 128.0;
 			maxOfNumberList = Max.Of(32.0, 64.0, 128.0);
-			Assert.IsTrue(maxOfNumberList == numbersMax);
+			Assert.AreEqual(numbersMax, maxOfNumberList);
 		}
 	}
 }

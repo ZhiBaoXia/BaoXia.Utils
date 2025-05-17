@@ -42,7 +42,7 @@ namespace BaoXia.Utils.Test
 				StringFunctionDefines,
 				this.DidInvokeFunction);
 			// !!!!
-			Assert.IsTrue(functionResultString?.Length == randomValueStringLength);
+			Assert.AreEqual(randomValueStringLength, functionResultString?.Length);
 			Assert.IsTrue(functionResultString?.EndsWith(randomValue.ToString()));
 			// !!!
 
@@ -55,7 +55,7 @@ namespace BaoXia.Utils.Test
 				 StringFunctionDefines,
 				 this.DidInvokeFunction);
 			// !!!!
-			Assert.IsTrue(functionResultString?.Length == randomValueStringLength);
+			Assert.AreEqual(randomValueStringLength, functionResultString?.Length);
 			Assert.IsTrue(functionResultString?.EndsWith(randomValue.ToString()));
 			// !!!
 		}

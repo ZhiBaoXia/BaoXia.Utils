@@ -33,7 +33,7 @@ public class ItemsCacheTester<ItemIdType>(
 			// !!!
 			var item = createItemTask.Result;
 			{
-				Assert.IsTrue(item != null);
+				Assert.IsNotNull(item);
 			}
 			return item;
 		},
@@ -104,8 +104,8 @@ public class ItemsCacheTester<ItemIdType>(
 				var item = _itemsCache.Get(itemId, null);
 				{
 					// !!!
-					Assert.IsTrue(item != null);
-					Assert.IsTrue(item?.Id?.Equals(itemId) == true);
+					Assert.IsNotNull(item);
+					Assert.IsTrue(item?.Id?.Equals(itemId));
 					// !!!
 				}
 				////////////////////////////////////////////////
@@ -295,13 +295,13 @@ public class ItemsCacheTester<ItemIdType>(
 				{
 					// !!!
 					//Assert.IsTrue(isItemIdExisted == true);
-					Assert.IsTrue(item != null);
-					Assert.IsTrue(item?.Id?.Equals(itemId) == true);
+					Assert.IsNotNull(item);
+					Assert.IsTrue(item?.Id?.Equals(itemId));
 					// !!!
 				}
 				else
 				{
-					Assert.IsTrue(isItemIdExisted == false);
+					Assert.IsFalse(isItemIdExisted);
 				}
 				////////////////////////////////////////////////
 				testRecorder.EndTest();
@@ -373,7 +373,7 @@ public class ItemsCacheTester<ItemIdType>(
 				foreach (var itemId in itemIdsCreatedAsync)
 				{
 					Assert.IsTrue(_itemsCache.TryGet(itemId, out var item));
-					Assert.IsTrue(item?.Id?.Equals(itemId) == true);
+					Assert.IsTrue(item?.Id?.Equals(itemId));
 				}
 			}
 		}

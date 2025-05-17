@@ -236,7 +236,8 @@ namespace BaoXia.Utils.Notification
 				{
 					tasks.Add(taskToSendNotifiation);
 				}
-			};
+			}
+			;
 			if (tasks.Count > 0)
 			{
 				await Task.WhenAll(tasks);

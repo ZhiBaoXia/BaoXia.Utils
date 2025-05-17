@@ -45,13 +45,13 @@ namespace BaoXia.Utils.Test
 				destinationBytesBuffer.BytesCount += bytesCountCopied;
 			}
 
-			Assert.IsTrue(sourceBytesBuffer.Length == destinationBytesBuffer.BytesCount);
+			Assert.AreEqual(destinationBytesBuffer.BytesCount, sourceBytesBuffer.Length);
 			for (int i = 0; i < sourceBytesBuffer.Length; i++)
 			{
 				var sourceByte = sourceBytesBuffer[i];
 				var destinationByte = destinationBytesBuffer[i];
 				// !!!
-				Assert.IsTrue(sourceByte == destinationByte);
+				Assert.AreEqual(destinationByte, sourceByte);
 				// !!!
 			}
 		}

@@ -53,15 +53,15 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			var jsonElement = jsonDocument.RootElement;
 
 			var boolValue = jsonElement.TryGetBoolProperty("boolValue");
-			Assert.IsTrue(boolValue == true);
+			Assert.IsTrue(boolValue);
 			var intValue = jsonElement.TryGetIntProperty("intValue");
-			Assert.IsTrue(intValue == 1);
+			Assert.AreEqual(1, intValue);
 			var floatValue = jsonElement.TryGetFloatProperty("floatValue");
-			Assert.IsTrue(floatValue == 2.0F);
+			Assert.AreEqual(2.0F, floatValue);
 			var doubleValue = jsonElement.TryGetDoubleProperty("doubleValue");
-			Assert.IsTrue(doubleValue == 3.0);
+			Assert.AreEqual(3.0, doubleValue);
 			var stringValue = jsonElement.TryGetStringProperty("stringValue");
-			Assert.IsTrue(stringValue == "4.0");
+			Assert.AreEqual("4.0", stringValue);
 			var objectValue = jsonElement.TryGetObjectProperty<ObjectValue>(
 				"objectValue",
 				null,
@@ -74,7 +74,7 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			{
 				PropertyName = "属性名称",
 				PropertyValue = "属性值"
-			}) == true);
+			}));
 		}
 
 		[TestMethod]
@@ -91,15 +91,15 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			var jsonElement = jsonDocument.RootElement;
 
 			var boolValue = jsonElement.TryGetBoolProperty("boolValue");
-			Assert.IsTrue(boolValue == true);
+			Assert.IsTrue(boolValue);
 			var intValue = jsonElement.TryGetIntProperty("intValue");
-			Assert.IsTrue(intValue == 1);
+			Assert.AreEqual(1, intValue);
 			var floatValue = jsonElement.TryGetFloatProperty("floatValue");
-			Assert.IsTrue(floatValue == 2.0F);
+			Assert.AreEqual(2.0F, floatValue);
 			var doubleValue = jsonElement.TryGetDoubleProperty("doubleValue");
-			Assert.IsTrue(doubleValue == 3.0);
+			Assert.AreEqual(3.0, doubleValue);
 			var stringValue = jsonElement.TryGetStringProperty("stringValue");
-			Assert.IsTrue(stringValue == "4.0");
+			Assert.AreEqual("4.0", stringValue);
 			var objectValue = jsonElement.TryGetObjectProperty<ObjectValue>(
 				"objectValue",
 				null,
@@ -112,7 +112,7 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			{
 				PropertyName = "属性名称",
 				PropertyValue = "属性值"
-			}) == true);
+			}));
 		}
 
 		[TestMethod]
@@ -129,15 +129,15 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			var jsonElement = jsonDocument.RootElement;
 
 			var boolValue = jsonElement.TryGetBoolProperty("boolValue", true);
-			Assert.IsTrue(boolValue == true);
+			Assert.IsTrue(boolValue);
 			var intValue = jsonElement.TryGetIntProperty("intValue", 1);
-			Assert.IsTrue(intValue == 1);
+			Assert.AreEqual(1, intValue);
 			var floatValue = jsonElement.TryGetFloatProperty("floatValue", 2.0F);
-			Assert.IsTrue(floatValue == 2.0F);
+			Assert.AreEqual(2.0F, floatValue);
 			var doubleValue = jsonElement.TryGetDoubleProperty("doubleValue", 3.0);
-			Assert.IsTrue(doubleValue == 3.0);
+			Assert.AreEqual(3.0, doubleValue);
 			var stringValue = jsonElement.TryGetStringProperty("stringValue", "4.0");
-			Assert.IsTrue(stringValue == "4.0");
+			Assert.AreEqual("4.0", stringValue);
 			var objectValue = jsonElement.TryGetObjectProperty<ObjectValue>(
 				"objectValue",
 				new ObjectValue()
@@ -154,7 +154,7 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			{
 				PropertyName = "属性名称",
 				PropertyValue = "属性值"
-			}) == true);
+			}));
 		}
 
 		[TestMethod]

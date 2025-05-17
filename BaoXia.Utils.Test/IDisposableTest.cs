@@ -49,8 +49,8 @@ namespace BaoXia.Utils.Test
 				Thread.Sleep(1);
 			}
 
-			Assert.IsTrue(_isObjectWithoutDestructorCalled_Destructor == true);
-			Assert.IsTrue(_isObjectWithoutDestructorCalled_Dispose == true);
+			Assert.IsTrue(_isObjectWithoutDestructorCalled_Destructor);
+			Assert.IsTrue(_isObjectWithoutDestructorCalled_Dispose);
 		}
 	}
 }

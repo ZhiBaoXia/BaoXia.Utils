@@ -20,15 +20,15 @@ public class EnumerableUtilTest
 		};
 
 		// !!!
-		Assert.IsTrue(EnumerableUtil.IsEmpty(testItems) == false);
-		Assert.IsTrue(EnumerableUtil.IsNotEmpty(testItems) == true);
+		Assert.IsFalse(EnumerableUtil.IsEmpty(testItems));
+		Assert.IsTrue(EnumerableUtil.IsNotEmpty(testItems));
 		// !!! 
 
 		testItems.Clear();
 
 		// !!!
-		Assert.IsTrue(EnumerableUtil.IsEmpty(testItems) == true);
-		Assert.IsTrue(EnumerableUtil.IsNotEmpty(testItems) == false);
+		Assert.IsTrue(EnumerableUtil.IsEmpty(testItems));
+		Assert.IsFalse(EnumerableUtil.IsNotEmpty(testItems));
 		// !!! 
 	}
 }

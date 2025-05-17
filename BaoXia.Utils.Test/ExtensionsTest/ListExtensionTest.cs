@@ -115,42 +115,42 @@ public class ListExtensionTest
 
 		// !!!
 		List<int> testList = [.. TestItems];
-		Assert.IsTrue(testList.RemoveFrom(-1, 1) == 2);
+		Assert.AreEqual(2, testList.RemoveFrom(-1, 1));
 		// !!!
 
 		// !!!
 		testList = [.. TestItems];
-		Assert.IsTrue(testList.RemoveFrom(-1) == 5);
+		Assert.AreEqual(5, testList.RemoveFrom(-1));
 		// !!!
 
 		// !!!
 		testList = [.. TestItems];
-		Assert.IsTrue(testList.RemoveFrom(0, 1) == 2);
+		Assert.AreEqual(2, testList.RemoveFrom(0, 1));
 		// !!!
 
 		// !!!
 		testList = [.. TestItems];
-		Assert.IsTrue(testList.RemoveFrom(1) == 4);
+		Assert.AreEqual(4, testList.RemoveFrom(1));
 		// !!!
 
 		// !!!
 		testList = [.. TestItems];
-		Assert.IsTrue(testList.RemoveFrom(3, 5) == 2);
+		Assert.AreEqual(2, testList.RemoveFrom(3, 5));
 		// !!!
 
 		// !!!
 		testList = [.. TestItems];
-		Assert.IsTrue(testList.RemoveFrom(3) == 2);
+		Assert.AreEqual(2, testList.RemoveFrom(3));
 		// !!!
 
 		// !!!
 		testList = [.. TestItems];
-		Assert.IsTrue(testList.RemoveFrom(4) == 1);
+		Assert.AreEqual(1, testList.RemoveFrom(4));
 		// !!!
 
 		// !!!
 		testList = [.. TestItems];
-		Assert.IsTrue(testList.RemoveFrom(5) == 0);
+		Assert.AreEqual(0, testList.RemoveFrom(5));
 		// !!!
 	}
 
@@ -183,7 +183,7 @@ public class ListExtensionTest
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
-			Assert.IsTrue(itemIndexFound == i);
+			Assert.AreEqual(i, itemIndexFound);
 		}
 
 		var testSearchRangeBeginIndex
@@ -203,7 +203,7 @@ public class ListExtensionTest
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
-			Assert.IsTrue(itemIndexFound == i);
+			Assert.AreEqual(i, itemIndexFound);
 		}
 
 
@@ -216,7 +216,7 @@ public class ListExtensionTest
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
-			Assert.IsTrue(itemFound?.Index == objectTestItem.Index);
+			Assert.AreEqual(objectTestItem.Index, itemFound?.Index);
 		}
 
 		testSearchRangeBeginIndex
@@ -236,7 +236,7 @@ public class ListExtensionTest
 				{
 					return testItem.Index.CompareTo(objectTestItem.Index);
 				});
-			Assert.IsTrue(itemFound?.Index == objectTestItem.Index);
+			Assert.AreEqual(objectTestItem.Index, itemFound?.Index);
 		}
 	}
 
@@ -283,14 +283,14 @@ public class ListExtensionTest
 
 			if ((objectTestItemIndex % 2) == 0)
 			{
-				Assert.IsTrue(itemIndexNearestAtLeft == (objectTestItemIndex / 2) - 1);
+				Assert.AreEqual((objectTestItemIndex / 2) - 1, itemIndexNearestAtLeft);
 				if (itemIndexNearestAtLeft >= 0)
 				{
-					Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 2);
+					Assert.AreEqual(objectTestItemIndex - 2, itemNearestAtLeft);
 				}
 				else if (itemIndexNearestAtLeft == -1)
 				{
-					Assert.IsTrue(itemNearestAtLeft == firsttTestItemEven);
+					Assert.AreEqual(firsttTestItemEven, itemNearestAtLeft);
 				}
 				else
 				{
@@ -299,8 +299,8 @@ public class ListExtensionTest
 			}
 			else
 			{
-				Assert.IsTrue(itemIndexNearestAtLeft == (objectTestItemIndex / 2));
-				Assert.IsTrue(itemNearestAtLeft == objectTestItemIndex - 1);
+				Assert.AreEqual(objectTestItemIndex / 2, itemIndexNearestAtLeft);
+				Assert.AreEqual(objectTestItemIndex - 1, itemNearestAtLeft);
 			}
 		}
 
@@ -330,14 +330,14 @@ public class ListExtensionTest
 				out var itemNearestAtRight);
 			if ((objectTestItemIndex % 2) == 0)
 			{
-				Assert.IsTrue(itemIndexNearestAtRight == (objectTestItemIndex / 2) + 1);
+				Assert.AreEqual((objectTestItemIndex / 2) + 1, itemIndexNearestAtRight);
 				if (itemIndexNearestAtRight < items.Count)
 				{
-					Assert.IsTrue(itemNearestAtRight == objectTestItemIndex + 2);
+					Assert.AreEqual(objectTestItemIndex + 2, itemNearestAtRight);
 				}
 				else if (itemIndexNearestAtRight == items.Count)
 				{
-					Assert.IsTrue(objectTestItemIndex == lastTestItemEven);
+					Assert.AreEqual(lastTestItemEven, objectTestItemIndex);
 				}
 				else
 				{
@@ -346,14 +346,14 @@ public class ListExtensionTest
 			}
 			else
 			{
-				Assert.IsTrue(itemIndexNearestAtRight == (objectTestItemIndex / 2) + 1);
+				Assert.AreEqual((objectTestItemIndex / 2) + 1, itemIndexNearestAtRight);
 				if (itemIndexNearestAtRight < items.Count)
 				{
-					Assert.IsTrue(itemNearestAtRight == objectTestItemIndex + 1);
+					Assert.AreEqual(objectTestItemIndex + 1, itemNearestAtRight);
 				}
 				else if (itemIndexNearestAtRight == items.Count)
 				{
-					Assert.IsTrue(objectTestItemIndex == lastTestItemOdd);
+					Assert.AreEqual(lastTestItemOdd, objectTestItemIndex);
 				}
 				else
 				{

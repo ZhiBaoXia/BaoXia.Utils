@@ -99,14 +99,14 @@ public class ListsCacheAsyncTester<ListIdType>(
 				testRecorder.EndTest();
 				testRecorders_Query.AddRecorder(testRecorder);
 				// !!!
-				Assert.IsTrue(listItems != null);
+				Assert.IsNotNull(listItems);
 				// !!!
 				if (listItems?.Length > 0)
 				{
 					foreach (var listItem in listItems)
 					{
 						// !!!
-						Assert.IsTrue(listItem.ListId?.Equals(listId) == true);
+						Assert.IsTrue(listItem.ListId?.Equals(listId));
 						// !!!
 					}
 				}

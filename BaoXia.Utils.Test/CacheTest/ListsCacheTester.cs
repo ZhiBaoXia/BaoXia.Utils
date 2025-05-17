@@ -52,7 +52,7 @@ namespace BaoXia.Utils.Test.CacheTest
 				// !!!
 				var list = createListTask.Result;
 				{
-					Assert.IsTrue(list != null);
+					Assert.IsNotNull(list);
 				}
 				return list;
 			},
@@ -137,14 +137,14 @@ namespace BaoXia.Utils.Test.CacheTest
 				    testRecorder.EndTest();
 				    testRecorders_Query.AddRecorder(testRecorder);
 				    // !!!
-				    Assert.IsTrue(listItems != null);
+				    Assert.IsNotNull(listItems);
 				    // !!!
 				    if (listItems?.Length > 0)
 				    {
 					    foreach (var listItem in listItems)
 					    {
 						    // !!!
-						    Assert.IsTrue(listItem.ListId?.Equals(listId) == true);
+						    Assert.IsTrue(listItem.ListId?.Equals(listId));
 						    // !!!
 					    }
 				    }

@@ -797,7 +797,7 @@ public static class StringExtension
 			optionalSeparatorChars);
 	}
 
-	public static string ToStringEndWithoutFullStop(
+	public static string ToStringEndWithoutFullstop(
 	    this string originString)
 	{
 		return originString.TrimEnd(

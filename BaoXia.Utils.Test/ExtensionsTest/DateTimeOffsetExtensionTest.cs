@@ -22,17 +22,17 @@ public class DateTimeOffsetExtensionTest
 		var dateTimeOffsetInEast8 = dateTimeOffsetStandard.ToDateTimeOffsetBySetTimeZoneNumber(
 			TimeZoneNumber.East8);
 		{
-			Assert.IsTrue(
-				(dateTimeOffsetInEast8 - dateTimeOffsetStandard).TotalHours
-				== -8.0);
+			Assert.AreEqual(
+-8.0, (dateTimeOffsetInEast8 - dateTimeOffsetStandard).TotalHours
+);
 		}
 
 		var dateTimeOffsetInWest8 = dateTimeOffsetStandard.ToDateTimeOffsetBySetTimeZoneNumber(
 			TimeZoneNumber.West8);
 		{
-			Assert.IsTrue(
-				(dateTimeOffsetInWest8 - dateTimeOffsetStandard).TotalHours
-				== 8.0);
+			Assert.AreEqual(
+8.0, (dateTimeOffsetInWest8 - dateTimeOffsetStandard).TotalHours
+);
 		}
 	}
 
@@ -41,7 +41,7 @@ public class DateTimeOffsetExtensionTest
 	{
 		var dateTimeDefaultWithOffsetZero = new DateTimeOffset();
 		{
-			Assert.IsTrue(dateTimeDefaultWithOffsetZero.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
+			Assert.AreEqual(0, dateTimeDefaultWithOffsetZero.MillisecondsFrom1970(TimeZoneNumber.Utc0, true));
 		}
 		var dateTimeDefaultAtLocal_MillisecondsFrom1970
 			= dateTimeDefaultWithOffsetZero.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
@@ -49,18 +49,18 @@ public class DateTimeOffsetExtensionTest
 			= DateTimeOffsetUtil.DateTimeOffsetWithMillisecondsAfter1970(
 				dateTimeDefaultAtLocal_MillisecondsFrom1970);
 		{
-			Assert.IsTrue(dateTimeFromMillisecondsFrom1970 == dateTimeDefaultWithOffsetZero);
+			Assert.AreEqual(dateTimeDefaultWithOffsetZero, dateTimeFromMillisecondsFrom1970);
 		}
 
 
 		var dateTimeDefaultAtEast8 = new DateTimeOffset(TimeSpan.TicksPerHour * 8, new(8, 0, 0));
 		{
-			Assert.IsTrue(dateTimeDefaultAtEast8.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
+			Assert.AreEqual(0, dateTimeDefaultAtEast8.MillisecondsFrom1970(TimeZoneNumber.Utc0, true));
 		}
 		var dateTimeDefaultAtEast8_MillisecondsFrom1970 = dateTimeDefaultAtEast8.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
 		var dateTimeAtLocalFromMillisecondsFrom1970 = DateTimeOffsetUtil.DateTimeOffsetWithMillisecondsAfter1970(dateTimeDefaultAtEast8_MillisecondsFrom1970);
 		{
-			Assert.IsTrue(dateTimeAtLocalFromMillisecondsFrom1970 == dateTimeDefaultAtEast8);
+			Assert.AreEqual(dateTimeDefaultAtEast8, dateTimeAtLocalFromMillisecondsFrom1970);
 		}
 
 
@@ -71,25 +71,24 @@ public class DateTimeOffsetExtensionTest
 		var dateTimeOffsetA = new DateTimeOffset(2024, 7, 10, 12, 0, 0, new TimeSpan(0, 0, 0));
 		var dateTimeOffsetB = new DateTimeOffset(2024, 7, 10, 12, 0, 0, new TimeSpan(8, 0, 0));
 		{
-			Assert.IsTrue(dateTimeOffsetA.Ticks == dateTimeOffsetB.Ticks);
+			Assert.AreEqual(dateTimeOffsetB.Ticks, dateTimeOffsetA.Ticks);
 		}
 
 
 		var now = new DateTimeOffset(2024, 7, 10, 12, 0, 0, new TimeSpan((int)TimeZoneNumber.East8, 0, 0));
 		var millisecondsFrom1970InUtc0 = now.MillisecondsFrom1970(TimeZoneNumber.Utc0, true);
 		{
-			Assert.IsTrue(millisecondsFrom1970InUtc0 == 1720584000000);
+			Assert.AreEqual(1720584000000, millisecondsFrom1970InUtc0);
 		}
 		var millisecondsFrom1970InEast8 = now.MillisecondsFrom1970(TimeZoneNumber.East8, true);
 		{
-			Assert.IsTrue((millisecondsFrom1970InEast8 - millisecondsFrom1970InUtc0)
-				== (1000 * 3600 * (int)TimeZoneNumber.East8));
+			Assert.AreEqual(1000 * 3600 * (int)TimeZoneNumber.East8, millisecondsFrom1970InEast8 - millisecondsFrom1970InUtc0);
 		}
 		var now2 = DateTimeOffsetUtil.DateTimeOffsetWithMillisecondsAfter1970(
 			millisecondsFrom1970InEast8,
 			TimeZoneNumber.East8);
 		{
-			Assert.IsTrue(now2 == now);
+			Assert.AreEqual(now, now2);
 		}
 	}
 
@@ -106,9 +105,9 @@ public class DateTimeOffsetExtensionTest
 		var utc1970_0_0_0_0_0
 			= new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 		// !!!
-		Assert.IsTrue(
-			(testTimeInLocal - utc1970_0_0_0_0_0).TotalHours
-			== testHoursCount);
+		Assert.AreEqual(
+testHoursCount, (testTimeInLocal - utc1970_0_0_0_0_0).TotalHours
+);
 		// !!!
 	}
 
@@ -123,13 +122,13 @@ public class DateTimeOffsetExtensionTest
 			= dateTimeOffsetFromStringInRFC3339.ToStringInRFC3339();
 		{
 			Assert.IsTrue(dateTimeStringInRFC3339.Equals(dateTimeStringInRFC3339FromDateTimeOffset));
-			Assert.IsTrue(dateTimeOffsetFromStringInRFC3339.Year == 2021);
-			Assert.IsTrue(dateTimeOffsetFromStringInRFC3339.Month == 9);
-			Assert.IsTrue(dateTimeOffsetFromStringInRFC3339.Day == 1);
-			Assert.IsTrue(dateTimeOffsetFromStringInRFC3339.Hour == 1);
-			Assert.IsTrue(dateTimeOffsetFromStringInRFC3339.Minute == 2);
-			Assert.IsTrue(dateTimeOffsetFromStringInRFC3339.Second == 3);
-			Assert.IsTrue(dateTimeOffsetFromStringInRFC3339.Offset.TotalHours == 4);
+			Assert.AreEqual(2021, dateTimeOffsetFromStringInRFC3339.Year);
+			Assert.AreEqual(9, dateTimeOffsetFromStringInRFC3339.Month);
+			Assert.AreEqual(1, dateTimeOffsetFromStringInRFC3339.Day);
+			Assert.AreEqual(1, dateTimeOffsetFromStringInRFC3339.Hour);
+			Assert.AreEqual(2, dateTimeOffsetFromStringInRFC3339.Minute);
+			Assert.AreEqual(3, dateTimeOffsetFromStringInRFC3339.Second);
+			Assert.AreEqual(4, dateTimeOffsetFromStringInRFC3339.Offset.TotalHours);
 		}
 	}
 

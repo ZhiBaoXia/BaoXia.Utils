@@ -6,7 +6,7 @@ namespace BaoXia.Utils.Test.Collections
 	[TestClass]
 	public class LinkedItemsTest
 	{
-		public static int _itemId = 0;
+		static int _itemId = 0;
 
 		public class Item : LinkedItem<Item>
 		{
@@ -19,12 +19,12 @@ namespace BaoXia.Utils.Test.Collections
 		}
 
 
-		public static LinkedItems<Item> _testLinkedItems = new()
-		{
+		static readonly LinkedItems<Item> _testLinkedItems =
+		[
 			new Item(),
 			new Item(),
 			new Item(),
-		};
+		];
 
 		[TestMethod]
 		public void AddTest()
@@ -38,11 +38,10 @@ namespace BaoXia.Utils.Test.Collections
 				var itemNeedAdded = new Item();
 				var itemAdded = _testLinkedItems.Add(itemNeedAdded);
 				{
-					Assert.IsTrue(itemNeedAdded == itemAdded);
+					Assert.AreEqual(itemAdded, itemNeedAdded);
 				}
 			}
-			Assert.IsTrue((lastTestLinkedItemsCount + testAddCount)
-				== _testLinkedItems.Count);
+			Assert.AreEqual(_testLinkedItems.Count, lastTestLinkedItemsCount + testAddCount);
 		}
 
 		[TestMethod]
@@ -50,9 +49,9 @@ namespace BaoXia.Utils.Test.Collections
 		{
 			_testLinkedItems.Clear();
 			{
-				Assert.IsTrue(_testLinkedItems.Count == 0);
-				Assert.IsTrue(_testLinkedItems.First == null);
-				Assert.IsTrue(_testLinkedItems.Last == null);
+				Assert.AreEqual(0, _testLinkedItems.Count);
+				Assert.IsNull(_testLinkedItems.First);
+				Assert.IsNull(_testLinkedItems.Last);
 			}
 
 			var lastTestLinkedItemsCount = _testLinkedItems.Count;
@@ -63,11 +62,11 @@ namespace BaoXia.Utils.Test.Collections
 				var itemNeedInserted = new Item();
 				var itemInserted = _testLinkedItems.InsertBefore(nextItem, itemNeedInserted);
 				{
-					Assert.IsTrue(itemInserted == itemNeedInserted);
-					Assert.IsTrue(itemInserted.Prev == prevItem);
-					Assert.IsTrue(itemInserted.Next == nextItem);
-					Assert.IsTrue(_testLinkedItems.First == itemInserted);
-					Assert.IsTrue(_testLinkedItems.Last == itemInserted);
+					Assert.AreEqual(itemNeedInserted, itemInserted);
+					Assert.AreEqual(prevItem, itemInserted.Prev);
+					Assert.AreEqual(nextItem, itemInserted.Next);
+					Assert.AreEqual(itemInserted, _testLinkedItems.First);
+					Assert.AreEqual(itemInserted, _testLinkedItems.Last);
 				}
 				testInsertCount++;
 
@@ -76,11 +75,11 @@ namespace BaoXia.Utils.Test.Collections
 				itemNeedInserted = new Item();
 				itemInserted = _testLinkedItems.InsertBefore(nextItem, itemNeedInserted);
 				{
-					Assert.IsTrue(itemInserted == itemNeedInserted);
-					Assert.IsTrue(itemInserted.Prev == prevItem);
-					Assert.IsTrue(itemInserted.Next == nextItem);
-					Assert.IsTrue(prevItem.Next == itemInserted);
-					Assert.IsTrue(_testLinkedItems.Last == itemInserted);
+					Assert.AreEqual(itemNeedInserted, itemInserted);
+					Assert.AreEqual(prevItem, itemInserted.Prev);
+					Assert.AreEqual(nextItem, itemInserted.Next);
+					Assert.AreEqual(itemInserted, prevItem!.Next);
+					Assert.AreEqual(itemInserted, _testLinkedItems.Last);
 				}
 				testInsertCount++;
 
@@ -89,10 +88,10 @@ namespace BaoXia.Utils.Test.Collections
 				itemNeedInserted = new Item();
 				itemInserted = _testLinkedItems.InsertBefore(nextItem, itemNeedInserted);
 				{
-					Assert.IsTrue(itemInserted == itemNeedInserted);
-					Assert.IsTrue(itemInserted.Prev == prevItem);
-					Assert.IsTrue(itemInserted.Next == nextItem);
-					Assert.IsTrue(nextItem.Prev == itemInserted);
+					Assert.AreEqual(itemNeedInserted, itemInserted);
+					Assert.AreEqual(prevItem, itemInserted.Prev);
+					Assert.AreEqual(nextItem, itemInserted.Next);
+					Assert.AreEqual(itemInserted, nextItem.Prev);
 				}
 				testInsertCount++;
 
@@ -101,16 +100,15 @@ namespace BaoXia.Utils.Test.Collections
 				itemNeedInserted = new Item();
 				itemInserted = _testLinkedItems.InsertBefore(nextItem, itemNeedInserted);
 				{
-					Assert.IsTrue(itemInserted == itemNeedInserted);
-					Assert.IsTrue(itemInserted.Prev == prevItem);
-					Assert.IsTrue(itemInserted.Next == nextItem);
-					Assert.IsTrue(nextItem.Prev == itemInserted);
-					Assert.IsTrue(_testLinkedItems.First == itemInserted);
+					Assert.AreEqual(itemNeedInserted, itemInserted);
+					Assert.AreEqual(prevItem, itemInserted.Prev);
+					Assert.AreEqual(nextItem, itemInserted.Next);
+					Assert.AreEqual(itemInserted, nextItem!.Prev);
+					Assert.AreEqual(itemInserted, _testLinkedItems.First);
 				}
 				testInsertCount++;
 			}
-			Assert.IsTrue((lastTestLinkedItemsCount + testInsertCount)
-				== _testLinkedItems.Count);
+			Assert.AreEqual(_testLinkedItems.Count, lastTestLinkedItemsCount + testInsertCount);
 		}
 
 		[TestMethod]
@@ -118,9 +116,9 @@ namespace BaoXia.Utils.Test.Collections
 		{
 			_testLinkedItems.Clear();
 			{
-				Assert.IsTrue(_testLinkedItems.Count == 0);
-				Assert.IsTrue(_testLinkedItems.First == null);
-				Assert.IsTrue(_testLinkedItems.Last == null);
+				Assert.AreEqual(0, _testLinkedItems.Count);
+				Assert.IsNull(_testLinkedItems.First);
+				Assert.IsNull(_testLinkedItems.Last);
 			}
 
 			var lastTestLinkedItemsCount = _testLinkedItems.Count;
@@ -131,11 +129,11 @@ namespace BaoXia.Utils.Test.Collections
 				var itemNeedInserted = new Item();
 				var itemInserted = _testLinkedItems.InsertAfter(prevItem, itemNeedInserted);
 				{
-					Assert.IsTrue(itemInserted == itemNeedInserted);
-					Assert.IsTrue(itemInserted.Prev == prevItem);
-					Assert.IsTrue(itemInserted.Next == nextItem);
-					Assert.IsTrue(_testLinkedItems.First == itemInserted);
-					Assert.IsTrue(_testLinkedItems.Last == itemInserted);
+					Assert.AreEqual(itemNeedInserted, itemInserted);
+					Assert.AreEqual(prevItem, itemInserted.Prev);
+					Assert.AreEqual(nextItem, itemInserted.Next);
+					Assert.AreEqual(itemInserted, _testLinkedItems.First);
+					Assert.AreEqual(itemInserted, _testLinkedItems.Last);
 				}
 				testInsertCount++;
 
@@ -144,11 +142,11 @@ namespace BaoXia.Utils.Test.Collections
 				itemNeedInserted = new Item();
 				itemInserted = _testLinkedItems.InsertAfter(prevItem, itemNeedInserted);
 				{
-					Assert.IsTrue(itemInserted == itemNeedInserted);
-					Assert.IsTrue(itemInserted.Prev == prevItem);
-					Assert.IsTrue(itemInserted.Next == nextItem);
-					Assert.IsTrue(prevItem.Next == itemInserted);
-					Assert.IsTrue(_testLinkedItems.Last == itemInserted);
+					Assert.AreEqual(itemNeedInserted, itemInserted);
+					Assert.AreEqual(prevItem, itemInserted.Prev);
+					Assert.AreEqual(nextItem, itemInserted.Next);
+					Assert.AreEqual(itemInserted, prevItem!.Next);
+					Assert.AreEqual(itemInserted, _testLinkedItems.Last);
 				}
 				testInsertCount++;
 
@@ -157,10 +155,10 @@ namespace BaoXia.Utils.Test.Collections
 				itemNeedInserted = new Item();
 				itemInserted = _testLinkedItems.InsertAfter(prevItem, itemNeedInserted);
 				{
-					Assert.IsTrue(itemInserted == itemNeedInserted);
-					Assert.IsTrue(itemInserted.Prev == prevItem);
-					Assert.IsTrue(itemInserted.Next == nextItem);
-					Assert.IsTrue(nextItem.Prev == itemInserted);
+					Assert.AreEqual(itemNeedInserted, itemInserted);
+					Assert.AreEqual(prevItem, itemInserted.Prev);
+					Assert.AreEqual(nextItem, itemInserted.Next);
+					Assert.AreEqual(itemInserted, nextItem.Prev);
 				}
 				testInsertCount++;
 
@@ -169,16 +167,15 @@ namespace BaoXia.Utils.Test.Collections
 				itemNeedInserted = new Item();
 				itemInserted = _testLinkedItems.InsertAfter(prevItem, itemNeedInserted);
 				{
-					Assert.IsTrue(itemInserted == itemNeedInserted);
-					Assert.IsTrue(itemInserted.Prev == prevItem);
-					Assert.IsTrue(itemInserted.Next == nextItem);
-					Assert.IsTrue(nextItem.Prev == itemInserted);
-					Assert.IsTrue(_testLinkedItems.First == itemInserted);
+					Assert.AreEqual(itemNeedInserted, itemInserted);
+					Assert.AreEqual(prevItem, itemInserted.Prev);
+					Assert.AreEqual(nextItem, itemInserted.Next);
+					Assert.AreEqual(itemInserted, nextItem!.Prev);
+					Assert.AreEqual(itemInserted, _testLinkedItems.First);
 				}
 				testInsertCount++;
 			}
-			Assert.IsTrue((lastTestLinkedItemsCount + testInsertCount)
-				== _testLinkedItems.Count);
+			Assert.AreEqual(_testLinkedItems.Count, lastTestLinkedItemsCount + testInsertCount);
 		}
 
 		[TestMethod]
@@ -206,10 +203,10 @@ namespace BaoXia.Utils.Test.Collections
 						{
 							var itemRemoved = _testLinkedItems.Remove(firstItem);
 							{
-								Assert.IsTrue(itemRemoved == firstItem);
-								Assert.IsTrue(_testLinkedItems.Count == 2);
-								Assert.IsTrue(_testLinkedItems.First == midItem);
-								Assert.IsTrue(_testLinkedItems.Last == lastItem);
+								Assert.AreEqual(firstItem, itemRemoved);
+								Assert.AreEqual(2, _testLinkedItems.Count);
+								Assert.AreEqual(midItem, _testLinkedItems.First);
+								Assert.AreEqual(lastItem, _testLinkedItems.Last);
 							}
 						}
 						break;
@@ -217,10 +214,10 @@ namespace BaoXia.Utils.Test.Collections
 						{
 							var itemRemoved = _testLinkedItems.Remove(midItem);
 							{
-								Assert.IsTrue(itemRemoved == midItem);
-								Assert.IsTrue(_testLinkedItems.Count == 2);
-								Assert.IsTrue(_testLinkedItems.First == firstItem);
-								Assert.IsTrue(_testLinkedItems.Last == lastItem);
+								Assert.AreEqual(midItem, itemRemoved);
+								Assert.AreEqual(2, _testLinkedItems.Count);
+								Assert.AreEqual(firstItem, _testLinkedItems.First);
+								Assert.AreEqual(lastItem, _testLinkedItems.Last);
 							}
 						}
 						break;
@@ -228,18 +225,18 @@ namespace BaoXia.Utils.Test.Collections
 						{
 							var itemRemoved = _testLinkedItems.Remove(lastItem);
 							{
-								Assert.IsTrue(itemRemoved == lastItem);
-								Assert.IsTrue(_testLinkedItems.Count == 2);
-								Assert.IsTrue(_testLinkedItems.First == firstItem);
-								Assert.IsTrue(_testLinkedItems.Last == midItem);
+								Assert.AreEqual(lastItem, itemRemoved);
+								Assert.AreEqual(2, _testLinkedItems.Count);
+								Assert.AreEqual(firstItem, _testLinkedItems.First);
+								Assert.AreEqual(midItem, _testLinkedItems.Last);
 							}
 						}
 						break;
 				}
-				Assert.IsTrue(_testLinkedItems.First.Prev == null);
-				Assert.IsTrue(_testLinkedItems.First.Next == _testLinkedItems.Last);
-				Assert.IsTrue(_testLinkedItems.Last.Prev == _testLinkedItems.First);
-				Assert.IsTrue(_testLinkedItems.Last.Next == null);
+				Assert.IsNull(_testLinkedItems.First!.Prev);
+				Assert.AreEqual(_testLinkedItems.Last, _testLinkedItems.First.Next);
+				Assert.AreEqual(_testLinkedItems.First, _testLinkedItems.Last!.Prev);
+				Assert.IsNull(_testLinkedItems.Last.Next);
 			}
 		}
 
@@ -261,17 +258,17 @@ namespace BaoXia.Utils.Test.Collections
 			{
 				if (lastItem == null)
 				{
-					Assert.IsTrue(item == _testLinkedItems.First);
-					Assert.IsTrue(item.Prev == null);
+					Assert.AreEqual(_testLinkedItems.First, item);
+					Assert.IsNull(item.Prev);
 				}
 				else
 				{
-					Assert.IsTrue((lastItem.Id + 1) == item.Id);
+					Assert.AreEqual(item.Id, lastItem.Id + 1);
 				}
 				lastItem = item;
 				testsCount--;
 			}
-			Assert.IsTrue(testsCount == 0);
+			Assert.AreEqual(0, testsCount);
 		}
 	}
 }

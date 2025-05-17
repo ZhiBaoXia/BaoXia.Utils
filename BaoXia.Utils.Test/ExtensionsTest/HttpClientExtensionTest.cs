@@ -97,13 +97,13 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 
 			var requestInfoFromRemote = resposneBody?.RequestInfo;
 			{
-				Assert.IsTrue(requestInfoFromRemote != null);
-				Assert.IsTrue(requestInfoFromRemote.HttpMethod?.EqualsIgnoreCase("POST") == true);
+				Assert.IsNotNull(requestInfoFromRemote);
+				Assert.IsTrue(requestInfoFromRemote.HttpMethod?.EqualsIgnoreCase("POST"));
 			}
 			var requestBodyFromRemote
 				= requestInfoFromRemote.HttpBodyString?.ToObjectByJsonDeserialize<PostBody>();
 			{
-				Assert.IsTrue(requestBodyFromRemote != null);
+				Assert.IsNotNull(requestBodyFromRemote);
 				Assert.IsTrue(requestBodyFromRemote.Name?.Equals(requestBody.Name));
 				Assert.IsTrue(requestBodyFromRemote.NumberValue.Equals(requestBody.NumberValue));
 			}
@@ -131,8 +131,8 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 
 			var requestInfoFromRemote = resposneBody?.RequestInfo;
 			{
-				Assert.IsTrue(requestInfoFromRemote != null);
-				Assert.IsTrue(requestInfoFromRemote.HttpMethod?.EqualsIgnoreCase("POST") == true);
+				Assert.IsNotNull(requestInfoFromRemote);
+				Assert.IsTrue(requestInfoFromRemote.HttpMethod?.EqualsIgnoreCase("POST"));
 			}
 			var requestHeadersFromRemote
 				= requestInfoFromRemote.HttpHeaders;
@@ -146,12 +146,12 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					}
 				}
 				Assert.IsTrue(testHeader_Value?.EqualsIgnoreCase("TestHeader-Value")
-					== true);
+);
 			}
 			var requestBodyFromRemote
 				= requestInfoFromRemote.HttpBodyString?.ToObjectByJsonDeserialize<PostBody>();
 			{
-				Assert.IsTrue(requestBodyFromRemote != null);
+				Assert.IsNotNull(requestBodyFromRemote);
 				Assert.IsTrue(requestBodyFromRemote.Name?.Equals(requestBody.Name));
 				Assert.IsTrue(requestBodyFromRemote.NumberValue.Equals(requestBody.NumberValue));
 			}

@@ -10,23 +10,23 @@ public class ArrayUtilTest
 	{
 		int[]? items = null;
 		{
-			Assert.IsTrue(ArrayUtil.IsEmpty(items) == true);
-			Assert.IsTrue(ArrayUtil.IsNotEmpty(items) == false);
+			Assert.IsTrue(ArrayUtil.IsEmpty(items));
+			Assert.IsFalse(ArrayUtil.IsNotEmpty(items));
 		}
 		items = System.Array.Empty<int>();
 		{
-			Assert.IsTrue(ArrayUtil.IsEmpty(items) == true);
-			Assert.IsTrue(ArrayUtil.IsNotEmpty(items) == false);
+			Assert.IsTrue(ArrayUtil.IsEmpty(items));
+			Assert.IsFalse(ArrayUtil.IsNotEmpty(items));
 		}
 		items = new int[] { 1 };
 		{
-			Assert.IsTrue(ArrayUtil.IsEmpty(items) == false);
-			Assert.IsTrue(ArrayUtil.IsNotEmpty(items) == true);
+			Assert.IsFalse(ArrayUtil.IsEmpty(items));
+			Assert.IsTrue(ArrayUtil.IsNotEmpty(items));
 		}
 		items = new int[] { 1, 2, 3 };
 		{
-			Assert.IsTrue(ArrayUtil.IsEmpty(items) == false);
-			Assert.IsTrue(ArrayUtil.IsNotEmpty(items) == true);
+			Assert.IsFalse(ArrayUtil.IsEmpty(items));
+			Assert.IsTrue(ArrayUtil.IsNotEmpty(items));
 		}
 	}
 }

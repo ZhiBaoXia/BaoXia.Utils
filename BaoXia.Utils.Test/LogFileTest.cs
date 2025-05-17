@@ -156,7 +156,7 @@ namespace BaoXia.Utils.Test
 			Assert.IsTrue(logFileContent.Contains(logContentKeywords));
 			//
 			// !!!
-			Assert.IsTrue(logFileContent.Contains(keyInLogContentToIgnoreLog) != true);
+			Assert.AreNotEqual(true, logFileContent.Contains(keyInLogContentToIgnoreLog));
 			// !!!
 
 			//

@@ -42,7 +42,8 @@ public class ShellUtil
 
 			processStartInfo.RedirectStandardInput = true;
 			processStartInfo.RedirectStandardOutput = true;
-		};
+		}
+		;
 		var process = Process.Start(processStartInfo) ?? throw new ApplicationException("无法创建Shell进程。");
 		using var standardOutput = process.StandardOutput;
 		var stringsProcessOutput = new List<string>();

@@ -68,9 +68,9 @@ public class EnumUtilTest
 	{
 		var enumValue_1_Name = TestEnum.Value_1.Name();
 		{
-			Assert.IsTrue(
-			    enumValue_1_Name?.EnumValue(TestEnum.Value_0)
-			    == TestEnum.Value_1);
+			Assert.AreEqual(
+TestEnum.Value_1, enumValue_1_Name?.EnumValue(TestEnum.Value_0)
+);
 		}
 	}
 }

@@ -55,9 +55,9 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		{
 			// !!!
-			Assert.IsTrue(objectItems!.Length == (testItems.Length - 2));
-			Assert.IsTrue(objectItems[0] == testItems[1]);
-			Assert.IsTrue(objectItems[^1] == testItems[^2]);
+			Assert.AreEqual(testItems.Length - 2, objectItems!.Length);
+			Assert.AreEqual(testItems[1], objectItems[0]);
+			Assert.AreEqual(testItems[^2], objectItems[^1]);
 			// !!!
 		}
 
@@ -85,9 +85,9 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		{
 			// !!!
-			Assert.IsTrue(objectItems!.Length == (testItems.Length - 2));
-			Assert.IsTrue(objectItems[0] == testItems[1]);
-			Assert.IsTrue(objectItems[^1] == testItems[^2]);
+			Assert.AreEqual(testItems.Length - 2, objectItems!.Length);
+			Assert.AreEqual(testItems[1], objectItems[0]);
+			Assert.AreEqual(testItems[^2], objectItems[^1]);
 			// !!!
 		}
 	}
@@ -134,9 +134,9 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		{
 			// !!!
-			Assert.IsTrue(objectItems!.Length == (testItems.Length - 2));
-			Assert.IsTrue(objectItems[0] == testItems[1]);
-			Assert.IsTrue(objectItems[^1] == testItems[^2]);
+			Assert.AreEqual(testItems.Length - 2, objectItems!.Length);
+			Assert.AreEqual(testItems[1], objectItems[0]);
+			Assert.AreEqual(testItems[^2], objectItems[^1]);
 			// !!!
 		}
 
@@ -164,9 +164,9 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		{
 			// !!!
-			Assert.IsTrue(objectItems!.Length == (testItems.Length - 2));
-			Assert.IsTrue(objectItems[0] == testItems[1]);
-			Assert.IsTrue(objectItems[^1] == testItems[^2]);
+			Assert.AreEqual(testItems.Length - 2, objectItems!.Length);
+			Assert.AreEqual(testItems[1], objectItems[0]);
+			Assert.AreEqual(testItems[^2], objectItems[^1]);
 			// !!!
 		}
 	}
@@ -213,9 +213,9 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		{
 			// !!!
-			Assert.IsTrue(objectItems!.Length == (testItems.Length - 0));
-			Assert.IsTrue(objectItems[0] == testItems[0]);
-			Assert.IsTrue(objectItems[^1] == testItems[^1]);
+			Assert.AreEqual(testItems.Length - 0, objectItems!.Length);
+			Assert.AreEqual(testItems[0], objectItems[0]);
+			Assert.AreEqual(testItems[^1], objectItems[^1]);
 			// !!!
 		}
 
@@ -243,9 +243,9 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		{
 			// !!!
-			Assert.IsTrue(objectItems!.Length == (testItems.Length - 0));
-			Assert.IsTrue(objectItems[0] == testItems[0]);
-			Assert.IsTrue(objectItems[^1] == testItems[^1]);
+			Assert.AreEqual(testItems.Length - 0, objectItems!.Length);
+			Assert.AreEqual(testItems[0], objectItems[0]);
+			Assert.AreEqual(testItems[^1], objectItems[^1]);
 			// !!!
 		}
 	}
@@ -292,9 +292,9 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		{
 			// !!!
-			Assert.IsTrue(objectItems!.Length == (testItems.Length - 1));
-			Assert.IsTrue(objectItems[0] == testItems[1]);
-			Assert.IsTrue(objectItems[^1] == testItems[^1]);
+			Assert.AreEqual(testItems.Length - 1, objectItems!.Length);
+			Assert.AreEqual(testItems[1], objectItems[0]);
+			Assert.AreEqual(testItems[^1], objectItems[^1]);
 			// !!!
 		}
 
@@ -322,9 +322,9 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		{
 			// !!!
-			Assert.IsTrue(objectItems!.Length == (testItems.Length - 1));
-			Assert.IsTrue(objectItems[0] == testItems[0]);
-			Assert.IsTrue(objectItems[^1] == testItems[^2]);
+			Assert.AreEqual(testItems.Length - 1, objectItems!.Length);
+			Assert.AreEqual(testItems[0], objectItems[0]);
+			Assert.AreEqual(testItems[^2], objectItems[^1]);
 			// !!!
 		}
 	}
@@ -371,9 +371,9 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		{
 			// !!!
-			Assert.IsTrue(objectItems!.Length == (testItems.Length - 1));
-			Assert.IsTrue(objectItems[0] == testItems[0]);
-			Assert.IsTrue(objectItems[^1] == testItems[^2]);
+			Assert.AreEqual(testItems.Length - 1, objectItems!.Length);
+			Assert.AreEqual(testItems[0], objectItems[0]);
+			Assert.AreEqual(testItems[^2], objectItems[^1]);
 			// !!!
 		}
 
@@ -401,9 +401,9 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		{
 			// !!!
-			Assert.IsTrue(objectItems!.Length == (testItems.Length - 1));
-			Assert.IsTrue(objectItems[0] == testItems[1]);
-			Assert.IsTrue(objectItems[^1] == testItems[^1]);
+			Assert.AreEqual(testItems.Length - 1, objectItems!.Length);
+			Assert.AreEqual(testItems[1], objectItems[0]);
+			Assert.AreEqual(testItems[^1], objectItems[^1]);
 			// !!!
 		}
 	}

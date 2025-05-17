@@ -16,7 +16,7 @@ namespace BaoXia.Utils.Test
 				numberA,
 				numberB);
 
-			Assert.IsTrue(greatestCommonDivisor == 5);
+			Assert.AreEqual(5, greatestCommonDivisor);
 		}
 	}
 }

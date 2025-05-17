@@ -17,12 +17,12 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				var items = Array.Empty<string>();
 
 				// 1/2，不包含：
-				Assert.IsTrue(items.IsContains("0") == false);
-				Assert.IsTrue(items.IsNotContains("0") == true);
+				Assert.IsFalse(items.IsContains("0"));
+				Assert.IsTrue(items.IsNotContains("0"));
 
 				// 1/2，包含：
-				Assert.IsTrue(items.IsContains("1") == false);
-				Assert.IsTrue(items.IsNotContains("1") == true);
+				Assert.IsFalse(items.IsContains("1"));
+				Assert.IsTrue(items.IsNotContains("1"));
 			}
 
 			////////////////////////////////////////////////
@@ -35,12 +35,12 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				};
 
 				// 1/2，不包含：
-				Assert.IsTrue(items.IsContains("0") == false);
-				Assert.IsTrue(items.IsNotContains("0") == true);
+				Assert.IsFalse(items.IsContains("0"));
+				Assert.IsTrue(items.IsNotContains("0"));
 
 				// 1/2，包含：
-				Assert.IsTrue(items.IsContains("1") == true);
-				Assert.IsTrue(items.IsNotContains("1") == false);
+				Assert.IsTrue(items.IsContains("1"));
+				Assert.IsFalse(items.IsNotContains("1"));
 			}
 
 			////////////////////////////////////////////////
@@ -55,12 +55,12 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				};
 
 				// 1/2，不包含：
-				Assert.IsTrue(items.IsContains("0") == false);
-				Assert.IsTrue(items.IsNotContains("0") == true);
+				Assert.IsFalse(items.IsContains("0"));
+				Assert.IsTrue(items.IsNotContains("0"));
 
 				// 1/2，包含：
-				Assert.IsTrue(items.IsContains("1") == true);
-				Assert.IsTrue(items.IsNotContains("1") == false);
+				Assert.IsTrue(items.IsContains("1"));
+				Assert.IsFalse(items.IsNotContains("1"));
 			}
 		}
 
@@ -84,11 +84,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			{
 				var items = Array.Empty<string>();
 
-				Assert.IsTrue(items.IsContains(items_1_2) == false);
-				Assert.IsTrue(items.IsNotContains(items_1_2) == true);
+				Assert.IsFalse(items.IsContains(items_1_2));
+				Assert.IsTrue(items.IsNotContains(items_1_2));
 
-				Assert.IsTrue(items.IsContains(items_3_4) == false);
-				Assert.IsTrue(items.IsNotContains(items_3_4) == true);
+				Assert.IsFalse(items.IsContains(items_3_4));
+				Assert.IsTrue(items.IsNotContains(items_3_4));
 			}
 
 			////////////////////////////////////////////////
@@ -100,11 +100,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"1"
 				};
 
-				Assert.IsTrue(items.IsContains(items_1_2) == false);
-				Assert.IsTrue(items.IsNotContains(items_1_2) == true);
+				Assert.IsFalse(items.IsContains(items_1_2));
+				Assert.IsTrue(items.IsNotContains(items_1_2));
 
-				Assert.IsTrue(items.IsContains(items_3_4) == false);
-				Assert.IsTrue(items.IsNotContains(items_3_4) == true);
+				Assert.IsFalse(items.IsContains(items_3_4));
+				Assert.IsTrue(items.IsNotContains(items_3_4));
 			}
 
 			////////////////////////////////////////////////
@@ -117,11 +117,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"2"
 				};
 
-				Assert.IsTrue(items.IsContains(items_1_2) == true);
-				Assert.IsTrue(items.IsNotContains(items_1_2) == false);
+				Assert.IsTrue(items.IsContains(items_1_2));
+				Assert.IsFalse(items.IsNotContains(items_1_2));
 
-				Assert.IsTrue(items.IsContains(items_3_4) == false);
-				Assert.IsTrue(items.IsNotContains(items_3_4) == true);
+				Assert.IsFalse(items.IsContains(items_3_4));
+				Assert.IsTrue(items.IsNotContains(items_3_4));
 			}
 
 			////////////////////////////////////////////////
@@ -135,11 +135,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"3"
 				};
 
-				Assert.IsTrue(items.IsContains(items_1_2) == true);
-				Assert.IsTrue(items.IsNotContains(items_1_2) == false);
+				Assert.IsTrue(items.IsContains(items_1_2));
+				Assert.IsFalse(items.IsNotContains(items_1_2));
 
-				Assert.IsTrue(items.IsContains(items_3_4) == false);
-				Assert.IsTrue(items.IsNotContains(items_3_4) == true);
+				Assert.IsFalse(items.IsContains(items_3_4));
+				Assert.IsTrue(items.IsNotContains(items_3_4));
 
 				items = new string[]
 				{
@@ -149,11 +149,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"4"
 				};
 
-				Assert.IsTrue(items.IsContains(items_1_2) == true);
-				Assert.IsTrue(items.IsNotContains(items_1_2) == false);
+				Assert.IsTrue(items.IsContains(items_1_2));
+				Assert.IsFalse(items.IsNotContains(items_1_2));
 
-				Assert.IsTrue(items.IsContains(items_3_4) == true);
-				Assert.IsTrue(items.IsNotContains(items_3_4) == false);
+				Assert.IsTrue(items.IsContains(items_3_4));
+				Assert.IsFalse(items.IsNotContains(items_3_4));
 
 
 				items = new string[]
@@ -165,11 +165,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"5"
 				};
 
-				Assert.IsTrue(items.IsContains(items_1_2) == true);
-				Assert.IsTrue(items.IsNotContains(items_1_2) == false);
+				Assert.IsTrue(items.IsContains(items_1_2));
+				Assert.IsFalse(items.IsNotContains(items_1_2));
 
-				Assert.IsTrue(items.IsContains(items_3_4) == true);
-				Assert.IsTrue(items.IsNotContains(items_3_4) == false);
+				Assert.IsTrue(items.IsContains(items_3_4));
+				Assert.IsFalse(items.IsNotContains(items_3_4));
 			}
 		}
 
@@ -213,11 +213,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			{
 				var items = Array.Empty<string>();
 
-				Assert.IsTrue(items.IsEquals(items_1_2) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_2) == true);
+				Assert.IsFalse(items.IsEquals(items_1_2));
+				Assert.IsTrue(items.IsNotEquals(items_1_2));
 
-				Assert.IsTrue(items.IsEquals(items_3_4) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+				Assert.IsFalse(items.IsEquals(items_3_4));
+				Assert.IsTrue(items.IsNotEquals(items_3_4));
 			}
 
 			////////////////////////////////////////////////
@@ -229,11 +229,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"1"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_2) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_2) == true);
+				Assert.IsFalse(items.IsEquals(items_1_2));
+				Assert.IsTrue(items.IsNotEquals(items_1_2));
 
-				Assert.IsTrue(items.IsEquals(items_3_4) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+				Assert.IsFalse(items.IsEquals(items_3_4));
+				Assert.IsTrue(items.IsNotEquals(items_3_4));
 			}
 
 			////////////////////////////////////////////////
@@ -246,11 +246,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"2"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_2) == true);
-				Assert.IsTrue(items.IsNotEquals(items_1_2) == false);
+				Assert.IsTrue(items.IsEquals(items_1_2));
+				Assert.IsFalse(items.IsNotEquals(items_1_2));
 
-				Assert.IsTrue(items.IsEquals(items_3_4) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+				Assert.IsFalse(items.IsEquals(items_3_4));
+				Assert.IsTrue(items.IsNotEquals(items_3_4));
 			}
 
 			////////////////////////////////////////////////
@@ -264,11 +264,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"3"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_2) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_2) == true);
+				Assert.IsFalse(items.IsEquals(items_1_2));
+				Assert.IsTrue(items.IsNotEquals(items_1_2));
 
-				Assert.IsTrue(items.IsEquals(items_3_4) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+				Assert.IsFalse(items.IsEquals(items_3_4));
+				Assert.IsTrue(items.IsNotEquals(items_3_4));
 
 				items = new string[]
 				{
@@ -278,11 +278,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"4"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_2) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_2) == true);
+				Assert.IsFalse(items.IsEquals(items_1_2));
+				Assert.IsTrue(items.IsNotEquals(items_1_2));
 
-				Assert.IsTrue(items.IsEquals(items_3_4) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+				Assert.IsFalse(items.IsEquals(items_3_4));
+				Assert.IsTrue(items.IsNotEquals(items_3_4));
 
 
 				items = new string[]
@@ -294,11 +294,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"5"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_2) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_2) == true);
+				Assert.IsFalse(items.IsEquals(items_1_2));
+				Assert.IsTrue(items.IsNotEquals(items_1_2));
 
-				Assert.IsTrue(items.IsEquals(items_3_4) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+				Assert.IsFalse(items.IsEquals(items_3_4));
+				Assert.IsTrue(items.IsNotEquals(items_3_4));
 
 
 				////////////////////////////////////////////////
@@ -314,15 +314,15 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"2"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_2, true) == true);
-				Assert.IsTrue(items.IsNotEquals(items_1_2, true) == false);
-				Assert.IsTrue(items.IsEquals(items_1_2, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_2, false) == true);
+				Assert.IsTrue(items.IsEquals(items_1_2, true));
+				Assert.IsFalse(items.IsNotEquals(items_1_2, true));
+				Assert.IsFalse(items.IsEquals(items_1_2, false));
+				Assert.IsTrue(items.IsNotEquals(items_1_2, false));
 
-				Assert.IsTrue(items.IsEquals(items_3_4, true) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_4, true) == true);
-				Assert.IsTrue(items.IsEquals(items_3_4, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_4, false) == true);
+				Assert.IsFalse(items.IsEquals(items_3_4, true));
+				Assert.IsTrue(items.IsNotEquals(items_3_4, true));
+				Assert.IsFalse(items.IsEquals(items_3_4, false));
+				Assert.IsTrue(items.IsNotEquals(items_3_4, false));
 
 
 				items = new string[]
@@ -334,54 +334,15 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"4"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_2, true) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_2, true) == true);
-				Assert.IsTrue(items.IsEquals(items_1_2, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_2, false) == true);
+				Assert.IsFalse(items.IsEquals(items_1_2, true));
+				Assert.IsTrue(items.IsNotEquals(items_1_2, true));
+				Assert.IsFalse(items.IsEquals(items_1_2, false));
+				Assert.IsTrue(items.IsNotEquals(items_1_2, false));
 
-				Assert.IsTrue(items.IsEquals(items_3_4, true) == true);
-				Assert.IsTrue(items.IsNotEquals(items_3_4, true) == false);
-				Assert.IsTrue(items.IsEquals(items_3_4, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_4, false) == true);
-
-
-				////////////////////////////////////////////////
-				////////////////////////////////////////////////
-				////////////////////////////////////////////////
-
-
-				items = new string[]
-				{
-					"1",
-					"2"
-				};
-
-				Assert.IsTrue(items.IsEquals(items_1_1_2_2, true) == true);
-				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true) == false);
-				Assert.IsTrue(items.IsEquals(items_1_1_2_2, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false) == true);
-
-				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true) == true);
-				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
-
-
-				items = new string[]
-				{
-					"3",
-					"4"
-				};
-
-				Assert.IsTrue(items.IsEquals(items_1_1_2_2, true) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true) == true);
-				Assert.IsTrue(items.IsEquals(items_1_1_2_2, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false) == true);
-
-				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true) == true);
-				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true) == false);
-				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
+				Assert.IsTrue(items.IsEquals(items_3_4, true));
+				Assert.IsFalse(items.IsNotEquals(items_3_4, true));
+				Assert.IsFalse(items.IsEquals(items_3_4, false));
+				Assert.IsTrue(items.IsNotEquals(items_3_4, false));
 
 
 				////////////////////////////////////////////////
@@ -395,15 +356,15 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"2"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_1_2_2, true) == true);
-				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true) == false);
-				Assert.IsTrue(items.IsEquals(items_1_1_2_2, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false) == true);
+				Assert.IsTrue(items.IsEquals(items_1_1_2_2, true));
+				Assert.IsFalse(items.IsNotEquals(items_1_1_2_2, true));
+				Assert.IsFalse(items.IsEquals(items_1_1_2_2, false));
+				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false));
 
-				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true) == true);
-				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
+				Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, true));
+				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true));
+				Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, false));
+				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 
 
 				items = new string[]
@@ -412,15 +373,15 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"4"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_1_2_2, true) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true) == true);
-				Assert.IsTrue(items.IsEquals(items_1_1_2_2, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false) == true);
+				Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
+				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
+				Assert.IsFalse(items.IsEquals(items_1_1_2_2, false));
+				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false));
 
-				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true) == true);
-				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true) == false);
-				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
+				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true));
+				Assert.IsFalse(items.IsNotEquals(items_3_3_4_4_4, true));
+				Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, false));
+				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 
 
 				////////////////////////////////////////////////
@@ -434,10 +395,15 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"2"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_2_2, true) == true);
-				Assert.IsTrue(items.IsNotEquals(items_1_2_2, true) == false);
-				Assert.IsTrue(items.IsEquals(items_1_2_2, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_2_2, false) == true);
+				Assert.IsTrue(items.IsEquals(items_1_1_2_2, true));
+				Assert.IsFalse(items.IsNotEquals(items_1_1_2_2, true));
+				Assert.IsFalse(items.IsEquals(items_1_1_2_2, false));
+				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false));
+
+				Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, true));
+				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true));
+				Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, false));
+				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 
 
 				items = new string[]
@@ -446,15 +412,49 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"4"
 				};
 
-				Assert.IsTrue(items.IsEquals(items_1_1_2_2, true) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true) == true);
-				Assert.IsTrue(items.IsEquals(items_1_1_2_2, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false) == true);
+				Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
+				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
+				Assert.IsFalse(items.IsEquals(items_1_1_2_2, false));
+				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false));
 
-				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true) == true);
-				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true) == false);
-				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, false) == false);
-				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
+				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true));
+				Assert.IsFalse(items.IsNotEquals(items_3_3_4_4_4, true));
+				Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, false));
+				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
+
+
+				////////////////////////////////////////////////
+				////////////////////////////////////////////////
+				////////////////////////////////////////////////
+
+
+				items = new string[]
+				{
+					"1",
+					"2"
+				};
+
+				Assert.IsTrue(items.IsEquals(items_1_2_2, true));
+				Assert.IsFalse(items.IsNotEquals(items_1_2_2, true));
+				Assert.IsFalse(items.IsEquals(items_1_2_2, false));
+				Assert.IsTrue(items.IsNotEquals(items_1_2_2, false));
+
+
+				items = new string[]
+				{
+					"3",
+					"4"
+				};
+
+				Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
+				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
+				Assert.IsFalse(items.IsEquals(items_1_1_2_2, false));
+				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false));
+
+				Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true));
+				Assert.IsFalse(items.IsNotEquals(items_3_3_4_4_4, true));
+				Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, false));
+				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 			}
 		}
 

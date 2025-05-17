@@ -346,7 +346,7 @@ namespace BaoXia.Utils.Test.MathToolsTest
 						StringComparison.OrdinalIgnoreCase,
 						out _);
 				{
-					Assert.IsTrue(operators?.Count == testItem?.OperatorsCount);
+					Assert.AreEqual(testItem?.OperatorsCount, operators?.Count);
 				}
 			}
 		}

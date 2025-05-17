@@ -19,12 +19,12 @@ public class IEnumerableExtensionTest
 
 		IEnumerable<int> itemEnumerable = itemArray;
 		{
-			Assert.IsTrue(itemEnumerable.GetCount() == itemArray.Length);
+			Assert.AreEqual(itemArray.Length, itemEnumerable.GetCount());
 		}
 
 		itemEnumerable = itemList;
 		{
-			Assert.IsTrue(itemEnumerable.GetCount() == itemList.Count);
+			Assert.AreEqual(itemList.Count, itemEnumerable.GetCount());
 		}
 	}
 
@@ -38,7 +38,7 @@ public class IEnumerableExtensionTest
 			objectItem_Int++;
 			{
 				// !!!
-				Assert.IsTrue(item == objectItem_Int);
+				Assert.AreEqual(objectItem_Int, item);
 				// !!!
 			}
 			return true;
@@ -47,7 +47,7 @@ public class IEnumerableExtensionTest
 		items_Int.ForEachAtLeastOnce((item) =>
 		{
 			// !!!
-			Assert.IsTrue(item == 0);
+			Assert.AreEqual(0, item);
 			// !!!
 			return true;
 		});
@@ -55,7 +55,7 @@ public class IEnumerableExtensionTest
 		items_Int.ForEachAtLeastOnce((item) =>
 		{
 			// !!!
-			Assert.IsTrue(item == 0);
+			Assert.AreEqual(0, item);
 			// !!!
 			return true;
 		});
@@ -68,7 +68,7 @@ public class IEnumerableExtensionTest
 			objectItem_String++;
 			{
 				// !!!
-				Assert.IsTrue(item == objectItem_String.ToString());
+				Assert.AreEqual(objectItem_String.ToString(), item);
 				// !!!
 			}
 			return true;
@@ -77,7 +77,7 @@ public class IEnumerableExtensionTest
 		items_String.ForEachAtLeastOnce((item) =>
 		{
 			// !!!
-			Assert.IsTrue(item == null);
+			Assert.IsNull(item);
 			// !!!
 			return true;
 		});
@@ -85,7 +85,7 @@ public class IEnumerableExtensionTest
 		items_String.ForEachAtLeastOnce((item) =>
 		{
 			// !!!
-			Assert.IsTrue(item == null);
+			Assert.IsNull(item);
 			// !!!
 			return true;
 		});
@@ -102,7 +102,7 @@ public class IEnumerableExtensionTest
 			objectItem_Int++;
 			{
 				// !!!
-				Assert.IsTrue(item == objectItem_Int);
+				Assert.AreEqual(objectItem_Int, item);
 				// !!!
 			}
 			return await Task.FromResult(true);
@@ -111,7 +111,7 @@ public class IEnumerableExtensionTest
 		await items_Int.ForEachAtLeastOnceAsync(async (item) =>
 		{
 			// !!!
-			Assert.IsTrue(item == 0);
+			Assert.AreEqual(0, item);
 			// !!!
 			return await Task.FromResult(true);
 		});
@@ -119,7 +119,7 @@ public class IEnumerableExtensionTest
 		await items_Int.ForEachAtLeastOnceAsync(async (item) =>
 		{
 			// !!!
-			Assert.IsTrue(item == 0);
+			Assert.AreEqual(0, item);
 			// !!!
 			return await Task.FromResult(true);
 		});
@@ -132,7 +132,7 @@ public class IEnumerableExtensionTest
 			objectItem_String++;
 			{
 				// !!!
-				Assert.IsTrue(item == objectItem_String.ToString());
+				Assert.AreEqual(objectItem_String.ToString(), item);
 				// !!!
 			}
 			return await Task.FromResult(true);
@@ -141,7 +141,7 @@ public class IEnumerableExtensionTest
 		await items_String.ForEachAtLeastOnceAsync(async (item) =>
 		{
 			// !!!
-			Assert.IsTrue(item == null);
+			Assert.IsNull(item);
 			// !!!
 			return await Task.FromResult(true);
 		});
@@ -149,7 +149,7 @@ public class IEnumerableExtensionTest
 		await items_String.ForEachAtLeastOnceAsync(async (item) =>
 		{
 			// !!!
-			Assert.IsTrue(item == null);
+			Assert.IsNull(item);
 			// !!!
 			return await Task.FromResult(true);
 		});
@@ -165,12 +165,12 @@ public class IEnumerableExtensionTest
 			var items = Array.Empty<int>();
 
 			// 1/2，不包含：
-			Assert.IsTrue(items.IsContains(0) == false);
-			Assert.IsTrue(items.IsNotContains(0) == true);
+			Assert.IsFalse(items.IsContains(0));
+			Assert.IsTrue(items.IsNotContains(0));
 
 			// 1/2，包含：
-			Assert.IsTrue(items.IsContains(1) == false);
-			Assert.IsTrue(items.IsNotContains(1) == true);
+			Assert.IsFalse(items.IsContains(1));
+			Assert.IsTrue(items.IsNotContains(1));
 		}
 
 		////////////////////////////////////////////////
@@ -183,12 +183,12 @@ public class IEnumerableExtensionTest
 			};
 
 			// 1/2，不包含：
-			Assert.IsTrue(items.IsContains(0) == false);
-			Assert.IsTrue(items.IsNotContains(0) == true);
+			Assert.IsFalse(items.IsContains(0));
+			Assert.IsTrue(items.IsNotContains(0));
 
 			// 1/2，包含：
-			Assert.IsTrue(items.IsContains(1) == true);
-			Assert.IsTrue(items.IsNotContains(1) == false);
+			Assert.IsTrue(items.IsContains(1));
+			Assert.IsFalse(items.IsNotContains(1));
 		}
 
 		////////////////////////////////////////////////
@@ -203,12 +203,12 @@ public class IEnumerableExtensionTest
 			};
 
 			// 1/2，不包含：
-			Assert.IsTrue(items.IsContains(0) == false);
-			Assert.IsTrue(items.IsNotContains(0) == true);
+			Assert.IsFalse(items.IsContains(0));
+			Assert.IsTrue(items.IsNotContains(0));
 
 			// 1/2，包含：
-			Assert.IsTrue(items.IsContains(1) == true);
-			Assert.IsTrue(items.IsNotContains(1) == false);
+			Assert.IsTrue(items.IsContains(1));
+			Assert.IsFalse(items.IsNotContains(1));
 		}
 	}
 
@@ -232,8 +232,8 @@ public class IEnumerableExtensionTest
 		{
 			var items = Array.Empty<int>();
 
-			Assert.IsTrue(items.IsContains(null as int[]) == false);
-			Assert.IsTrue(items.IsContains(Array.Empty<int>()) == false);
+			Assert.IsFalse(items.IsContains(null as int[]));
+			Assert.IsFalse(items.IsContains(Array.Empty<int>()));
 		}
 
 		////////////////////////////////////////////////
@@ -242,11 +242,11 @@ public class IEnumerableExtensionTest
 		{
 			var items = Array.Empty<int>();
 
-			Assert.IsTrue(items.IsContains(items_1_2) == false);
-			Assert.IsTrue(items.IsNotContains(items_1_2) == true);
+			Assert.IsFalse(items.IsContains(items_1_2));
+			Assert.IsTrue(items.IsNotContains(items_1_2));
 
-			Assert.IsTrue(items.IsContains(items_3_4) == false);
-			Assert.IsTrue(items.IsNotContains(items_3_4) == true);
+			Assert.IsFalse(items.IsContains(items_3_4));
+			Assert.IsTrue(items.IsNotContains(items_3_4));
 		}
 
 		////////////////////////////////////////////////
@@ -258,11 +258,11 @@ public class IEnumerableExtensionTest
 				1
 			};
 
-			Assert.IsTrue(items.IsContains(items_1_2) == false);
-			Assert.IsTrue(items.IsNotContains(items_1_2) == true);
+			Assert.IsFalse(items.IsContains(items_1_2));
+			Assert.IsTrue(items.IsNotContains(items_1_2));
 
-			Assert.IsTrue(items.IsContains(items_3_4) == false);
-			Assert.IsTrue(items.IsNotContains(items_3_4) == true);
+			Assert.IsFalse(items.IsContains(items_3_4));
+			Assert.IsTrue(items.IsNotContains(items_3_4));
 		}
 
 		////////////////////////////////////////////////
@@ -275,11 +275,11 @@ public class IEnumerableExtensionTest
 				2
 			};
 
-			Assert.IsTrue(items.IsContains(items_1_2) == true);
-			Assert.IsTrue(items.IsNotContains(items_1_2) == false);
+			Assert.IsTrue(items.IsContains(items_1_2));
+			Assert.IsFalse(items.IsNotContains(items_1_2));
 
-			Assert.IsTrue(items.IsContains(items_3_4) == false);
-			Assert.IsTrue(items.IsNotContains(items_3_4) == true);
+			Assert.IsFalse(items.IsContains(items_3_4));
+			Assert.IsTrue(items.IsNotContains(items_3_4));
 		}
 
 		////////////////////////////////////////////////
@@ -293,11 +293,11 @@ public class IEnumerableExtensionTest
 				3
 			};
 
-			Assert.IsTrue(items.IsContains(items_1_2) == true);
-			Assert.IsTrue(items.IsNotContains(items_1_2) == false);
+			Assert.IsTrue(items.IsContains(items_1_2));
+			Assert.IsFalse(items.IsNotContains(items_1_2));
 
-			Assert.IsTrue(items.IsContains(items_3_4) == false);
-			Assert.IsTrue(items.IsNotContains(items_3_4) == true);
+			Assert.IsFalse(items.IsContains(items_3_4));
+			Assert.IsTrue(items.IsNotContains(items_3_4));
 
 			items = new int[]
 			{
@@ -307,11 +307,11 @@ public class IEnumerableExtensionTest
 				4
 			};
 
-			Assert.IsTrue(items.IsContains(items_1_2) == true);
-			Assert.IsTrue(items.IsNotContains(items_1_2) == false);
+			Assert.IsTrue(items.IsContains(items_1_2));
+			Assert.IsFalse(items.IsNotContains(items_1_2));
 
-			Assert.IsTrue(items.IsContains(items_3_4) == true);
-			Assert.IsTrue(items.IsNotContains(items_3_4) == false);
+			Assert.IsTrue(items.IsContains(items_3_4));
+			Assert.IsFalse(items.IsNotContains(items_3_4));
 
 
 			items = new int[]
@@ -323,11 +323,11 @@ public class IEnumerableExtensionTest
 				5
 			};
 
-			Assert.IsTrue(items.IsContains(items_1_2) == true);
-			Assert.IsTrue(items.IsNotContains(items_1_2) == false);
+			Assert.IsTrue(items.IsContains(items_1_2));
+			Assert.IsFalse(items.IsNotContains(items_1_2));
 
-			Assert.IsTrue(items.IsContains(items_3_4) == true);
-			Assert.IsTrue(items.IsNotContains(items_3_4) == false);
+			Assert.IsTrue(items.IsContains(items_3_4));
+			Assert.IsFalse(items.IsNotContains(items_3_4));
 		}
 	}
 
@@ -373,8 +373,8 @@ public class IEnumerableExtensionTest
 		{
 			var items = Array.Empty<int>();
 
-			Assert.IsTrue(items.IsEquals(null, true) == true);
-			Assert.IsTrue(items.IsEquals(Array.Empty<int>(), true) == true);
+			Assert.IsTrue(items.IsEquals(null, true));
+			Assert.IsTrue(items.IsEquals(Array.Empty<int>(), true));
 		}
 
 		////////////////////////////////////////////////
@@ -383,11 +383,11 @@ public class IEnumerableExtensionTest
 		{
 			var items = Array.Empty<int>();
 
-			Assert.IsTrue(items.IsEquals(items_1_2) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_2) == true);
+			Assert.IsFalse(items.IsEquals(items_1_2));
+			Assert.IsTrue(items.IsNotEquals(items_1_2));
 
-			Assert.IsTrue(items.IsEquals(items_3_4) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+			Assert.IsFalse(items.IsEquals(items_3_4));
+			Assert.IsTrue(items.IsNotEquals(items_3_4));
 		}
 
 		////////////////////////////////////////////////
@@ -399,11 +399,11 @@ public class IEnumerableExtensionTest
 				1
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_2) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_2) == true);
+			Assert.IsFalse(items.IsEquals(items_1_2));
+			Assert.IsTrue(items.IsNotEquals(items_1_2));
 
-			Assert.IsTrue(items.IsEquals(items_3_4) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+			Assert.IsFalse(items.IsEquals(items_3_4));
+			Assert.IsTrue(items.IsNotEquals(items_3_4));
 		}
 
 		////////////////////////////////////////////////
@@ -416,11 +416,11 @@ public class IEnumerableExtensionTest
 				2
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_2) == true);
-			Assert.IsTrue(items.IsNotEquals(items_1_2) == false);
+			Assert.IsTrue(items.IsEquals(items_1_2));
+			Assert.IsFalse(items.IsNotEquals(items_1_2));
 
-			Assert.IsTrue(items.IsEquals(items_3_4) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+			Assert.IsFalse(items.IsEquals(items_3_4));
+			Assert.IsTrue(items.IsNotEquals(items_3_4));
 		}
 
 		////////////////////////////////////////////////
@@ -434,11 +434,11 @@ public class IEnumerableExtensionTest
 				3
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_2) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_2) == true);
+			Assert.IsFalse(items.IsEquals(items_1_2));
+			Assert.IsTrue(items.IsNotEquals(items_1_2));
 
-			Assert.IsTrue(items.IsEquals(items_3_4) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+			Assert.IsFalse(items.IsEquals(items_3_4));
+			Assert.IsTrue(items.IsNotEquals(items_3_4));
 
 			items = new int[]
 			{
@@ -448,11 +448,11 @@ public class IEnumerableExtensionTest
 				4
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_2) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_2) == true);
+			Assert.IsFalse(items.IsEquals(items_1_2));
+			Assert.IsTrue(items.IsNotEquals(items_1_2));
 
-			Assert.IsTrue(items.IsEquals(items_3_4) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+			Assert.IsFalse(items.IsEquals(items_3_4));
+			Assert.IsTrue(items.IsNotEquals(items_3_4));
 
 
 			items = new int[]
@@ -464,11 +464,11 @@ public class IEnumerableExtensionTest
 				5
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_2) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_2) == true);
+			Assert.IsFalse(items.IsEquals(items_1_2));
+			Assert.IsTrue(items.IsNotEquals(items_1_2));
 
-			Assert.IsTrue(items.IsEquals(items_3_4) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_4) == true);
+			Assert.IsFalse(items.IsEquals(items_3_4));
+			Assert.IsTrue(items.IsNotEquals(items_3_4));
 
 
 			////////////////////////////////////////////////
@@ -484,15 +484,15 @@ public class IEnumerableExtensionTest
 				2
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_2, true) == true);
-			Assert.IsTrue(items.IsNotEquals(items_1_2, true) == false);
-			Assert.IsTrue(items.IsEquals(items_1_2, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_2, false) == true);
+			Assert.IsTrue(items.IsEquals(items_1_2, true));
+			Assert.IsFalse(items.IsNotEquals(items_1_2, true));
+			Assert.IsFalse(items.IsEquals(items_1_2, false));
+			Assert.IsTrue(items.IsNotEquals(items_1_2, false));
 
-			Assert.IsTrue(items.IsEquals(items_3_4, true) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_4, true) == true);
-			Assert.IsTrue(items.IsEquals(items_3_4, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_4, false) == true);
+			Assert.IsFalse(items.IsEquals(items_3_4, true));
+			Assert.IsTrue(items.IsNotEquals(items_3_4, true));
+			Assert.IsFalse(items.IsEquals(items_3_4, false));
+			Assert.IsTrue(items.IsNotEquals(items_3_4, false));
 
 
 			items = new int[]
@@ -504,54 +504,15 @@ public class IEnumerableExtensionTest
 				4
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_2, true) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_2, true) == true);
-			Assert.IsTrue(items.IsEquals(items_1_2, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_2, false) == true);
+			Assert.IsFalse(items.IsEquals(items_1_2, true));
+			Assert.IsTrue(items.IsNotEquals(items_1_2, true));
+			Assert.IsFalse(items.IsEquals(items_1_2, false));
+			Assert.IsTrue(items.IsNotEquals(items_1_2, false));
 
-			Assert.IsTrue(items.IsEquals(items_3_4, true) == true);
-			Assert.IsTrue(items.IsNotEquals(items_3_4, true) == false);
-			Assert.IsTrue(items.IsEquals(items_3_4, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_4, false) == true);
-
-
-			////////////////////////////////////////////////
-			////////////////////////////////////////////////
-			////////////////////////////////////////////////
-
-
-			items = new int[]
-			{
-				1,
-				2
-			};
-
-			Assert.IsTrue(items.IsEquals(items_1_1_2_2, true) == true);
-			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true) == false);
-			Assert.IsTrue(items.IsEquals(items_1_1_2_2, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false) == true);
-
-			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true) == true);
-			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
-
-
-			items = new int[]
-			{
-				3,
-				4
-			};
-
-			Assert.IsTrue(items.IsEquals(items_1_1_2_2, true) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true) == true);
-			Assert.IsTrue(items.IsEquals(items_1_1_2_2, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false) == true);
-
-			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true) == true);
-			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true) == false);
-			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
+			Assert.IsTrue(items.IsEquals(items_3_4, true));
+			Assert.IsFalse(items.IsNotEquals(items_3_4, true));
+			Assert.IsFalse(items.IsEquals(items_3_4, false));
+			Assert.IsTrue(items.IsNotEquals(items_3_4, false));
 
 
 			////////////////////////////////////////////////
@@ -565,15 +526,15 @@ public class IEnumerableExtensionTest
 				2
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_1_2_2, true) == true);
-			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true) == false);
-			Assert.IsTrue(items.IsEquals(items_1_1_2_2, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false) == true);
+			Assert.IsTrue(items.IsEquals(items_1_1_2_2, true));
+			Assert.IsFalse(items.IsNotEquals(items_1_1_2_2, true));
+			Assert.IsFalse(items.IsEquals(items_1_1_2_2, false));
+			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false));
 
-			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true) == true);
-			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
+			Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, true));
+			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true));
+			Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, false));
+			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 
 
 			items = new int[]
@@ -582,15 +543,15 @@ public class IEnumerableExtensionTest
 				4
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_1_2_2, true) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true) == true);
-			Assert.IsTrue(items.IsEquals(items_1_1_2_2, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false) == true);
+			Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
+			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
+			Assert.IsFalse(items.IsEquals(items_1_1_2_2, false));
+			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false));
 
-			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true) == true);
-			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true) == false);
-			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
+			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true));
+			Assert.IsFalse(items.IsNotEquals(items_3_3_4_4_4, true));
+			Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, false));
+			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 
 
 			////////////////////////////////////////////////
@@ -604,10 +565,15 @@ public class IEnumerableExtensionTest
 				2
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_2_2, true) == true);
-			Assert.IsTrue(items.IsNotEquals(items_1_2_2, true) == false);
-			Assert.IsTrue(items.IsEquals(items_1_2_2, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_2_2, false) == true);
+			Assert.IsTrue(items.IsEquals(items_1_1_2_2, true));
+			Assert.IsFalse(items.IsNotEquals(items_1_1_2_2, true));
+			Assert.IsFalse(items.IsEquals(items_1_1_2_2, false));
+			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false));
+
+			Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, true));
+			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true));
+			Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, false));
+			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 
 
 			items = new int[]
@@ -616,15 +582,49 @@ public class IEnumerableExtensionTest
 				4
 			};
 
-			Assert.IsTrue(items.IsEquals(items_1_1_2_2, true) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true) == true);
-			Assert.IsTrue(items.IsEquals(items_1_1_2_2, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false) == true);
+			Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
+			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
+			Assert.IsFalse(items.IsEquals(items_1_1_2_2, false));
+			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false));
 
-			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true) == true);
-			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, true) == false);
-			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, false) == false);
-			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false) == true);
+			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true));
+			Assert.IsFalse(items.IsNotEquals(items_3_3_4_4_4, true));
+			Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, false));
+			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
+
+
+			////////////////////////////////////////////////
+			////////////////////////////////////////////////
+			////////////////////////////////////////////////
+
+
+			items = new int[]
+			{
+				1,
+				2
+			};
+
+			Assert.IsTrue(items.IsEquals(items_1_2_2, true));
+			Assert.IsFalse(items.IsNotEquals(items_1_2_2, true));
+			Assert.IsFalse(items.IsEquals(items_1_2_2, false));
+			Assert.IsTrue(items.IsNotEquals(items_1_2_2, false));
+
+
+			items = new int[]
+			{
+				3,
+				4
+			};
+
+			Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
+			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
+			Assert.IsFalse(items.IsEquals(items_1_1_2_2, false));
+			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, false));
+
+			Assert.IsTrue(items.IsEquals(items_3_3_4_4_4, true));
+			Assert.IsFalse(items.IsNotEquals(items_3_3_4_4_4, true));
+			Assert.IsFalse(items.IsEquals(items_3_3_4_4_4, false));
+			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 		}
 	}
 
@@ -683,14 +683,14 @@ public class IEnumerableExtensionTest
 					foreach (var item in itemGroup)
 					{
 						// !!!
-						Assert.IsTrue(item.GroupId == itemGroupId);
+						Assert.AreEqual(itemGroupId, item.GroupId);
 						// !!!
 					}
 				}
 			}
 		}
 		// !!!
-		Assert.IsTrue(itemsCount == items.Count);
+		Assert.AreEqual(items.Count, itemsCount);
 		// !!!
 	}
 
@@ -727,9 +727,9 @@ public class IEnumerableExtensionTest
 			Assert.IsTrue(itemEnumratesCounts.TryGetValue(
 				sourceItem,
 				out var itemEnumratesCount)
-				== true);
+);
 			// !!!
-			Assert.IsTrue(itemEnumratesCount.Number == 1);
+			Assert.AreEqual(1, itemEnumratesCount.Number);
 			// !!!
 		}
 	}
@@ -796,7 +796,7 @@ public class IEnumerableExtensionTest
 		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
 		var itemPage = searchPage?.ItemsInPage!;
 		var firstItemInPage = itemPage[0].Value;
-		Assert.IsTrue(firstItemInPage == "9999");
+		Assert.AreEqual("9999", firstItemInPage);
 
 		searchPage = await testItems.SearchAsync(
 			10,
@@ -845,6 +845,6 @@ public class IEnumerableExtensionTest
 		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
 		itemPage = searchPage?.ItemsInPage!;
 		firstItemInPage = itemPage[0].Value;
-		Assert.IsTrue(firstItemInPage == "9998");
+		Assert.AreEqual("9998", firstItemInPage);
 	}
 }

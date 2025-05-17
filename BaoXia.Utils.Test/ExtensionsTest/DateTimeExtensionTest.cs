@@ -24,16 +24,16 @@ public class DateTimeExtensionTest
 		{
 			var dateTimeInEast8 = dateTimeUnspecified.ToDateTimeInTimeZone(TimeZoneNumber.East8);
 			// !!!
-			Assert.IsTrue(
-				(dateTimeInEast8 - dateTimeUnspecified).TotalHours
-				== (8.0 - localTimeZoneOffset.TotalHours));
+			Assert.AreEqual(
+8.0 - localTimeZoneOffset.TotalHours, (dateTimeInEast8 - dateTimeUnspecified).TotalHours
+);
 			// !!!
 
 			var dateTimeInWest8 = dateTimeUnspecified.ToDateTimeInTimeZone(TimeZoneNumber.West8);
 			// !!!
-			Assert.IsTrue(
-				(dateTimeInWest8 - dateTimeUnspecified).TotalHours
-				== (-8.0 - localTimeZoneOffset.TotalHours));
+			Assert.AreEqual(
+-8.0 - localTimeZoneOffset.TotalHours, (dateTimeInWest8 - dateTimeUnspecified).TotalHours
+);
 			// !!!
 		}
 
@@ -41,14 +41,14 @@ public class DateTimeExtensionTest
 		{
 			var dateTimeInEast8 = dateTimeUtc.ToDateTimeInTimeZone(TimeZoneNumber.East8);
 			// !!!
-			Assert.IsTrue(
-				(dateTimeInEast8 - dateTimeUtc).TotalHours == 8);
+			Assert.AreEqual(
+8, (dateTimeInEast8 - dateTimeUtc).TotalHours);
 			// !!!
 
 			var dateTimeInWest8 = dateTimeUtc.ToDateTimeInTimeZone(TimeZoneNumber.West8);
 			// !!!
-			Assert.IsTrue(
-				(dateTimeInWest8 - dateTimeUtc).TotalHours == -8);
+			Assert.AreEqual(
+-8, (dateTimeInWest8 - dateTimeUtc).TotalHours);
 			// !!!
 		}
 
@@ -56,16 +56,16 @@ public class DateTimeExtensionTest
 		{
 			var dateTimeInEast8 = dateTimeNow.ToDateTimeInTimeZone(TimeZoneNumber.East8);
 			// !!!
-			Assert.IsTrue(
-				(dateTimeInEast8 - dateTimeNow).TotalHours
-				== (8.0 - localTimeZoneOffset.TotalHours));
+			Assert.AreEqual(
+8.0 - localTimeZoneOffset.TotalHours, (dateTimeInEast8 - dateTimeNow).TotalHours
+);
 			// !!!
 
 			var dateTimeInWest8 = dateTimeNow.ToDateTimeInTimeZone(TimeZoneNumber.West8);
 			// !!!
-			Assert.IsTrue(
-				(dateTimeInWest8 - dateTimeNow).TotalHours
-				== (-8.0 - localTimeZoneOffset.TotalHours));
+			Assert.AreEqual(
+-8.0 - localTimeZoneOffset.TotalHours, (dateTimeInWest8 - dateTimeNow).TotalHours
+);
 			// !!!
 		}
 	}
@@ -75,7 +75,7 @@ public class DateTimeExtensionTest
 	{
 		var dateTimeDefaultAtLocal = new DateTime(0, DateTimeKind.Local);
 		{
-			Assert.IsTrue(dateTimeDefaultAtLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
+			Assert.AreEqual(0, dateTimeDefaultAtLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, true));
 		}
 		var dateTimeDefaultAtLocal_MillisecondsFrom1970
 			= dateTimeDefaultAtLocal.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
@@ -83,18 +83,18 @@ public class DateTimeExtensionTest
 			= DateTimeUtil.DateTimeWithMillisecondsAfter1970(
 				dateTimeDefaultAtLocal_MillisecondsFrom1970);
 		{
-			Assert.IsTrue(dateTimeDefaultAtLocal == dateTimeFromMillisecondsFrom1970);
+			Assert.AreEqual(dateTimeFromMillisecondsFrom1970, dateTimeDefaultAtLocal);
 		}
 
 
 		var dateTimeDefaultAtUtc = new DateTime(0, DateTimeKind.Utc);
 		{
-			Assert.IsTrue(dateTimeDefaultAtUtc.MillisecondsFrom1970(TimeZoneNumber.Utc0, true) == 0);
+			Assert.AreEqual(0, dateTimeDefaultAtUtc.MillisecondsFrom1970(TimeZoneNumber.Utc0, true));
 		}
 		var dateTimeDefaultAtUtc_MillisecondsFrom1970 = dateTimeDefaultAtUtc.MillisecondsFrom1970(TimeZoneNumber.Utc0, false);
 		var dateTimeAtLocalFromMillisecondsFrom1970 = DateTimeUtil.DateTimeWithMillisecondsAfter1970(dateTimeDefaultAtUtc_MillisecondsFrom1970);
 		{
-			Assert.IsTrue((dateTimeAtLocalFromMillisecondsFrom1970 - dateTimeDefaultAtUtc) == TimeZoneInfo.Local.BaseUtcOffset);
+			Assert.AreEqual(TimeZoneInfo.Local.BaseUtcOffset, dateTimeAtLocalFromMillisecondsFrom1970 - dateTimeDefaultAtUtc);
 		}
 
 
@@ -105,18 +105,17 @@ public class DateTimeExtensionTest
 		var now = new DateTime(2024, 7, 10, 12, 0, 0);
 		var millisecondsFrom1970InUtc0 = now.MillisecondsFrom1970(TimeZoneNumber.Utc0, true);
 		{
-			Assert.IsTrue(millisecondsFrom1970InUtc0 == 1720584000000);
+			Assert.AreEqual(1720584000000, millisecondsFrom1970InUtc0);
 		}
 		var millisecondsFrom1970InEast8 = now.MillisecondsFrom1970(TimeZoneNumber.East8, true);
 		{
-			Assert.IsTrue((millisecondsFrom1970InEast8 - millisecondsFrom1970InUtc0)
-				== (1000 * 3600 * 8));
+			Assert.AreEqual(1000 * 3600 * 8, millisecondsFrom1970InEast8 - millisecondsFrom1970InUtc0);
 		}
 		var now2 = DateTimeOffsetUtil.DateTimeOffsetWithMillisecondsAfter1970(
 			millisecondsFrom1970InEast8,
 			TimeZoneNumber.East8);
 		{
-			Assert.IsTrue(now2 == now);
+			Assert.AreEqual(now, now2);
 		}
 	}
 
@@ -133,10 +132,9 @@ public class DateTimeExtensionTest
 			testSecondsCount,
 			TimeZoneNumber.Utc0);
 		// !!!
-		Assert.IsTrue(
-			(testTimeInLocal - utc1970_0_0_0_0_0).TotalHours
-			==
-			TimeZoneInfo.Local.BaseUtcOffset.TotalHours + testHoursCount);
+		Assert.AreEqual(
+			TimeZoneInfo.Local.BaseUtcOffset.TotalHours + testHoursCount, (testTimeInLocal - utc1970_0_0_0_0_0).TotalHours
+);
 		// !!!
 	}
 
@@ -208,7 +206,7 @@ public class DateTimeExtensionTest
 		DateTime laterTime_Year = standardTime.AddYears(1);
 		{
 			Assert.IsTrue(standardTime.CompareTo(earlierTime_Year, DateTimeField.Year) > 0);
-			Assert.IsTrue(standardTime.CompareTo(standardTime, DateTimeField.Year) == 0);
+			Assert.AreEqual(0, standardTime.CompareTo(standardTime, DateTimeField.Year));
 			Assert.IsTrue(standardTime.CompareTo(laterTime_Year, DateTimeField.Year) < 0);
 		}
 
@@ -217,7 +215,7 @@ public class DateTimeExtensionTest
 		DateTime laterTime_Month = standardTime.AddMonths(1);
 		{
 			Assert.IsTrue(standardTime.CompareTo(earlierTime_Month, DateTimeField.Month) > 0);
-			Assert.IsTrue(standardTime.CompareTo(standardTime, DateTimeField.Month) == 0);
+			Assert.AreEqual(0, standardTime.CompareTo(standardTime, DateTimeField.Month));
 			Assert.IsTrue(standardTime.CompareTo(laterTime_Month, DateTimeField.Month) < 0);
 		}
 
@@ -226,7 +224,7 @@ public class DateTimeExtensionTest
 		DateTime laterTime_Day = standardTime.AddDays(1);
 		{
 			Assert.IsTrue(standardTime.CompareTo(earlierTime_Day, DateTimeField.Day) > 0);
-			Assert.IsTrue(standardTime.CompareTo(standardTime, DateTimeField.Day) == 0);
+			Assert.AreEqual(0, standardTime.CompareTo(standardTime, DateTimeField.Day));
 			Assert.IsTrue(standardTime.CompareTo(laterTime_Day, DateTimeField.Day) < 0);
 		}
 
@@ -235,7 +233,7 @@ public class DateTimeExtensionTest
 		DateTime laterTime_Hour = standardTime.AddHours(1);
 		{
 			Assert.IsTrue(standardTime.CompareTo(earlierTime_Hour, DateTimeField.Hour) > 0);
-			Assert.IsTrue(standardTime.CompareTo(standardTime, DateTimeField.Hour) == 0);
+			Assert.AreEqual(0, standardTime.CompareTo(standardTime, DateTimeField.Hour));
 			Assert.IsTrue(standardTime.CompareTo(laterTime_Hour, DateTimeField.Hour) < 0);
 		}
 
@@ -244,7 +242,7 @@ public class DateTimeExtensionTest
 		DateTime laterTime_Minute = standardTime.AddMinutes(1);
 		{
 			Assert.IsTrue(standardTime.CompareTo(earlierTime_Minute, DateTimeField.Minute) > 0);
-			Assert.IsTrue(standardTime.CompareTo(standardTime, DateTimeField.Minute) == 0);
+			Assert.AreEqual(0, standardTime.CompareTo(standardTime, DateTimeField.Minute));
 			Assert.IsTrue(standardTime.CompareTo(laterTime_Minute, DateTimeField.Minute) < 0);
 		}
 
@@ -253,7 +251,7 @@ public class DateTimeExtensionTest
 		DateTime laterTime_Second = standardTime.AddSeconds(1);
 		{
 			Assert.IsTrue(standardTime.CompareTo(earlierTime_Second, DateTimeField.Second) > 0);
-			Assert.IsTrue(standardTime.CompareTo(standardTime, DateTimeField.Second) == 0);
+			Assert.AreEqual(0, standardTime.CompareTo(standardTime, DateTimeField.Second));
 			Assert.IsTrue(standardTime.CompareTo(laterTime_Second, DateTimeField.Second) < 0);
 		}
 
@@ -262,7 +260,7 @@ public class DateTimeExtensionTest
 		DateTime laterTime_Millisecond = standardTime.AddMilliseconds(1);
 		{
 			Assert.IsTrue(standardTime.CompareTo(earlierTime_Millisecond, DateTimeField.Millisecond) > 0);
-			Assert.IsTrue(standardTime.CompareTo(standardTime, DateTimeField.Millisecond) == 0);
+			Assert.AreEqual(0, standardTime.CompareTo(standardTime, DateTimeField.Millisecond));
 			Assert.IsTrue(standardTime.CompareTo(laterTime_Millisecond, DateTimeField.Millisecond) < 0);
 		}
 	}
@@ -291,7 +289,7 @@ public class DateTimeExtensionTest
 			}
 		}
 		// !!!
-		Assert.IsTrue(dateTimeContinuousCount == 5);
+		Assert.AreEqual(5, dateTimeContinuousCount);
 		// !!!
 
 
@@ -316,7 +314,7 @@ public class DateTimeExtensionTest
 			}
 		}
 		// !!!
-		Assert.IsTrue(dateTimeContinuousCount == 5);
+		Assert.AreEqual(5, dateTimeContinuousCount);
 		// !!!
 	}
 

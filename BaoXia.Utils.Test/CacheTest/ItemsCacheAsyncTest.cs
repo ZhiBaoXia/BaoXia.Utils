@@ -120,7 +120,7 @@ public class ItemsCacheAsyncTest
 			null,
 			null,
 			null);
-		Assert.IsTrue(true);
+		//Assert.IsTrue(true);
 	}
 
 	class TestItem
@@ -154,7 +154,7 @@ public class ItemsCacheAsyncTest
 
 		await Task.Delay(3000);
 
-		Assert.IsTrue(itemsCache.Count == 0);
+		Assert.AreEqual(0, itemsCache.Count);
 	}
 
 	[TestMethod]
@@ -200,7 +200,7 @@ public class ItemsCacheAsyncTest
 		await Task.Delay(3000);
 		retainTaskCancelSource.Cancel();
 
-		Assert.IsTrue(itemsCache.Count == itemsCount);
+		Assert.AreEqual(itemsCount, itemsCache.Count);
 	}
 
 	class TestItemForIndexTest(
@@ -433,7 +433,7 @@ public class ItemsCacheAsyncTest
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
 
-		Assert.IsTrue(itemsCache.Keys.Count == testItems.Length);
+		Assert.AreEqual(testItems.Length, itemsCache.Keys.Count);
 
 		// itemsGroupByProperty_1
 		foreach (var itemWithProperty_1 in itemsGroupByProperty_1)
@@ -444,17 +444,18 @@ public class ItemsCacheAsyncTest
 			var gotItem = itemIndexWith1Key.GetItem(itemKey);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith1Key.GetItems(itemKey);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
 				}
 				//
 			}
@@ -466,23 +467,24 @@ public class ItemsCacheAsyncTest
 			var objectItem = objectItems[^1];
 			var itemKeys = itemWithProperty_1_2.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 2);
+				Assert.AreEqual(2, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith2Keys.GetItem(itemKeys[0], itemKeys[1]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith2Keys.GetItems(itemKeys[0], itemKeys[1]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItem.Property2);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItem.Property2, itemInGotItems.Property2);
 				}
 				//
 			}
@@ -494,7 +496,7 @@ public class ItemsCacheAsyncTest
 			var objectItem = objectItems[^1];
 			var itemKeys = itemWithProperty_1_2_3.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 3);
+				Assert.AreEqual(3, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith3Keys.GetItem(
 				itemKeys[0],
@@ -502,8 +504,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[2]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith3Keys.GetItems(
@@ -512,12 +514,13 @@ public class ItemsCacheAsyncTest
 				itemKeys[2]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItem.Property2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItem.Property3);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItem.Property2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItem.Property3, itemInGotItems.Property3);
 				}
 				//
 			}
@@ -529,7 +532,7 @@ public class ItemsCacheAsyncTest
 			var objectItem = objectItems[^1];
 			var itemKeys = itemWithProperty_1_2_3_4.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 4);
+				Assert.AreEqual(4, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith4Keys.GetItem(
 				itemKeys[0],
@@ -538,8 +541,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[3]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith4Keys.GetItems(
@@ -549,13 +552,14 @@ public class ItemsCacheAsyncTest
 				itemKeys[3]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItem.Property2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItem.Property3);
-					Assert.IsTrue(itemInGotItems.Property4 == objectItem.Property4);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItem.Property2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItem.Property3, itemInGotItems.Property3);
+					Assert.AreEqual(objectItem.Property4, itemInGotItems.Property4);
 				}
 				//
 			}
@@ -567,7 +571,7 @@ public class ItemsCacheAsyncTest
 			var objectItem = objectItems[^1];
 			var itemKeys = itemWithProperty_1_2_3_4_5.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 5);
+				Assert.AreEqual(5, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith5Keys.GetItem(
 				itemKeys[0],
@@ -577,8 +581,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[4]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith5Keys.GetItems(
@@ -589,14 +593,15 @@ public class ItemsCacheAsyncTest
 				itemKeys[4]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItem.Property2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItem.Property3);
-					Assert.IsTrue(itemInGotItems.Property4 == objectItem.Property4);
-					Assert.IsTrue(itemInGotItems.Property5 == objectItem.Property5);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItem.Property2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItem.Property3, itemInGotItems.Property3);
+					Assert.AreEqual(objectItem.Property4, itemInGotItems.Property4);
+					Assert.AreEqual(objectItem.Property5, itemInGotItems.Property5);
 				}
 				//
 			}
@@ -608,7 +613,7 @@ public class ItemsCacheAsyncTest
 			var objectItem = objectItems[^1];
 			var itemKeys = itemWithProperty_1_2_3_4_5_6.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 6);
+				Assert.AreEqual(6, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith6Keys.GetItem(
 				itemKeys[0],
@@ -619,8 +624,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[5]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith6Keys.GetItems(
@@ -632,15 +637,16 @@ public class ItemsCacheAsyncTest
 				itemKeys[5]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItem.Property2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItem.Property3);
-					Assert.IsTrue(itemInGotItems.Property4 == objectItem.Property4);
-					Assert.IsTrue(itemInGotItems.Property5 == objectItem.Property5);
-					Assert.IsTrue(itemInGotItems.Property6 == objectItem.Property6);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItem.Property2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItem.Property3, itemInGotItems.Property3);
+					Assert.AreEqual(objectItem.Property4, itemInGotItems.Property4);
+					Assert.AreEqual(objectItem.Property5, itemInGotItems.Property5);
+					Assert.AreEqual(objectItem.Property6, itemInGotItems.Property6);
 				}
 				//
 			}
@@ -864,7 +870,7 @@ public class ItemsCacheAsyncTest
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
 
-		Assert.IsTrue(itemsCache.Keys.Count == testItems.Length);
+		Assert.AreEqual(testItems.Length, itemsCache.Keys.Count);
 
 		// itemsGroupByProperty_1
 		foreach (var itemWithProperty_1 in itemsGroupByProperty_1)
@@ -874,18 +880,19 @@ public class ItemsCacheAsyncTest
 			var gotItem = itemIndexWith1Key.GetItem(itemKey);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(objectItems.Find((item) => item.Id == gotItem.Id) != null);
+				Assert.IsNotNull(gotItem);
+				Assert.IsNotNull(objectItems.Find((item) => item.Id == gotItem.Id));
 				//
 			}
 			var gotItems = itemsIndexWith1Key.GetItems(itemKey);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				var objectItemProperty1 = objectItems.First().Property1;
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItemProperty1);
+					Assert.AreEqual(objectItemProperty1, itemInGotItems.Property1);
 				}
 				//
 			}
@@ -896,25 +903,26 @@ public class ItemsCacheAsyncTest
 			var objectItems = itemWithProperty_1_2.Value;
 			var itemKeys = itemWithProperty_1_2.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 2);
+				Assert.AreEqual(2, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith2Keys.GetItem(itemKeys[0], itemKeys[1]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(objectItems.Find((item) => item.Id == gotItem.Id) != null);
+				Assert.IsNotNull(gotItem);
+				Assert.IsNotNull(objectItems.Find((item) => item.Id == gotItem.Id));
 				//
 			}
 			var gotItems = itemsIndexWith2Keys.GetItems(itemKeys[0], itemKeys[1]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				var objectItemProperty1 = objectItems.First().Property1;
 				var objectItemProperty2 = objectItems.First().Property2;
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItemProperty1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItemProperty2);
+					Assert.AreEqual(objectItemProperty1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItemProperty2, itemInGotItems.Property2);
 				}
 				//
 			}
@@ -925,7 +933,7 @@ public class ItemsCacheAsyncTest
 			var objectItems = itemWithProperty_1_2_3.Value;
 			var itemKeys = itemWithProperty_1_2_3.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 3);
+				Assert.AreEqual(3, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith3Keys.GetItem(
 				itemKeys[0],
@@ -933,8 +941,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[2]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(objectItems.Find((item) => item.Id == gotItem.Id) != null);
+				Assert.IsNotNull(gotItem);
+				Assert.IsNotNull(objectItems.Find((item) => item.Id == gotItem.Id));
 				//
 			}
 			var gotItems = itemsIndexWith3Keys.GetItems(
@@ -943,15 +951,16 @@ public class ItemsCacheAsyncTest
 				itemKeys[2]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				var objectItemProperty1 = objectItems.First().Property1;
 				var objectItemProperty2 = objectItems.First().Property2;
 				var objectItemProperty3 = objectItems.First().Property3;
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItemProperty1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItemProperty2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItemProperty3);
+					Assert.AreEqual(objectItemProperty1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItemProperty2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItemProperty3, itemInGotItems.Property3);
 				}
 				//
 			}
@@ -962,7 +971,7 @@ public class ItemsCacheAsyncTest
 			var objectItems = itemWithProperty_1_2_3_4.Value;
 			var itemKeys = itemWithProperty_1_2_3_4.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 4);
+				Assert.AreEqual(4, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith4Keys.GetItem(
 				itemKeys[0],
@@ -971,8 +980,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[3]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(objectItems.Find((item) => item.Id == gotItem.Id) != null);
+				Assert.IsNotNull(gotItem);
+				Assert.IsNotNull(objectItems.Find((item) => item.Id == gotItem.Id));
 				//
 			}
 			var gotItems = itemsIndexWith4Keys.GetItems(
@@ -982,17 +991,18 @@ public class ItemsCacheAsyncTest
 				itemKeys[3]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				var objectItemProperty1 = objectItems.First().Property1;
 				var objectItemProperty2 = objectItems.First().Property2;
 				var objectItemProperty3 = objectItems.First().Property3;
 				var objectItemProperty4 = objectItems.First().Property4;
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItemProperty1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItemProperty2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItemProperty3);
-					Assert.IsTrue(itemInGotItems.Property4 == objectItemProperty4);
+					Assert.AreEqual(objectItemProperty1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItemProperty2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItemProperty3, itemInGotItems.Property3);
+					Assert.AreEqual(objectItemProperty4, itemInGotItems.Property4);
 				}
 				//
 			}
@@ -1003,7 +1013,7 @@ public class ItemsCacheAsyncTest
 			var objectItems = itemWithProperty_1_2_3_4_5.Value;
 			var itemKeys = itemWithProperty_1_2_3_4_5.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 5);
+				Assert.AreEqual(5, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith5Keys.GetItem(
 				itemKeys[0],
@@ -1013,8 +1023,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[4]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(objectItems.Find((item) => item.Id == gotItem.Id) != null);
+				Assert.IsNotNull(gotItem);
+				Assert.IsNotNull(objectItems.Find((item) => item.Id == gotItem.Id));
 				//
 			}
 			var gotItems = itemsIndexWith5Keys.GetItems(
@@ -1025,7 +1035,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[4]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				var objectItemProperty1 = objectItems.First().Property1;
 				var objectItemProperty2 = objectItems.First().Property2;
 				var objectItemProperty3 = objectItems.First().Property3;
@@ -1033,11 +1044,11 @@ public class ItemsCacheAsyncTest
 				var objectItemProperty5 = objectItems.First().Property5;
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItemProperty1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItemProperty2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItemProperty3);
-					Assert.IsTrue(itemInGotItems.Property4 == objectItemProperty4);
-					Assert.IsTrue(itemInGotItems.Property5 == objectItemProperty5);
+					Assert.AreEqual(objectItemProperty1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItemProperty2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItemProperty3, itemInGotItems.Property3);
+					Assert.AreEqual(objectItemProperty4, itemInGotItems.Property4);
+					Assert.AreEqual(objectItemProperty5, itemInGotItems.Property5);
 				}
 				//
 			}
@@ -1048,7 +1059,7 @@ public class ItemsCacheAsyncTest
 			var objectItems = itemWithProperty_1_2_3_4_5_6.Value;
 			var itemKeys = itemWithProperty_1_2_3_4_5_6.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 6);
+				Assert.AreEqual(6, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith6Keys.GetItem(
 				itemKeys[0],
@@ -1059,8 +1070,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[5]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(objectItems.Find((item) => item.Id == gotItem.Id) != null);
+				Assert.IsNotNull(gotItem);
+				Assert.IsNotNull(objectItems.Find((item) => item.Id == gotItem.Id));
 				//
 			}
 			var gotItems = itemsIndexWith6Keys.GetItems(
@@ -1072,7 +1083,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[5]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				var objectItemProperty1 = objectItems.First().Property1;
 				var objectItemProperty2 = objectItems.First().Property2;
 				var objectItemProperty3 = objectItems.First().Property3;
@@ -1081,12 +1093,12 @@ public class ItemsCacheAsyncTest
 				var objectItemProperty6 = objectItems.First().Property6;
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItemProperty1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItemProperty2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItemProperty3);
-					Assert.IsTrue(itemInGotItems.Property4 == objectItemProperty4);
-					Assert.IsTrue(itemInGotItems.Property5 == objectItemProperty5);
-					Assert.IsTrue(itemInGotItems.Property6 == objectItemProperty6);
+					Assert.AreEqual(objectItemProperty1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItemProperty2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItemProperty3, itemInGotItems.Property3);
+					Assert.AreEqual(objectItemProperty4, itemInGotItems.Property4);
+					Assert.AreEqual(objectItemProperty5, itemInGotItems.Property5);
+					Assert.AreEqual(objectItemProperty6, itemInGotItems.Property6);
 				}
 				//
 			}
@@ -1304,7 +1316,7 @@ public class ItemsCacheAsyncTest
 		////////////////////////////////////////////////
 		////////////////////////////////////////////////
 
-		Assert.IsTrue(itemsCache.Keys.Count == testItems.Length);
+		Assert.AreEqual(testItems.Length, itemsCache.Keys.Count);
 
 		// itemsGroupByProperty_1
 		foreach (var itemWithProperty_1 in itemsGroupByProperty_1)
@@ -1315,17 +1327,18 @@ public class ItemsCacheAsyncTest
 			var gotItem = itemIndexWith1Key.GetItem(itemKey);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith1Key.GetItems(itemKey);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
 				}
 				//
 			}
@@ -1337,23 +1350,24 @@ public class ItemsCacheAsyncTest
 			var objectItem = objectItems[^1];
 			var itemKeys = itemWithProperty_1_2.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 2);
+				Assert.AreEqual(2, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith2Keys.GetItem(itemKeys[0], itemKeys[1]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith2Keys.GetItems(itemKeys[0], itemKeys[1]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItem.Property2);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItem.Property2, itemInGotItems.Property2);
 				}
 				//
 			}
@@ -1365,7 +1379,7 @@ public class ItemsCacheAsyncTest
 			var objectItem = objectItems[^1];
 			var itemKeys = itemWithProperty_1_2_3.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 3);
+				Assert.AreEqual(3, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith3Keys.GetItem(
 				itemKeys[0],
@@ -1373,8 +1387,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[2]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith3Keys.GetItems(
@@ -1383,12 +1397,13 @@ public class ItemsCacheAsyncTest
 				itemKeys[2]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItem.Property2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItem.Property3);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItem.Property2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItem.Property3, itemInGotItems.Property3);
 				}
 				//
 			}
@@ -1400,7 +1415,7 @@ public class ItemsCacheAsyncTest
 			var objectItem = objectItems[^1];
 			var itemKeys = itemWithProperty_1_2_3_4.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 4);
+				Assert.AreEqual(4, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith4Keys.GetItem(
 				itemKeys[0],
@@ -1409,8 +1424,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[3]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith4Keys.GetItems(
@@ -1420,13 +1435,14 @@ public class ItemsCacheAsyncTest
 				itemKeys[3]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItem.Property2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItem.Property3);
-					Assert.IsTrue(itemInGotItems.Property4 == objectItem.Property4);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItem.Property2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItem.Property3, itemInGotItems.Property3);
+					Assert.AreEqual(objectItem.Property4, itemInGotItems.Property4);
 				}
 				//
 			}
@@ -1438,7 +1454,7 @@ public class ItemsCacheAsyncTest
 			var objectItem = objectItems[^1];
 			var itemKeys = itemWithProperty_1_2_3_4_5.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 5);
+				Assert.AreEqual(5, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith5Keys.GetItem(
 				itemKeys[0],
@@ -1448,8 +1464,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[4]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith5Keys.GetItems(
@@ -1460,14 +1476,15 @@ public class ItemsCacheAsyncTest
 				itemKeys[4]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItem.Property2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItem.Property3);
-					Assert.IsTrue(itemInGotItems.Property4 == objectItem.Property4);
-					Assert.IsTrue(itemInGotItems.Property5 == objectItem.Property5);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItem.Property2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItem.Property3, itemInGotItems.Property3);
+					Assert.AreEqual(objectItem.Property4, itemInGotItems.Property4);
+					Assert.AreEqual(objectItem.Property5, itemInGotItems.Property5);
 				}
 				//
 			}
@@ -1479,7 +1496,7 @@ public class ItemsCacheAsyncTest
 			var objectItem = objectItems[^1];
 			var itemKeys = itemWithProperty_1_2_3_4_5_6.Key.ToIntArray();
 			{
-				Assert.IsTrue(itemKeys.Length == 6);
+				Assert.AreEqual(6, itemKeys.Length);
 			}
 			var gotItem = itemIndexWith6Keys.GetItem(
 				itemKeys[0],
@@ -1490,8 +1507,8 @@ public class ItemsCacheAsyncTest
 				itemKeys[5]);
 			{
 				//
-				Assert.IsTrue(gotItem != null);
-				Assert.IsTrue(gotItem.Id == objectItem.Id);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItem.Id, gotItem.Id);
 				//
 			}
 			var gotItems = itemsIndexWith6Keys.GetItems(
@@ -1503,15 +1520,16 @@ public class ItemsCacheAsyncTest
 				itemKeys[5]);
 			{
 				//
-				Assert.IsTrue(gotItems?.Length == objectItems.Count);
+				Assert.IsNotNull(gotItem);
+				Assert.AreEqual(objectItems.Count, gotItems!.Length);
 				foreach (var itemInGotItems in gotItems)
 				{
-					Assert.IsTrue(itemInGotItems.Property1 == objectItem.Property1);
-					Assert.IsTrue(itemInGotItems.Property2 == objectItem.Property2);
-					Assert.IsTrue(itemInGotItems.Property3 == objectItem.Property3);
-					Assert.IsTrue(itemInGotItems.Property4 == objectItem.Property4);
-					Assert.IsTrue(itemInGotItems.Property5 == objectItem.Property5);
-					Assert.IsTrue(itemInGotItems.Property6 == objectItem.Property6);
+					Assert.AreEqual(objectItem.Property1, itemInGotItems.Property1);
+					Assert.AreEqual(objectItem.Property2, itemInGotItems.Property2);
+					Assert.AreEqual(objectItem.Property3, itemInGotItems.Property3);
+					Assert.AreEqual(objectItem.Property4, itemInGotItems.Property4);
+					Assert.AreEqual(objectItem.Property5, itemInGotItems.Property5);
+					Assert.AreEqual(objectItem.Property6, itemInGotItems.Property6);
 				}
 				//
 			}
@@ -1626,40 +1644,40 @@ public class ItemsCacheAsyncTest
 			new(1, 1, 2, 3, 4, 5, 6))
 			.Wait();
 		{
-			Assert.IsTrue(itemIndexWith1Key.GetItem(1)!.Id == 1);
-			Assert.IsTrue(itemIndexWith2Keys.GetItem(1, 2)!.Id == 1);
-			Assert.IsTrue(itemIndexWith3Keys.GetItem(1, 2, 3)!.Id == 1);
-			Assert.IsTrue(itemIndexWith4Keys.GetItem(1, 2, 3, 4)!.Id == 1);
-			Assert.IsTrue(itemIndexWith5Keys.GetItem(1, 2, 3, 4, 5)!.Id == 1);
-			Assert.IsTrue(itemIndexWith6Keys.GetItem(1, 2, 3, 4, 5, 6)!.Id == 1);
+			Assert.AreEqual(1, itemIndexWith1Key.GetItem(1)!.Id);
+			Assert.AreEqual(1, itemIndexWith2Keys.GetItem(1, 2)!.Id);
+			Assert.AreEqual(1, itemIndexWith3Keys.GetItem(1, 2, 3)!.Id);
+			Assert.AreEqual(1, itemIndexWith4Keys.GetItem(1, 2, 3, 4)!.Id);
+			Assert.AreEqual(1, itemIndexWith5Keys.GetItem(1, 2, 3, 4, 5)!.Id);
+			Assert.AreEqual(1, itemIndexWith6Keys.GetItem(1, 2, 3, 4, 5, 6)!.Id);
 		}
 		itemsCache.UpdateAsync(
 			1,
 			new(1, 11, 12, 13, 14, 15, 16))
 			.Wait();
 		{
-			Assert.IsTrue(itemIndexWith1Key.GetItem(1) == null);
-			Assert.IsTrue(itemIndexWith2Keys.GetItem(1, 2) == null);
-			Assert.IsTrue(itemIndexWith3Keys.GetItem(1, 2, 3) == null);
-			Assert.IsTrue(itemIndexWith4Keys.GetItem(1, 2, 3, 4) == null);
-			Assert.IsTrue(itemIndexWith5Keys.GetItem(1, 2, 3, 4, 5) == null);
-			Assert.IsTrue(itemIndexWith6Keys.GetItem(1, 2, 3, 4, 5, 6) == null);
+			Assert.IsNull(itemIndexWith1Key.GetItem(1));
+			Assert.IsNull(itemIndexWith2Keys.GetItem(1, 2));
+			Assert.IsNull(itemIndexWith3Keys.GetItem(1, 2, 3));
+			Assert.IsNull(itemIndexWith4Keys.GetItem(1, 2, 3, 4));
+			Assert.IsNull(itemIndexWith5Keys.GetItem(1, 2, 3, 4, 5));
+			Assert.IsNull(itemIndexWith6Keys.GetItem(1, 2, 3, 4, 5, 6));
 			//
-			Assert.IsTrue(itemIndexWith1Key.GetItem(11)!.Id == 1);
-			Assert.IsTrue(itemIndexWith2Keys.GetItem(11, 12)!.Id == 1);
-			Assert.IsTrue(itemIndexWith3Keys.GetItem(11, 12, 13)!.Id == 1);
-			Assert.IsTrue(itemIndexWith4Keys.GetItem(11, 12, 13, 14)!.Id == 1);
-			Assert.IsTrue(itemIndexWith5Keys.GetItem(11, 12, 13, 14, 15)!.Id == 1);
-			Assert.IsTrue(itemIndexWith6Keys.GetItem(11, 12, 13, 14, 15, 16)!.Id == 1);
+			Assert.AreEqual(1, itemIndexWith1Key.GetItem(11)!.Id);
+			Assert.AreEqual(1, itemIndexWith2Keys.GetItem(11, 12)!.Id);
+			Assert.AreEqual(1, itemIndexWith3Keys.GetItem(11, 12, 13)!.Id);
+			Assert.AreEqual(1, itemIndexWith4Keys.GetItem(11, 12, 13, 14)!.Id);
+			Assert.AreEqual(1, itemIndexWith5Keys.GetItem(11, 12, 13, 14, 15)!.Id);
+			Assert.AreEqual(1, itemIndexWith6Keys.GetItem(11, 12, 13, 14, 15, 16)!.Id);
 		}
 		itemsCache.RemoveAsync(1).Wait();
 		{
-			Assert.IsTrue(itemIndexWith1Key.GetItem(11) == null);
-			Assert.IsTrue(itemIndexWith2Keys.GetItem(11, 12) == null);
-			Assert.IsTrue(itemIndexWith3Keys.GetItem(11, 12, 13) == null);
-			Assert.IsTrue(itemIndexWith4Keys.GetItem(11, 12, 13, 14) == null);
-			Assert.IsTrue(itemIndexWith5Keys.GetItem(11, 12, 13, 14, 15) == null);
-			Assert.IsTrue(itemIndexWith6Keys.GetItem(11, 12, 13, 14, 15, 16) == null);
+			Assert.IsNull(itemIndexWith1Key.GetItem(11));
+			Assert.IsNull(itemIndexWith2Keys.GetItem(11, 12));
+			Assert.IsNull(itemIndexWith3Keys.GetItem(11, 12, 13));
+			Assert.IsNull(itemIndexWith4Keys.GetItem(11, 12, 13, 14));
+			Assert.IsNull(itemIndexWith5Keys.GetItem(11, 12, 13, 14, 15));
+			Assert.IsNull(itemIndexWith6Keys.GetItem(11, 12, 13, 14, 15, 16));
 		}
 
 		////////////////////////////////////////////////
@@ -1675,19 +1693,19 @@ public class ItemsCacheAsyncTest
 			new(2, 1, 2, 3, 4, 5, 6))
 			.Wait();
 		{
-			Assert.IsTrue(itemIndexWith1Key.GetItem(1)!.Id == 2);
-			Assert.IsTrue(itemIndexWith2Keys.GetItem(1, 2)!.Id == 2);
-			Assert.IsTrue(itemIndexWith3Keys.GetItem(1, 2, 3)!.Id == 2);
-			Assert.IsTrue(itemIndexWith4Keys.GetItem(1, 2, 3, 4)!.Id == 2);
-			Assert.IsTrue(itemIndexWith5Keys.GetItem(1, 2, 3, 4, 5)!.Id == 2);
-			Assert.IsTrue(itemIndexWith6Keys.GetItem(1, 2, 3, 4, 5, 6)!.Id == 2);
+			Assert.AreEqual(2, itemIndexWith1Key.GetItem(1)!.Id);
+			Assert.AreEqual(2, itemIndexWith2Keys.GetItem(1, 2)!.Id);
+			Assert.AreEqual(2, itemIndexWith3Keys.GetItem(1, 2, 3)!.Id);
+			Assert.AreEqual(2, itemIndexWith4Keys.GetItem(1, 2, 3, 4)!.Id);
+			Assert.AreEqual(2, itemIndexWith5Keys.GetItem(1, 2, 3, 4, 5)!.Id);
+			Assert.AreEqual(2, itemIndexWith6Keys.GetItem(1, 2, 3, 4, 5, 6)!.Id);
 			//
-			Assert.IsTrue(itemsIndexWith1Key.GetItems(1)!.Length == 2);
-			Assert.IsTrue(itemsIndexWith2Keys.GetItems(1, 2)!.Length == 2);
-			Assert.IsTrue(itemsIndexWith3Keys.GetItems(1, 2, 3)!.Length == 2);
-			Assert.IsTrue(itemsIndexWith4Keys.GetItems(1, 2, 3, 4)!.Length == 2);
-			Assert.IsTrue(itemsIndexWith5Keys.GetItems(1, 2, 3, 4, 5)!.Length == 2);
-			Assert.IsTrue(itemsIndexWith6Keys.GetItems(1, 2, 3, 4, 5, 6)!.Length == 2);
+			Assert.AreEqual(2, itemsIndexWith1Key.GetItems(1)!.Length);
+			Assert.AreEqual(2, itemsIndexWith2Keys.GetItems(1, 2)!.Length);
+			Assert.AreEqual(2, itemsIndexWith3Keys.GetItems(1, 2, 3)!.Length);
+			Assert.AreEqual(2, itemsIndexWith4Keys.GetItems(1, 2, 3, 4)!.Length);
+			Assert.AreEqual(2, itemsIndexWith5Keys.GetItems(1, 2, 3, 4, 5)!.Length);
+			Assert.AreEqual(2, itemsIndexWith6Keys.GetItems(1, 2, 3, 4, 5, 6)!.Length);
 
 		}
 		itemsCache.UpdateAsync(
@@ -1695,43 +1713,43 @@ public class ItemsCacheAsyncTest
 			new(1, 11, 12, 13, 14, 15, 16))
 			.Wait();
 		{
-			Assert.IsTrue(itemIndexWith1Key.GetItem(1) == null);
-			Assert.IsTrue(itemIndexWith2Keys.GetItem(1, 2) == null);
-			Assert.IsTrue(itemIndexWith3Keys.GetItem(1, 2, 3) == null);
-			Assert.IsTrue(itemIndexWith4Keys.GetItem(1, 2, 3, 4) == null);
-			Assert.IsTrue(itemIndexWith5Keys.GetItem(1, 2, 3, 4, 5) == null);
-			Assert.IsTrue(itemIndexWith6Keys.GetItem(1, 2, 3, 4, 5, 6) == null);
+			Assert.IsNull(itemIndexWith1Key.GetItem(1));
+			Assert.IsNull(itemIndexWith2Keys.GetItem(1, 2));
+			Assert.IsNull(itemIndexWith3Keys.GetItem(1, 2, 3));
+			Assert.IsNull(itemIndexWith4Keys.GetItem(1, 2, 3, 4));
+			Assert.IsNull(itemIndexWith5Keys.GetItem(1, 2, 3, 4, 5));
+			Assert.IsNull(itemIndexWith6Keys.GetItem(1, 2, 3, 4, 5, 6));
 			//
-			Assert.IsTrue(itemIndexWith1Key.GetItem(11)!.Id == 1);
-			Assert.IsTrue(itemIndexWith2Keys.GetItem(11, 12)!.Id == 1);
-			Assert.IsTrue(itemIndexWith3Keys.GetItem(11, 12, 13)!.Id == 1);
-			Assert.IsTrue(itemIndexWith4Keys.GetItem(11, 12, 13, 14)!.Id == 1);
-			Assert.IsTrue(itemIndexWith5Keys.GetItem(11, 12, 13, 14, 15)!.Id == 1);
-			Assert.IsTrue(itemIndexWith6Keys.GetItem(11, 12, 13, 14, 15, 16)!.Id == 1);
+			Assert.AreEqual(1, itemIndexWith1Key.GetItem(11)!.Id);
+			Assert.AreEqual(1, itemIndexWith2Keys.GetItem(11, 12)!.Id);
+			Assert.AreEqual(1, itemIndexWith3Keys.GetItem(11, 12, 13)!.Id);
+			Assert.AreEqual(1, itemIndexWith4Keys.GetItem(11, 12, 13, 14)!.Id);
+			Assert.AreEqual(1, itemIndexWith5Keys.GetItem(11, 12, 13, 14, 15)!.Id);
+			Assert.AreEqual(1, itemIndexWith6Keys.GetItem(11, 12, 13, 14, 15, 16)!.Id);
 			//
-			Assert.IsTrue(itemsIndexWith1Key.GetItems(1)!.Length == 1);
-			Assert.IsTrue(itemsIndexWith2Keys.GetItems(1, 2)!.Length == 1);
-			Assert.IsTrue(itemsIndexWith3Keys.GetItems(1, 2, 3)!.Length == 1);
-			Assert.IsTrue(itemsIndexWith4Keys.GetItems(1, 2, 3, 4)!.Length == 1);
-			Assert.IsTrue(itemsIndexWith5Keys.GetItems(1, 2, 3, 4, 5)!.Length == 1);
-			Assert.IsTrue(itemsIndexWith6Keys.GetItems(1, 2, 3, 4, 5, 6)!.Length == 1);
+			Assert.AreEqual(1, itemsIndexWith1Key.GetItems(1)!.Length);
+			Assert.AreEqual(1, itemsIndexWith2Keys.GetItems(1, 2)!.Length);
+			Assert.AreEqual(1, itemsIndexWith3Keys.GetItems(1, 2, 3)!.Length);
+			Assert.AreEqual(1, itemsIndexWith4Keys.GetItems(1, 2, 3, 4)!.Length);
+			Assert.AreEqual(1, itemsIndexWith5Keys.GetItems(1, 2, 3, 4, 5)!.Length);
+			Assert.AreEqual(1, itemsIndexWith6Keys.GetItems(1, 2, 3, 4, 5, 6)!.Length);
 		}
 		itemsCache.RemoveAsync(1)
 			.Wait();
 		{
-			Assert.IsTrue(itemIndexWith1Key.GetItem(11) == null);
-			Assert.IsTrue(itemIndexWith2Keys.GetItem(11, 12) == null);
-			Assert.IsTrue(itemIndexWith3Keys.GetItem(11, 12, 13) == null);
-			Assert.IsTrue(itemIndexWith4Keys.GetItem(11, 12, 13, 14) == null);
-			Assert.IsTrue(itemIndexWith5Keys.GetItem(11, 12, 13, 14, 15) == null);
-			Assert.IsTrue(itemIndexWith6Keys.GetItem(11, 12, 13, 14, 15, 16) == null);
+			Assert.IsNull(itemIndexWith1Key.GetItem(11));
+			Assert.IsNull(itemIndexWith2Keys.GetItem(11, 12));
+			Assert.IsNull(itemIndexWith3Keys.GetItem(11, 12, 13));
+			Assert.IsNull(itemIndexWith4Keys.GetItem(11, 12, 13, 14));
+			Assert.IsNull(itemIndexWith5Keys.GetItem(11, 12, 13, 14, 15));
+			Assert.IsNull(itemIndexWith6Keys.GetItem(11, 12, 13, 14, 15, 16));
 			//
-			Assert.IsTrue(itemsIndexWith1Key.GetItems(1)!.Length == 1);
-			Assert.IsTrue(itemsIndexWith2Keys.GetItems(1, 2)!.Length == 1);
-			Assert.IsTrue(itemsIndexWith3Keys.GetItems(1, 2, 3)!.Length == 1);
-			Assert.IsTrue(itemsIndexWith4Keys.GetItems(1, 2, 3, 4)!.Length == 1);
-			Assert.IsTrue(itemsIndexWith5Keys.GetItems(1, 2, 3, 4, 5)!.Length == 1);
-			Assert.IsTrue(itemsIndexWith6Keys.GetItems(1, 2, 3, 4, 5, 6)!.Length == 1);
+			Assert.AreEqual(1, itemsIndexWith1Key.GetItems(1)!.Length);
+			Assert.AreEqual(1, itemsIndexWith2Keys.GetItems(1, 2)!.Length);
+			Assert.AreEqual(1, itemsIndexWith3Keys.GetItems(1, 2, 3)!.Length);
+			Assert.AreEqual(1, itemsIndexWith4Keys.GetItems(1, 2, 3, 4)!.Length);
+			Assert.AreEqual(1, itemsIndexWith5Keys.GetItems(1, 2, 3, 4, 5)!.Length);
+			Assert.AreEqual(1, itemsIndexWith6Keys.GetItems(1, 2, 3, 4, 5, 6)!.Length);
 		}
 	}
 }

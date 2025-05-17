@@ -175,7 +175,7 @@ namespace BaoXia.Utils.Test.ConcurrentTools
 						// !!!
 						lock (stepNumberLocker)
 						{
-							Assert.IsTrue(stepNumber == 2);
+							Assert.AreEqual(2, stepNumber);
 							stepNumber = 3;
 						}
 					});

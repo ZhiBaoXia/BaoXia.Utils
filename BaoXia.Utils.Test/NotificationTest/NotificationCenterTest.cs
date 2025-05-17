@@ -164,8 +164,8 @@ public class NotificationCenterTest
 		// !!!
 		Task.WaitAll([.. listenerTasks]);
 		// !!!
-		Assert.IsTrue(receivedDictionaryParam_Value == testDictionaryParam_Value);
-		Assert.IsTrue(receivedObjectParam == testObjectParam);
+		Assert.AreEqual(testDictionaryParam_Value, receivedDictionaryParam_Value);
+		Assert.AreEqual(testObjectParam, receivedObjectParam);
 		// !!!
 	}
 
@@ -220,12 +220,12 @@ public class NotificationCenterTest
 						// !!!
 						Assert.IsTrue(notification.Name.Equals(
 							NotificationNames.ParamUpdated));
-						Assert.IsTrue(isStopped == false);
+						Assert.IsFalse(isStopped);
 						// !!!
 
 						NotificationParamObject? paramObject
 						= notification.ParamObject as NotificationParamObject;
-						Assert.IsTrue(paramObject != null);
+						Assert.IsNotNull(paramObject);
 						//Assert.IsTrue(paramObject.IsListened != true);
 						{
 							paramObject.IsListened = true;
@@ -379,11 +379,11 @@ public class NotificationCenterTest
 		// !!!
 
 		// 发送的消息，都接收到了。
-		Assert.IsTrue((testTotalNotificationsCountSended * listenersCount) == testTotalNotificationsCountReceived);
+		Assert.AreEqual(testTotalNotificationsCountReceived, testTotalNotificationsCountSended * listenersCount);
 		// 所有发送的消息参数，都被接收者标记了。
 		foreach (var testNotificationParamObject in testNotificationParamObjects)
 		{
-			Assert.IsTrue(testNotificationParamObject.IsListened == true);
+			Assert.IsTrue(testNotificationParamObject.IsListened);
 		}
 		// !!!
 	}
@@ -510,8 +510,8 @@ public class NotificationCenterTest
 		// !!!
 		Task.WaitAll([.. listenerTasks]);
 		// !!!
-		Assert.IsTrue(receivedDictionaryParam_Value == testDictionaryParam_Value);
-		Assert.IsTrue(receivedObjectParam == testObjectParam);
+		Assert.AreEqual(testDictionaryParam_Value, receivedDictionaryParam_Value);
+		Assert.AreEqual(testObjectParam, receivedObjectParam);
 		// !!!
 	}
 
@@ -565,12 +565,12 @@ public class NotificationCenterTest
 						// !!!
 						Assert.IsTrue(notification.Name.Equals(
 							NotificationNames.ParamUpdated));
-						Assert.IsTrue(isStopped == false);
+						Assert.IsFalse(isStopped);
 						// !!!
 
 						var paramObject
 						= notification.ParamObject as NotificationParamObject;
-						Assert.IsTrue(paramObject != null);
+						Assert.IsNotNull(paramObject);
 						//Assert.IsTrue(paramObject.IsListened != true);
 						{
 							paramObject.IsListened = true;
@@ -603,7 +603,7 @@ public class NotificationCenterTest
 							== true)
 						{
 							// !!!
-							Assert.IsTrue(objectValueForTestDictionaryParam_Key?.Equals(testDictionaryParam_Value) == true);
+							Assert.IsTrue(objectValueForTestDictionaryParam_Key?.Equals(testDictionaryParam_Value));
 							// !!!
 						}
 						else
@@ -729,11 +729,11 @@ public class NotificationCenterTest
 		// !!!
 
 		// 发送的消息，都接收到了。
-		Assert.IsTrue((testTotalNotificationsCountSended * listenersCount) == testTotalNotificationsCountReceived);
+		Assert.AreEqual(testTotalNotificationsCountReceived, testTotalNotificationsCountSended * listenersCount);
 		// 所有发送的消息参数，都被接收者标记了。
 		foreach (var testNotificationParamObject in testNotificationParamObjects)
 		{
-			Assert.IsTrue(testNotificationParamObject.IsListened == true);
+			Assert.IsTrue(testNotificationParamObject.IsListened);
 		}
 		// !!!
 	}
@@ -854,8 +854,8 @@ public class NotificationCenterTest
 		// !!!
 		Task.WaitAll([.. listenerTasks]);
 		// !!!
-		Assert.IsTrue(receivedDictionaryParam_Value == testDictionaryParam_Value);
-		Assert.IsTrue(receivedObjectParam == testObjectParam);
+		Assert.AreEqual(testDictionaryParam_Value, receivedDictionaryParam_Value);
+		Assert.AreEqual(testObjectParam, receivedObjectParam);
 		// !!!
 	}
 

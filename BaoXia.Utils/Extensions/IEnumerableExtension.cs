@@ -105,12 +105,21 @@ public static class IEnumerableExtension
 
 	public static bool IsEmpty<ItemType>([NotNullWhen(false)] this IEnumerable<ItemType>? items)
 	{
-		if (items == null
-			|| items.GetCount() < 1)
+		if (items == null)
 		{
 			return true;
 		}
-		return false;
+
+		if (items is ICollection collection)
+		{
+			return collection.Count < 1;
+		}
+
+		foreach (var _ in items)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public static bool IsNotEmpty<ItemType>([NotNullWhen(true)] this IEnumerable<ItemType>? items)

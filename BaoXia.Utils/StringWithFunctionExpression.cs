@@ -275,10 +275,10 @@ namespace BaoXia.Utils
 									else
 									{
 										// !!!
-										functionParams = new string[]
-										{
+										functionParams =
+										[
 											functionParamsString
-										};
+										];
 										// !!!
 									}
 

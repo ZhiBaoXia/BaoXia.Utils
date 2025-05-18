@@ -25,8 +25,8 @@ namespace BaoXia.Utils.Test.MathToolsTest
 
 			public double? CalculationResult { get; set; }
 		}
-		static readonly TestItem[] TestItems_ForOperatorsCount = new TestItem[]
-		   {
+		static readonly TestItem[] TestItems_ForOperatorsCount =
+		   [
 			new TestItem
 			{
 				MathExpression = "1 +1",
@@ -107,10 +107,10 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				MathExpression = "1 + (2 + (3 *  5)) % 2",
 				CalculationResult = 2
 			}
-		   };
+		   ];
 
-		static readonly TestItem[] TestItems_WithCalculation = new TestItem[]
-		{
+		static readonly TestItem[] TestItems_WithCalculation =
+		[
 			new TestItem
 			{
 				MathExpression = "0==1",
@@ -246,10 +246,10 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				MathExpression = "1 + 2 + 3 == 3 * 2",
 				CalculationResult = 1
 			}
-		};
+		];
 
-		static readonly TestItem[] TestItems_WithCompareOperator = new TestItem[]
-		{
+		static readonly TestItem[] TestItems_WithCompareOperator =
+		[
                         // 测试 “<”：
                         //new TestItem
                         //{
@@ -331,7 +331,7 @@ namespace BaoXia.Utils.Test.MathToolsTest
 				MathExpression = "1.0 > 0.0",
 				CalculationResult = 1.0
 			},
-		};
+		];
 
 		[TestMethod]
 		public void GetOperatorsFromStringTest()

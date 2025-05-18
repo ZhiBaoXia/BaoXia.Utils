@@ -32,9 +32,9 @@ namespace BaoXia.Utils.ConcurrentTools
 
 		#region @自身属性
 
-		protected List<Task> _allTasks = new();
+		protected List<Task> _allTasks = [];
 
-		protected List<Task> _taskQueue = new();
+		protected List<Task> _taskQueue = [];
 
 		public Task[] AllTasks
 		{

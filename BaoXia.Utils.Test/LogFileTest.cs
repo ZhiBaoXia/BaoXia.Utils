@@ -106,7 +106,7 @@ namespace BaoXia.Utils.Test
 			////////////////////////////////////////////////
 			// !!!
 			string keyInLogContentToIgnoreLog = "应该被忽略的日志";
-			debugLogFile.KeysInLogContentToIgnoreLogs = new string[] { keyInLogContentToIgnoreLog };
+			debugLogFile.KeysInLogContentToIgnoreLogs = [keyInLogContentToIgnoreLog];
 			// !!!
 			////////////////////////////////////////////////
 

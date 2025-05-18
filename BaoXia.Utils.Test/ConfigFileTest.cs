@@ -82,14 +82,14 @@ namespace BaoXia.Utils.Test
 				StringValue = "4.0",
 				DateTimeValue = new DateTime(2021, 3, 27, 1, 2, 3),
 
-				StringArrayValue = new string[] { "a", "b", "c" },
+				StringArrayValue = ["a", "b", "c"],
 
-				IntArrayValue = new int[] { 1, 2, 3 },
+				IntArrayValue = [1, 2, 3],
 
-				FloatArrayValue = new List<float> { 1.0F, 2.0F, 3.0F },
+				FloatArrayValue = [1.0F, 2.0F, 3.0F],
 
-				ObjectArrayValue = new ObjectProperty[]
-				{
+				ObjectArrayValue =
+				[
 					new()
 					{
 						Name = "Name_1",
@@ -100,7 +100,7 @@ namespace BaoXia.Utils.Test
 						Name = "Name_2",
 						Value = 2
 					}
-				},
+				],
 				// !!!
 				FilePath = configFileForLoad.FilePath
 			};

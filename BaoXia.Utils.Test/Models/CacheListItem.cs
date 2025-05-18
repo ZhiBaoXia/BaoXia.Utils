@@ -35,7 +35,7 @@ namespace BaoXia.Utils.Test.Models
 			return await Task.Run(
 				() =>
 				{
-					List<CacheListItem<ListIdType>> list = new();
+					List<CacheListItem<ListIdType>> list = [];
 					for (var listItemIndex = 0;
 					listItemIndex < CacheTestConfig.TestListItemsCount;
 					listItemIndex++)

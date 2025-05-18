@@ -22,7 +22,9 @@ public class StringExtensionTest
 			"55"
 		};
 		var stringAfterJoin = StringUtil.StringWithStrings(
-			strings);
+			strings,
+			",",
+			true);
 		{
 			Assert.AreEqual("00,11,22,33,44,55", stringAfterJoin);
 		}

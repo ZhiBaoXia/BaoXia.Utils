@@ -71,7 +71,7 @@ public class TestModule(string name)
 		}
 	}
 
-	protected readonly Dictionary<string, TestUnitInfo> _testUnitInfes = new();
+	protected readonly Dictionary<string, TestUnitInfo> _testUnitInfes = [];
 
 	public IEnumerable<TestUnitInfo>? TestUnitInfes => _testUnitInfes.Values;
 

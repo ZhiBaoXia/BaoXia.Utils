@@ -139,7 +139,7 @@ public static class StringsExtension
 					// !!!
 					keysCount++;
 					// !!!
-					strIndexesMatched ??= new List<int>();
+					strIndexesMatched ??= [];
 					strIndexesMatched.Add(strIndexMatched);
 				}
 				foreach (var str in strings)
@@ -317,10 +317,13 @@ public static class StringsExtension
 		return doubles;
 	}
 
-	public static string ToStringWithSeparator(
+	public static string? ToStringWithSeparator(
 		this IEnumerable<string>? strings,
 		string? separator)
 	{
-		return StringUtil.StringWithStrings(strings, separator);
+		return StringUtil.StringWithStrings(
+			strings, 
+			separator,
+			true);
 	}
 }

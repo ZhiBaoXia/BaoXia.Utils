@@ -162,7 +162,7 @@ namespace BaoXia.Utils.Extensions
 						{
 							if (cookieInfo.Params == null)
 							{
-								cookieInfo.Params = new Dictionary<string, string?>();
+								cookieInfo.Params = [];
 							}
 							//
 							cookieInfo.Params.Add(sectionName, sectionValue);

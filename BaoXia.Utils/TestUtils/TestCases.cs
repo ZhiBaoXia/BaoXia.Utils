@@ -13,7 +13,7 @@ namespace BaoXia.Utils.TestUtils
 		#region 静态变量
 
 #pragma warning disable CA2211 // 非常量字段应当不可见
-		public static List<TestCase> AllTestCases = new();
+		public static List<TestCase> AllTestCases = [];
 #pragma warning restore CA2211 // 非常量字段应当不可见
 
 		#endregion

@@ -169,7 +169,7 @@ namespace BaoXia.Utils.Notification
 			// 内部对象初始化：
 			////////////////////////////////////////////////
 
-			_notificationListeners = new();
+			_notificationListeners = [];
 			_taskToPeekNotification = new(
 						(cancellationToken) =>
 						{
@@ -305,10 +305,10 @@ namespace BaoXia.Utils.Notification
 			List<NotificationListener> allNotificationListeners,
 			CancellationToken cancellationToken)
 		{
-			List<NotificationListener> currentNotificationListeners = new();
-			List<Task> tasksToSendNotification = new();
+			List<NotificationListener> currentNotificationListeners = [];
+			List<Task> tasksToSendNotification = [];
 
-			List<Notification> notificationsNeedSendDelay = new();
+			List<Notification> notificationsNeedSendDelay = [];
 
 			while (cancellationToken.IsCancellationRequested != true)
 			{

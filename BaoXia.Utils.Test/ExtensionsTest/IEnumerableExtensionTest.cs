@@ -299,13 +299,13 @@ public class IEnumerableExtensionTest
 			Assert.IsFalse(items.IsContains(items_3_4));
 			Assert.IsTrue(items.IsNotContains(items_3_4));
 
-			items = new int[]
-			{
+			items =
+			[
 				1,
 				2,
 				3,
 				4
-			};
+			];
 
 			Assert.IsTrue(items.IsContains(items_1_2));
 			Assert.IsFalse(items.IsNotContains(items_1_2));
@@ -314,14 +314,14 @@ public class IEnumerableExtensionTest
 			Assert.IsFalse(items.IsNotContains(items_3_4));
 
 
-			items = new int[]
-			{
+			items =
+			[
 				1,
 				2,
 				3,
 				4,
 				5
-			};
+			];
 
 			Assert.IsTrue(items.IsContains(items_1_2));
 			Assert.IsFalse(items.IsNotContains(items_1_2));
@@ -440,13 +440,13 @@ public class IEnumerableExtensionTest
 			Assert.IsFalse(items.IsEquals(items_3_4));
 			Assert.IsTrue(items.IsNotEquals(items_3_4));
 
-			items = new int[]
-			{
+			items =
+			[
 				1,
 				2,
 				3,
 				4
-			};
+			];
 
 			Assert.IsFalse(items.IsEquals(items_1_2));
 			Assert.IsTrue(items.IsNotEquals(items_1_2));
@@ -455,14 +455,14 @@ public class IEnumerableExtensionTest
 			Assert.IsTrue(items.IsNotEquals(items_3_4));
 
 
-			items = new int[]
-			{
+			items =
+			[
 				1,
 				2,
 				3,
 				4,
 				5
-			};
+			];
 
 			Assert.IsFalse(items.IsEquals(items_1_2));
 			Assert.IsTrue(items.IsNotEquals(items_1_2));
@@ -476,13 +476,13 @@ public class IEnumerableExtensionTest
 			////////////////////////////////////////////////
 
 
-			items = new int[]
-			{
+			items =
+			[
 				1,
 				2,
 				1,
 				2
-			};
+			];
 
 			Assert.IsTrue(items.IsEquals(items_1_2, true));
 			Assert.IsFalse(items.IsNotEquals(items_1_2, true));
@@ -495,14 +495,14 @@ public class IEnumerableExtensionTest
 			Assert.IsTrue(items.IsNotEquals(items_3_4, false));
 
 
-			items = new int[]
-			{
+			items =
+			[
 				3,
 				3,
 				4,
 				4,
 				4
-			};
+			];
 
 			Assert.IsFalse(items.IsEquals(items_1_2, true));
 			Assert.IsTrue(items.IsNotEquals(items_1_2, true));
@@ -520,11 +520,11 @@ public class IEnumerableExtensionTest
 			////////////////////////////////////////////////
 
 
-			items = new int[]
-			{
+			items =
+			[
 				1,
 				2
-			};
+			];
 
 			Assert.IsTrue(items.IsEquals(items_1_1_2_2, true));
 			Assert.IsFalse(items.IsNotEquals(items_1_1_2_2, true));
@@ -537,11 +537,11 @@ public class IEnumerableExtensionTest
 			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 
 
-			items = new int[]
-			{
+			items =
+			[
 				3,
 				4
-			};
+			];
 
 			Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
 			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
@@ -559,11 +559,11 @@ public class IEnumerableExtensionTest
 			////////////////////////////////////////////////
 
 
-			items = new int[]
-			{
+			items =
+			[
 				1,
 				2
-			};
+			];
 
 			Assert.IsTrue(items.IsEquals(items_1_1_2_2, true));
 			Assert.IsFalse(items.IsNotEquals(items_1_1_2_2, true));
@@ -576,11 +576,11 @@ public class IEnumerableExtensionTest
 			Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 
 
-			items = new int[]
-			{
+			items =
+			[
 				3,
 				4
-			};
+			];
 
 			Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
 			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
@@ -598,11 +598,11 @@ public class IEnumerableExtensionTest
 			////////////////////////////////////////////////
 
 
-			items = new int[]
-			{
+			items =
+			[
 				1,
 				2
-			};
+			];
 
 			Assert.IsTrue(items.IsEquals(items_1_2_2, true));
 			Assert.IsFalse(items.IsNotEquals(items_1_2_2, true));
@@ -610,11 +610,11 @@ public class IEnumerableExtensionTest
 			Assert.IsTrue(items.IsNotEquals(items_1_2_2, false));
 
 
-			items = new int[]
-			{
+			items =
+			[
 				3,
 				4
-			};
+			];
 
 			Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
 			Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
@@ -846,5 +846,23 @@ public class IEnumerableExtensionTest
 		itemPage = searchPage?.ItemsInPage!;
 		firstItemInPage = itemPage[0].Value;
 		Assert.AreEqual("9998", firstItemInPage);
+	}
+
+	[TestMethod]
+	public void ToHashSetTest()
+	{
+		var items = new string[] {
+			"a",
+			"b",
+			"b",
+			"c"
+		};
+		var itemHashSet = items.ToHashSet();
+		{
+			Assert.AreEqual(3, itemHashSet!.Count);
+			Assert.IsTrue(itemHashSet!.Contains("a"));
+			Assert.IsTrue(itemHashSet!.Contains("b"));
+			Assert.IsTrue(itemHashSet!.Contains("c"));
+		}
 	}
 }

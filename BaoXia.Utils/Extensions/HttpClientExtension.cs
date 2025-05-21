@@ -195,7 +195,7 @@ namespace BaoXia.Utils.Extensions
 							headerKey,
 							headerKeyValue.Value))
 						{
-							contentHeaders ??= new();
+							contentHeaders ??= [];
 							contentHeaders.TryAdd(headerKey, headerKeyValue.Value);
 						}
 					}
@@ -276,7 +276,7 @@ namespace BaoXia.Utils.Extensions
 							headerKey,
 							headerKeyValue.Value))
 						{
-							contentHeaders ??= new();
+							contentHeaders ??= [];
 							contentHeaders.TryAdd(headerKey, headerKeyValue.Value);
 						}
 					}
@@ -354,7 +354,7 @@ namespace BaoXia.Utils.Extensions
 							headerKey,
 							headerKeyValue.Value))
 						{
-							contentHeaders ??= new();
+							contentHeaders ??= [];
 							contentHeaders.TryAdd(headerKey, headerKeyValue.Value);
 						}
 					}
@@ -629,7 +629,7 @@ namespace BaoXia.Utils.Extensions
 				}
 				if (isNeedContentTypeHeaderParam)
 				{
-					headers ??= new();
+					headers ??= [];
 					headers.Add(contentTypeName, "application/json");
 				}
 			}

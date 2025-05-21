@@ -9,7 +9,7 @@ namespace BaoXia.Utils.Test
 		private static readonly int RandomValue = 414670617;// new Random().Next();
 
 		private static readonly StringWithFunctionExpression.FunctionExpressionInfo[] StringFunctionDefines
-			= {
+			= [
 			new StringWithFunctionExpression.FunctionExpressionInfo(
 				"#Random",
 				"(",
@@ -24,7 +24,7 @@ namespace BaoXia.Utils.Test
 				"#ImageExtensionName",
 				"(",
 				")#"),
-			};
+			];
 
 
 		[TestMethod]

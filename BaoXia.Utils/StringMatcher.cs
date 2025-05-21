@@ -47,7 +47,7 @@ namespace BaoXia.Utils
 			set
 			{
 				_expressionString = value;
-				_matchRules = new List<StringMatchRule>();
+				_matchRules = [];
 
 				if (_expressionString == null
 					|| _expressionString.Length < 1)

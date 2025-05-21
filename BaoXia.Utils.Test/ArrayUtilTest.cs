@@ -18,12 +18,12 @@ public class ArrayUtilTest
 			Assert.IsTrue(ArrayUtil.IsEmpty(items));
 			Assert.IsFalse(ArrayUtil.IsNotEmpty(items));
 		}
-		items = new int[] { 1 };
+		items = [1];
 		{
 			Assert.IsFalse(ArrayUtil.IsEmpty(items));
 			Assert.IsTrue(ArrayUtil.IsNotEmpty(items));
 		}
-		items = new int[] { 1, 2, 3 };
+		items = [1, 2, 3];
 		{
 			Assert.IsFalse(ArrayUtil.IsEmpty(items));
 			Assert.IsTrue(ArrayUtil.IsNotEmpty(items));

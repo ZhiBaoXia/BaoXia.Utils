@@ -161,7 +161,10 @@ public static class HttpRequestExtension
 				out isLastIpAddressGetFromBxGateway);
 		if (clientHttpProxyAddressList.Count > 0)
 		{
-			return StringUtil.StringWithStrings(clientHttpProxyAddressList);
+			return StringUtil.StringWithStrings(
+				clientHttpProxyAddressList,
+				",",
+				true);
 		}
 		return null;
 	}

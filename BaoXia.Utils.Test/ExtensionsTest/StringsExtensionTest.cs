@@ -141,13 +141,13 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				Assert.IsFalse(items.IsContains(items_3_4));
 				Assert.IsTrue(items.IsNotContains(items_3_4));
 
-				items = new string[]
-				{
+				items =
+				[
 					"1",
 					"2",
 					"3",
 					"4"
-				};
+				];
 
 				Assert.IsTrue(items.IsContains(items_1_2));
 				Assert.IsFalse(items.IsNotContains(items_1_2));
@@ -156,14 +156,14 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				Assert.IsFalse(items.IsNotContains(items_3_4));
 
 
-				items = new string[]
-				{
+				items =
+				[
 					"1",
 					"2",
 					"3",
 					"4",
 					"5"
-				};
+				];
 
 				Assert.IsTrue(items.IsContains(items_1_2));
 				Assert.IsFalse(items.IsNotContains(items_1_2));
@@ -270,13 +270,13 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				Assert.IsFalse(items.IsEquals(items_3_4));
 				Assert.IsTrue(items.IsNotEquals(items_3_4));
 
-				items = new string[]
-				{
+				items =
+				[
 					"1",
 					"2",
 					"3",
 					"4"
-				};
+				];
 
 				Assert.IsFalse(items.IsEquals(items_1_2));
 				Assert.IsTrue(items.IsNotEquals(items_1_2));
@@ -285,14 +285,14 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				Assert.IsTrue(items.IsNotEquals(items_3_4));
 
 
-				items = new string[]
-				{
+				items =
+				[
 					"1",
 					"2",
 					"3",
 					"4",
 					"5"
-				};
+				];
 
 				Assert.IsFalse(items.IsEquals(items_1_2));
 				Assert.IsTrue(items.IsNotEquals(items_1_2));
@@ -306,13 +306,13 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				////////////////////////////////////////////////
 
 
-				items = new string[]
-				{
+				items =
+				[
 					"1",
 					"2",
 					"1",
 					"2"
-				};
+				];
 
 				Assert.IsTrue(items.IsEquals(items_1_2, true));
 				Assert.IsFalse(items.IsNotEquals(items_1_2, true));
@@ -325,14 +325,14 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				Assert.IsTrue(items.IsNotEquals(items_3_4, false));
 
 
-				items = new string[]
-				{
+				items =
+				[
 					"3",
 					"3",
 					"4",
 					"4",
 					"4"
-				};
+				];
 
 				Assert.IsFalse(items.IsEquals(items_1_2, true));
 				Assert.IsTrue(items.IsNotEquals(items_1_2, true));
@@ -350,11 +350,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				////////////////////////////////////////////////
 
 
-				items = new string[]
-				{
+				items =
+				[
 					"1",
 					"2"
-				};
+				];
 
 				Assert.IsTrue(items.IsEquals(items_1_1_2_2, true));
 				Assert.IsFalse(items.IsNotEquals(items_1_1_2_2, true));
@@ -367,11 +367,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 
 
-				items = new string[]
-				{
+				items =
+				[
 					"3",
 					"4"
-				};
+				];
 
 				Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
 				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
@@ -389,11 +389,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				////////////////////////////////////////////////
 
 
-				items = new string[]
-				{
+				items =
+				[
 					"1",
 					"2"
-				};
+				];
 
 				Assert.IsTrue(items.IsEquals(items_1_1_2_2, true));
 				Assert.IsFalse(items.IsNotEquals(items_1_1_2_2, true));
@@ -406,11 +406,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				Assert.IsTrue(items.IsNotEquals(items_3_3_4_4_4, false));
 
 
-				items = new string[]
-				{
+				items =
+				[
 					"3",
 					"4"
-				};
+				];
 
 				Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
 				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
@@ -428,11 +428,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				////////////////////////////////////////////////
 
 
-				items = new string[]
-				{
+				items =
+				[
 					"1",
 					"2"
-				};
+				];
 
 				Assert.IsTrue(items.IsEquals(items_1_2_2, true));
 				Assert.IsFalse(items.IsNotEquals(items_1_2_2, true));
@@ -440,11 +440,11 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 				Assert.IsTrue(items.IsNotEquals(items_1_2_2, false));
 
 
-				items = new string[]
-				{
+				items =
+				[
 					"3",
 					"4"
-				};
+				];
 
 				Assert.IsFalse(items.IsEquals(items_1_1_2_2, true));
 				Assert.IsTrue(items.IsNotEquals(items_1_1_2_2, true));
@@ -468,7 +468,7 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			{
 				Assert.IsTrue(strings
 					.ToStringWithSeparator(",")
-					.Equals(
+					!.Equals(
 					"1,2,3"));
 			}
 
@@ -478,7 +478,7 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			{
 				Assert.IsTrue(strings
 					.ToStringWithSeparator(null)
-					.Equals(
+					!.Equals(
 					"123"));
 			}
 
@@ -486,16 +486,12 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			// 3/，没有元素：
 			////////////////////////////////////////////////
 			{
-				Assert.IsTrue(
-					(new string[0])
-					.ToStringWithSeparator(",")
-					.Equals(
-					""));
-				Assert.IsTrue(
-					(new string[0])
-					.ToStringWithSeparator(null)
-					.Equals(
-					""));
+				Assert.IsNull(
+					(Array.Empty<string>())
+					.ToStringWithSeparator(","));
+				Assert.IsNull(
+					(Array.Empty<string>())
+					.ToStringWithSeparator(null));
 			}
 		}
 
@@ -507,14 +503,14 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			////////////////////////////////////////////////
 			var finalString = StringUtil.StringWithStringsJoinSeparator(
 					",",
+					true,
 					"1",
 					"2",
 					"3");
 			{
-				Assert.IsTrue(
-					finalString
-					.Equals(
-					"1,2,3"));
+				Assert.AreEqual(
+					"1,2,3",
+					finalString);
 			}
 
 			////////////////////////////////////////////////
@@ -522,34 +518,30 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 			////////////////////////////////////////////////
 			finalString = StringUtil.StringWithStringsJoinSeparator(
 					null,
+					true,
 					"1",
 					"2",
 					"3");
 			{
-				Assert.IsTrue(
-					finalString
-					.Equals(
-					"123"));
+				Assert.AreEqual(
+					"123",
+					finalString);
 			}
 
 			////////////////////////////////////////////////
 			// 3/，没有元素：
 			////////////////////////////////////////////////
 			finalString = StringUtil.StringWithStringsJoinSeparator(
-					",");
+					",",
+					true);
 			{
-				Assert.IsTrue(
-					finalString
-					.Equals(
-					""));
+				Assert.IsNull(finalString);
 			}
 			finalString = StringUtil.StringWithStringsJoinSeparator(
-					null);
+					null,
+					true);
 			{
-				Assert.IsTrue(
-					finalString
-					.Equals(
-					""));
+				Assert.IsNull(finalString);
 			}
 		}
 	}

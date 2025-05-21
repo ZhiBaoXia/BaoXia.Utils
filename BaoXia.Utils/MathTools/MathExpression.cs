@@ -220,8 +220,8 @@ namespace BaoXia.Utils.MathTools
 		public static readonly Operator SectionBegin = new(OperatorType.Section, OperatorId.SectionBegin, "(", 900);
 		public static readonly Operator SectionEnd = new(OperatorType.Section, OperatorId.SectionEnd, ")", 900);
 
-		private static readonly Operator[] AllOperators = new Operator[]
-		{
+		private static readonly Operator[] AllOperators =
+		[
                         ////////////////////////////////////////////////
 			// 计算块操作符：
                         ////////////////////////////////////////////////
@@ -259,7 +259,7 @@ namespace BaoXia.Utils.MathTools
                         // 注意
                         Equal,
 			NotEqual
-		};
+		];
 
 		private static readonly Func<string[]> ToGetAllOperatorKeywords = () =>
 		{

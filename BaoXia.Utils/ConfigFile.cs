@@ -23,7 +23,7 @@ namespace BaoXia.Utils
 
 		static string? _configFilesDirectoryPath;
 
-		static readonly List<ConfigFile> _configFiles = new();
+		static readonly List<ConfigFile> _configFiles = [];
 
 		static readonly object _configFileConstructLocker = new();
 		static bool _isConfigFileConstructWithAutoLoadEnable = true;
@@ -371,7 +371,7 @@ namespace BaoXia.Utils
 		{
 			lock (this)
 			{
-				_configFileChangedEvents ??= new();
+				_configFileChangedEvents ??= [];
 				if (!_configFileChangedEvents.Contains(configFileChangedEvent))
 				{
 					_configFileChangedEvents.Add(configFileChangedEvent);

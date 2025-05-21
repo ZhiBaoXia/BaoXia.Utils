@@ -443,6 +443,7 @@ public class StringUtil
 	/// <param name="stringArray">原始的整数数值数组。</param>
 	/// <param name="separator">创建字符串时使用的数值分隔符，默认为“,”。</param>
 	/// <returns>字符串数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
+	[Obsolete("后续请使用支持可为空字符串参数的新方法“StringWithStrings”。")]
 	public static string StringWithStrings(IEnumerable<string>? stringArray, string? separator = ",")
 	{
 		var stringBuilder = new StringBuilder();
@@ -479,11 +480,98 @@ public class StringUtil
 		return stringAfterJoin;
 	}
 
+	[Obsolete("后续请使用支持可为空字符串参数的新方法“StringWithStringsJoinSeparator”。")]
 	public static string StringWithStringsJoinSeparator(
 		string? separator,
 		params string[]? strings)
 	{
 		return StringWithStrings(strings, separator);
+	}
+
+	/// <summary>
+	/// 由字符串数组，创建字符串，如：由“["a", "b", "c"]”，创建字符串“a,b,c”。
+	/// </summary>
+	/// <param name="substrings">原始的整数数值数组。</param>
+	/// <param name="separator">创建字符串时使用的数值分隔符，默认为“,”。</param>
+	/// <param name="isSeparatorConsecutiveDisable">是否允许分隔符连续。</param>
+	/// <returns>字符串数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
+	public static string? StringWithStrings(
+		IEnumerable<string?>? substrings,
+		string? separator,
+		bool isSeparatorConsecutiveDisable,
+		StringComparison stringComparison = StringComparison.Ordinal)
+	{
+		if (substrings.IsEmpty())
+		{
+			return null;
+		}
+
+		StringBuilder? stringBuilder = null;
+		if (separator?.Length > 0)
+		{
+			foreach (var substring in substrings)
+			{
+				var finalSubstring = substring;
+				if (finalSubstring?.Length > 0)
+				{
+					if (isSeparatorConsecutiveDisable)
+					{
+						finalSubstring = finalSubstring.Trim(separator, stringComparison);
+						if (finalSubstring == null
+							|| finalSubstring.Length < 1)
+						{
+							// !!!
+							continue;
+							// !!!
+						}
+						if (stringBuilder?.Length > 0
+							&& separator?.Length > 0)
+						{
+							//
+							stringBuilder.Append(separator);
+							//
+						}
+					}
+				}
+				else if (isSeparatorConsecutiveDisable)
+				{
+					// !!!
+					continue;
+					// !!!
+				}
+
+				// !!!
+				stringBuilder ??= new();
+				stringBuilder.Append(finalSubstring);
+				// !!!
+
+			}
+		}
+		else
+		{
+			foreach (var stringValue in substrings)
+			{
+				if (stringValue?.Length > 0)
+				{
+					stringBuilder ??= new();
+					stringBuilder.Append(stringValue);
+				}
+			}
+		}
+		var stringAfterJoin = stringBuilder?.ToString();
+		{ }
+		return stringAfterJoin;
+	}
+
+	public static string? StringWithStringsJoinSeparator(
+	string? separator,
+	bool isSeparatorConsecutiveDisable,
+	params string?[]? strings)
+	{
+		return StringWithStrings(
+			strings,
+			separator,
+			isSeparatorConsecutiveDisable);
 	}
 
 	/// <summary>
@@ -560,7 +648,7 @@ public class StringUtil
 	{
 		if (obj == null)
 		{
-			return String.Empty;
+			return string.Empty;
 		}
 		var str = System.Text.Json.JsonSerializer.Serialize(
 			    obj,

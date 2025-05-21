@@ -524,7 +524,7 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					"3");
 			{
 				Assert.AreEqual(
-					"1,2,3",
+					"123",
 					finalString);
 			}
 

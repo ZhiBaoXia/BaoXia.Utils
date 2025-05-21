@@ -414,7 +414,7 @@ public static class IEnumerableExtension
 		return [.. itemGroups.Values];
 	}
 
-	[Obsolete("请使用“ToHashSet”替代当前函数。")]
+	[Obsolete("请使用“ToItemHashSet”替代当前函数。")]
 	public static Dictionary<KeyType, bool>? ToDictionaryWithValueTrue<KeyType>(
 		this IEnumerable<KeyType>? keys)
 		where KeyType : notnull
@@ -432,7 +432,7 @@ public static class IEnumerableExtension
 		return dictionary;
 	}
 
-	public static HashSet<KeyType>? ToHashSetWithItems<KeyType>(
+	public static HashSet<KeyType>? ToItemHashSet<KeyType>(
 		this IEnumerable<KeyType>? keys)
 		where KeyType : notnull
 	{

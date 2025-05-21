@@ -43,7 +43,7 @@ public class IEnumerableExtensionTest
 			}
 			return true;
 		});
-		items_Int = Array.Empty<int>();
+		items_Int = [];
 		items_Int.ForEachAtLeastOnce((item) =>
 		{
 			// !!!
@@ -73,7 +73,7 @@ public class IEnumerableExtensionTest
 			}
 			return true;
 		});
-		items_String = Array.Empty<string>();
+		items_String = [];
 		items_String.ForEachAtLeastOnce((item) =>
 		{
 			// !!!
@@ -107,7 +107,7 @@ public class IEnumerableExtensionTest
 			}
 			return await Task.FromResult(true);
 		});
-		items_Int = Array.Empty<int>();
+		items_Int = [];
 		await items_Int.ForEachAtLeastOnceAsync(async (item) =>
 		{
 			// !!!
@@ -137,7 +137,7 @@ public class IEnumerableExtensionTest
 			}
 			return await Task.FromResult(true);
 		});
-		items_String = Array.Empty<string>();
+		items_String = [];
 		await items_String.ForEachAtLeastOnceAsync(async (item) =>
 		{
 			// !!!
@@ -233,7 +233,7 @@ public class IEnumerableExtensionTest
 			var items = Array.Empty<int>();
 
 			Assert.IsFalse(items.IsContains(null as int[]));
-			Assert.IsFalse(items.IsContains(Array.Empty<int>()));
+			Assert.IsFalse(items.IsContains([]));
 		}
 
 		////////////////////////////////////////////////
@@ -374,7 +374,7 @@ public class IEnumerableExtensionTest
 			var items = Array.Empty<int>();
 
 			Assert.IsTrue(items.IsEquals(null, true));
-			Assert.IsTrue(items.IsEquals(Array.Empty<int>(), true));
+			Assert.IsTrue(items.IsEquals([], true));
 		}
 
 		////////////////////////////////////////////////
@@ -628,19 +628,13 @@ public class IEnumerableExtensionTest
 		}
 	}
 
-	class TestItem
+	class TestItem(
+		int groupId,
+		string value)
 	{
-		public int GroupId { get; set; }
+		public int GroupId { get; set; } = groupId;
 
-		public string Value { get; set; }
-
-		public TestItem(
-			int groupId,
-			string value)
-		{
-			GroupId = groupId;
-			Value = value;
-		}
+		public string Value { get; set; } = value;
 	}
 
 	[TestMethod]
@@ -673,7 +667,7 @@ public class IEnumerableExtensionTest
 		var itemGroups = items.ToGroupsBy((item) => item.GroupId);
 		var itemsCount = 0;
 		{
-			Assert.IsTrue(itemGroups?.Length > 0);
+			Assert.IsTrue(itemGroups!.Length > 0);
 			foreach (var itemGroup in itemGroups)
 			{
 				itemsCount += itemGroup.Count;
@@ -793,7 +787,7 @@ public class IEnumerableExtensionTest
 			null,
 			0,
 			20);
-		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
+		Assert.IsTrue(searchPage!.ItemsCountSearchMatched > 0);
 		var itemPage = searchPage?.ItemsInPage!;
 		var firstItemInPage = itemPage[0].Value;
 		Assert.AreEqual("9999", firstItemInPage);
@@ -842,14 +836,14 @@ public class IEnumerableExtensionTest
 			null,
 			1,
 			20);
-		Assert.IsTrue(searchPage?.ItemsCountSearchMatched > 0);
+		Assert.IsTrue(searchPage!.ItemsCountSearchMatched > 0);
 		itemPage = searchPage?.ItemsInPage!;
 		firstItemInPage = itemPage[0].Value;
 		Assert.AreEqual("9998", firstItemInPage);
 	}
 
 	[TestMethod]
-	public void ToHashSetTest()
+	public void ToHashSetWithItemsTest()
 	{
 		var items = new string[] {
 			"a",
@@ -857,7 +851,7 @@ public class IEnumerableExtensionTest
 			"b",
 			"c"
 		};
-		var itemHashSet = items.ToHashSet();
+		var itemHashSet = items.ToHashSetWithItems();
 		{
 			Assert.AreEqual(3, itemHashSet!.Count);
 			Assert.IsTrue(itemHashSet!.Contains("a"));

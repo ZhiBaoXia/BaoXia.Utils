@@ -432,7 +432,7 @@ public static class IEnumerableExtension
 		return dictionary;
 	}
 
-	public static HashSet<KeyType>? ToHashSet<KeyType>(
+	public static HashSet<KeyType>? ToHashSetWithItems<KeyType>(
 		this IEnumerable<KeyType>? keys)
 		where KeyType : notnull
 	{

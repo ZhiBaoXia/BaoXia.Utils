@@ -843,7 +843,7 @@ public class IEnumerableExtensionTest
 	}
 
 	[TestMethod]
-	public void ToHashSetWithItemsTest()
+	public void ToItemHashSetTest()
 	{
 		var items = new string[] {
 			"a",
@@ -851,7 +851,7 @@ public class IEnumerableExtensionTest
 			"b",
 			"c"
 		};
-		var itemHashSet = items.ToHashSetWithItems();
+		var itemHashSet = items.ToItemHashSet();
 		{
 			Assert.AreEqual(3, itemHashSet!.Count);
 			Assert.IsTrue(itemHashSet!.Contains("a"));

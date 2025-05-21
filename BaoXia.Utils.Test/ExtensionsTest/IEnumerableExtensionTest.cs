@@ -847,4 +847,22 @@ public class IEnumerableExtensionTest
 		firstItemInPage = itemPage[0].Value;
 		Assert.AreEqual("9998", firstItemInPage);
 	}
+
+	[TestMethod]
+	public void ToHashSetTest()
+	{
+		var items = new string[] {
+			"a",
+			"b",
+			"b",
+			"c"
+		};
+		var itemHashSet = items.ToHashSet();
+		{
+			Assert.AreEqual(3, itemHashSet!.Count);
+			Assert.IsTrue(itemHashSet!.Contains("a"));
+			Assert.IsTrue(itemHashSet!.Contains("b"));
+			Assert.IsTrue(itemHashSet!.Contains("c"));
+		}
+	}
 }

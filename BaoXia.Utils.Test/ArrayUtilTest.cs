@@ -13,7 +13,7 @@ public class ArrayUtilTest
 			Assert.IsTrue(ArrayUtil.IsEmpty(items));
 			Assert.IsFalse(ArrayUtil.IsNotEmpty(items));
 		}
-		items = System.Array.Empty<int>();
+		items = [];
 		{
 			Assert.IsTrue(ArrayUtil.IsEmpty(items));
 			Assert.IsFalse(ArrayUtil.IsNotEmpty(items));

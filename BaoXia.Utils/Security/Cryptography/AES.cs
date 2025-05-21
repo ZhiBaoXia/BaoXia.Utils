@@ -43,7 +43,7 @@ public class AES
 			|| ivBytes == null
 			|| ivBytes.Length < 1)
 		{
-			return Array.Empty<byte>();
+			return [];
 		}
 
 		byte[] keyBytes = AES.GetKeyBytesWithKeyString(key);
@@ -75,7 +75,7 @@ public class AES
 	{
 		if (string.IsNullOrEmpty(ciphertext))
 		{
-			return Array.Empty<byte>();
+			return [];
 		}
 
 		byte[] keyBytes = AES.GetKeyBytesWithKeyString(key);
@@ -85,7 +85,7 @@ public class AES
 			|| ivBytes == null
 			|| ivBytes.Length < 1)
 		{
-			return Array.Empty<byte>();
+			return [];
 		}
 
 		using var aes = Aes.Create();
@@ -123,7 +123,7 @@ public class AES
 			|| key == null
 			|| key.Length < 1)
 		{
-			return Array.Empty<byte>();
+			return [];
 		}
 
 		byte[] keyBytes = AES.GetKeyBytesWithKeyString(key);
@@ -152,7 +152,7 @@ public class AES
 			|| key == null
 			|| key.Length < 1)
 		{
-			return Array.Empty<byte>();
+			return [];
 		}
 
 		// !!! 注意，要针对URL规则进行以下特殊字符的替换 !!!

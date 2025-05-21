@@ -19,7 +19,7 @@ public static class SHA
 		if (sourceString == null
 			|| sourceString.Length < 1)
 		{
-			return System.Array.Empty<byte>();
+			return [];
 		}
 
 		if (textEncoding == null)

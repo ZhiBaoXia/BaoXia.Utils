@@ -322,7 +322,7 @@ public static class StringsExtension
 		string? separator)
 	{
 		return StringUtil.StringWithStrings(
-			strings, 
+			strings,
 			separator,
 			true);
 	}

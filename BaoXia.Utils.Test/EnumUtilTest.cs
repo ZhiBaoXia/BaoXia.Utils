@@ -15,10 +15,11 @@ public class EnumUtilTest
 	}
 
 	[TestMethod]
-	public void ValueNamesOfEnum()
+	public void ValueNamesOfEnumTest()
 	{
 		var valueNamesOfEnum = EnumUtil.ValueAndNamesOf<TestEnum>();
-		Assert.IsTrue(valueNamesOfEnum?.Count > 0);
+		Assert.IsNotNull(valueNamesOfEnum);
+		Assert.IsTrue(valueNamesOfEnum.Count > 0);
 		////////////////////////////////////////////////
 
 		foreach (var valueName in valueNamesOfEnum)
@@ -27,7 +28,7 @@ public class EnumUtilTest
 			{
 				default:
 					{
-						Assert.IsTrue(false);
+						Assert.Fail();
 					}
 					break;
 				case TestEnum.Value_0:
@@ -64,13 +65,39 @@ public class EnumUtilTest
 	}
 
 	[TestMethod]
-	public void EnumValueName()
+	public void EnumValueNameTest()
 	{
 		var enumValue_1_Name = TestEnum.Value_1.Name();
 		{
+			Assert.IsNotNull(enumValue_1_Name);
 			Assert.AreEqual(
-TestEnum.Value_1, enumValue_1_Name?.EnumValue(TestEnum.Value_0)
-);
+				TestEnum.Value_1,
+				enumValue_1_Name.EnumValue(TestEnum.Value_0));
 		}
+	}
+
+
+	[TestMethod]
+	public void NameOfTest()
+	{
+		var nameOfEnumValue = EnumUtil.NameOf(TestEnum.Value_1);
+		Assert.AreEqual(
+			"Value_1",
+			nameOfEnumValue);
+
+		nameOfEnumValue = EnumUtil.NameOf(TestEnum.Value_2);
+		Assert.AreEqual(
+			"Value_2",
+			nameOfEnumValue);
+
+		nameOfEnumValue = EnumUtil.NameOf((TestEnum)(-1));
+		Assert.AreEqual(
+			"-1",
+			nameOfEnumValue);
+
+		nameOfEnumValue = EnumUtil.NameOf((TestEnum)(999));
+		Assert.AreEqual(
+			"999",
+			nameOfEnumValue);
 	}
 }

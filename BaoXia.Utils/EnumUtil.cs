@@ -60,7 +60,8 @@ public class EnumUtil
 	{
 		return Enum.GetName(
 			enumType: enumValue.GetType(),
-			enumValue)!;
+			enumValue)
+			?? enumValue.ToString();
 	}
 
 	/// <summary>

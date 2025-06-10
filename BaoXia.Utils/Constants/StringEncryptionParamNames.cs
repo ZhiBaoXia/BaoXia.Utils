@@ -9,6 +9,8 @@ public class StringEncryptionParamNames
 
 	#region 静态常量
 
+	public const string Ciphertext = "ciphertext";
+
 	public const string Nonce = "nonce";
 
 	#endregion

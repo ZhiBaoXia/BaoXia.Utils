@@ -1812,11 +1812,26 @@ public static class StringExtension
 	/// <param name="plaintext">当前“明文”字符串。</param>
 	/// <param name="key">指定的加密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
 	/// <returns>返回加密后的字符串。</returns>
+
+	[Obsolete("当前函数，使用“Aes/Ecb算法”，存在安全隐患（相同明文、密钥时，密文永远相同，因此可通过重复明文的方式进行破解），推荐使用“ToNewCiphertext”方法替代。")]
 	public static string? StringByEncrypted(
 		this string plaintext,
 		string? key = null)
 	{
-		return ToCiphertext(plaintext, key);
+		key ??= Environment.AESKeyDeafult;
+
+		var plaintextBytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
+		{ }
+#pragma warning disable CS0618 // 类型或成员已过时
+		var cipherBytes = AES.EncryptToBytesWithECB(plaintextBytes, key);
+#pragma warning restore CS0618 // 类型或成员已过时
+		if (cipherBytes.Length < 1)
+		{
+			return null;
+		}
+		var ciphertext = Convert.ToBase64String(cipherBytes);
+		{ }
+		return ciphertext;
 	}
 
 	/// <summary>
@@ -1825,6 +1840,7 @@ public static class StringExtension
 	/// <param name="ciphertext">当前“密文”字符串。，</param>
 	/// <param name="key">指定的解密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
 	/// <returns>返回解密后的字符串。</returns>
+	[Obsolete("当前函数，使用“Aes/Ecb算法”，存在安全隐患（相同明文、密钥时，密文永远相同，因此可通过重复明文的方式进行破解），推荐使用“ToPlaintext”方法替代。")]
 	public static string StringByDecrypted(
 		this string ciphertext,
 		string? key = null)
@@ -1964,27 +1980,44 @@ public static class StringExtension
 	}
 
 	/// <summary>
-	/// 使用“Environment.AESKey_Default”作为加密Key，通过“AES”算法对当前字符串进行加密。
+	/// 使用“Environment.AESKey_Default”作为加密Key，通过“Aes/Ctr”算法对当前字符串进行加密，产生新的密文字符串。
+	/// 【注意】：每次提供的密钥、或噪音字符串不同时，产生的密文字符串也会不同。
 	/// </summary>
 	/// <param name="plaintext">当前“明文”字符串。</param>
 	/// <param name="key">指定的加密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
 	/// <returns>返回加密后的字符串。</returns>
-	public static string? ToCiphertext(
+	public static string? ToNewCiphertext(
 		this string plaintext,
-		string? key = null)
+		string? key = null,
+		string? nonceInBase64 = null)
 	{
 		key ??= Environment.AESKeyDeafult;
 		var ciphertext = AesCtr.EncryptString(
 			plaintext,
 			key,
-			null,
-			out var nonce);
+			nonceInBase64,
+			out var finalNonceInBase64);
 		if (ciphertext.Length < 1)
 		{
 			return null;
 		}
 
-		ciphertext = $"{StringEncryptionMethodNames.Aes_Ctr}://{HttpUtility.UrlEncode(ciphertext)}?{StringEncryptionParamNames.Nonce}={HttpUtility.UrlEncode(nonce)}";
+		var ciphertextParamName = StringEncryptionParamNames.Ciphertext.StringByEncodeInUriParam();
+		var ciphertextParamValue = ciphertext.StringByEncodeInUriParam();
+
+		var nonceParamName = StringEncryptionParamNames.Nonce.StringByEncodeInUriParam();
+		var nonceParamValue = finalNonceInBase64.StringByEncodeInUriParam();
+
+		var uriQuery
+			= $"{ciphertextParamName}={ciphertextParamValue}&{nonceParamName}={nonceParamValue}";
+
+		var uriBuilder = new UriBuilder
+		{
+			Scheme = StringEncryptionMethodNames.Aes_Ctr,
+			Host = string.Empty,
+			Query = uriQuery
+		};
+		ciphertext = uriBuilder.ToString();
 		{ }
 		return ciphertext;
 	}
@@ -1997,36 +2030,45 @@ public static class StringExtension
 	/// <returns>返回解密后的字符串。</returns>
 	public static string ToPlaintext(
 		this string ciphertext,
+		out string? nonceInBase64,
 		string? key = null)
 	{
 		key ??= Environment.AESKeyDeafult;
+		nonceInBase64 = null;
 
 		////////////////////////////////////////////////
 		// 1/2，新版本使用“AES/CTR”加密方法：
 		////////////////////////////////////////////////
 
-		if (ciphertext.StartsWith(StringEncryptionMethodNames.Aes_Ctr + System.Uri.SchemeDelimiter))
+		if (ciphertext.StartsWith(StringEncryptionMethodNames.Aes_Ctr + ":"))
 		{
-			var ciphertextUri = ciphertext;
-			var ciphertextContentUrlEncoded = ciphertextUri.GetHostInUri();
-			if (!string.IsNullOrEmpty(ciphertextContentUrlEncoded))
+			try
 			{
-				//
-				var ciphertextContent = HttpUtility.UrlDecode(ciphertextContentUrlEncoded);
-				//
-				var encryptionParams = ciphertextUri.GetQueryParamDictionaryInUri();
-				if (encryptionParams
-					?.TryGetValue(
-						StringEncryptionParamNames.Nonce,
-						out var nonce) == true
-						&& !string.IsNullOrEmpty(nonce))
+				if (Uri.TryCreate(
+					ciphertext,
+					new UriCreationOptions()
+					{
+						DangerousDisablePathAndQueryCanonicalization = true
+					},
+					out var ciphertextUri))
 				{
-					return AesCtr.DecryptString(
-						ciphertextContent,
-						key,
-						nonce);
+					var encryptionParams = HttpUtility.ParseQueryString(ciphertextUri.Query);
+					var ciphertextContent = encryptionParams[StringEncryptionParamNames.Ciphertext];
+					if (!string.IsNullOrEmpty(ciphertextContent))
+					{
+						nonceInBase64 = encryptionParams[StringEncryptionParamNames.Nonce];
+						if (!string.IsNullOrEmpty(nonceInBase64))
+						{
+							return AesCtr.DecryptString(
+								ciphertextContent,
+								key,
+								nonceInBase64);
+						}
+					}
 				}
 			}
+			catch
+			{ }
 			return string.Empty;
 		}
 
@@ -2046,6 +2088,16 @@ public static class StringExtension
 		var plaintext = System.Text.Encoding.UTF8.GetString(plaintextBytes);
 		{ }
 		return plaintext;
+	}
+
+	public static string ToPlaintext(
+		this string ciphertext,
+		string? key = null)
+	{
+		return ToPlaintext(
+			ciphertext,
+			out _
+			, key);
 	}
 
 	/// <summary>

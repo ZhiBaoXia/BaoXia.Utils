@@ -160,7 +160,7 @@ public class AES
 		return ciphertextBytes;
 	}
 
-	[Obsolete("ECB由于相同铭文，永远加密出相同的密文，因此可通过重复明文的方式进行破解，推荐使用“DecryptToBytesWithCTR”方法替代。")]
+	[Obsolete("由于“Aes/Ecb算法”，存在安全隐患（相同明文、密钥时，密文永远相同，因此可通过重复明文的方式进行破解），推荐使用“DecryptToBytesWithCTR”方法替代。")]
 	public static byte[] DecryptToBytesWithECB(
 		string ciphertext,
 		string key)

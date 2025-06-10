@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static BaoXia.Utils.Test.Constants.TestToolsService;
+using static BaoXia.Utils.Test.Constants.TestToolsServiceUrls;
 
 namespace BaoXia.Utils.Test.ExtensionsTest
 {
@@ -33,7 +33,7 @@ namespace BaoXia.Utils.Test.ExtensionsTest
 					PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
 				});
 			var requestEchoResponseString = await httpClient.PostToGetStringAsync(
-				TestToolsService.ApiUrls.HttpRequestEcho,
+				TestToolsServiceUrls.ApiUrls.HttpRequestEcho,
 				requestBodyObjectString,
 				requestHeaders,
 				System.Text.Encoding.UTF8);

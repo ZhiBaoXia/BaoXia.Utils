@@ -1,10 +1,12 @@
 ﻿using BaoXia.Utils.Constants;
 using BaoXia.Utils.Security.Cryptography;
+using BaoXia.Utils.Test.Constants;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BaoXia.Utils.Extensions;
 
@@ -1814,18 +1816,7 @@ public static class StringExtension
 		this string plaintext,
 		string? key = null)
 	{
-		key ??= Environment.AESKeyDeafult;
-
-		var plaintextBytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
-		{ }
-		var cipherBytes = AES.EncryptToBytesWithECB(plaintextBytes, key);
-		if (cipherBytes.Length < 1)
-		{
-			return null;
-		}
-		var ciphertext = Convert.ToBase64String(cipherBytes);
-		{ }
-		return ciphertext;
+		return ToCiphertext(plaintext, key);
 	}
 
 	/// <summary>
@@ -1838,17 +1829,7 @@ public static class StringExtension
 		this string ciphertext,
 		string? key = null)
 	{
-		key ??= Environment.AESKeyDeafult;
-
-		var plaintextBytes = AES.DecryptToBytesWithECB(ciphertext, key);
-		if (plaintextBytes == null
-		    || plaintextBytes.Length < 1)
-		{
-			return String.Empty;
-		}
-		var plaintext = System.Text.Encoding.UTF8.GetString(plaintextBytes);
-		{ }
-		return plaintext;
+		return ToPlaintext(ciphertext, key);
 	}
 
 	/// <summary>
@@ -1980,6 +1961,96 @@ public static class StringExtension
 			    textEncoding);
 		{ }
 		return md5String;
+	}
+
+	/// <summary>
+	/// 使用“Environment.AESKey_Default”作为加密Key，通过“AES”算法对当前字符串进行加密。
+	/// </summary>
+	/// <param name="plaintext">当前“明文”字符串。</param>
+	/// <param name="key">指定的加密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
+	/// <returns>返回加密后的字符串。</returns>
+	public static string? ToCiphertext(
+		this string plaintext,
+		string? key = null)
+	{
+		key ??= Environment.AESKeyDeafult;
+		var ciphertext = AES.EncryptToBytesWithCTR(
+			plaintext,
+			key,
+			null,
+			out var nonce);
+		if (ciphertext.Length < 1)
+		{
+			return null;
+		}
+
+		var uriBuilder = new UriBuilder
+		{
+			Scheme = StringEncryptionMethodNames.Aes_Ctr,
+			Host = HttpUtility.UrlEncode(ciphertext),
+			Query = StringEncryptionParamNames.Nonce + "=" + HttpUtility.UrlEncode(nonce)
+		};
+		ciphertext = uriBuilder.ToString();
+		{ }
+		return ciphertext;
+	}
+
+	/// <summary>
+	/// 使用“Environment.AESKey_Default”作为加密Key，通过“AES”算法对当前字符串进行解密。
+	/// </summary>
+	/// <param name="ciphertext">当前“密文”字符串。，</param>
+	/// <param name="key">指定的解密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
+	/// <returns>返回解密后的字符串。</returns>
+	public static string ToPlaintext(
+		this string ciphertext,
+		string? key = null)
+	{
+		key ??= Environment.AESKeyDeafult;
+
+		////////////////////////////////////////////////
+		// 1/2，新版本使用“AES/CTR”加密方法：
+		////////////////////////////////////////////////
+
+		if (ciphertext.StartsWith(StringEncryptionMethodNames.Aes_Ctr + System.Uri.SchemeDelimiter))
+		{
+			if (!Uri.TryCreate(
+				ciphertext,
+				UriKind.Absolute,
+				out var ciphertextUri))
+			{
+				return string.Empty;
+			}
+
+			ciphertext = ciphertextUri.Host;
+			var encryptionParams = HttpUtility.ParseQueryString(ciphertextUri.Query);
+			var nonce = encryptionParams[StringEncryptionParamNames.Nonce];
+			if (string.IsNullOrEmpty(nonce))
+			{
+				return string.Empty;
+			}
+
+			return AES.DecryptToBytesWithCTR(
+				ciphertext,
+				key,
+				nonce);
+		}
+
+
+		////////////////////////////////////////////////
+		// 2/2，旧版本使用不安全的“AES/ECB”加密方法：
+		////////////////////////////////////////////////
+
+#pragma warning disable CS0618 // 类型或成员已过时
+		var plaintextBytes = AES.DecryptToBytesWithECB(ciphertext, key);
+#pragma warning restore CS0618 // 类型或成员已过时
+		if (plaintextBytes == null
+		    || plaintextBytes.Length < 1)
+		{
+			return String.Empty;
+		}
+		var plaintext = System.Text.Encoding.UTF8.GetString(plaintextBytes);
+		{ }
+		return plaintext;
 	}
 
 	/// <summary>

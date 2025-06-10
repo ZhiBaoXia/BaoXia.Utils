@@ -1974,7 +1974,7 @@ public static class StringExtension
 		string? key = null)
 	{
 		key ??= Environment.AESKeyDeafult;
-		var ciphertext = AES.EncryptToBytesWithCTR(
+		var ciphertext = AesCtr.EncryptString(
 			plaintext,
 			key,
 			null,
@@ -1984,13 +1984,7 @@ public static class StringExtension
 			return null;
 		}
 
-		var uriBuilder = new UriBuilder
-		{
-			Scheme = StringEncryptionMethodNames.Aes_Ctr,
-			Host = HttpUtility.UrlEncode(ciphertext),
-			Query = StringEncryptionParamNames.Nonce + "=" + HttpUtility.UrlEncode(nonce)
-		};
-		ciphertext = uriBuilder.ToString();
+		ciphertext = $"{StringEncryptionMethodNames.Aes_Ctr}://{HttpUtility.UrlEncode(ciphertext)}?{StringEncryptionParamNames.Nonce}={HttpUtility.UrlEncode(nonce)}";
 		{ }
 		return ciphertext;
 	}
@@ -2013,26 +2007,27 @@ public static class StringExtension
 
 		if (ciphertext.StartsWith(StringEncryptionMethodNames.Aes_Ctr + System.Uri.SchemeDelimiter))
 		{
-			if (!Uri.TryCreate(
-				ciphertext,
-				UriKind.Absolute,
-				out var ciphertextUri))
+			var ciphertextUri = ciphertext;
+			var ciphertextContentUrlEncoded = ciphertextUri.GetHostInUri();
+			if (!string.IsNullOrEmpty(ciphertextContentUrlEncoded))
 			{
-				return string.Empty;
+				//
+				var ciphertextContent = HttpUtility.UrlDecode(ciphertextContentUrlEncoded);
+				//
+				var encryptionParams = ciphertextUri.GetQueryParamDictionaryInUri();
+				if (encryptionParams
+					?.TryGetValue(
+						StringEncryptionParamNames.Nonce,
+						out var nonce) == true
+						&& !string.IsNullOrEmpty(nonce))
+				{
+					return AesCtr.DecryptString(
+						ciphertextContent,
+						key,
+						nonce);
+				}
 			}
-
-			ciphertext = ciphertextUri.Host;
-			var encryptionParams = HttpUtility.ParseQueryString(ciphertextUri.Query);
-			var nonce = encryptionParams[StringEncryptionParamNames.Nonce];
-			if (string.IsNullOrEmpty(nonce))
-			{
-				return string.Empty;
-			}
-
-			return AES.DecryptToBytesWithCTR(
-				ciphertext,
-				key,
-				nonce);
+			return string.Empty;
 		}
 
 

@@ -315,33 +315,4 @@ public class AESTest
 			//
 		}
 	}
-
-
-	[TestMethod]
-#pragma warning disable MSTEST0003 // Test methods should have valid layout
-	public void EncryptToBytesWithCTRTest()
-#pragma warning restore MSTEST0003 // Test methods should have valid layout
-	{
-		string key = "4341F7D1FD8F4D8B88873D1CD7E387B1";
-		string plaintext = "Hello World！";
-		string nonce = "0DIhPK7ivZ1pDMVgJbkHAg==";
-
-		var ciphertext = AES.EncryptToBytesWithCTR(
-			plaintext,
-			key,
-			nonce,
-			out var finalNonce);
-		{
-			//Assert.AreEqual("viuGeUyB79taaNaK+kE=", ciphertext);
-		}
-
-		var plaintextDecrypted = AES.DecryptToBytesWithCTR(
-			ciphertext,
-			key,
-			nonce);
-		{
-			Assert.AreEqual(plaintext, plaintextDecrypted);
-		}
-	}
-
 }

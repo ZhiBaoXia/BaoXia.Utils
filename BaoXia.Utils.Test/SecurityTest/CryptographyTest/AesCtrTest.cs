@@ -75,4 +75,24 @@ public class AesCtrTest
 		Assert.AreEqual(plaintext, plaintextByDecrypted);
 		// !!!
 	}
+
+	[TestMethod]
+	public void DecryptStringTest()
+	{
+		// 测试用例
+		var key = "F11144532E6F45F5A3D66D97B61E652F67116502E17547C0AB6B8C8ADE0155F2";
+		var ciphertext = "L1vRH7Ay0EJyNx8=";
+		var nonce = "ZUht7UQHEQYAlZqPN5oxlg==";
+		var plaintext = "16645670001";
+
+
+		// 验证结果DecryptString
+		string plaintextByDecrypted = AesCtr.DecryptString(ciphertext, key, nonce);
+
+		System.Diagnostics.Trace.WriteLine($"解密结果: {plaintextByDecrypted}"); // 应与原始明文完全一致
+
+		// !!!
+		Assert.AreEqual(plaintext, plaintextByDecrypted);
+		// !!!
+	}
 }

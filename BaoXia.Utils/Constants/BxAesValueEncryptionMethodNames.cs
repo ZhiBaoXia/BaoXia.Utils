@@ -1,6 +1,6 @@
-﻿namespace BaoXia.Utils.Test.Constants;
+﻿namespace BaoXia.Utils.Constants;
 
-public class StringEncryptionMethodNames
+public class BxAesValueEncryptionMethodNames
 {
 
 	////////////////////////////////////////////////

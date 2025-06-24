@@ -1,6 +1,5 @@
 ﻿using BaoXia.Utils.Constants;
 using BaoXia.Utils.Security.Cryptography;
-using BaoXia.Utils.Test.Constants;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -2002,10 +2001,10 @@ public static class StringExtension
 			return null;
 		}
 
-		var ciphertextParamName = StringEncryptionParamNames.Ciphertext.StringByEncodeInUriParam();
+		var ciphertextParamName = BxAesValueEncryptionParamNames.Ciphertext.StringByEncodeInUriParam();
 		var ciphertextParamValue = ciphertext.StringByEncodeInUriParam();
 
-		var nonceParamName = StringEncryptionParamNames.Nonce.StringByEncodeInUriParam();
+		var nonceParamName = BxAesValueEncryptionParamNames.Nonce.StringByEncodeInUriParam();
 		var nonceParamValue = finalNonceInBase64.StringByEncodeInUriParam();
 
 		var uriQuery
@@ -2013,7 +2012,7 @@ public static class StringExtension
 
 		var uriBuilder = new UriBuilder
 		{
-			Scheme = StringEncryptionMethodNames.Aes_Ctr,
+			Scheme = BxAesValueEncryptionMethodNames.Aes_Ctr,
 			Host = string.Empty,
 			Query = uriQuery
 		};
@@ -2040,7 +2039,7 @@ public static class StringExtension
 		// 1/2，新版本使用“AES/CTR”加密方法：
 		////////////////////////////////////////////////
 
-		if (ciphertext.StartsWith(StringEncryptionMethodNames.Aes_Ctr + ":"))
+		if (ciphertext.StartsWith(BxAesValueEncryptionMethodNames.Aes_Ctr + ":"))
 		{
 			try
 			{
@@ -2053,10 +2052,10 @@ public static class StringExtension
 					out var ciphertextUri))
 				{
 					var encryptionParams = HttpUtility.ParseQueryString(ciphertextUri.Query);
-					var ciphertextContent = encryptionParams[StringEncryptionParamNames.Ciphertext];
+					var ciphertextContent = encryptionParams[BxAesValueEncryptionParamNames.Ciphertext];
 					if (!string.IsNullOrEmpty(ciphertextContent))
 					{
-						nonceInBase64 = encryptionParams[StringEncryptionParamNames.Nonce];
+						nonceInBase64 = encryptionParams[BxAesValueEncryptionParamNames.Nonce];
 						if (!string.IsNullOrEmpty(nonceInBase64))
 						{
 							return AesCtr.DecryptString(

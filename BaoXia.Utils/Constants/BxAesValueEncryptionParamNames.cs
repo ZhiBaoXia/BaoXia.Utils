@@ -1,8 +1,7 @@
-﻿namespace BaoXia.Utils.Test.Constants;
+﻿namespace BaoXia.Utils.Constants;
 
-public class StringEncryptionParamNames
+public class BxAesValueEncryptionParamNames
 {
-
 	////////////////////////////////////////////////
 	// @静态常量
 	////////////////////////////////////////////////

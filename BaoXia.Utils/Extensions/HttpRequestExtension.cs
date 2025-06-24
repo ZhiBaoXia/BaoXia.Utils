@@ -49,13 +49,14 @@ public static class HttpRequestExtension
 	}
 
 	public static List<string> GetClientConnectionAddressList(
-		this HttpRequest request,
-		out bool isLastIpAddressGetFromBxGateway)
+		this HttpRequest request)
 	{
-		//
-		isLastIpAddressGetFromBxGateway = false;
-		//
+		var clientHttpProxyAddressSet = new HashSet<string>();
 		var clientHttpProxyAddressList = new List<string>();
+
+		////////////////////////////////////////////////
+		// 1/，获取【Http请求头】中的客户端地址信息。
+		////////////////////////////////////////////////
 		if (request.Headers is IHeaderDictionary requestHeaders)
 		{
 			// “X-Forwarded-For”的客户端地址。
@@ -72,9 +73,13 @@ public static class HttpRequestExtension
 							var forwardClientAddressTrimed = forwardClientAddress.Trim();
 							if (forwardClientAddressTrimed?.Length > 0)
 							{
-								// !!!
-								clientHttpProxyAddressList.Add(forwardClientAddressTrimed);
-								// !!!
+								if (clientHttpProxyAddressSet.Contains(forwardClientAddressTrimed) == false)
+								{
+									// !!!
+									clientHttpProxyAddressSet.Add(forwardClientAddressTrimed);
+									clientHttpProxyAddressList.Add(forwardClientAddressTrimed);
+									// !!!
+								}
 							}
 						}
 					}
@@ -88,29 +93,42 @@ public static class HttpRequestExtension
 					var x_Real_IpTrimed = x_Real_Ip?.Trim();
 					if (x_Real_IpTrimed?.Length > 0)
 					{
-						// !!!
-						clientHttpProxyAddressList.Add(x_Real_IpTrimed);
-						// !!!
+						if (clientHttpProxyAddressSet.Contains(x_Real_IpTrimed) == false)
+						{
+							// !!!
+							clientHttpProxyAddressSet.Add(x_Real_IpTrimed);
+							clientHttpProxyAddressList.Add(x_Real_IpTrimed);
+							// !!!
+						}
 					}
 				}
 			}
 		}
-		// Tcp连接的客户端地址。
-		if (request.HttpContext?.Connection != null)
+
+
+		////////////////////////////////////////////////
+		// 2/，获取【Tcp连接】中的客户端地址信息。
+		////////////////////////////////////////////////
+		if (request.HttpContext?.Connection is { } tcpIpConnection)
 		{
-			var remoteIpAddress = request.HttpContext.Connection.RemoteIpAddress?.ToString();
+			var remoteIpAddress = tcpIpConnection.RemoteIpAddress?.ToString();
 			if (remoteIpAddress?.Length > 0)
 			{
-				if (clientHttpProxyAddressList.Count < 1
-					|| clientHttpProxyAddressList[^1].EqualsIgnoreCase(remoteIpAddress) != true)
+				remoteIpAddress += ":" + tcpIpConnection.RemotePort;
+				if (clientHttpProxyAddressSet.Contains(remoteIpAddress) == false)
 				{
 					// !!!
+					clientHttpProxyAddressSet.Add(remoteIpAddress);
 					clientHttpProxyAddressList.Add(remoteIpAddress);
 					// !!!
 				}
 			}
 		}
-		// 宝匣网关的客户端地址。
+
+
+		////////////////////////////////////////////////
+		// 3/，获取【宝匣网关】中的客户端地址信息。
+		////////////////////////////////////////////////
 		if (request.Headers?.TryGetValue(
 			HttpHeaderKeys.BxService_Gateway_ClientIp,
 			out var bxService_Gateway_ClientIp) == true
@@ -126,11 +144,13 @@ public static class HttpRequestExtension
 						var clientIpAddressTrimed = clientIpAddress.Trim();
 						if (clientIpAddressTrimed?.Length > 0)
 						{
-							// !!!
-							clientHttpProxyAddressList.Add(clientIpAddressTrimed);
-							// !!!
-							isLastIpAddressGetFromBxGateway = true;
-							// !!!
+							if (clientHttpProxyAddressSet.Contains(clientIpAddressTrimed) == false)
+							{
+								// !!!
+								clientHttpProxyAddressSet.Add(clientIpAddressTrimed);
+								clientHttpProxyAddressList.Add(clientIpAddressTrimed);
+								// !!!
+							}
 						}
 					}
 				}
@@ -139,26 +159,11 @@ public static class HttpRequestExtension
 		return clientHttpProxyAddressList;
 	}
 
-	/// <summary>
-	/// 根据“Http_X_FORWARDED_FOR”字段，获取Http代理链，
-	/// 最终代理地址一定为“请求客户端地址”，
-	/// 用户没有代理时，代理链等于“请求客户端地址”。
-	/// </summary>
-	/// <param name="request">当前请求对象。</param>
-	/// <returns>代理链字符串。</returns>
-	public static List<string> GetClientConnectionAddressList(
+	public static string? GetClientConnectionAddressesString(
 		this HttpRequest request)
 	{
-		return GetClientConnectionAddressList(request, out _);
-	}
-
-	public static string? GetClientConnectionAddressesString(
-		this HttpRequest request,
-		out bool isLastIpAddressGetFromBxGateway)
-	{
 		var clientHttpProxyAddressList
-			= request.GetClientConnectionAddressList(
-				out isLastIpAddressGetFromBxGateway);
+			= request.GetClientConnectionAddressList();
 		if (clientHttpProxyAddressList.Count > 0)
 		{
 			return StringUtil.StringWithStrings(
@@ -167,18 +172,6 @@ public static class HttpRequestExtension
 				true);
 		}
 		return null;
-	}
-
-	/// <summary>
-	/// 根据“Http_X_FORWARDED_FOR”字段，获取Http代理链，
-	/// 最终代理地址一定为“请求客户端地址”，
-	/// 用户没有代理时，代理链等于“请求客户端地址”。
-	/// </summary>
-	/// <param name="request">当前请求对象。</param>
-	/// <returns>代理链字符串。</returns>
-	public static string? GetClientConnectionAddressesString(this HttpRequest request)
-	{
-		return GetClientConnectionAddressesString(request, out _);
 	}
 
 	/// <summary>
@@ -273,30 +266,35 @@ public static class HttpRequestExtension
 			return new ClientIpInfo();
 		}
 
-		var ipAddressChain
-			= httpRequest
-			.GetClientConnectionAddressesString(
-				out var isLastIpAddressGetFromBxGateway);
 		var ipPortLast
 			= httpRequest.HttpContext.Connection.RemotePort;
-		if (isLastIpAddressGetFromBxGateway)
+		var ipAddressChainList
+			= httpRequest.GetClientConnectionAddressList();
+		if (ipPortLast == 0)
 		{
-			if (ipAddressChain?.LastIndexOf(':') is int lastIndexOfColonSymbol
-				&& lastIndexOfColonSymbol >= 0)
+			for (var ipAddressIndex = ipAddressChainList.Count - 1;
+				ipAddressIndex >= 0;
+				ipAddressIndex--)
 			{
-				var ipPortLastString = ipAddressChain[(lastIndexOfColonSymbol + 1)..];
-				if (int.TryParse(ipPortLastString, out var ipPortLastIntValue))
+				var ipAddress = ipAddressChainList[ipAddressIndex];
+				if (ipAddress?.LastIndexOf(':') is { } lastIndexOfColonSymbol
+					&& lastIndexOfColonSymbol >= 0)
 				{
-					// !!!
-					ipPortLast = ipPortLastIntValue;
-					// !!!
+					var ipPortLastString = ipAddress[(lastIndexOfColonSymbol + 1)..];
+					if (int.TryParse(ipPortLastString, out var ipPortLastIntValue))
+					{
+						// !!!
+						ipPortLast = ipPortLastIntValue;
+						break;
+						// !!!
+					}
 				}
 			}
 		}
 
 		var endPointInfo = new ClientIpInfo()
 		{
-			IpAddressChain = ipAddressChain,
+			IpAddressChain = StringUtil.StringWithStrings(ipAddressChainList, ",", true),
 			IpPortLast = ipPortLast
 
 		};

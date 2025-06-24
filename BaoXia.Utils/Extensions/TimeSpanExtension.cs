@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BaoXia.Utils.Constants;
+using System;
 
 namespace BaoXia.Utils.Extensions;
 
@@ -10,15 +11,17 @@ public static class TimeSpanExtension
 
 	#region 类方法
 
-	public static string CaptionOfListElementDefault(
-			this TimeSpan timeSpan,
-			bool isNeedSecondsField = false)
+	public static string CaptionOfListElementDefault(this TimeSpan timeSpan)
 	{
 		string caption;
 		var totalMinutes = timeSpan.TotalMinutes;
 		if (totalMinutes < 1)
 		{
 			caption = string.Format("{0:F0}秒", timeSpan.TotalSeconds);
+		}
+		else if (totalMinutes >= TimeDefinition.Forever.Minutes)
+		{
+			caption = "永久";
 		}
 		else
 		{
@@ -33,14 +36,14 @@ public static class TimeSpanExtension
 				if (totalDays < 1)
 				{
 					caption = string.Format(
-						"{0:0}小时, {0:F0}分钟",
+						"{0:0}小时, {1:F0}分钟",
 						timeSpan.Hours,
 						timeSpan.Minutes);
 				}
 				else
 				{
 					caption = string.Format(
-						"{0:0}天, {0:F0}小时",
+						"{0:0}天, {1:F0}小时",
 						timeSpan.Days,
 						timeSpan.Hours);
 				}
@@ -49,15 +52,17 @@ public static class TimeSpanExtension
 		return caption;
 	}
 
-	public static string CaptionOfDetailPageDefault(
-		this TimeSpan timeSpan,
-		bool isNeedSecondsField = false)
+	public static string CaptionOfDetailPageDefault(this TimeSpan timeSpan)
 	{
 		string caption;
 		var totalMinutes = timeSpan.TotalMinutes;
 		if (totalMinutes < 1)
 		{
 			caption = string.Format("{0:F0}秒", timeSpan.TotalSeconds);
+		}
+		else if (totalMinutes >= TimeDefinition.Forever.Minutes)
+		{
+			caption = "永久";
 		}
 		else
 		{

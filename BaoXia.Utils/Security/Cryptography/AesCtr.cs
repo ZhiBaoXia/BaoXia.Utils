@@ -122,7 +122,8 @@ public class AesCtr
 		}
 
 		// 参数校验
-		keyBytes = NormalizeKeyBytes(keyBytes); // 确保密钥长度合法
+		// 确保密钥长度合法
+		keyBytes = NormalizeKeyBytes(keyBytes);
 
 		// 生成唯一 Nonce
 		if (nonceBytes?.Length > 0)

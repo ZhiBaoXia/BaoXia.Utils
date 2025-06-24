@@ -19,7 +19,7 @@ public static class TimeSpanExtension
 		{
 			caption = string.Format("{0:F0}秒", timeSpan.TotalSeconds);
 		}
-		else if (totalMinutes >= TimeDefinition.Forever.Minutes)
+		else if (totalMinutes >= TimeDefinition.Forever.TotalMinutes)
 		{
 			caption = "永久";
 		}
@@ -60,7 +60,7 @@ public static class TimeSpanExtension
 		{
 			caption = string.Format("{0:F0}秒", timeSpan.TotalSeconds);
 		}
-		else if (totalMinutes >= TimeDefinition.Forever.Minutes)
+		else if (totalMinutes >= TimeDefinition.Forever.TotalMinutes)
 		{
 			caption = "永久";
 		}

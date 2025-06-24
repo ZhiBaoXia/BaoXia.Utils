@@ -1,4 +1,6 @@
-﻿namespace BaoXia.Utils.Constants;
+﻿using System;
+
+namespace BaoXia.Utils.Constants;
 
 public class TimeDefinition
 {
@@ -10,20 +12,21 @@ public class TimeDefinition
 
 	public class Forever
 	{
+		public const double TotalYears = 100;
 
-		public const double Years = 100;
+		public const double TotalMonths = 12 * TotalYears;
 
-		public const double Months = 12 * Years;
+		public const double TotalDays = 365 * TotalYears;
 
-		public const double Days = 365 * Years;
+		public const double TotalHours = 24 * TotalDays;
 
-		public const double Hours = 24 * Days;
+		public const double TotalMinutes = 60 * TotalHours;
 
-		public const double Minutes = 60 * Hours;
+		public const double TotalSeconds = 60 * TotalMinutes;
 
-		public const double Seconds = 60 * Minutes;
+		public const double TotalMilliseconds = 1000 * TotalSeconds;
 
-		public const double Milliseconds = 1000 * Seconds;
+		public const long TotalTicks = (long)(TimeSpan.TicksPerMillisecond * TotalMilliseconds);
 	}
 
 	#endregion

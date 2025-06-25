@@ -74,6 +74,26 @@ public class StringUtil
 		return !StringUtil.IsAlphabet(str);
 	}
 
+	public static bool IsStartWithNumber(string? stringValue)
+	{
+		if (string.IsNullOrEmpty(stringValue))
+		{
+			return false;
+		}
+
+		return CharUtil.IsNumberChar(stringValue[0]);
+	}
+
+	public static bool IsEndWithNumber(string? stringValue)
+	{
+		if (string.IsNullOrEmpty(stringValue))
+		{
+			return false;
+		}
+
+		return CharUtil.IsNumberChar(stringValue[^1]);
+	}
+
 	#endregion
 
 

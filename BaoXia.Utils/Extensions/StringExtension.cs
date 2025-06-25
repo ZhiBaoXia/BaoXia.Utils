@@ -3372,6 +3372,16 @@ public static class StringExtension
 		return true;
 	}
 
+	public static bool IsStartWithNumber(this string? stringValue)
+	{
+		return StringUtil.IsStartWithNumber(stringValue);
+	}
+
+	public static bool IsEndWithNumber(this string? stringValue)
+	{
+		return StringUtil.IsEndWithNumber(stringValue);
+	}
+
 	/// <summary>
 	/// 当前字符串是否为纯字母字符串。
 	/// </summary>

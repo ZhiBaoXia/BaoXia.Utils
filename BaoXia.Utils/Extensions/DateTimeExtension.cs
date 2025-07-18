@@ -831,7 +831,7 @@ public static class DateTimeExtension
 			> 0;
 	}
 
-	public static bool IsLastDayOf(this DateTime dateTime, DateTime today)
+	public static bool IsPrevDayOf(this DateTime dateTime, DateTime today)
 	{
 		var dateTimeBeforeDay = today.AddDays(-1);
 		if (dateTimeBeforeDay.EqualsInDay(dateTime))
@@ -854,7 +854,7 @@ public static class DateTimeExtension
 		this DateTime dateTime,
 	       DateTime today)
 	{
-		return dateTime.IsLastDayOf(today);
+		return dateTime.IsPrevDayOf(today);
 	}
 
 	public static bool IsTomorrowOf(

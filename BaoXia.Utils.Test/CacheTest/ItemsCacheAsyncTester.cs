@@ -293,13 +293,17 @@ public class ItemsCacheAsyncTester<ItemIdType>(
 					var item = tryGetResult.Item;
 					// !!!
 					//Assert.IsTrue(isItemIdExisted == true);
+#pragma warning disable MSTEST0040 // 不要在 “async void” 上下文中断言
 					Assert.IsNotNull(item);
 					Assert.IsTrue(item.Id?.Equals(itemId));
+#pragma warning restore MSTEST0040 // 不要在 “async void” 上下文中断言
 					// !!!
 				}
 				else
 				{
+#pragma warning disable MSTEST0040 // 不要在 “async void” 上下文中断言
 					Assert.IsFalse(isItemIdExisted);
+#pragma warning restore MSTEST0040 // 不要在 “async void” 上下文中断言
 				}
 				////////////////////////////////////////////////
 				testRecorder.EndTest();

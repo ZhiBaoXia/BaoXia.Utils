@@ -975,7 +975,7 @@ dateTimeOffset.Day,
 			> 0;
 	}
 
-	public static bool IsLastDayOf(this DateTimeOffset dateTimeOffset, DateTimeOffset today)
+	public static bool IsPrevDayOf(this DateTimeOffset dateTimeOffset, DateTimeOffset today)
 	{
 		var dateTimeBeforeDay = today.AddDays(-1);
 		if (dateTimeBeforeDay.EqualsInDay(dateTimeOffset))
@@ -998,7 +998,7 @@ dateTimeOffset.Day,
 		this DateTimeOffset dateTimeOffset,
 	       DateTimeOffset today)
 	{
-		return dateTimeOffset.IsLastDayOf(today);
+		return dateTimeOffset.IsPrevDayOf(today);
 	}
 
 	public static bool IsTomorrowOf(

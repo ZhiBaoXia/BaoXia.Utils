@@ -116,7 +116,7 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 						if (_taskToAutoClean == null)
 						{
 							_taskToAutoClean = new LoopTask(
-								(CancellationToken cancellationToken) =>
+								cancellationToken =>
 								{
 #if DEBUG
 									var myType = this.GetType();
@@ -208,7 +208,7 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 					lock (this)
 					{
 						_taskToAutoUpdate ??= new LoopTask(
-								(CancellationToken cancellationToken) =>
+								cancellationToken =>
 								{
 #if DEBUG
 									var myType = this.GetType();

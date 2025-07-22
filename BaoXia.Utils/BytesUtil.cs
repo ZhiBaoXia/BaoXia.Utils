@@ -27,9 +27,44 @@ public class BytesUtil
 		return byteArray;
 	}
 
-	public static string CreateBase64StringOfBytes(byte[] bytes)
+	public static string? CreateBase64StringOfBytes(
+		 byte[] bytes,
+		int offset = 0,
+		int? length = null,
+		string? dataType = null,
+		Base64FormattingOptions base64FormattingOptions = Base64FormattingOptions.None)
 	{
-		return Convert.ToBase64String(bytes);
+		if (bytes.Length < 1)
+		{
+			return null;
+		}
+
+		length ??= bytes.Length;
+		if (length < 1)
+		{
+			return null;
+		}
+
+		if (offset < 0)
+		{
+			length += offset;
+			offset = 0;
+		}
+		if (offset + length > bytes.Length)
+		{
+			length = bytes.Length - offset;
+		}
+
+		var base64String = System.Convert.ToBase64String(
+			bytes,
+			offset,
+			length.Value,
+			base64FormattingOptions);
+		if (dataType?.Length > 0)
+		{
+			base64String = "data:" + dataType + ";base64,";
+		}
+		return base64String;
 	}
 
 	public static byte[] CreateBytesFromBase64String(

@@ -355,23 +355,9 @@ public static class ByteArrayExtension
 		string base64String,
 		bool isAutoIgnoreContentTypeChars = true)
 	{
-		if (base64String.Length < 1)
-		{
-			return null;
-		}
-
-		if (isAutoIgnoreContentTypeChars)
-		{
-			var commaIndexInImageBase64Code = base64String.IndexOf(',');
-			if (commaIndexInImageBase64Code >= 0)
-			{
-				base64String = base64String[(commaIndexInImageBase64Code + 1)..];
-			}
-		}
-
-		byte[] bytes = Convert.FromBase64String(base64String);
-		{ }
-		return bytes;
+		return BytesUtil.CreateBytesFromBase64String(
+			base64String,
+			isAutoIgnoreContentTypeChars);
 	}
 
 	/// <summary>
@@ -390,37 +376,13 @@ public static class ByteArrayExtension
 		string dataType,
 		Base64FormattingOptions base64FormattingOptions = Base64FormattingOptions.None)
 	{
-		if (bytes == null
-			|| bytes.Length < 1)
-		{
-			return string.Empty;
-		}
-
-		if (offset < 0)
-		{
-			length += offset;
-			offset = 0;
-		}
-		if (offset + length > bytes.Length)
-		{
-			length = bytes.Length - offset;
-		}
-		if (length < 0)
-		{
-			return string.Empty;
-		}
-
-		var base64String = System.Convert.ToBase64String(
+		return BytesUtil.CreateBase64StringOfBytes(
 			bytes,
 			offset,
 			length,
-			base64FormattingOptions);
-		if (dataType?.Length > 0)
-		{
-			base64String
-				= "data:" + dataType + ";base64,";
-		}
-		return base64String;
+			dataType,
+			base64FormattingOptions)
+			?? string.Empty;
 	}
 
 	public static string ToMD532String(this byte[] bytes, int offset, int length)

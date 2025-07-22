@@ -1,10 +1,6 @@
-﻿using BaoXia.Utils.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test;
 
@@ -53,7 +49,7 @@ public class BytesUtilTest
 	}
 
 	[TestMethod]
-	public void Test()
+	public void CreateBase64StringOfBytesTest()
 	{
 		var bytes = new byte[6];
 		{
@@ -65,7 +61,7 @@ public class BytesUtilTest
 			bytes[5] = (byte)'c';
 		}
 
-		var base64 = BytesUtil.CreateBase64StringOfBytes(bytes);
+		var base64 = BytesUtil.CreateBase64StringOfBytes(bytes)!;
 		{
 			Assert.AreEqual("AAECQWJj", base64);
 		}

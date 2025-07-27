@@ -75,6 +75,12 @@ public class ObjectPropertyInfo
 
 	public object? GetValue(object? entity)
 	{
+		var indexParametersOfPropery = PropertyInfo.GetIndexParameters();
+		if (indexParametersOfPropery.Length > 0)
+		{
+			// 暂时不支持的值类型。
+			return null;
+		}
 		return PropertyInfo.GetValue(entity);
 	}
 

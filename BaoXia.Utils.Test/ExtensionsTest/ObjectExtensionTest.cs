@@ -1262,4 +1262,66 @@ public class ObjectExtensionTest
 			});
 		Assert.IsTrue(checkError!.Equals($"数据无效，属性“{nameof(TestEntity.IpInfoNotNull)}.{nameof(IpInfo.IpAddress)}”为“null”。"));
 	}
+
+	class ToBytesObject
+	{
+		public byte ByteValue0 { get; set; } = 0;
+		public byte ByteValue1 { get; set; } = 1;
+		public byte ByteValue2 { get; set; } = 2;
+		public byte[] ByteValue { get; set; } = [3, 4, 5];
+		public string StringValue { get; set; } = "abc";
+	}
+
+	[TestMethod]
+	public void ToBytesTest()
+	{
+		var toBytesObject = new ToBytesObject();
+		var objectBytes = toBytesObject.ToBytes();
+		{
+			Assert.IsTrue(objectBytes.Length > 0);
+		}
+	}
+
+	[TestMethod]
+	public void ToBytes_Bytes_Test()
+	{
+		byte[] bytes = [0, 1, 2, 3, 4, 5];
+		var bytesSegment = new ArraySegment<byte>(bytes, 0, 3);
+
+		var objectBytes = bytesSegment.ToBytes();
+		{
+			Assert.IsTrue(objectBytes.Length > 0);
+		}
+	}
+
+	class IndexProperty
+	{
+		public int[] _numbers = { 1, 2, 3 };
+
+		public int this[int index]
+		{
+			get => _numbers[index];
+			set => _numbers[index] = value;
+		}
+	}
+
+	class ToBytesObjectWithIndexProperty
+	{
+		public byte ByteValue0 { get; set; } = 0;
+		public byte ByteValue1 { get; set; } = 1;
+		public byte ByteValue2 { get; set; } = 2;
+		public byte[] ByteValue { get; set; } = [3, 4, 5];
+		public string StringValue { get; set; } = "abc";
+		public IndexProperty IndexProperty { get; set; } = new();
+	}
+
+	[TestMethod]
+	public void ToBytes_ToBytesObjectWithIndexProperty_Test()
+	{
+		var toBytesObject = new ToBytesObjectWithIndexProperty();
+		var objectBytes = toBytesObject.ToBytes();
+		{
+			Assert.IsTrue(objectBytes.Length > 0);
+		}
+	}
 }

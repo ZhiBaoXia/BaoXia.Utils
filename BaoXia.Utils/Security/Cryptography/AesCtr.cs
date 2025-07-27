@@ -108,12 +108,12 @@ public class AesCtr
 	}
 
 	public static byte[] EncryptBytes(
-		byte[] plaintextBytes,
+		ArraySegment<byte> plaintextBytes,
 		byte[] keyBytes,
 		byte[]? nonceBytes,
 		out byte[] finalNonceBytes)
 	{
-		if (plaintextBytes.Length < 1)
+		if (plaintextBytes.Count < 1)
 		{
 			// !!!
 			finalNonceBytes = [];
@@ -152,12 +152,12 @@ public class AesCtr
 		aes.Padding = PaddingMode.None;
 
 		using var encryptor = aes.CreateEncryptor();
-		byte[] encryptedBytes = new byte[plaintextBytes.Length];
+		byte[] encryptedBytes = new byte[plaintextBytes.Count];
 		// 16 字节（AES 块大小）
 		int blockSize = aes.BlockSize / 8;
 
 		for (int plaiantextBlockByteIndex = 0;
-			plaiantextBlockByteIndex < plaintextBytes.Length;
+			plaiantextBlockByteIndex < plaintextBytes.Count;
 			plaiantextBlockByteIndex += blockSize)
 		{
 			////////////////////////////////////////////////
@@ -174,7 +174,7 @@ public class AesCtr
 			////////////////////////////////////////////////
 			// 3/4. 明文与密钥流异或生成密文。
 			////////////////////////////////////////////////
-			int bytesToProcess = Math.Min(blockSize, plaintextBytes.Length - plaiantextBlockByteIndex);
+			int bytesToProcess = Math.Min(blockSize, plaintextBytes.Count - plaiantextBlockByteIndex);
 			for (int byteIndexToProcess = 0;
 				byteIndexToProcess < bytesToProcess;
 				byteIndexToProcess++)
@@ -194,11 +194,11 @@ public class AesCtr
 	}
 
 	public static byte[] DecryptBytes(
-		byte[] ciphertextBytes,
+		ArraySegment<byte> ciphertextBytes,
 		byte[] keyBytes,
 		byte[] nonceBytes)
 	{
-		if (ciphertextBytes.Length < 1)
+		if (ciphertextBytes.Count < 1)
 		{
 			return [];
 		}
@@ -222,11 +222,11 @@ public class AesCtr
 
 		// 解密复用加密器生成密钥流
 		using var encryptor = aes.CreateEncryptor();
-		byte[] decryptedBytes = new byte[ciphertextBytes.Length];
+		byte[] decryptedBytes = new byte[ciphertextBytes.Count];
 		int blockSize = aes.BlockSize / 8; // 16 字节
 
 		for (int ciphertextBlockByteIndex = 0;
-			ciphertextBlockByteIndex < ciphertextBytes.Length;
+			ciphertextBlockByteIndex < ciphertextBytes.Count;
 			ciphertextBlockByteIndex += blockSize)
 		{
 			// 1. 生成当前计数器块（与加密时一致）
@@ -237,7 +237,7 @@ public class AesCtr
 			byte[] keystream = encryptor.TransformFinalBlock(counterBlock, 0, blockSize);
 
 			// 3. 密文与密钥流异或生成明文（异或自逆）
-			int bytesToProcess = Math.Min(blockSize, ciphertextBytes.Length - ciphertextBlockByteIndex);
+			int bytesToProcess = Math.Min(blockSize, ciphertextBytes.Count - ciphertextBlockByteIndex);
 			for (int byteIndexToProcess = 0;
 				byteIndexToProcess < bytesToProcess;
 				byteIndexToProcess++)

@@ -106,6 +106,16 @@ public static class ObjectExtension
 		}
 
 		var propertyTypeInfo = @object.GetType().GetProperty(propertyName);
+		if (propertyTypeInfo == null)
+		{
+			return null;
+		}
+		if (propertyTypeInfo.GetIndexParameters().Length > 0)
+		{
+			// 暂时不支持的数据类型。
+			return null;
+		}
+
 		var propertyValue = propertyTypeInfo?.GetValue(@object);
 		{ }
 		return propertyValue;
@@ -126,7 +136,10 @@ public static class ObjectExtension
 		string? propertyName = null;
 		foreach (var objectTypeProperty in objectTypeProperties)
 		{
-			var objectProperty = objectTypeProperty.GetValue(@object);
+			var objectProperty
+				= objectTypeProperty.GetIndexParameters().Length > 0
+				? null // 暂时不支持的数据格式。
+				: objectTypeProperty.GetValue(@object);
 			if (objectProperty == propertyValue)
 			{
 				// !!!
@@ -210,7 +223,14 @@ public static class ObjectExtension
 
 						if (propertyAInObjectB != null)
 						{
-							propertyA.SetValue(objectA, propertyAInObjectB.GetValue(objectB));
+							if (propertyAInObjectB.GetIndexParameters().Length > 0)
+							{
+								// 暂时不支持的数据类型。
+							}
+							else
+							{
+								propertyA.SetValue(objectA, propertyAInObjectB.GetValue(objectB));
+							}
 						}
 					}
 				}
@@ -241,7 +261,14 @@ public static class ObjectExtension
 
 					if (propertyAInObjectB != null)
 					{
-						propertyA.SetValue(objectA, propertyAInObjectB.GetValue(objectB));
+						if (propertyAInObjectB.GetIndexParameters().Length > 0)
+						{
+							// 暂时不支持的数据类型。
+						}
+						else
+						{
+							propertyA.SetValue(objectA, propertyAInObjectB.GetValue(objectB));
+						}
 					}
 				}
 			}

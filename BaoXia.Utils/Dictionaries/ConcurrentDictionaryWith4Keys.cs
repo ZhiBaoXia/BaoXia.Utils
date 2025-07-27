@@ -256,9 +256,14 @@ public class ConcurrentDictionaryWith4Keys
 			= fourthDictionaries.GetOrAdd(
 				fourthDeictionaryKey,
 				(_) => new());
+		var lastIndexItem = itemIndexInfo.FirstItem;
+		if (lastIndexItem != null)
+		{
+			return lastIndexItem;
+		}
 		lock (itemIndexInfo)
 		{
-			var lastIndexItem = itemIndexInfo.FirstItem;
+			lastIndexItem = itemIndexInfo.FirstItem;
 			if (lastIndexItem != null)
 			{
 				return lastIndexItem;

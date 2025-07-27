@@ -210,9 +210,14 @@ public class ConcurrentDictionaryWith3Keys
 			= thirdaryDictionaries.GetOrAdd(
 				thirdaryDeictionaryKey,
 				(_) => new());
+		var lastIndexItem = itemIndexInfo.FirstItem;
+		if (lastIndexItem != null)
+		{
+			return lastIndexItem;
+		}
 		lock (itemIndexInfo)
 		{
-			var lastIndexItem = itemIndexInfo.FirstItem;
+			lastIndexItem = itemIndexInfo.FirstItem;
 			if (lastIndexItem != null)
 			{
 				return lastIndexItem;

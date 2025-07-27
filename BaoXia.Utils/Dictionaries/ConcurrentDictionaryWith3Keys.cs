@@ -195,7 +195,10 @@ public class ConcurrentDictionaryWith3Keys
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
-		ItemType item,
+		Func<PrimaryDeictionaryKeyType,
+			SecondaryDeictionaryKeyType,
+			ThirdaryDeictionaryKeyType,
+			ItemType> toCreateItem,
 		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		var secondaryDictionaries
@@ -224,10 +227,13 @@ public class ConcurrentDictionaryWith3Keys
 			}
 
 			// !!!
-			var newIndexItem = item;
+			var newIndexItem = toCreateItem(
+				primaryDeictionaryKey,
+				secondaryDeictionaryKey,
+				thirdaryDeictionaryKey);
 			if (toUpdateIndexItemWithNewItem != null)
 			{
-				newIndexItem = toUpdateIndexItemWithNewItem(item, lastIndexItem);
+				newIndexItem = toUpdateIndexItemWithNewItem(newIndexItem, lastIndexItem);
 			}
 			newIndexItem = WillUpdateIndexItemWithPrimaryDeictionaryKey(
 				primaryDeictionaryKey,
@@ -260,6 +266,21 @@ public class ConcurrentDictionaryWith3Keys
 			return newIndexItem;
 			// !!!
 		}
+	}
+
+	public ItemType? GetOrAdd(
+		PrimaryDeictionaryKeyType primaryDeictionaryKey,
+		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
+		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
+		ItemType newItem,
+		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+	{
+		return GetOrAdd(
+			primaryDeictionaryKey,
+			secondaryDeictionaryKey,
+			thirdaryDeictionaryKey,
+			(_, _, _) => newItem,
+			toUpdateIndexItemWithNewItem);
 	}
 
 	public bool TryRemove(

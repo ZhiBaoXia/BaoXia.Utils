@@ -233,8 +233,8 @@ public class ConcurrentDictionaryWith3KeysAsync
 		Func<PrimaryDeictionaryKeyType,
 			SecondaryDeictionaryKeyType,
 			ThirdaryDeictionaryKeyType,
-			Task<ItemType>> toCreateItemAsync,
-		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+			Task<ItemType?>> toCreateItemAsync,
+		Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		var secondaryDictionaries
 			= PrimaryDictionaries.GetOrAdd(
@@ -314,7 +314,7 @@ public class ConcurrentDictionaryWith3KeysAsync
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
 		ItemType newItem,
-		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+		Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		return await GetOrAddAsync(
 			primaryDeictionaryKey,

@@ -243,7 +243,6 @@ public class ConcurrentDictionaryWith6Keys
 
 	#region 自身实现，更新数据部分。
 
-
 	public ItemType? Add(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
@@ -329,7 +328,13 @@ public class ConcurrentDictionaryWith6Keys
 		FourthDeictionaryKeyType fourthDeictionaryKey,
 		FifthDeictionaryKeyType fifthDeictionaryKey,
 		SixthDeictionaryKeyType sixthDeictionaryKey,
-		ItemType item,
+		Func<PrimaryDeictionaryKeyType,
+			SecondaryDeictionaryKeyType,
+			ThirdaryDeictionaryKeyType,
+			FourthDeictionaryKeyType,
+			FifthDeictionaryKeyType,
+			SixthDeictionaryKeyType,
+			ItemType> toCreateItem,
 		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		var secondaryDictionaries
@@ -369,10 +374,16 @@ public class ConcurrentDictionaryWith6Keys
 			}
 
 			// !!!
-			var newIndexItem = item;
+			var newIndexItem = toCreateItem(
+				primaryDeictionaryKey,
+				secondaryDeictionaryKey,
+				thirdaryDeictionaryKey,
+				fourthDeictionaryKey,
+				fifthDeictionaryKey,
+				sixthDeictionaryKey);
 			if (toUpdateIndexItemWithNewItem != null)
 			{
-				newIndexItem = toUpdateIndexItemWithNewItem(item, lastIndexItem);
+				newIndexItem = toUpdateIndexItemWithNewItem(newIndexItem, lastIndexItem);
 			}
 			newIndexItem = WillUpdateIndexItemWithPrimaryDeictionaryKey(
 				primaryDeictionaryKey,
@@ -408,6 +419,27 @@ public class ConcurrentDictionaryWith6Keys
 			return newIndexItem;
 			// !!!
 		}
+	}
+
+	public ItemType? GetOrAdd(
+		PrimaryDeictionaryKeyType primaryDeictionaryKey,
+		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
+		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
+		FourthDeictionaryKeyType fourthDeictionaryKey,
+		FifthDeictionaryKeyType fifthDeictionaryKey,
+		SixthDeictionaryKeyType sixthDeictionaryKey,
+		ItemType newItem,
+		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+	{
+		return GetOrAdd(
+			primaryDeictionaryKey,
+			secondaryDeictionaryKey,
+			thirdaryDeictionaryKey,
+			fourthDeictionaryKey,
+			fifthDeictionaryKey,
+			sixthDeictionaryKey,
+			(_, _, _, _, _, _) => newItem,
+			toUpdateIndexItemWithNewItem);
 	}
 
 	public bool TryRemove(

@@ -1,5 +1,4 @@
-﻿using BaoXia.Utils.Cache.Index;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 
 namespace BaoXia.Utils.Dictionaries;
@@ -27,7 +26,7 @@ public class ConcurrentDictionaryWith5Keys
 		ConcurrentDictionary<SecondaryDeictionaryKeyType,
 			ConcurrentDictionary<ThirdaryDeictionaryKeyType,
 				ConcurrentDictionary<FourthDeictionaryKeyType,
-					ConcurrentDictionary<FifthDeictionaryKeyType, ItemIndexNode<ItemType>>>>>> PrimaryDictionaries = new();
+					ConcurrentDictionary<FifthDeictionaryKeyType, DictionaryValueContainer<ItemType>>>>>> PrimaryDictionaries = new();
 
 	private string? _name = null;
 	public string? Name { get => _name; set => _name = value; }
@@ -44,7 +43,7 @@ public class ConcurrentDictionaryWith5Keys
 	public ConcurrentDictionary<SecondaryDeictionaryKeyType,
 		ConcurrentDictionary<ThirdaryDeictionaryKeyType,
 			ConcurrentDictionary<FourthDeictionaryKeyType,
-				ConcurrentDictionary<FifthDeictionaryKeyType, ItemIndexNode<ItemType>>>>>? GetSecondaryDictionaries(PrimaryDeictionaryKeyType primaryDeictionaryKey)
+				ConcurrentDictionary<FifthDeictionaryKeyType, DictionaryValueContainer<ItemType>>>>>? GetSecondaryDictionaries(PrimaryDeictionaryKeyType primaryDeictionaryKey)
 	{
 		_ = PrimaryDictionaries.TryGetValue(primaryDeictionaryKey, out var secondaryDictionaries);
 		{ }
@@ -53,7 +52,7 @@ public class ConcurrentDictionaryWith5Keys
 
 	public ConcurrentDictionary<ThirdaryDeictionaryKeyType,
 			ConcurrentDictionary<FourthDeictionaryKeyType,
-				ConcurrentDictionary<FifthDeictionaryKeyType, ItemIndexNode<ItemType>>>>? GetThirdaryDictionaries(
+				ConcurrentDictionary<FifthDeictionaryKeyType, DictionaryValueContainer<ItemType>>>>? GetThirdaryDictionaries(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey)
 	{
@@ -68,7 +67,7 @@ public class ConcurrentDictionaryWith5Keys
 	}
 
 	public ConcurrentDictionary<FourthDeictionaryKeyType,
-				ConcurrentDictionary<FifthDeictionaryKeyType, ItemIndexNode<ItemType>>>? GetFourthDictionaries(
+				ConcurrentDictionary<FifthDeictionaryKeyType, DictionaryValueContainer<ItemType>>>? GetFourthDictionaries(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey)
@@ -85,7 +84,7 @@ public class ConcurrentDictionaryWith5Keys
 		return fourthDictionaries;
 	}
 
-	public ConcurrentDictionary<FifthDeictionaryKeyType, ItemIndexNode<ItemType>>? GetFifthDictionaries(
+	public ConcurrentDictionary<FifthDeictionaryKeyType, DictionaryValueContainer<ItemType>>? GetFifthDictionaries(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,

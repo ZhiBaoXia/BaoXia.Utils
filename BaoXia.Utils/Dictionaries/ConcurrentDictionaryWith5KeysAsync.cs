@@ -1,23 +1,53 @@
-﻿using System;
+﻿using BaoXia.Utils.ConcurrentTools;
+using System;
 using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Dictionaries;
 
-public class ConcurrentDictionaryWith6Keys
+public class ConcurrentDictionaryWith5KeysAsync
 	<ItemType,
 	PrimaryDeictionaryKeyType,
 	SecondaryDeictionaryKeyType,
 	ThirdaryDeictionaryKeyType,
 	FourthDeictionaryKeyType,
-	FifthDeictionaryKeyType,
-	SixthDeictionaryKeyType>
+	FifthDeictionaryKeyType>
 	where PrimaryDeictionaryKeyType : notnull
 	where SecondaryDeictionaryKeyType : notnull
 	where ThirdaryDeictionaryKeyType : notnull
 	where FourthDeictionaryKeyType : notnull
 	where FifthDeictionaryKeyType : notnull
-	where SixthDeictionaryKeyType : notnull
 {
+	////////////////////////////////////////////////
+	// @静态常量
+	////////////////////////////////////////////////
+
+	#region 静态常量
+	public class ItemOperateLocker : SemaphoreSlim
+	{
+		////////////////////////////////////////////////
+		// @自身实现
+		////////////////////////////////////////////////
+
+		#region 自身实现
+
+		public ItemOperateLocker(
+			int initialCount)
+			: base(initialCount)
+		{ }
+
+		public ItemOperateLocker(
+			int initialCount, int maxCount)
+			: base(initialCount, maxCount)
+		{ }
+
+		#endregion
+	}
+
+	#endregion
+
+
 	////////////////////////////////////////////////
 	// @自身属性
 	////////////////////////////////////////////////
@@ -28,8 +58,7 @@ public class ConcurrentDictionaryWith6Keys
 		ConcurrentDictionary<SecondaryDeictionaryKeyType,
 			ConcurrentDictionary<ThirdaryDeictionaryKeyType,
 				ConcurrentDictionary<FourthDeictionaryKeyType,
-					ConcurrentDictionary<FifthDeictionaryKeyType,
-						ConcurrentDictionary<SixthDeictionaryKeyType, DictionaryValueContainer<ItemType>>>>>>> PrimaryDictionaries = new();
+					ConcurrentDictionary<FifthDeictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>>>>> PrimaryDictionaries = new();
 
 	private string? _name = null;
 	public string? Name { get => _name; set => _name = value; }
@@ -46,8 +75,7 @@ public class ConcurrentDictionaryWith6Keys
 	public ConcurrentDictionary<SecondaryDeictionaryKeyType,
 		ConcurrentDictionary<ThirdaryDeictionaryKeyType,
 			ConcurrentDictionary<FourthDeictionaryKeyType,
-				ConcurrentDictionary<FifthDeictionaryKeyType,
-					ConcurrentDictionary<SixthDeictionaryKeyType, DictionaryValueContainer<ItemType>>>>>>? GetSecondaryDictionaries(PrimaryDeictionaryKeyType primaryDeictionaryKey)
+				ConcurrentDictionary<FifthDeictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>>>>? GetSecondaryDictionaries(PrimaryDeictionaryKeyType primaryDeictionaryKey)
 	{
 		_ = PrimaryDictionaries.TryGetValue(primaryDeictionaryKey, out var secondaryDictionaries);
 		{ }
@@ -56,8 +84,7 @@ public class ConcurrentDictionaryWith6Keys
 
 	public ConcurrentDictionary<ThirdaryDeictionaryKeyType,
 			ConcurrentDictionary<FourthDeictionaryKeyType,
-				ConcurrentDictionary<FifthDeictionaryKeyType,
-					ConcurrentDictionary<SixthDeictionaryKeyType, DictionaryValueContainer<ItemType>>>>>? GetThirdaryDictionaries(
+				ConcurrentDictionary<FifthDeictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>>>? GetThirdaryDictionaries(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey)
 	{
@@ -72,8 +99,7 @@ public class ConcurrentDictionaryWith6Keys
 	}
 
 	public ConcurrentDictionary<FourthDeictionaryKeyType,
-				ConcurrentDictionary<FifthDeictionaryKeyType,
-					ConcurrentDictionary<SixthDeictionaryKeyType, DictionaryValueContainer<ItemType>>>>? GetFourthDictionaries(
+				ConcurrentDictionary<FifthDeictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>>? GetFourthDictionaries(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey)
@@ -90,8 +116,7 @@ public class ConcurrentDictionaryWith6Keys
 		return fourthDictionaries;
 	}
 
-	public ConcurrentDictionary<FifthDeictionaryKeyType,
-					ConcurrentDictionary<SixthDeictionaryKeyType, DictionaryValueContainer<ItemType>>>? GetFifthDictionaries(
+	public ConcurrentDictionary<FifthDeictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>? GetFifthDictionaries(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
@@ -110,34 +135,12 @@ public class ConcurrentDictionaryWith6Keys
 		return fifthDictionaries;
 	}
 
-	public ConcurrentDictionary<SixthDeictionaryKeyType, DictionaryValueContainer<ItemType>>? GetSixthDictionaries(
-		PrimaryDeictionaryKeyType primaryDeictionaryKey,
-		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
-		FourthDeictionaryKeyType fourthDeictionaryKey,
-		FifthDeictionaryKeyType fifthDeictionaryKey)
-	{
-		var fifthDictionaries = GetFifthDictionaries(
-			primaryDeictionaryKey,
-			secondaryDeictionaryKey,
-			thirdaryDeictionaryKey,
-			fourthDeictionaryKey);
-		if (fifthDictionaries == null)
-		{
-			return null;
-		}
-		_ = fifthDictionaries.TryGetValue(fifthDeictionaryKey, out var sixthDictionaries);
-		{ }
-		return sixthDictionaries;
-	}
-
 	public ItemType? Get(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
 		FourthDeictionaryKeyType fourthDeictionaryKey,
-		FifthDeictionaryKeyType fifthDeictionaryKey,
-		SixthDeictionaryKeyType sixthDeictionaryKey)
+		FifthDeictionaryKeyType fifthDeictionaryKey)
 	{
 		if (!PrimaryDictionaries.TryGetValue(
 			primaryDeictionaryKey,
@@ -163,14 +166,8 @@ public class ConcurrentDictionaryWith6Keys
 		{
 			return default;
 		}
-		if (!fifthDictionaries.TryGetValue(
+		if (fifthDictionaries.TryGetValue(
 			fifthDeictionaryKey,
-			out var sixthDictionaries))
-		{
-			return default;
-		}
-		if (sixthDictionaries.TryGetValue(
-			sixthDeictionaryKey,
 			out var enityIndexInfo))
 		{
 			return enityIndexInfo.FirstItem;
@@ -184,7 +181,6 @@ public class ConcurrentDictionaryWith6Keys
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
 		FourthDeictionaryKeyType fourthDeictionaryKey,
 		FifthDeictionaryKeyType fifthDeictionaryKey,
-		SixthDeictionaryKeyType sixthDeictionaryKey,
 		out ItemType? item)
 	{
 		item = Get(
@@ -192,8 +188,7 @@ public class ConcurrentDictionaryWith6Keys
 			secondaryDeictionaryKey,
 			thirdaryDeictionaryKey,
 			fourthDeictionaryKey,
-			fifthDeictionaryKey,
-			sixthDeictionaryKey);
+			fifthDeictionaryKey);
 		if (item != null)
 		{
 			return true;
@@ -218,13 +213,9 @@ public class ConcurrentDictionaryWith6Keys
 						var fifthDeictionaries = fourthDeictionaryKeyValue.Value;
 						foreach (var fifthDeictionaryKeyValue in fifthDeictionaries)
 						{
-							var sixthDeictionary = fifthDeictionaryKeyValue.Value;
-							foreach (var sixthDeictionaryKeyValue in sixthDeictionary)
-							{
-								// !!!
-								allItemsCount += sixthDeictionaryKeyValue.Value.ItemsCount;
-								// !!!
-							}
+							// !!!
+							allItemsCount += fifthDeictionaryKeyValue.Value.ItemsCount;
+							// !!!
 						}
 					}
 				}
@@ -242,13 +233,12 @@ public class ConcurrentDictionaryWith6Keys
 
 	#region 自身实现，更新数据部分。
 
-	public ItemType? Add(
+	public async Task<ItemType?> AddAsync(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
 		FourthDeictionaryKeyType fourthDeictionaryKey,
 		FifthDeictionaryKeyType fifthDeictionaryKey,
-		SixthDeictionaryKeyType sixthDeictionaryKey,
 		ItemType item,
 		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
@@ -268,72 +258,71 @@ public class ConcurrentDictionaryWith6Keys
 			= fourthDictionaries.GetOrAdd(
 				fourthDeictionaryKey,
 				(_) => []);
-		var sixthDictionaries
+		var itemIndexInfo
 			= fifthDictionaries.GetOrAdd(
 				fifthDeictionaryKey,
-				(_) => []);
-		var itemIndexInfo = sixthDictionaries.GetOrAdd(
-			sixthDeictionaryKey,
-			(_) => new());
-		lock (itemIndexInfo)
-		{
-			// !!!
-			var lastIndexItem = itemIndexInfo.FirstItem;
-			var newIndexItem = item;
-			if (toUpdateIndexItemWithNewItem != null)
+				(_) => DidCreateDictionaryValueContainer());
+		var newIndexItem
+			= await AsyncLocker.LockAsync(
+			itemIndexInfo.ItemOperateLocker,
+			null,
+			async (_) =>
 			{
-				newIndexItem = toUpdateIndexItemWithNewItem(item, lastIndexItem);
-			}
-			newIndexItem = WillUpdateIndexItemWithPrimaryDeictionaryKey(
-				primaryDeictionaryKey,
-				secondaryDeictionaryKey,
-				thirdaryDeictionaryKey,
-				fourthDeictionaryKey,
-				fifthDeictionaryKey,
-				sixthDeictionaryKey,
-				//
-				newIndexItem);
-			if (newIndexItem != null)
-			{
-				if (itemIndexInfo.Items.Length == 1)
+				// !!!
+				var lastIndexItem = itemIndexInfo.FirstItem;
+				var newIndexItem = item;
+				if (toUpdateIndexItemWithNewItem != null)
 				{
-					// !!!
-					itemIndexInfo.Items[0] = newIndexItem;
-					// !!!
+					newIndexItem = toUpdateIndexItemWithNewItem(item, lastIndexItem);
+				}
+				newIndexItem = WillUpdateIndexItemWithPrimaryDeictionaryKey(
+					primaryDeictionaryKey,
+					secondaryDeictionaryKey,
+					thirdaryDeictionaryKey,
+					fourthDeictionaryKey,
+					fifthDeictionaryKey,
+					//
+					newIndexItem);
+				if (newIndexItem != null)
+				{
+					if (itemIndexInfo.Items.Length == 1)
+					{
+						// !!!
+						itemIndexInfo.Items[0] = newIndexItem;
+						// !!!
+					}
+					else
+					{
+						// !!!
+						itemIndexInfo.Items = [newIndexItem];
+						// !!!
+					}
 				}
 				else
 				{
 					// !!!
-					itemIndexInfo.Items = [newIndexItem];
+					itemIndexInfo.Items = [];
 					// !!!
 				}
-			}
-			else
-			{
 				// !!!
-				itemIndexInfo.Items = [];
+				return await Task.FromResult(newIndexItem);
 				// !!!
-			}
-			// !!!
-			return newIndexItem;
-			// !!!
-		}
+			});
+		return newIndexItem;
 	}
 
-	public ItemType? GetOrAdd(
+	public async Task<ItemType?> GetOrAddAsync(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
 		FourthDeictionaryKeyType fourthDeictionaryKey,
 		FifthDeictionaryKeyType fifthDeictionaryKey,
-		SixthDeictionaryKeyType sixthDeictionaryKey,
 		Func<PrimaryDeictionaryKeyType,
 			SecondaryDeictionaryKeyType,
 			ThirdaryDeictionaryKeyType,
 			FourthDeictionaryKeyType,
 			FifthDeictionaryKeyType,
-			SixthDeictionaryKeyType,
-			ItemType> toCreateItem,
+			Task<ItemType>> toCreateItemAsync,
 		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		var secondaryDictionaries
@@ -352,196 +341,166 @@ public class ConcurrentDictionaryWith6Keys
 			= fourthDictionaries.GetOrAdd(
 				fourthDeictionaryKey,
 				(_) => []);
-		var sixthDictionaries
+		var itemIndexInfo
 			= fifthDictionaries.GetOrAdd(
 				fifthDeictionaryKey,
-				(_) => []);
-		var itemIndexInfo = sixthDictionaries.GetOrAdd(
-			sixthDeictionaryKey,
-			(_) => new());
+				(_) => DidCreateDictionaryValueContainer());
 		var lastIndexItem = itemIndexInfo.FirstItem;
 		if (lastIndexItem != null)
 		{
 			return lastIndexItem;
 		}
-		lock (itemIndexInfo)
-		{
-			lastIndexItem = itemIndexInfo.FirstItem;
-			if (lastIndexItem != null)
+		var newIndexItem
+			= await AsyncLocker.LockAsync(
+			itemIndexInfo.ItemOperateLocker,
+			null,
+			async (_) =>
 			{
-				return lastIndexItem;
-			}
-
-			// !!!
-			var newIndexItem = toCreateItem(
-				primaryDeictionaryKey,
-				secondaryDeictionaryKey,
-				thirdaryDeictionaryKey,
-				fourthDeictionaryKey,
-				fifthDeictionaryKey,
-				sixthDeictionaryKey);
-			if (toUpdateIndexItemWithNewItem != null)
-			{
-				newIndexItem = toUpdateIndexItemWithNewItem(newIndexItem, lastIndexItem);
-			}
-			newIndexItem = WillUpdateIndexItemWithPrimaryDeictionaryKey(
-				primaryDeictionaryKey,
-				secondaryDeictionaryKey,
-				thirdaryDeictionaryKey,
-				fourthDeictionaryKey,
-				fifthDeictionaryKey,
-				sixthDeictionaryKey,
-				//
-				newIndexItem);
-			if (newIndexItem != null)
-			{
-				if (itemIndexInfo.Items.Length == 1)
+				lastIndexItem = itemIndexInfo.FirstItem;
+				if (lastIndexItem != null)
 				{
-					// !!!
-					itemIndexInfo.Items[0] = newIndexItem;
-					// !!!
+					return lastIndexItem;
+				}
+
+				// !!!
+				var newIndexItem
+				= await toCreateItemAsync(
+					primaryDeictionaryKey,
+					secondaryDeictionaryKey,
+					thirdaryDeictionaryKey,
+					fourthDeictionaryKey,
+					fifthDeictionaryKey);
+				if (toUpdateIndexItemWithNewItem != null)
+				{
+					newIndexItem = toUpdateIndexItemWithNewItem(newIndexItem, lastIndexItem);
+				}
+				newIndexItem = WillUpdateIndexItemWithPrimaryDeictionaryKey(
+					primaryDeictionaryKey,
+					secondaryDeictionaryKey,
+					thirdaryDeictionaryKey,
+					fourthDeictionaryKey,
+					fifthDeictionaryKey,
+					//
+					newIndexItem);
+				if (newIndexItem != null)
+				{
+					if (itemIndexInfo.Items.Length == 1)
+					{
+						// !!!
+						itemIndexInfo.Items[0] = newIndexItem;
+						// !!!
+					}
+					else
+					{
+						// !!!
+						itemIndexInfo.Items = [newIndexItem];
+						// !!!
+					}
 				}
 				else
 				{
 					// !!!
-					itemIndexInfo.Items = [newIndexItem];
+					itemIndexInfo.Items = [];
 					// !!!
 				}
-			}
-			else
-			{
 				// !!!
-				itemIndexInfo.Items = [];
+				return newIndexItem;
 				// !!!
-			}
-			// !!!
-			return newIndexItem;
-			// !!!
-		}
+			});
+		return newIndexItem;
 	}
 
-	public ItemType? GetOrAdd(
+	public async Task<ItemType?> GetOrAddAsync(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
 		FourthDeictionaryKeyType fourthDeictionaryKey,
 		FifthDeictionaryKeyType fifthDeictionaryKey,
-		SixthDeictionaryKeyType sixthDeictionaryKey,
 		ItemType newItem,
 		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
-		return GetOrAdd(
+		return await GetOrAddAsync(
 			primaryDeictionaryKey,
 			secondaryDeictionaryKey,
 			thirdaryDeictionaryKey,
 			fourthDeictionaryKey,
 			fifthDeictionaryKey,
-			sixthDeictionaryKey,
-			(_, _, _, _, _, _) => newItem,
+			async (_, _, _, _, _) => await Task.FromResult(newItem),
 			toUpdateIndexItemWithNewItem);
 	}
 
-	public bool TryRemove(
+	public async Task<ItemType?> TryRemoveAsync(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
 		FourthDeictionaryKeyType fourthDeictionaryKey,
-		FifthDeictionaryKeyType fifthDeictionaryKey,
-		SixthDeictionaryKeyType sixthDeictionaryKey,
-		out ItemType? itemRemoved)
+		FifthDeictionaryKeyType fifthDeictionaryKey)
 	{
-		//
-		itemRemoved = default;
-		// 
-
 		if (!PrimaryDictionaries.TryGetValue(
 			primaryDeictionaryKey,
 			out var secondaryDictionaries))
 		{
-			return false;
+			return default;
 		}
 		if (!secondaryDictionaries.TryGetValue(
 			secondaryDeictionaryKey,
 			out var thirdaryDictionaries))
 		{
-			return false;
+			return default;
 		}
 		if (!thirdaryDictionaries.TryGetValue(
 			thirdaryDeictionaryKey,
 			out var fourthDictionaries))
 		{
-			return false;
+			return default;
 		}
 		if (!fourthDictionaries.TryGetValue(
 			fourthDeictionaryKey,
 			out var fifthDictionaries))
 		{
-			return false;
+			return default;
 		}
 		if (!fifthDictionaries.TryGetValue(
 			fifthDeictionaryKey,
-			out var sixthDictionaries))
-		{
-			return false;
-		}
-		if (!sixthDictionaries.TryGetValue(
-			sixthDeictionaryKey,
 			out var itemIndexInfo))
 		{
-			return false;
+			return default;
 		}
 
-		lock (itemIndexInfo)
-		{
-			// !!!
-			itemRemoved = itemIndexInfo.FirstItem;
-			// !!!
-			if (itemRemoved == null)
-			{
-				return false;
-			}
-			// !!!
-			itemIndexInfo.Items = [];
-			// !!!
-			return true;
-		}
+		var itemRemoved
+			= await AsyncLocker.LockAsync(
+				itemIndexInfo.ItemOperateLocker,
+				null,
+				async (_) =>
+				{
+					// !!!
+					var itemRemoved = itemIndexInfo.FirstItem;
+					// !!!
+					if (itemRemoved == null)
+					{
+						return default;
+					}
+					// !!!
+					itemIndexInfo.Items = [];
+					// !!!
+					return await Task.FromResult(itemRemoved);
+				});
+		return itemRemoved;
 	}
 
-	public void Remove(
+	public async Task<ItemType?> RemoveAsync(
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
 		FourthDeictionaryKeyType fourthDeictionaryKey,
-		FifthDeictionaryKeyType fifthDeictionaryKey,
-		SixthDeictionaryKeyType sixthDeictionaryKey,
-		out ItemType? itemRemoved)
+		FifthDeictionaryKeyType fifthDeictionaryKey)
 	{
-		_ = TryRemove(
+		return await TryRemoveAsync(
 			primaryDeictionaryKey,
 			secondaryDeictionaryKey,
 			thirdaryDeictionaryKey,
 			fourthDeictionaryKey,
-			fifthDeictionaryKey,
-			sixthDeictionaryKey,
-			out itemRemoved);
-	}
-
-	public void Remove(
-		PrimaryDeictionaryKeyType primaryDeictionaryKey,
-		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
-		FourthDeictionaryKeyType fourthDeictionaryKey,
-		FifthDeictionaryKeyType fifthDeictionaryKey,
-		SixthDeictionaryKeyType sixthDeictionaryKey)
-	{
-		Remove(
-			primaryDeictionaryKey,
-			secondaryDeictionaryKey,
-			thirdaryDeictionaryKey,
-			fourthDeictionaryKey,
-			fifthDeictionaryKey,
-			sixthDeictionaryKey,
-			out _);
+			fifthDeictionaryKey);
 	}
 
 	public void Clear()
@@ -558,13 +517,17 @@ public class ConcurrentDictionaryWith6Keys
 
 	#region 事件节点
 
+	protected DictionaryValueContainer<ItemType, ItemOperateLocker> DidCreateDictionaryValueContainer()
+	{
+		return new DictionaryValueContainer<ItemType, ItemOperateLocker>(new ItemOperateLocker(1));
+	}
+
 	protected virtual ItemType? WillUpdateIndexItemWithPrimaryDeictionaryKey(
 				PrimaryDeictionaryKeyType primaryDeictionaryKey,
 				SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 				ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
 				FourthDeictionaryKeyType fourthDeictionaryKey,
 				FifthDeictionaryKeyType fifthDeictionaryKey,
-				SixthDeictionaryKeyType sixthDeictionaryKey,
 				//
 				ItemType? newIndexItem)
 	{

@@ -65,6 +65,12 @@ public class ItemPropertyGetInfo<ItemType>
 				{
 					if (PropertyInfo != null)
 					{
+						var indexParametersOfPropery = PropertyInfo.GetIndexParameters();
+						if (indexParametersOfPropery.Length > 0)
+						{
+							// 暂时不支持的值类型。
+							return null;
+						}
 						return PropertyInfo.GetValue(HosttItem);
 					}
 				}

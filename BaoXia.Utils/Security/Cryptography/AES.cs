@@ -130,7 +130,7 @@ public class AES
 	// “ECB”模式下的加密方法：
 	////////////////////////////////////////////////
 
-	[Obsolete("ECB由于相同铭文，永远加密出相同的密文，因此可通过重复明文的方式进行破解，推荐使用“EncryptToBytesWithCTR”方法替代。")]
+	[Obsolete("ECB由于相同明文，永远加密出相同的密文，因此可通过重复明文的方式进行破解，推荐使用“EncryptToBytesWithCTR”方法替代。")]
 	public static byte[] EncryptToBytesWithECB(
 		byte[] plaintextBytes,
 		string key)

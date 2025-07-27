@@ -168,9 +168,14 @@ public class ConcurrentDictionaryWith2Keys
 			= secondaryDictionaries.GetOrAdd(
 				secondaryDeictionaryKey,
 				(_) => new());
+		var lastIndexItem = itemIndexInfo.FirstItem;
+		if (lastIndexItem != null)
+		{
+			return lastIndexItem;
+		}
 		lock (itemIndexInfo)
 		{
-			var lastIndexItem = itemIndexInfo.FirstItem;
+			lastIndexItem = itemIndexInfo.FirstItem;
 			if (lastIndexItem != null)
 			{
 				return lastIndexItem;

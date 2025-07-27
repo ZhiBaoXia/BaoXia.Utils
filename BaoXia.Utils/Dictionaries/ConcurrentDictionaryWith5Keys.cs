@@ -305,9 +305,14 @@ public class ConcurrentDictionaryWith5Keys
 			= fifthDictionaries.GetOrAdd(
 				fifthDeictionaryKey,
 				(_) => new());
+		var lastIndexItem = itemIndexInfo.FirstItem;
+		if (lastIndexItem != null)
+		{
+			return lastIndexItem;
+		}
 		lock (itemIndexInfo)
 		{
-			var lastIndexItem = itemIndexInfo.FirstItem;
+			lastIndexItem = itemIndexInfo.FirstItem;
 			if (lastIndexItem != null)
 			{
 				return lastIndexItem;

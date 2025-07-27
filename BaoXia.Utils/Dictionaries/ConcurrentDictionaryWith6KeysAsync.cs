@@ -370,8 +370,8 @@ public class ConcurrentDictionaryWith6KeysAsync
 			FourthDeictionaryKeyType,
 			FifthDeictionaryKeyType,
 			SixthDeictionaryKeyType,
-			Task<ItemType>> toCreateItemAsync,
-		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+			Task<ItemType?>> toCreateItemAsync,
+		Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		var secondaryDictionaries
 			= PrimaryDictionaries.GetOrAdd(
@@ -471,7 +471,7 @@ public class ConcurrentDictionaryWith6KeysAsync
 		FifthDeictionaryKeyType fifthDeictionaryKey,
 		SixthDeictionaryKeyType sixthDeictionaryKey,
 		ItemType newItem,
-		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+		Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		return await GetOrAddAsync(
 			primaryDeictionaryKey,

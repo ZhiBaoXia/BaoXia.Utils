@@ -158,8 +158,8 @@ public class ConcurrentDictionaryWith2Keys
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		Func<PrimaryDeictionaryKeyType,
 			SecondaryDeictionaryKeyType,
-			ItemType> toCreateItem,
-		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+			ItemType?> toCreateItem,
+		Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		var secondaryDictionaries
 			= PrimaryDictionaries.GetOrAdd(
@@ -226,7 +226,7 @@ public class ConcurrentDictionaryWith2Keys
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ItemType newItem,
-		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+		Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		return GetOrAdd(
 			primaryDeictionaryKey,

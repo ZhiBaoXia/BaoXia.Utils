@@ -286,8 +286,8 @@ public class ConcurrentDictionaryWith5Keys
 			ThirdaryDeictionaryKeyType,
 			FourthDeictionaryKeyType,
 			FifthDeictionaryKeyType,
-			ItemType> toCreateItem,
-		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+			ItemType?> toCreateItem,
+		Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		var secondaryDictionaries
 			= PrimaryDictionaries.GetOrAdd(
@@ -374,7 +374,7 @@ public class ConcurrentDictionaryWith5Keys
 		FourthDeictionaryKeyType fourthDeictionaryKey,
 		FifthDeictionaryKeyType fifthDeictionaryKey,
 		ItemType newItem,
-		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+		Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		return GetOrAdd(
 			primaryDeictionaryKey,

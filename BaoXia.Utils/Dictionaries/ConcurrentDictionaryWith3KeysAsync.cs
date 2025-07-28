@@ -380,10 +380,40 @@ public class ConcurrentDictionaryWith3KeysAsync
 			thirdaryDeictionaryKey);
 	}
 
-	public void Clear()
+	public void Clear(
+		PrimaryDeictionaryKeyType? primaryDeictionaryKey = default,
+		SecondaryDeictionaryKeyType? secondaryDeictionaryKey = default)
 	{
-		PrimaryDictionaries.Clear();
+		if (primaryDeictionaryKey == null)
+		{
+			PrimaryDictionaries.Clear();
+			return;
+		}
+		if (!PrimaryDictionaries.TryGetValue(
+			primaryDeictionaryKey,
+			out var secondaryDictionaries))
+		{
+			return;
+		}
+
+
+		if (secondaryDeictionaryKey == null)
+		{
+			secondaryDictionaries.Clear();
+			return;
+		}
+		if (!secondaryDictionaries.TryGetValue(
+			secondaryDeictionaryKey,
+			out var thirdaryDeictionaries))
+		{
+			return;
+		}
+
+		//
+		thirdaryDeictionaries.Clear();
+		//
 	}
+
 
 	#endregion
 

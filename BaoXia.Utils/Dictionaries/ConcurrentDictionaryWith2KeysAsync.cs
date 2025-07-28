@@ -325,10 +325,26 @@ public class ConcurrentDictionaryWith2KeysAsync
 			secondaryDeictionaryKey);
 	}
 
-	public void Clear()
+	public void Clear(
+		PrimaryDeictionaryKeyType? primaryDeictionaryKey = default)
 	{
-		PrimaryDictionaries.Clear();
+		if (primaryDeictionaryKey == null)
+		{
+			PrimaryDictionaries.Clear();
+			return;
+		}
+		if (!PrimaryDictionaries.TryGetValue(
+			primaryDeictionaryKey,
+			out var secondaryDictionaries))
+		{
+			return;
+		}
+
+		//
+		secondaryDictionaries.Clear();
+		//
 	}
+
 
 	#endregion
 

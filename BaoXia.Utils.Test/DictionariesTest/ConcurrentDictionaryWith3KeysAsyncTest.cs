@@ -100,4 +100,54 @@ public class ConcurrentDictionaryWith3KeysAsyncTest
 				dictionary.GetCount());
 		}
 	}
+
+
+	[TestMethod]
+	public void ClearTest()
+	{
+		var dictionary = new ConcurrentDictionaryWith3Keys<string, double, string, double>();
+		{
+			dictionary.Add(
+					0,
+					"1.1",
+					2.1,
+					"Value.01");
+			dictionary.Add(
+					0,
+					"1.1",
+					2.2,
+					"Value.02");
+
+
+			dictionary.Add(
+					0,
+					"1.2",
+					2.1,
+					"Value.01");
+			dictionary.Add(
+					0,
+					"1.2",
+					2.2,
+					"Value.02");
+		}
+		//
+		Assert.AreEqual(4, dictionary.GetCount());
+		//
+		{
+			dictionary.Clear(
+					0,
+					"1.1");
+		}
+		//
+		Assert.AreEqual(2, dictionary.GetCount());
+		//
+		{
+			dictionary.Clear(
+					0,
+					"1.2");
+		}
+		//
+		Assert.AreEqual(0, dictionary.GetCount());
+		//
+	}
 }

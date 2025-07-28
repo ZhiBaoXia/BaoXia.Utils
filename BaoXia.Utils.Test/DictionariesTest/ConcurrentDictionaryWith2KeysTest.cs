@@ -91,4 +91,48 @@ public class ConcurrentDictionaryWith2KeysTest
 				dictionary.GetCount());
 		}
 	}
+
+
+	[TestMethod]
+	public void ClearTest()
+	{
+		var dictionary = new ConcurrentDictionaryWith2Keys<string, double, string>();
+		{
+			dictionary.Add(
+					0,
+					"1.1",
+					"Value.01");
+			dictionary.Add(
+					0,
+					"1.2",
+					"Value.02");
+
+
+			dictionary.Add(
+					1,
+					"1.1",
+					"Value.01");
+			dictionary.Add(
+					1,
+					"1.2",
+					"Value.02");
+		}
+		//
+		Assert.AreEqual(4, dictionary.GetCount());
+		//
+		{
+			dictionary.Clear(
+					0);
+		}
+		//
+		Assert.AreEqual(2, dictionary.GetCount());
+		//
+		{
+			dictionary.Clear(
+					1);
+		}
+		//
+		Assert.AreEqual(0, dictionary.GetCount());
+		//
+	}
 }

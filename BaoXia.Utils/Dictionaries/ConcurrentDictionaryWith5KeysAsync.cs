@@ -503,9 +503,67 @@ public class ConcurrentDictionaryWith5KeysAsync
 			fifthDeictionaryKey);
 	}
 
-	public void Clear()
+
+	public void Clear(
+		PrimaryDeictionaryKeyType? primaryDeictionaryKey = default,
+		SecondaryDeictionaryKeyType? secondaryDeictionaryKey = default,
+		ThirdaryDeictionaryKeyType? thirdaryDeictionaryKey = default,
+		FourthDeictionaryKeyType? fourthDeictionaryKey = default)
 	{
-		PrimaryDictionaries.Clear();
+		if (primaryDeictionaryKey == null)
+		{
+			PrimaryDictionaries.Clear();
+			return;
+		}
+		if (!PrimaryDictionaries.TryGetValue(
+			primaryDeictionaryKey,
+			out var secondaryDictionaries))
+		{
+			return;
+		}
+
+
+		if (secondaryDeictionaryKey == null)
+		{
+			secondaryDictionaries.Clear();
+			return;
+		}
+		if (!secondaryDictionaries.TryGetValue(
+			secondaryDeictionaryKey,
+			out var thirdaryDeictionaries))
+		{
+			return;
+		}
+
+
+		if (thirdaryDeictionaryKey == null)
+		{
+			thirdaryDeictionaries.Clear();
+			return;
+		}
+		if (!thirdaryDeictionaries.TryGetValue(
+			thirdaryDeictionaryKey,
+			out var fourthDeictionaries))
+		{
+			return;
+		}
+
+
+		if (fourthDeictionaryKey == null)
+		{
+			fourthDeictionaries.Clear();
+			return;
+		}
+		if (!fourthDeictionaries.TryGetValue(
+			fourthDeictionaryKey,
+			out var fifthDeictionaries))
+		{
+			return;
+		}
+
+		//
+		fifthDeictionaries.Clear();
+		//
 	}
 
 	#endregion

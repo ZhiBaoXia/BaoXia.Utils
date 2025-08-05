@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace BaoXia.Utils.Dictionaries;
 
 public class ConcurrentDictionaryWith6KeysAsync
-	<ItemType,
-	PrimaryDeictionaryKeyType,
+	<PrimaryDeictionaryKeyType,
 	SecondaryDeictionaryKeyType,
 	ThirdaryDeictionaryKeyType,
 	FourthDeictionaryKeyType,
 	FifthDeictionaryKeyType,
-	SixthDeictionaryKeyType>
+	SixthDeictionaryKeyType,
+	ItemType>
 	where PrimaryDeictionaryKeyType : notnull
 	where SecondaryDeictionaryKeyType : notnull
 	where ThirdaryDeictionaryKeyType : notnull
@@ -281,8 +281,8 @@ public class ConcurrentDictionaryWith6KeysAsync
 		FourthDeictionaryKeyType fourthDeictionaryKey,
 		FifthDeictionaryKeyType fifthDeictionaryKey,
 		SixthDeictionaryKeyType sixthDeictionaryKey,
-		ItemType item,
-		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+		ItemType? item,
+		Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		var secondaryDictionaries
 			= PrimaryDictionaries.GetOrAdd(

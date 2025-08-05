@@ -11,7 +11,7 @@ public class ConcurrentDictionaryWith6KeysAsyncTest
 	[TestMethod]
 	public async Task AddGetRemoveAsyncTest()
 	{
-		var dictionary = new ConcurrentDictionaryWith6KeysAsync<string, int, string, int, string, int, string>();
+		var dictionary = new ConcurrentDictionaryWith6KeysAsync<int, string, int, string, int, string, string>();
 		var testObjectValue = DateTime.Now.ToString();
 
 
@@ -122,7 +122,7 @@ public class ConcurrentDictionaryWith6KeysAsyncTest
 	[TestMethod]
 	public void ClearTest()
 	{
-		var dictionary = new ConcurrentDictionaryWith6Keys<string, double, string, double, string, double, string>();
+		var dictionary = new ConcurrentDictionaryWith6Keys<int, string, int, string, double, string, string>();
 		{
 			dictionary.Add(
 					0,

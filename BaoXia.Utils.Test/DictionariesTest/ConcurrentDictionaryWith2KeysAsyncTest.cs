@@ -11,7 +11,7 @@ public class ConcurrentDictionaryWith2KeysAsyncTest
 	[TestMethod]
 	public async Task AddGetRemoveAsyncTest()
 	{
-		var dictionary = new ConcurrentDictionaryWith2KeysAsync<string, int, string>();
+		var dictionary = new ConcurrentDictionaryWith2KeysAsync<int, string, string>();
 		var testObjectValue = DateTime.Now.ToString();
 
 

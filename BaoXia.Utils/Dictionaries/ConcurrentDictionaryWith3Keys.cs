@@ -4,10 +4,10 @@ using System.Collections.Concurrent;
 namespace BaoXia.Utils.Dictionaries;
 
 public class ConcurrentDictionaryWith3Keys
-	<ItemType,
-	PrimaryDeictionaryKeyType,
+	<PrimaryDeictionaryKeyType,
 	SecondaryDeictionaryKeyType,
-	ThirdaryDeictionaryKeyType>
+	ThirdaryDeictionaryKeyType,
+	ItemType>
 	where PrimaryDeictionaryKeyType : notnull
 	where SecondaryDeictionaryKeyType : notnull
 	where ThirdaryDeictionaryKeyType : notnull
@@ -133,8 +133,8 @@ public class ConcurrentDictionaryWith3Keys
 		PrimaryDeictionaryKeyType primaryDeictionaryKey,
 		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
-		ItemType item,
-		Func<ItemType, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+		ItemType? item,
+		Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		var secondaryDictionaries
 			= PrimaryDictionaries.GetOrAdd(

@@ -10,7 +10,7 @@ public class ConcurrentDictionaryWith3KeysTest
 	[TestMethod]
 	public void AddGetRemoveTest()
 	{
-		var dictionary = new ConcurrentDictionaryWith3Keys<string, int, string, int>();
+		var dictionary = new ConcurrentDictionaryWith3Keys<int, string, int, string>();
 		var testObjectValue = DateTime.Now.ToString();
 
 
@@ -102,7 +102,7 @@ public class ConcurrentDictionaryWith3KeysTest
 	[TestMethod]
 	public void ClearTest()
 	{
-		var dictionary = new ConcurrentDictionaryWith3Keys<string, double, string, double>();
+		var dictionary = new ConcurrentDictionaryWith3Keys<double, string, double, string>();
 		{
 			dictionary.Add(
 					0,

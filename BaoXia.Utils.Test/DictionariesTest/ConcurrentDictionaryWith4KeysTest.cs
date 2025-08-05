@@ -10,7 +10,7 @@ public class ConcurrentDictionaryWith4KeysTest
 	[TestMethod]
 	public void AddGetRemoveTest()
 	{
-		var dictionary = new ConcurrentDictionaryWith4Keys<string, int, string, int, string>();
+		var dictionary = new ConcurrentDictionaryWith4Keys<int, string, int, string, string>();
 		var testObjectValue = DateTime.Now.ToString();
 
 
@@ -108,7 +108,7 @@ public class ConcurrentDictionaryWith4KeysTest
 	[TestMethod]
 	public void ClearTest()
 	{
-		var dictionary = new ConcurrentDictionaryWith4Keys<string, double, string, double, string>();
+		var dictionary = new ConcurrentDictionaryWith4Keys<double, string, double, string, string>();
 		{
 			dictionary.Add(
 					0,

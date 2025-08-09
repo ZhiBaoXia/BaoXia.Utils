@@ -207,26 +207,52 @@ public static class ArrayExtension
 			// !!!
 		}
 
-		for (var itemIndex = 0;
-			itemIndex < items.Length;
-			itemIndex++)
+		var objectInsertIndex
+			= items.FindItemIndexWithDichotomy(
+				true,
+				(item, itemIndex) =>
+				{
+					return toCompareItem(item, newItem);
+				},
+				DichotomyClosestItemType.LessThanObjectMax,
+				out var objectInsertIndexPrev,
+				out _);
+		if (objectInsertIndex < 0)
 		{
-			var item = items[itemIndex];
-			var compareResult = toCompareItem(newItem, item);
-			if (compareResult < 0)
+			if (objectInsertIndexPrev != null)
 			{
-				// !!!
-				return items.ArrayByInsertAt(itemIndex, newItem);
-				// !!!
+				objectInsertIndex = objectInsertIndexPrev.Value + 1;
 			}
-			if (itemIndex == (items.Length - 1))
+			else
 			{
-				// !!!
-				return items.ArrayByInsertAt(itemIndex + 1, newItem);
-				// !!!
+				objectInsertIndex = 0;
 			}
 		}
+		// !!!
+		items = items.ArrayByInsertAt(objectInsertIndex, newItem);
+		// !!!
 		return items;
+
+		//for (var itemIndex = 0;
+		//	itemIndex < items.Length;
+		//	itemIndex++)
+		//{
+		//	var item = items[itemIndex];
+		//	var compareResult = toCompareItem(newItem, item);
+		//	if (compareResult < 0)
+		//	{
+		//		// !!!
+		//		return items.ArrayByInsertAt(itemIndex, newItem);
+		//		// !!!
+		//	}
+		//	if (itemIndex == (items.Length - 1))
+		//	{
+		//		// !!!
+		//		return items.ArrayByInsertAt(itemIndex + 1, newItem);
+		//		// !!!
+		//	}
+		//}
+		//return items;
 	}
 
 	public static ItemType[] ArrayByInsertWithOrderDescending<ItemType>(
@@ -241,26 +267,59 @@ public static class ArrayExtension
 			// !!!
 		}
 
-		for (var itemIndex = 0;
-			itemIndex < items.Length;
-			itemIndex++)
+		if (items.Length < 1)
 		{
-			var item = items[itemIndex];
-			var compareResult = toCompareItem(newItem, item);
-			if (compareResult > 0)
+			// !!!
+			return items.ArrayByAdd(newItem);
+			// !!!
+		}
+
+		var objectInsertIndex
+			= items.FindItemIndexWithDichotomy(
+				false,
+				(item, itemIndex) =>
+				{
+					return toCompareItem(item, newItem);
+				},
+				DichotomyClosestItemType.GreaterThanObjectMin,
+				out var objectInsertIndexPrev,
+				out _);
+		if (objectInsertIndex < 0)
+		{
+			if (objectInsertIndexPrev != null)
 			{
-				// !!!
-				return items.ArrayByInsertAt(itemIndex, newItem);
-				// !!!
+				objectInsertIndex = objectInsertIndexPrev.Value + 1;
 			}
-			if (itemIndex == (items.Length - 1))
+			else
 			{
-				// !!!
-				return items.ArrayByInsertAt(itemIndex + 1, newItem);
-				// !!!
+				objectInsertIndex = 0;
 			}
 		}
+		// !!!
+		items = items.ArrayByInsertAt(objectInsertIndex, newItem);
+		// !!!
 		return items;
+
+		//for (var itemIndex = 0;
+		//	itemIndex < items.Length;
+		//	itemIndex++)
+		//{
+		//	var item = items[itemIndex];
+		//	var compareResult = toCompareItem(newItem, item);
+		//	if (compareResult > 0)
+		//	{
+		//		// !!!
+		//		return items.ArrayByInsertAt(itemIndex, newItem);
+		//		// !!!
+		//	}
+		//	if (itemIndex == (items.Length - 1))
+		//	{
+		//		// !!!
+		//		return items.ArrayByInsertAt(itemIndex + 1, newItem);
+		//		// !!!
+		//	}
+		//}
+		//return items;
 	}
 
 

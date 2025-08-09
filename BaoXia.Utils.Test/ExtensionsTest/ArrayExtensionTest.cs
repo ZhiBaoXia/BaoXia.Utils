@@ -154,6 +154,74 @@ public class ArrayExtensionTest
 	}
 
 	[TestMethod]
+	public void InsertByOrder2Test()
+	{
+		int[] itemsInOrder = [1, 3, 5, 6, 7, 9];
+		int[] itemsInOrderDescending = [.. itemsInOrder.Reverse()];
+		var itemInRandomOrder = new int[itemsInOrder.Length];
+		for (int itemIndex = 0;
+			itemIndex < itemInRandomOrder.Length;
+			itemIndex++)
+		{
+			itemInRandomOrder[itemIndex] = 0;
+		}
+		for (int itemIndex = 0;
+			itemIndex < itemsInOrder.Length;
+			itemIndex++)
+		{
+			var item = itemsInOrder[itemIndex];
+			while (true)
+			{
+				var itemRandomIndex
+					= System.Random.Shared.Next(itemInRandomOrder.Length);
+				if (itemInRandomOrder[itemRandomIndex] == 0)
+				{
+					// !!!
+					itemInRandomOrder[itemRandomIndex] = item;
+					break;
+					// !!!
+				}
+			}
+		}
+
+		var arrayWithOrder = Array.Empty<int>();
+		foreach (var item in itemInRandomOrder)
+		{
+			arrayWithOrder
+				= arrayWithOrder.ArrayByInsertWithOrder(
+				item,
+				(itemA, itemB) =>
+				{
+					return itemA.CompareTo(itemB);
+				});
+		}
+		////////////////////////////////////////////////
+		// !!!
+		Assert.IsTrue(arrayWithOrder.SequenceEqual(itemsInOrder));
+		// !!!
+		////////////////////////////////////////////////
+		///
+
+		var arrayWithOrderDescending = Array.Empty<int>();
+		foreach (var item in itemInRandomOrder)
+		{
+			arrayWithOrderDescending
+				= arrayWithOrderDescending.ArrayByInsertWithOrderDescending(
+				item,
+				(itemA, itemB) =>
+				{
+					return itemA.CompareTo(itemB);
+				});
+		}
+		////////////////////////////////////////////////
+		// !!!
+		Assert.IsTrue(arrayWithOrderDescending.SequenceEqual(itemsInOrderDescending));
+		// !!!
+		////////////////////////////////////////////////
+	}
+
+
+	[TestMethod]
 	public void CreateArrayByAddInsertAndRemoveTest()
 	{
 		const int testArrayLength = 10;

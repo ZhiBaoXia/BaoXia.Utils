@@ -14,6 +14,8 @@ public class TempTokenInfo
 
 	public ClientIpInfo ClientIpInfo { get; init; } = default!;
 
+	public double LiveSecondsMaxSpecified { get; set; }
+
 	public DateTimeOffset CreateTime { get; init; } = default!;
 
 	#endregion
@@ -31,10 +33,15 @@ public class TempTokenInfo
 	public TempTokenInfo(
 		string tokenValue,
 		ClientIpInfo clientIpInfo,
+		double? liveSecondsMaxSpecified,
 		DateTimeOffset createTime)
 	{
 		TokenValue = tokenValue;
 		ClientIpInfo = clientIpInfo;
+		if (liveSecondsMaxSpecified != null)
+		{
+			LiveSecondsMaxSpecified = liveSecondsMaxSpecified.Value;
+		}
 		CreateTime = createTime;
 	}
 

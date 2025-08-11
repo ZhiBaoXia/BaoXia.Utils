@@ -1,7 +1,8 @@
 ﻿namespace BaoXia.Utils.Models;
 
 public class TempTokenCreateParam(
-	ClientIpInfo clientIpInfo)
+	ClientIpInfo clientIpInfo,
+	double? liveSecondsMaxSpecified = null)
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -10,6 +11,10 @@ public class TempTokenCreateParam(
 	#region 自身属性
 
 	public ClientIpInfo ClientIpInfo { get; init; } = clientIpInfo;
+
+	public double LiveSecondsMaxSpecified { get; set; } = liveSecondsMaxSpecified != null
+		? liveSecondsMaxSpecified.Value
+		: 0;
 
 	#endregion
 }

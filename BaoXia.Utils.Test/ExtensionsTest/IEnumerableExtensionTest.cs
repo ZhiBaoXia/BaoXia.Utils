@@ -729,7 +729,7 @@ public class IEnumerableExtensionTest
 	}
 
 
-	[DataTestMethod]
+	[TestMethod]
 	public async Task SearchAsyncTest()
 	{
 		var testItems = new TestItem[10000];

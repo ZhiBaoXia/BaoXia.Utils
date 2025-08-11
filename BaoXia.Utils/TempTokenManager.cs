@@ -43,7 +43,7 @@ public class TempTokenManager
 
 	public string Name { get; set; }
 
-	public Func<double> ToGetTempTokenLiveSecondsMax { get; set; }
+	public Func<double> ToGetTokenLiveSecondsMax { get; set; }
 
 	public Func<int>? ToGetTokenValueLength { get; set; }
 
@@ -60,7 +60,7 @@ public class TempTokenManager
 
 	public TempTokenManager
 		(string name,
-		Func<double> toGetTempTokenLiveSecondsMax,
+		Func<double> toGetTokenLiveSecondsMax,
 		Func<int>? toGetTokenValueLength,
 		Func<double>? toGetTokenCleanIntervalSeconds = null)
 	{
@@ -94,7 +94,7 @@ public class TempTokenManager
 
 
 		Name = name;
-		ToGetTempTokenLiveSecondsMax = toGetTempTokenLiveSecondsMax;
+		ToGetTokenLiveSecondsMax = toGetTokenLiveSecondsMax;
 		ToGetTokenValueLength = toGetTokenValueLength;
 	}
 
@@ -198,9 +198,20 @@ public class TempTokenManager
 	public List<TempTokenInfoClass>? GetInvalidTokenInfesAt(DateTimeOffset checkTime)
 	{
 		List<TempTokenInfoClass>? invalidTokenInfes = null;
-		var tokenInfoLiveSecondsMax = ToGetTempTokenLiveSecondsMax();
+		var tokenInfoLiveSecondsMaxDefault = ToGetTokenLiveSecondsMax();
 		foreach (var tokenInfo in _tokenInfes.Values)
 		{
+			var tokenInfoLiveSecondsMax = tokenInfo.LiveSecondsMaxSpecified;
+			if (tokenInfoLiveSecondsMax <= 0)
+			{
+				tokenInfoLiveSecondsMax = tokenInfoLiveSecondsMaxDefault;
+				if (tokenInfoLiveSecondsMax <= 0)
+				{
+					// !!!
+					continue;
+					// !!!
+				}
+			}
 			var tokenLiveSeconds = (checkTime - tokenInfo.CreateTime).TotalSeconds;
 			if (tokenLiveSeconds > tokenInfoLiveSecondsMax)
 			{
@@ -276,6 +287,7 @@ public class TempTokenManager
 		{
 			TokenValue = tokenValue,
 			ClientIpInfo = tokenCreateParam.ClientIpInfo,
+			LiveSecondsMaxSpecified = tokenCreateParam.LiveSecondsMaxSpecified,
 			CreateTime = createTime
 		};
 		return tokenInfo;
@@ -301,10 +313,14 @@ public class TempTokenManager
 		ClientIpInfo clientIpInfo,
 		DateTimeOffset checkTime)
 	{
-		var tokenLiveSecondsMax = ToGetTempTokenLiveSecondsMax();
+		var tokenLiveSecondsMax = tokenInfo.LiveSecondsMaxSpecified;
 		if (tokenLiveSecondsMax <= 0)
 		{
-			return true;
+			tokenLiveSecondsMax = ToGetTokenLiveSecondsMax();
+			if (tokenLiveSecondsMax <= 0)
+			{
+				return true;
+			}
 		}
 		var tokenLiveSeconds = (checkTime - tokenInfo.CreateTime).TotalSeconds;
 		if (tokenLiveSeconds <= tokenLiveSecondsMax)
@@ -316,11 +332,6 @@ public class TempTokenManager
 
 	protected virtual async Task DidCleanInvalidTokensAsync(DateTimeOffset checkTime)
 	{
-		var tokenLiveSecondsMax = ToGetTempTokenLiveSecondsMax();
-		if (tokenLiveSecondsMax <= 0)
-		{
-			return;
-		}
 		var invalidTokenInfes = GetInvalidTokenInfesAt(checkTime);
 		if (invalidTokenInfes == null)
 		{

@@ -384,6 +384,53 @@ testUriWithQueryParams, testUri.StringByUriAppendQueryParams("&" + testUriQueryP
 );
 	}
 
+	[TestMethod]
+	public void StringByUriAppendQueryParamTest()
+	{
+		var testUri = "https://www.baoxiaruanjian.com";
+		var objectTestUri = "https://www.baoxiaruanjian.com?searchKey=key&searchType=type";
+		{
+			testUri = testUri.StringByUriAppendQueryParam(
+				"searchKey",
+				"key");
+			testUri = testUri.StringByUriAppendQueryParam(
+				"searchType",
+				"type");
+		}
+		Assert.AreEqual(
+			objectTestUri,
+			testUri);
+
+
+		testUri = "https://www.baoxiaruanjian.com";
+		objectTestUri = "https://www.baoxiaruanjian.com?searchKey=%E4%B8%80%E4%BA%8C%E4%B8%89&searchType=type";
+		{
+			testUri = testUri.StringByUriAppendQueryParam(
+				"searchKey",
+				"一二三");
+			testUri = testUri.StringByUriAppendQueryParam(
+				"searchType",
+				"type");
+		}
+		Assert.AreEqual(
+			objectTestUri,
+			testUri);
+
+
+		testUri = "https://www.baoxiaruanjian.com?pageIndex=0#anchor=1";
+		objectTestUri = "https://www.baoxiaruanjian.com?pageIndex=0&searchKey=%E4%B8%80%E4%BA%8C%E4%B8%89&searchType=type#anchor=1";
+		{
+			testUri = testUri.StringByUriAppendQueryParam(
+				"searchKey",
+				"一二三");
+			testUri = testUri.StringByUriAppendQueryParam(
+				"searchType",
+				"type");
+		}
+		Assert.AreEqual(
+			objectTestUri,
+			testUri);
+	}
 
 	[TestMethod]
 	public void ToFileSystemDirectoryPathTest()

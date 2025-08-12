@@ -1631,6 +1631,25 @@ public static class StringExtension
 	}
 
 	/// <summary>
+	/// 连接指定的Uri和Uri查询参数字符串。
+	/// </summary>
+	/// <param name="uri">当前Uri字符串。</param>
+	/// <param name="uriQueryParamName">要连接的Url查询参数，名字。</param>
+	/// <param name="uriQueryParamValue">要连接的Url查询参数，值。</param>
+	/// <returns>连接了Url查询参数的Uri字符串。</returns>
+	public static string StringByUriAppendQueryParam(
+		this string uri,
+		string uriQueryParamName,
+		string? uriQueryParamValue)
+	{
+		var uriQueryString = uriQueryParamName + "=" + uriQueryParamValue.StringByEncodeInUriParam();
+		{ }
+		return StringByUriAppendQueryParams(
+			uri,
+			uriQueryString);
+	}
+
+	/// <summary>
 	/// 使用Html转义，编码当前字符串。
 	/// </summary>
 	/// <param name="str">当前字符串。</param>

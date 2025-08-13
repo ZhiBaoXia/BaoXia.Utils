@@ -334,7 +334,7 @@ public static class IListExtension
 	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
 	/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
 	/// <param name="searchRangeLength">查找范围的对象数量。</param>
-	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="toGetCompareResultByItemExistedCompareToObjectItem">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
 	/// <param name="closestItemType">是否获取最接近目标的左侧对象。</param>
 	/// <param name="closestItemIndex">最接近目标的左侧对象索引值。</param>
 	/// <param name="closestItem">最接近目标的左侧对象。</param>
@@ -344,7 +344,7 @@ public static class IListExtension
 		bool isItemsSortedWithAscending,
 		int searchRangeBeginIndex,
 		int searchRangeLength,
-		Func<ItemType, int, int> toComparerToObjectItemWith,
+		Func<ItemType, int, int> toGetCompareResultByItemExistedCompareToObjectItem,
 		DichotomyClosestItemType closestItemType,
 		out int? closestItemIndex,
 		out ItemType? closestItem)
@@ -396,7 +396,7 @@ public static class IListExtension
 
 			var item = items[searchShotIndex];
 			var resultOfComparerItemToObjectItem
-				= toComparerToObjectItemWith(item, searchShotIndex)
+				= toGetCompareResultByItemExistedCompareToObjectItem(item, searchShotIndex)
 				* compareNumberDirection;
 			if (resultOfComparerItemToObjectItem == 0)
 			{
@@ -477,7 +477,7 @@ public static class IListExtension
 			else if (
 				closestItem != null
 				&& closestItemIndex != null
-				&& (toComparerToObjectItemWith(closestItem, closestItemIndex.Value)
+				&& (toGetCompareResultByItemExistedCompareToObjectItem(closestItem, closestItemIndex.Value)
 				* compareNumberDirection) > 0)
 			{
 				closestItemIndex--;
@@ -508,7 +508,7 @@ public static class IListExtension
 			else if (
 				closestItem != null
 				&& closestItemIndex != null
-				&& (toComparerToObjectItemWith(closestItem, closestItemIndex.Value)
+				&& (toGetCompareResultByItemExistedCompareToObjectItem(closestItem, closestItemIndex.Value)
 				* compareNumberDirection) < 0)
 			{
 				closestItemIndex++;
@@ -530,7 +530,7 @@ public static class IListExtension
 	/// </summary>
 	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
 	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
-	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="toGetCompareResultByItemExistedCompareToObjectItem">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
 	/// <param name="closestItemType">是否获取最接近目标的左侧对象。</param>
 	/// <param name="closestItemIndex">最接近目标的左侧对象索引值。</param>
 	/// <param name="closestItem">最接近目标的左侧对象。</param>
@@ -538,7 +538,7 @@ public static class IListExtension
 	public static int FindItemIndexWithDichotomy<ItemType>(
 		this IList<ItemType>? itemsSorted,
 		bool isItemsSortedWithAscending,
-		Func<ItemType, int, int> toComparerToObjectItemWith,
+		Func<ItemType, int, int> toGetCompareResultByItemExistedCompareToObjectItem,
 		DichotomyClosestItemType closestItemType,
 		out int? closestItemIndex,
 		out ItemType? closestItem)
@@ -548,7 +548,7 @@ public static class IListExtension
 			isItemsSortedWithAscending,
 			-1,
 			-1,
-			toComparerToObjectItemWith,
+			toGetCompareResultByItemExistedCompareToObjectItem,
 			closestItemType,
 			out closestItemIndex,
 			out closestItem);
@@ -561,7 +561,7 @@ public static class IListExtension
 	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
 	/// <param name="searchRangeBeginIndex">开始查找的对象索引值。</param>
 	/// <param name="searchRangeEndIndex">结束查找的对象索引值。</param>
-	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="toGetCompareResultByItemExistedCompareToObjectItem">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
 	/// <param name="isGetItemNearestLeft">是否获取最接近目标的左侧对象。</param>
 	/// <param name="closestItemIndex">最接近目标的左侧对象索引值。</param>
 	/// <param name="closestItem">最接近目标的左侧对象。</param>
@@ -571,7 +571,7 @@ public static class IListExtension
 		bool isItemsSortedWithAscending,
 		int searchRangeBeginIndex,
 		int searchRangeEndIndex,
-		Func<ItemType, int, int> toComparerToObjectItemWith,
+		Func<ItemType, int, int> toGetCompareResultByItemExistedCompareToObjectItem,
 		DichotomyClosestItemType closestItemType,
 		out int? closestItemIndex,
 		out ItemType? closestItem)
@@ -581,7 +581,7 @@ public static class IListExtension
 			isItemsSortedWithAscending,
 			searchRangeBeginIndex,
 			searchRangeEndIndex,
-			toComparerToObjectItemWith,
+			toGetCompareResultByItemExistedCompareToObjectItem,
 			closestItemType,
 			out closestItemIndex,
 			out closestItem);
@@ -599,7 +599,7 @@ public static class IListExtension
 	/// </summary>
 	/// <typeparam name="ItemType">列表中的元素类型。</typeparam>
 	/// <param name="itemsSorted">要进行查找的列表对象，注意：列表应当已被正确的排序。</param>
-	/// <param name="toComparerToObjectItemWith">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
+	/// <param name="toGetCompareResultByItemExistedCompareToObjectItem">当前元素和目标元素的比较结果，当前元素小于模板元素时，返回：-1，等于时，返回：0，大于时返回：1 。</param>
 	/// <param name="closestItemType">是否获取最接近目标的左侧对象。</param>
 	/// <param name="closestItemIndex">最接近目标的左侧对象索引值。</param>
 	/// <param name="closestItem">最接近目标的左侧对象。</param>
@@ -607,7 +607,7 @@ public static class IListExtension
 	public static ItemType? FindItemWithDichotomy<ItemType>(
 		this IList<ItemType>? itemsSorted,
 		bool isItemsSortedWithAscending,
-		Func<ItemType, int, int> toComparerToObjectItemWith,
+		Func<ItemType, int, int> toGetCompareResultByItemExistedCompareToObjectItem,
 		DichotomyClosestItemType closestItemType,
 		out int? closestItemIndex,
 		out ItemType? closestItem)
@@ -617,7 +617,7 @@ public static class IListExtension
 			isItemsSortedWithAscending,
 			-1,
 			-1,
-			toComparerToObjectItemWith,
+			toGetCompareResultByItemExistedCompareToObjectItem,
 			closestItemType,
 			out closestItemIndex,
 			out closestItem);
@@ -629,14 +629,14 @@ public static class IListExtension
 		bool isItemsSortedWithAscending,
 		int searchRangeBeginIndex,
 		int searchRangeLength,
-		Func<ItemType, int, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toGetCompareResultByItemExistedCompareToObjectItem)
 	{
 		return FindItemIndexWithDichotomyInRange(
 			itemsSorted,
 			isItemsSortedWithAscending,
 			searchRangeBeginIndex,
 			searchRangeLength,
-			toComparerToObjectItemWith,
+			toGetCompareResultByItemExistedCompareToObjectItem,
 			//
 			DichotomyClosestItemType.LessThanObjectMax,
 			out _,
@@ -646,12 +646,12 @@ public static class IListExtension
 	public static int FindItemIndexWithDichotomy<ItemType>(
 		this IList<ItemType>? itemsSorted,
 		bool isItemsSortedWithAscending,
-		Func<ItemType, int, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toGetCompareResultByItemExistedCompareToObjectItem)
 	{
 		return FindItemIndexWithDichotomy(
 			itemsSorted,
 			isItemsSortedWithAscending,
-			toComparerToObjectItemWith,
+			toGetCompareResultByItemExistedCompareToObjectItem,
 			//
 			DichotomyClosestItemType.LessThanObjectMax,
 			out _,
@@ -663,14 +663,14 @@ public static class IListExtension
 		bool isItemsSortedWithAscending,
 		int searchRangeBeginIndex,
 		int searchRangeEndIndex,
-		Func<ItemType, int, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toGetCompareResultByItemExistedCompareToObjectItem)
 	{
 		return FindItemWithDichotomyInRange(
 			itemsSorted,
 			isItemsSortedWithAscending,
 			searchRangeBeginIndex,
 			searchRangeEndIndex,
-			toComparerToObjectItemWith,
+			toGetCompareResultByItemExistedCompareToObjectItem,
 			//
 			DichotomyClosestItemType.LessThanObjectMax,
 			out _,
@@ -680,12 +680,12 @@ public static class IListExtension
 	public static ItemType? FindItemWithDichotomy<ItemType>(
 		this IList<ItemType>? itemsSorted,
 		bool isItemsSortedWithAscending,
-		Func<ItemType, int, int> toComparerToObjectItemWith)
+		Func<ItemType, int, int> toGetCompareResultByItemExistedCompareToObjectItem)
 	{
 		return FindItemWithDichotomy(
 			itemsSorted,
 			isItemsSortedWithAscending,
-			toComparerToObjectItemWith,
+			toGetCompareResultByItemExistedCompareToObjectItem,
 			//
 			DichotomyClosestItemType.LessThanObjectMax,
 			out _,

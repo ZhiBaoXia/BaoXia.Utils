@@ -2,7 +2,8 @@
 
 public class TempTokenCreateParam(
 	ClientIpInfo clientIpInfo,
-	double? liveSecondsMaxSpecified = null)
+	double? liveSecondsMaxSpecified,
+	object? additionalParameter)
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -15,6 +16,8 @@ public class TempTokenCreateParam(
 	public double LiveSecondsMaxSpecified { get; set; } = liveSecondsMaxSpecified != null
 		? liveSecondsMaxSpecified.Value
 		: 0;
+
+	public object? AdditionalParameter { get; set; } = additionalParameter;
 
 	#endregion
 }

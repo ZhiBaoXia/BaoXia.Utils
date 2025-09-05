@@ -139,6 +139,17 @@ public class TempTokenManager
 		return tokenInfo.TokenValue;
 	}
 
+	public void RemoveToken(string? tokenValue)
+	{
+		if (string.IsNullOrEmpty(tokenValue))
+		{
+			return;
+		}
+		// !!!
+		_tokenInfes.Remove(tokenValue, out _);
+		// !!!
+	}
+
 	public bool TryGetTokenInfo(
 		string? tokenValue,
 		out TempTokenInfoClass? tokenInfo)
@@ -288,7 +299,10 @@ public class TempTokenManager
 			TokenValue = tokenValue,
 			ClientIpInfo = tokenCreateParam.ClientIpInfo,
 			LiveSecondsMaxSpecified = tokenCreateParam.LiveSecondsMaxSpecified,
-			CreateTime = createTime
+			CreateTime = createTime,
+			//
+			AdditionalParameter = tokenCreateParam.AdditionalParameter
+			//
 		};
 		return tokenInfo;
 	}

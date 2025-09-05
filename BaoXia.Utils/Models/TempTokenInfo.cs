@@ -18,6 +18,8 @@ public class TempTokenInfo
 
 	public DateTimeOffset CreateTime { get; init; } = default!;
 
+	public object? AdditionalParameter { get; set; }
+
 	#endregion
 
 

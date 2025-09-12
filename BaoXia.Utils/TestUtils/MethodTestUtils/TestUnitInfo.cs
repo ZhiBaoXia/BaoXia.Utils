@@ -2,6 +2,7 @@
 using System;
 
 namespace BaoXia.Utils.TestUtils.MethodTestUtils;
+
 public class TestUnitInfo
 {
 	////////////////////////////////////////////////

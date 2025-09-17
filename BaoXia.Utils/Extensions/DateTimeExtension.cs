@@ -1263,7 +1263,7 @@ public static class DateTimeExtension
 		}
 		else if (dateTime.EqualsInYear(now))
 		{
-			caption = dateTime.ToString("MM月dd天 HH:mm");
+			caption = dateTime.ToString("MM月dd日 HH:mm");
 		}
 		else
 		{

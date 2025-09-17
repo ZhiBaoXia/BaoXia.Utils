@@ -2,8 +2,8 @@
 
 public class TempTokenCreateParam(
 	ClientIpInfo clientIpInfo,
-	double? liveSecondsMaxSpecified,
-	object? additionalParameter)
+	double? liveSecondsMaxSpecified = null,
+	object? additionalParameter = null)
 {
 	////////////////////////////////////////////////
 	// @自身属性

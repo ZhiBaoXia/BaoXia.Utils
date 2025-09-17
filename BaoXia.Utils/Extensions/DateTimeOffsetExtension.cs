@@ -1407,7 +1407,7 @@ dateTimeOffset.Day,
 		}
 		else if (dateTimeOffset.EqualsInYear(now))
 		{
-			caption = dateTimeOffset.ToString("MM月dd天 HH:mm");
+			caption = dateTimeOffset.ToString("MM月dd日 HH:mm");
 		}
 		else
 		{

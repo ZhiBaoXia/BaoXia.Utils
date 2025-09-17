@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BaoXia.Utils;
+
 public class RecursionUtil
 {
 	////////////////////////////////////////////////

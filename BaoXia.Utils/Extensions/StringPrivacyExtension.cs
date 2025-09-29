@@ -416,36 +416,9 @@ public static class StringPrivacyExtension
 			}
 			else
 			{
-				var privacyContent = privacyInfo.PrivacyContent;
-				switch (privacyInfo.Type)
-				{
-					default:
-					case PrivacyInfoType.Unknow:
-					case PrivacyInfoType.PhoneNumber:
-						{
-							privacyContentErased
-								= privacyInfo.PrivacyContent.ToPrivacyStringForPhoneNumber(null);
-						}
-						break;
-					case PrivacyInfoType.EnglishAccount:
-						{
-							privacyContentErased
-								= privacyInfo.PrivacyContent.ToPrivacyStringForAccount(null);
-						}
-						break;
-					case PrivacyInfoType.EMail:
-						{
-							privacyContentErased
-								= privacyInfo.PrivacyContent.ToPrivacyStringForEMail(null);
-						}
-						break;
-					case PrivacyInfoType.CNIdCardNumber:
-						{
-							privacyContentErased
-								= privacyInfo.PrivacyContent.ToPrivacyStringForCNIdCardNumber(null);
-						}
-						break;
-				}
+				//
+				privacyContentErased = privacyInfo.PrivacyContent.ToPrivacyString(privacyInfo.Type);
+				//
 			}
 			if (privacyContentErased?.Length > 0)
 			{

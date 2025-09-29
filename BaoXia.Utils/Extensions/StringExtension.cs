@@ -3004,6 +3004,45 @@ public static class StringExtension
 		return privacyText;
 	}
 
+
+	public static string ToPrivacyString(
+		this string originalString,
+		PrivacyInfoType privacyInfoType)
+	{
+		string privacyContentErased;
+		switch (privacyInfoType)
+		{
+			default:
+			case PrivacyInfoType.Unknow:
+			case PrivacyInfoType.PhoneNumber:
+				{
+					privacyContentErased
+						= originalString.ToPrivacyStringForPhoneNumber(null);
+				}
+				break;
+			case PrivacyInfoType.EnglishAccount:
+				{
+					privacyContentErased
+						= originalString.ToPrivacyStringForAccount(null);
+				}
+				break;
+			case PrivacyInfoType.EMail:
+				{
+					privacyContentErased
+						= originalString.ToPrivacyStringForEMail(null);
+				}
+				break;
+			case PrivacyInfoType.CNIdCardNumber:
+				{
+					privacyContentErased
+						= originalString.ToPrivacyStringForCNIdCardNumber(null);
+				}
+				break;
+		}
+		return privacyContentErased;
+	}
+
+
 	/// <summary>
 	/// 将当前“电话号码”字符串（11位）转为隐私字符串。
 	/// </summary>

@@ -148,11 +148,8 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 			{
 				lock (this)
 				{
-					if (_taskToAutoClean != null)
-					{
-						_taskToAutoClean.Cancel();
-						_taskToAutoClean = null;
-					}
+					_taskToAutoClean?.Cancel();
+					_taskToAutoClean = null;
 				}
 			}
 		}
@@ -239,11 +236,8 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 			{
 				lock (this)
 				{
-					if (_taskToAutoUpdate != null)
-					{
-						_taskToAutoUpdate.Cancel();
-						_taskToAutoUpdate = null;
-					}
+					_taskToAutoUpdate?.Cancel();
+					_taskToAutoUpdate = null;
 				}
 			}
 		}
@@ -693,18 +687,30 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 				// !!!
 				////////////////////////////////////////////////
 			}
-			else if (itemContainer.ItemCacheCreateTask == null)
+			// !!! 执行完元素创建任务后，要重置元素的创建任务，避免下次需要创建时，不再执行，
+			// !!! 比如：第一次获取到的元素为“null”后，由于已经指定了“已结束的创建任务”，导致新任务也不再执行。
+			else if (itemContainer.ItemCacheCreateTask == null
+				|| itemContainer.ItemCacheCreateTask.IsCompleted
+				|| itemContainer.ItemCacheCreateTask.IsCanceled)
 			{
-				taskToCreateItemJustCreate
-					= isItemSpecifiedValid
-					? null
-					: this.DidCreateTaskToCreateItemForItemContainer(
-						itemContainer,
-						itemCacheCreateParam,
-						true);
-				{ }
-				itemContainer.ItemCacheCreateTask
-					= taskToCreateItemJustCreate;
+				lock (itemContainer)
+				{
+					if (itemContainer.ItemCacheCreateTask == null
+						|| itemContainer.ItemCacheCreateTask.IsCompleted
+						|| itemContainer.ItemCacheCreateTask.IsCanceled)
+					{
+						taskToCreateItemJustCreate
+							= isItemSpecifiedValid
+							? null
+							: this.DidCreateTaskToCreateItemForItemContainer(
+								itemContainer,
+								itemCacheCreateParam,
+								true);
+						{ }
+						itemContainer.ItemCacheCreateTask
+							= taskToCreateItemJustCreate;
+					}
+				}
 			}
 
 			if (isItemSpecifiedValid)
@@ -901,11 +907,8 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 						itemCacheCreateTask.Start();
 						// !!!
 					}
-					// !!!
-					await itemCacheCreateTask;
-					// !!! 执行完元素创建任务后，要重置元素的创建任务，避免下次需要创建时，不再执行，
-					// !!! 比如：第一次获取到的元素为“null”后，由于已经指定了“已结束的创建任务”，导致新任务也不再执行。
-					itemContainer.ItemCacheCreateTask = null;
+					// !!!⚠ 注意这里必须是双重“await” ⚠!!!
+					await await itemCacheCreateTask;
 					// !!!
 				}
 			}

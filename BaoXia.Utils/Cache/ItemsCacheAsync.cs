@@ -148,11 +148,8 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 			{
 				lock (this)
 				{
-					if (_taskToAutoClean != null)
-					{
-						_taskToAutoClean.Cancel();
-						_taskToAutoClean = null;
-					}
+					_taskToAutoClean?.Cancel();
+					_taskToAutoClean = null;
 				}
 			}
 		}
@@ -239,11 +236,8 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 			{
 				lock (this)
 				{
-					if (_taskToAutoUpdate != null)
-					{
-						_taskToAutoUpdate.Cancel();
-						_taskToAutoUpdate = null;
-					}
+					_taskToAutoUpdate?.Cancel();
+					_taskToAutoUpdate = null;
 				}
 			}
 		}
@@ -693,6 +687,31 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 				// !!!
 				////////////////////////////////////////////////
 			}
+			// !!! 执行完元素创建任务后，要重置元素的创建任务，避免下次需要创建时，不再执行，
+			// !!! 比如：第一次获取到的元素为“null”后，由于已经指定了“已结束的创建任务”，导致新任务也不再执行。
+			else if (itemContainer.ItemCacheCreateTask == null
+				|| itemContainer.ItemCacheCreateTask.IsCompleted
+				|| itemContainer.ItemCacheCreateTask.IsCanceled)
+			{
+				lock (itemContainer)
+				{
+					if (itemContainer.ItemCacheCreateTask == null
+						|| itemContainer.ItemCacheCreateTask.IsCompleted
+						|| itemContainer.ItemCacheCreateTask.IsCanceled)
+					{
+						taskToCreateItemJustCreate
+							= isItemSpecifiedValid
+							? null
+							: this.DidCreateTaskToCreateItemForItemContainer(
+								itemContainer,
+								itemCacheCreateParam,
+								true);
+						{ }
+						itemContainer.ItemCacheCreateTask
+							= taskToCreateItemJustCreate;
+					}
+				}
+			}
 
 			if (isItemSpecifiedValid)
 			{
@@ -877,6 +896,7 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 				var itemCacheCreateTask = itemContainer.ItemCacheCreateTask;
 				if (itemCacheCreateTask != null)
 				{
+					// !!! 这里的判断，是为了避免同时创建多个元素创建任务。 !!!
 					if (itemCacheCreateTask == taskToCreateItemJustCreate)
 					{
 						// !!!
@@ -887,7 +907,7 @@ public class ItemsCacheAsync<ItemKeyType, ItemType, ItemCacheCreateParamType> : 
 						itemCacheCreateTask.Start();
 						// !!!
 					}
-					// !!!
+					// !!!⚠ 注意这里必须是双重“await” ⚠!!!
 					await await itemCacheCreateTask;
 					// !!!
 				}

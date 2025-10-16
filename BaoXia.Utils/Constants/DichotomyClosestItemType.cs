@@ -2,7 +2,7 @@
 
 public enum DichotomyClosestItemType
 {
-    LessThanObjectMax = 1,
+	LessThanObjectMax = 1,
 
-    GreaterThanObjectMin = 2
+	GreaterThanObjectMin = 2
 }

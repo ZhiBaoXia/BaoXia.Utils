@@ -2,13 +2,13 @@
 
 public enum PrivacyInfoType
 {
-    Unknow = 0,
+	Unknow = 0,
 
-    PhoneNumber = 1,
+	PhoneNumber = 1,
 
-    EMail = 2,
+	EMail = 2,
 
-    EnglishAccount = 3,
+	EnglishAccount = 3,
 
-    CNIdCardNumber = 4
+	CNIdCardNumber = 4
 }

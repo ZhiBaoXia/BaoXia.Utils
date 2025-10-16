@@ -2,11 +2,11 @@
 
 public enum ItemPropertyRelation
 {
-    Unknown = 0,
+	Unknown = 0,
 
-    Property = 1,
+	Property = 1,
 
-    ValueItemInIEnumerable = 2,
+	ValueItemInIEnumerable = 2,
 
-    ObjectItemInIEnumerable = 3
+	ObjectItemInIEnumerable = 3
 }

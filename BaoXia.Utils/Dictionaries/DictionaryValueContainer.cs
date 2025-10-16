@@ -1,61 +1,61 @@
 ﻿namespace BaoXia.Utils.Dictionaries;
 
 public class DictionaryValueContainer
-	<ItemType>
+    <ItemType>
 {
-	////////////////////////////////////////////////
-	// @自身属性
-	////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    // @自身属性
+    ////////////////////////////////////////////////
 
-	#region 自身属性
+    #region 自身属性
 
-	public ItemType[] Items { get; set; }
+    public ItemType[] Items { get; set; }
 
-	public ItemType? FirstItem
-	{
-		get
-		{
-			if (Items.Length > 0)
-			{
-				return Items[0];
-			}
-			return default;
-		}
-	}
+    public ItemType? FirstItem
+    {
+        get
+        {
+            if (Items.Length > 0)
+            {
+                return Items[0];
+            }
+            return default;
+        }
+    }
 
-	public ItemType? LastItem
-	{
-		get
-		{
-			if (Items.Length > 0)
-			{
-				return Items[^1];
-			}
-			return default;
-		}
-	}
+    public ItemType? LastItem
+    {
+        get
+        {
+            if (Items.Length > 0)
+            {
+                return Items[^1];
+            }
+            return default;
+        }
+    }
 
-	public int ItemsCount => Items.Length;
+    public int ItemsCount => Items.Length;
 
-	#endregion
+    #endregion
 
 
-	////////////////////////////////////////////////
-	// @自身实现
-	////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    // @自身实现
+    ////////////////////////////////////////////////
 
-	#region 自身实现
+    #region 自身实现
 
-	public DictionaryValueContainer()
-	{
-		Items = [];
-	}
+    public DictionaryValueContainer()
+    {
+        Items = [];
+    }
 
-	public DictionaryValueContainer(
-		ItemType[] items)
-	{
-		Items = items;
-	}
+    public DictionaryValueContainer(
+        ItemType[] items)
+    {
+        Items = items;
+    }
 
-	#endregion
+    #endregion
 }

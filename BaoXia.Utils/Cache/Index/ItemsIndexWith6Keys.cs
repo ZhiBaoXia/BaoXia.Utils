@@ -385,6 +385,19 @@ public class ItemsIndexWith6Keys<ItemType,
 				    currentItem!,
 				    toGetOrderOfIndexItems);
 				    }
+				    else
+				    {
+					    ////////////////////////////////////////////////
+					    // !!!⚠ 如果没有重新（按顺序）插入元素，                         ⚠!!!
+					    // !!!⚠ 则尝试重新排序元素，以保持元素集合的顺序正确。 ⚠!!!
+					    ////////////////////////////////////////////////
+					    Array.Sort(
+						    indexItems,
+						    (entityA, entityB) =>
+						    {
+							    return toGetOrderOfIndexItems(entityA, entityB);
+						    });
+				    }
 				    return indexItems;
 			    });
 		}

@@ -239,7 +239,7 @@ public static class IEnumerableExtension
 			}
 		}
 		else if (isNullEqualsEmpty
-		    && items.Any() == false)
+		    && items.IsNotEmpty() == false)
 		{
 			return true;
 		}

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -80,7 +81,7 @@ public class LogFile : IDisposable
 	/// 定时清空日志缓存的线程任务。
 	/// </summary>
 	protected static readonly LoopTask _autoFlushLogBufferTask = new(
-	    (CancellationToken cancellationToken) =>
+	    cancellationToken =>
 	    {
 		    try
 		    {
@@ -492,7 +493,7 @@ public class LogFile : IDisposable
 	{
 		if ((logContent == null
 		    || logContent.Length < 1)
-		&& logContentParamObject == null)
+		    && logContentParamObject == null)
 		{
 			return;
 		}
@@ -505,7 +506,7 @@ public class LogFile : IDisposable
 			    + logContentParamObject.ToString();
 		}
 
-		if (logContent?.Length > 0)
+		if (logContent.Length > 0)
 		{
 			var keysInLogContentToIgnoreLogs
 			    = this.KeysInLogContentToIgnoreLogs;
@@ -525,6 +526,9 @@ public class LogFile : IDisposable
 					}
 				}
 			}
+			// !!! 进行XML字符转义操作 !!!
+			logContent = SecurityElement.Escape(logContent);
+			// !!!
 		}
 
 		invokerFullName ??= invoker?.GetType()?.FullName;

@@ -1392,7 +1392,8 @@ public static class DateTimeOffsetExtension
             bool isNeedSecondsField = false)
         {
                 string caption;
-                var now = DateTimeOffset.Now;
+
+		var now = DateTimeOffset.Now;
                 if (dateTimeOffset.EqualsInDay(now))
                 {
                         if (isNeedSecondsField)

@@ -66,7 +66,7 @@ public static class TimeSpanExtension
 
         public static string TitleOfListElementDefault(this double totalSeconds)
         {
-                return TimeSpanExtension.TitleOfListElementDefault(TimeSpan.FromSeconds(totalSeconds));
+                return TimeSpanExtension.TitleOfListElementDefault(TimeSpanUtil.FromSeconds(totalSeconds));
         }
 
         public static string TitleOfDetailPageDefault(this TimeSpan timeSpan)
@@ -116,8 +116,8 @@ public static class TimeSpanExtension
         }
 
         public static string TitleOfDetailPageDefault(this double totalSeconds)
-        {
-                return TimeSpanExtension.TitleOfDetailPageDefault(TimeSpan.FromSeconds(totalSeconds));
+	{
+		return TimeSpanExtension.TitleOfDetailPageDefault(TimeSpanUtil.FromSeconds(totalSeconds));
         }
 
         #endregion

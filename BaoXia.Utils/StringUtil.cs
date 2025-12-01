@@ -153,26 +153,14 @@ public class StringUtil
         public static int CompareStrings(
             string? strA,
             string? strB,
-            StringComparison stringComparison = StringComparison.Ordinal)
+            StringComparison stringComparison = StringComparison.Ordinal,
+            bool isNullEqualsEmpty = false)
         {
-                //if (isNullEqualsEmpty)
-                //{
-                //	strA ??= string.Empty;
-                //	strB ??= string.Empty;
-                //}
-
-                //if (ReferenceEquals(strA, strB))
-                //{
-                //	return 0;
-                //}
-                //if (strA == null)
-                //{
-                //	return -1;
-                //}
-                //else if (strB == null)
-                //{
-                //	return 1;
-                //}
+                if (isNullEqualsEmpty)
+                {
+                        strA ??= string.Empty;
+                        strB ??= string.Empty;
+                }
                 return string.Compare(strA, strB, stringComparison);
         }
 

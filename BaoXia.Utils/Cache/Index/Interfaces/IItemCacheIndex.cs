@@ -2,28 +2,28 @@
 
 public interface IItemCacheIndex<ItemType>
 {
-        ////////////////////////////////////////////////
-        // @自身属性
-        ////////////////////////////////////////////////
+	////////////////////////////////////////////////
+	// @自身属性
+	////////////////////////////////////////////////
 
-        #region 自身属性
+	#region 自身属性
 
-        public string? Name { get; set; }
+	public string? Name { get; set; }
 
-        #endregion
+	#endregion
 
 
-        ////////////////////////////////////////////////
-        // @自身实现
-        ////////////////////////////////////////////////
+	////////////////////////////////////////////////
+	// @自身实现
+	////////////////////////////////////////////////
 
-        #region 自身实现
+	#region 自身实现
 
-        public void UpdateIndexItemsByUpdateItemFrom(
-            ItemType? lastItem,
-            ItemType? currentItem);
+	public void UpdateIndexItemsByUpdateItemFrom(
+	    ItemType? lastItem,
+	    ItemType? currentItem);
 
-        public void Clear();
+	public void Clear();
 
-        #endregion
+	#endregion
 }

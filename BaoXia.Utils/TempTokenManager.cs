@@ -16,353 +16,353 @@ public class TempTokenManager
     where TempTokenInfoClass : TempTokenInfo, new()
     where TempTokenCreateParamClass : TempTokenCreateParam
 {
-        ////////////////////////////////////////////////
-        // @静态常量
-        ////////////////////////////////////////////////
+	////////////////////////////////////////////////
+	// @静态常量
+	////////////////////////////////////////////////
 
-        #region 静态常量
+	#region 静态常量
 
-        public const double TokenCleanIntervalSecondsDefault = 1.0;
+	public const double TokenCleanIntervalSecondsDefault = 1.0;
 
-        public const int TokenValueLengthDefault = 16;
+	public const int TokenValueLengthDefault = 16;
 
-        #endregion
-
-
-        ////////////////////////////////////////////////
-        // @自身属性
-        ////////////////////////////////////////////////
-
-        #region 自身属性
-
-        protected readonly ConcurrentDictionary<string, TempTokenInfoClass> _tokenInfes;
-
-        protected readonly SemaphoreSlim _tokenInfesLocker;
-
-        protected readonly LoopTask _taskToCleanInfes;
-
-        public string Name { get; set; }
-
-        public Func<double> ToGetTokenLiveSecondsMax { get; set; }
-
-        public Func<int>? ToGetTokenValueLength { get; set; }
-
-        public int Count => _tokenInfes.Count;
-
-        #endregion
+	#endregion
 
 
-        ////////////////////////////////////////////////
-        // @自身实现
-        ////////////////////////////////////////////////
+	////////////////////////////////////////////////
+	// @自身属性
+	////////////////////////////////////////////////
 
-        #region 自身实现
+	#region 自身属性
 
-        public TempTokenManager
-            (string name,
-            Func<double> toGetTokenLiveSecondsMax,
-            Func<int>? toGetTokenValueLength,
-            Func<double>? toGetTokenCleanIntervalSeconds = null)
-        {
-                _tokenInfes = new();
-                _tokenInfesLocker = new SemaphoreSlim(1);
+	protected readonly ConcurrentDictionary<string, TempTokenInfoClass> _tokenInfes;
 
-                _taskToCleanInfes = new(
-                async (cancellationToken) =>
-                {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                                return true;
-                        }
+	protected readonly SemaphoreSlim _tokenInfesLocker;
 
-                        // !!!
-                        await CleanInvalidTokensAsync(DateTimeOffset.Now);
-                        // !!!
+	protected readonly LoopTask _taskToCleanInfes;
 
-                        return true;
-                },
-                () =>
-                {
-                        var tokenCleanIntervalSeconds = toGetTokenCleanIntervalSeconds?.Invoke()
-                ?? TokenCleanIntervalSecondsDefault;
-                        if (tokenCleanIntervalSeconds <= 0)
-                        {
-                                tokenCleanIntervalSeconds = TokenCleanIntervalSecondsDefault;
-                        }
-                        return tokenCleanIntervalSeconds;
-                });
+	public string Name { get; set; }
+
+	public Func<double> ToGetTokenLiveSecondsMax { get; set; }
+
+	public Func<int>? ToGetTokenValueLength { get; set; }
+
+	public int Count => _tokenInfes.Count;
+
+	#endregion
 
 
-                Name = name;
-                ToGetTokenLiveSecondsMax = toGetTokenLiveSecondsMax;
-                ToGetTokenValueLength = toGetTokenValueLength;
-        }
+	////////////////////////////////////////////////
+	// @自身实现
+	////////////////////////////////////////////////
 
-        public async Task<TempTokenInfoClass> CreateTokenInfoAsync(
-            TempTokenCreateParamClass tokenCreateParam,
-            DateTimeOffset createTime)
-        {
-                var tokenInfo
-                    = await AsyncLocker.LockAsync(
-                    _tokenInfesLocker,
-                    null,
-                    async (_) =>
-                    {
-                            TempTokenInfoClass tokenInfo;
-                            while (true)
-                            {
-                                    tokenInfo = await DidCreateTempTokenInfoAsync(tokenCreateParam, createTime);
-                                    if (!_tokenInfes.ContainsKey(tokenInfo.TokenValue))
-                                    {
-                                            break;
-                                    }
-                            }
-                            ////////////////////////////////////////////////
-                            // !!!
-                            _tokenInfes.AddOrSet(
-                tokenInfo.TokenValue,
-                tokenInfo);
-                            // !!!
-                            ////////////////////////////////////////////////
-                            return tokenInfo;
-                    });
-                return tokenInfo;
-        }
+	#region 自身实现
 
-        public async Task<string> CreateTokenAsync(
-            TempTokenCreateParamClass tokenCreateParam,
-            DateTimeOffset createTime)
-        {
-                var tokenInfo = await CreateTokenInfoAsync(
-                    tokenCreateParam, createTime);
-                { }
-                return tokenInfo.TokenValue;
-        }
+	public TempTokenManager
+	    (string name,
+	    Func<double> toGetTokenLiveSecondsMax,
+	    Func<int>? toGetTokenValueLength,
+	    Func<double>? toGetTokenCleanIntervalSeconds = null)
+	{
+		_tokenInfes = new();
+		_tokenInfesLocker = new SemaphoreSlim(1);
 
-        public void RemoveToken(string? tokenValue)
-        {
-                if (string.IsNullOrEmpty(tokenValue))
-                {
-                        return;
-                }
-                // !!!
-                _tokenInfes.Remove(tokenValue, out _);
-                // !!!
-        }
+		_taskToCleanInfes = new(
+		async (cancellationToken) =>
+		{
+			if (cancellationToken.IsCancellationRequested)
+			{
+				return true;
+			}
 
-        public bool TryGetTokenInfo(
-            string? tokenValue,
-            out TempTokenInfoClass? tokenInfo)
-        {
-                //
-                tokenInfo = null;
-                //
-                if (string.IsNullOrWhiteSpace(tokenValue))
-                {
-                        // !!!
-                        return false;
-                        // !!!
-                }
+			// !!!
+			await CleanInvalidTokensAsync(DateTimeOffset.Now);
+			// !!!
 
-                if (_tokenInfes.TryGetValue(
-                    tokenValue,
-                    out var tokenInfoExisted))
-                {
-                        // !!!
-                        tokenInfo = tokenInfoExisted;
-                        return true;
-                        // !!!
-                }
-                return false;
-        }
-
-        public TempTokenInfoClass? GetTokenInfo(
-            string? tokenValue)
-        {
-                _ = TryGetTokenInfo(
-                    tokenValue,
-                    out var tokenInfo);
-                { }
-                return tokenInfo;
-        }
-
-        public async Task<TempTokenInfoClass?> GetValidTokenInfoAsync(
-            string? tokenValue,
-            ClientIpInfo clientIpInfo,
-            DateTimeOffset? checkTime = null)
-        {
-                _ = TryGetTokenInfo(
-                    tokenValue,
-                    out var tokenInfo);
-                { }
-                var isTokenInfoValid = await IsTokenInfoValidAsync(
-                    tokenInfo,
-                    clientIpInfo,
-                    checkTime);
-                if (isTokenInfoValid)
-                {
-                        return tokenInfo;
-                }
-                return null;
-        }
-
-        public List<TempTokenInfoClass>? GetInvalidTokenInfesAt(DateTimeOffset checkTime)
-        {
-                List<TempTokenInfoClass>? invalidTokenInfes = null;
-                var tokenInfoLiveSecondsMaxDefault = ToGetTokenLiveSecondsMax();
-                foreach (var tokenInfo in _tokenInfes.Values)
-                {
-                        var tokenInfoLiveSecondsMax = tokenInfo.LiveSecondsMaxSpecified;
-                        if (tokenInfoLiveSecondsMax <= 0)
-                        {
-                                tokenInfoLiveSecondsMax = tokenInfoLiveSecondsMaxDefault;
-                                if (tokenInfoLiveSecondsMax <= 0)
-                                {
-                                        // !!!
-                                        continue;
-                                        // !!!
-                                }
-                        }
-                        var tokenLiveSeconds = (checkTime - tokenInfo.CreateTime).TotalSeconds;
-                        if (tokenLiveSeconds > tokenInfoLiveSecondsMax)
-                        {
-                                // !!!
-                                invalidTokenInfes ??= [];
-                                invalidTokenInfes.Add(tokenInfo);
-                                // !!!
-                        }
-                }
-                return invalidTokenInfes;
-        }
-
-        public async Task<bool> IsTokenInfoValidAsync(
-            TempTokenInfoClass? tokenInfo,
-            ClientIpInfo clientIpInfo,
-            DateTimeOffset? checkTime = null)
-        {
-                if (tokenInfo == null)
-                {
-                        return false;
-                }
-
-                checkTime ??= DateTimeOffset.Now;
-                var isTokenInfoValid = await DidIsTokenInfoValidAsync(
-                    tokenInfo,
-                    clientIpInfo,
-                    checkTime.Value);
-                { }
-                return isTokenInfoValid;
-        }
-
-        public async Task<bool> IsTokenValidAsync(
-            string? tokenValue,
-            ClientIpInfo clientIpInfo,
-            DateTimeOffset? checkTime = null)
-        {
-                if (string.IsNullOrWhiteSpace(tokenValue))
-                {
-                        return false;
-                }
-                if (!_tokenInfes.TryGetValue(tokenValue, out var tokenInfo))
-                {
-                        return false;
-                }
-                return await IsTokenInfoValidAsync(
-                    tokenInfo,
-                    clientIpInfo,
-                    checkTime);
-        }
-
-        public async Task CleanInvalidTokensAsync(DateTimeOffset? checkTime = null)
-        {
-                await DidCleanInvalidTokensAsync(
-                    checkTime
-                    ?? DateTimeOffset.Now);
-        }
-
-        #endregion
+			return true;
+		},
+		() =>
+		{
+			var tokenCleanIntervalSeconds = toGetTokenCleanIntervalSeconds?.Invoke()
+		?? TokenCleanIntervalSecondsDefault;
+			if (tokenCleanIntervalSeconds <= 0)
+			{
+				tokenCleanIntervalSeconds = TokenCleanIntervalSecondsDefault;
+			}
+			return tokenCleanIntervalSeconds;
+		});
 
 
-        ////////////////////////////////////////////////
-        // @事件节点
-        ////////////////////////////////////////////////
+		Name = name;
+		ToGetTokenLiveSecondsMax = toGetTokenLiveSecondsMax;
+		ToGetTokenValueLength = toGetTokenValueLength;
+	}
 
-        #region 事件节点
-        protected virtual async Task<TempTokenInfoClass> DidCreateTempTokenInfoAsync(
-            TempTokenCreateParamClass tokenCreateParam,
-            DateTimeOffset createTime)
-        {
-                var tokenValue = await DidGenerateTokenValueAsync(
-                    tokenCreateParam, createTime);
-                var tokenInfo = new TempTokenInfoClass()
-                {
-                        TokenValue = tokenValue,
-                        ClientIpInfo = tokenCreateParam.ClientIpInfo,
-                        LiveSecondsMaxSpecified = tokenCreateParam.LiveSecondsMaxSpecified,
-                        CreateTime = createTime,
-                        //
-                        AdditionalParameter = tokenCreateParam.AdditionalParameter
-                        //
-                };
-                return tokenInfo;
-        }
+	public async Task<TempTokenInfoClass> CreateTokenInfoAsync(
+	    TempTokenCreateParamClass tokenCreateParam,
+	    DateTimeOffset createTime)
+	{
+		var tokenInfo
+		    = await AsyncLocker.LockAsync(
+		    _tokenInfesLocker,
+		    null,
+		    async (_) =>
+		    {
+			    TempTokenInfoClass tokenInfo;
+			    while (true)
+			    {
+				    tokenInfo = await DidCreateTempTokenInfoAsync(tokenCreateParam, createTime);
+				    if (!_tokenInfes.ContainsKey(tokenInfo.TokenValue))
+				    {
+					    break;
+				    }
+			    }
+			    ////////////////////////////////////////////////
+			    // !!!
+			    _tokenInfes.AddOrSet(
+		tokenInfo.TokenValue,
+		tokenInfo);
+			    // !!!
+			    ////////////////////////////////////////////////
+			    return tokenInfo;
+		    });
+		return tokenInfo;
+	}
 
-        protected virtual async Task<string> DidGenerateTokenValueAsync(
-            TempTokenCreateParamClass tokenCreateParam,
-            DateTimeOffset createTime)
-        {
-                var tokenValueLength = ToGetTokenValueLength?.Invoke() ?? TokenValueLengthDefault;
-                if (tokenValueLength <= 0)
-                {
-                        tokenValueLength = TokenValueLengthDefault;
-                }
+	public async Task<string> CreateTokenAsync(
+	    TempTokenCreateParamClass tokenCreateParam,
+	    DateTimeOffset createTime)
+	{
+		var tokenInfo = await CreateTokenInfoAsync(
+		    tokenCreateParam, createTime);
+		{ }
+		return tokenInfo.TokenValue;
+	}
 
-                var tokenValue = StringUtil.RandomStringInLength(tokenValueLength);
-                { }
-                return await Task.FromResult(tokenValue);
-        }
+	public void RemoveToken(string? tokenValue)
+	{
+		if (string.IsNullOrEmpty(tokenValue))
+		{
+			return;
+		}
+		// !!!
+		_tokenInfes.Remove(tokenValue, out _);
+		// !!!
+	}
 
-        protected virtual async Task<bool> DidIsTokenInfoValidAsync(
-            TempTokenInfoClass tokenInfo,
-            ClientIpInfo clientIpInfo,
-            DateTimeOffset checkTime)
-        {
-                var tokenLiveSecondsMax = tokenInfo.LiveSecondsMaxSpecified;
-                if (tokenLiveSecondsMax <= 0)
-                {
-                        tokenLiveSecondsMax = ToGetTokenLiveSecondsMax();
-                        if (tokenLiveSecondsMax <= 0)
-                        {
-                                return true;
-                        }
-                }
-                var tokenLiveSeconds = (checkTime - tokenInfo.CreateTime).TotalSeconds;
-                if (tokenLiveSeconds <= tokenLiveSecondsMax)
-                {
-                        return true;
-                }
-                return await Task.FromResult(false);
-        }
+	public bool TryGetTokenInfo(
+	    string? tokenValue,
+	    out TempTokenInfoClass? tokenInfo)
+	{
+		//
+		tokenInfo = null;
+		//
+		if (string.IsNullOrWhiteSpace(tokenValue))
+		{
+			// !!!
+			return false;
+			// !!!
+		}
 
-        protected virtual async Task DidCleanInvalidTokensAsync(DateTimeOffset checkTime)
-        {
-                var invalidTokenInfes = GetInvalidTokenInfesAt(checkTime);
-                if (invalidTokenInfes == null)
-                {
-                        return;
-                }
+		if (_tokenInfes.TryGetValue(
+		    tokenValue,
+		    out var tokenInfoExisted))
+		{
+			// !!!
+			tokenInfo = tokenInfoExisted;
+			return true;
+			// !!!
+		}
+		return false;
+	}
 
-                foreach (var invalidTokenInfo
-                    in
-                    invalidTokenInfes)
-                {
-                        _tokenInfes.Remove(
-                            invalidTokenInfo.TokenValue,
-                            out _);
-                }
+	public TempTokenInfoClass? GetTokenInfo(
+	    string? tokenValue)
+	{
+		_ = TryGetTokenInfo(
+		    tokenValue,
+		    out var tokenInfo);
+		{ }
+		return tokenInfo;
+	}
 
-                await Task.CompletedTask;
-        }
+	public async Task<TempTokenInfoClass?> GetValidTokenInfoAsync(
+	    string? tokenValue,
+	    ClientIpInfo clientIpInfo,
+	    DateTimeOffset? checkTime = null)
+	{
+		_ = TryGetTokenInfo(
+		    tokenValue,
+		    out var tokenInfo);
+		{ }
+		var isTokenInfoValid = await IsTokenInfoValidAsync(
+		    tokenInfo,
+		    clientIpInfo,
+		    checkTime);
+		if (isTokenInfoValid)
+		{
+			return tokenInfo;
+		}
+		return null;
+	}
 
-        #endregion
+	public List<TempTokenInfoClass>? GetInvalidTokenInfesAt(DateTimeOffset checkTime)
+	{
+		List<TempTokenInfoClass>? invalidTokenInfes = null;
+		var tokenInfoLiveSecondsMaxDefault = ToGetTokenLiveSecondsMax();
+		foreach (var tokenInfo in _tokenInfes.Values)
+		{
+			var tokenInfoLiveSecondsMax = tokenInfo.LiveSecondsMaxSpecified;
+			if (tokenInfoLiveSecondsMax <= 0)
+			{
+				tokenInfoLiveSecondsMax = tokenInfoLiveSecondsMaxDefault;
+				if (tokenInfoLiveSecondsMax <= 0)
+				{
+					// !!!
+					continue;
+					// !!!
+				}
+			}
+			var tokenLiveSeconds = (checkTime - tokenInfo.CreateTime).TotalSeconds;
+			if (tokenLiveSeconds > tokenInfoLiveSecondsMax)
+			{
+				// !!!
+				invalidTokenInfes ??= [];
+				invalidTokenInfes.Add(tokenInfo);
+				// !!!
+			}
+		}
+		return invalidTokenInfes;
+	}
+
+	public async Task<bool> IsTokenInfoValidAsync(
+	    TempTokenInfoClass? tokenInfo,
+	    ClientIpInfo clientIpInfo,
+	    DateTimeOffset? checkTime = null)
+	{
+		if (tokenInfo == null)
+		{
+			return false;
+		}
+
+		checkTime ??= DateTimeOffset.Now;
+		var isTokenInfoValid = await DidIsTokenInfoValidAsync(
+		    tokenInfo,
+		    clientIpInfo,
+		    checkTime.Value);
+		{ }
+		return isTokenInfoValid;
+	}
+
+	public async Task<bool> IsTokenValidAsync(
+	    string? tokenValue,
+	    ClientIpInfo clientIpInfo,
+	    DateTimeOffset? checkTime = null)
+	{
+		if (string.IsNullOrWhiteSpace(tokenValue))
+		{
+			return false;
+		}
+		if (!_tokenInfes.TryGetValue(tokenValue, out var tokenInfo))
+		{
+			return false;
+		}
+		return await IsTokenInfoValidAsync(
+		    tokenInfo,
+		    clientIpInfo,
+		    checkTime);
+	}
+
+	public async Task CleanInvalidTokensAsync(DateTimeOffset? checkTime = null)
+	{
+		await DidCleanInvalidTokensAsync(
+		    checkTime
+		    ?? DateTimeOffset.Now);
+	}
+
+	#endregion
+
+
+	////////////////////////////////////////////////
+	// @事件节点
+	////////////////////////////////////////////////
+
+	#region 事件节点
+	protected virtual async Task<TempTokenInfoClass> DidCreateTempTokenInfoAsync(
+	    TempTokenCreateParamClass tokenCreateParam,
+	    DateTimeOffset createTime)
+	{
+		var tokenValue = await DidGenerateTokenValueAsync(
+		    tokenCreateParam, createTime);
+		var tokenInfo = new TempTokenInfoClass()
+		{
+			TokenValue = tokenValue,
+			ClientIpInfo = tokenCreateParam.ClientIpInfo,
+			LiveSecondsMaxSpecified = tokenCreateParam.LiveSecondsMaxSpecified,
+			CreateTime = createTime,
+			//
+			AdditionalParameter = tokenCreateParam.AdditionalParameter
+			//
+		};
+		return tokenInfo;
+	}
+
+	protected virtual async Task<string> DidGenerateTokenValueAsync(
+	    TempTokenCreateParamClass tokenCreateParam,
+	    DateTimeOffset createTime)
+	{
+		var tokenValueLength = ToGetTokenValueLength?.Invoke() ?? TokenValueLengthDefault;
+		if (tokenValueLength <= 0)
+		{
+			tokenValueLength = TokenValueLengthDefault;
+		}
+
+		var tokenValue = StringUtil.RandomStringInLength(tokenValueLength);
+		{ }
+		return await Task.FromResult(tokenValue);
+	}
+
+	protected virtual async Task<bool> DidIsTokenInfoValidAsync(
+	    TempTokenInfoClass tokenInfo,
+	    ClientIpInfo clientIpInfo,
+	    DateTimeOffset checkTime)
+	{
+		var tokenLiveSecondsMax = tokenInfo.LiveSecondsMaxSpecified;
+		if (tokenLiveSecondsMax <= 0)
+		{
+			tokenLiveSecondsMax = ToGetTokenLiveSecondsMax();
+			if (tokenLiveSecondsMax <= 0)
+			{
+				return true;
+			}
+		}
+		var tokenLiveSeconds = (checkTime - tokenInfo.CreateTime).TotalSeconds;
+		if (tokenLiveSeconds <= tokenLiveSecondsMax)
+		{
+			return true;
+		}
+		return await Task.FromResult(false);
+	}
+
+	protected virtual async Task DidCleanInvalidTokensAsync(DateTimeOffset checkTime)
+	{
+		var invalidTokenInfes = GetInvalidTokenInfesAt(checkTime);
+		if (invalidTokenInfes == null)
+		{
+			return;
+		}
+
+		foreach (var invalidTokenInfo
+		    in
+		    invalidTokenInfes)
+		{
+			_tokenInfes.Remove(
+			    invalidTokenInfo.TokenValue,
+			    out _);
+		}
+
+		await Task.CompletedTask;
+	}
+
+	#endregion
 }

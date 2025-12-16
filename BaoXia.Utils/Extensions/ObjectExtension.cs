@@ -504,71 +504,63 @@ public static class ObjectExtension
 			// 并且没有可为空的标记，
 			// 则该类型不可为空，需要约束，
 			// 非字符串和非集合对象【需要】检查子属性：
-			RecursionUtil.Enumerate(
-			    new ObjectPropertyInfo(0, entityPropertyInfo, []),
-			    (entityPropertyInfo) =>
-			    {
-				    var entityPropertyType = entityPropertyInfo.PropertyType;
+			RecursionUtil.Enumerate(new ObjectPropertyInfo(0, entityPropertyInfo, []), (entityPropertyInfo) =>
+			{
+				var entityPropertyType = entityPropertyInfo.PropertyType;
 
-				    // 值类型，【不需要】检查子属性：
-				    if (entityPropertyType.IsValueType)
-				    {
-					    return null;
-				    }
-				    // 字符串和集合对象，【不需要】检查子属性：
-				    if (entityPropertyType.Equals(typeof(string))
-		    || entityPropertyType.IsAssignableTo(typeof(System.Collections.ICollection)))
-				    {
-					    return null;
-				    }
+				// 值类型，【不需要】检查子属性：
+				if (entityPropertyType.IsValueType)
+				{
+					return null;
+				}
+				// 字符串和集合对象，【不需要】检查子属性：
+				if (entityPropertyType.Equals(typeof(string))
+				|| entityPropertyType.IsAssignableTo(typeof(System.Collections.ICollection)))
+				{
+					return null;
+				}
 
-				    // 非值类型，
-				    // 且，非字符串和集合对象，
-				    // 【需要】检查子属性：
-				    var childEntityPropertyInfes = new List<ObjectPropertyInfo>();
-				    var childPropertyInfes = entityPropertyType.GetProperties(propertyBindingFlags);
-				    foreach (var childPropertyInfo in childPropertyInfes)
-				    {
-					    childEntityPropertyInfes.Add(
-			    new ObjectPropertyInfo(
-			    0,
-			    childPropertyInfo,
-			    []));
-				    }
-				    return childEntityPropertyInfes;
-			    },
-			    (parentEntityPropertyInfo, entityPropertyInfo) =>
-			    {
-				    if (!isPropertyInfoValid(entityPropertyInfo))
-				    {
-					    return true;
-				    }
+				// 非值类型，
+				// 且，非字符串和集合对象，
+				// 【需要】检查子属性：
+				var childEntityPropertyInfes = new List<ObjectPropertyInfo>();
+				var childPropertyInfes = entityPropertyType.GetProperties(propertyBindingFlags);
+				foreach (var childPropertyInfo in childPropertyInfes)
+				{
+					childEntityPropertyInfes.Add(new ObjectPropertyInfo(0, childPropertyInfo, []));
+				}
+				return childEntityPropertyInfes;
+			},
+			(parentEntityPropertyInfo, entityPropertyInfo) =>
+			{
+				if (!isPropertyInfoValid(entityPropertyInfo))
+				{
+					return true;
+				}
 
 
-				    objectEntityPropertyInfoId++;
-				    entityPropertyInfo.Id = objectEntityPropertyInfoId;
-				    if (parentEntityPropertyInfo == null)
-				    {
-					    // !!!
-					    objectEntityPropertyInfes.Add(entityPropertyInfo);
-					    // !!!
-				    }
-				    else
-				    {
-					    // !!!
-					    parentEntityPropertyInfo.AddChildObjectPropertyInfo(
-			    entityPropertyInfo);
-					    // !!!
-				    }
-				    return true;
-			    });
+				objectEntityPropertyInfoId++;
+				entityPropertyInfo.Id = objectEntityPropertyInfoId;
+				if (parentEntityPropertyInfo == null)
+				{
+					// !!!
+					objectEntityPropertyInfes.Add(entityPropertyInfo);
+					// !!!
+				}
+				else
+				{
+					// !!!
+					parentEntityPropertyInfo.AddChildObjectPropertyInfo(entityPropertyInfo);
+					// !!!
+				}
+				return true;
+			});
 		}
 		return objectEntityPropertyInfes;
 	}
 
 	public static List<ObjectPropertyInfo> GetObjectPropertyInfes(
-	    this Type entityType,
-	    Func<ObjectPropertyInfo, bool> isPropertyInfoValid,
+	    this Type entityType, Func<ObjectPropertyInfo, bool> isPropertyInfoValid,
 	    BindingFlags propertyBindingFlags = BindingFlags.Instance | BindingFlags.Public)
 	{
 		var objectEntityPropertyInfes = new List<ObjectPropertyInfo>();

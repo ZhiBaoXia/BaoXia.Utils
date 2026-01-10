@@ -387,16 +387,18 @@ public class StringUtil
 	/// <param name="isOnlyUppercase">是否只使用大写字符串。</param>
 	/// <returns>返回指定长度随机内容字符串，随机内容只包含英文字母和阿拉伯数字。</returns>
 	public static string StringByFillRandomCharsToLength(
-	    int randomStringLength,
-	    int randomSeek = 0,
-	    bool isOnlyUppercase = true)
+	    int randomStringLength, int randomSeek = 0, bool isOnlyUppercase = true)
 	{
 		string randomString = string.Empty;
-		if (randomSeek == 0)
+		Random random;
+		if (randomSeek != 0)
 		{
-			randomSeek = DateTime.Now.Millisecond;
+			random = new Random(randomSeek);
 		}
-		Random random = new(randomSeek);
+		else
+		{
+			random = Random.Shared;
+		}
 		if (isOnlyUppercase)
 		{
 			for (int charIndex = 0;
@@ -439,10 +441,7 @@ public class StringUtil
 	    int randomSeek = 0,
 	    bool isOnlyUppercase = true)
 	{
-		return StringByFillRandomCharsToLength(
-		    randomStringLength,
-		    randomSeek,
-		    isOnlyUppercase);
+		return StringByFillRandomCharsToLength(randomStringLength, randomSeek, isOnlyUppercase);
 	}
 
 	/// <summary>

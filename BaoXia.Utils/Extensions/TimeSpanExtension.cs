@@ -26,40 +26,46 @@ public static class TimeSpanExtension
 	public static string TitleOfListElementDefault(this TimeSpan timeSpan)
 	{
 		string caption;
-		var totalMinutes = timeSpan.TotalMinutes;
-		if (totalMinutes < 1)
+		if (timeSpan.TotalMinutes < 1)
 		{
-			caption = string.Format("{0:F0}秒", timeSpan.TotalSeconds);
+			caption = $"{timeSpan.TotalSeconds:F0}秒";
 		}
-		else if (totalMinutes >= TimeDefinition.Forever.TotalMinutes)
+		else if (timeSpan.TotalHours < 1)
 		{
-			caption = "永久";
-		}
-		else
-		{
-			var totalHours = timeSpan.TotalHours;
-			if (totalHours < 1)
+			if (timeSpan.Seconds > 0)
 			{
-				caption = string.Format("{0:F0}分钟", totalMinutes);
+				caption = $"{timeSpan.Minutes:0}分钟, {timeSpan.Seconds:F0}秒";
 			}
 			else
 			{
-				var totalDays = timeSpan.TotalDays;
-				if (totalDays < 1)
-				{
-					caption = string.Format(
-					    "{0:0}小时, {1:F0}分钟",
-					    timeSpan.Hours,
-					    timeSpan.Minutes);
-				}
-				else
-				{
-					caption = string.Format(
-					    "{0:0}天, {1:F0}小时",
-					    timeSpan.Days,
-					    timeSpan.Hours);
-				}
+				caption = $"{timeSpan.Minutes:0}分钟";
 			}
+		}
+		else if (timeSpan.TotalDays < 1)
+		{
+			if (timeSpan.Minutes > 0)
+			{
+				caption = $"{timeSpan.Hours:0}小时, {timeSpan.Minutes:0}分钟";
+			}
+			else
+			{
+				caption = $"{timeSpan.Hours:0}小时";
+			}
+		}
+		else if (timeSpan.TotalDays < TimeDefinition.Forever.TotalDays)
+		{
+			if (timeSpan.Hours > 0)
+			{
+				caption = $"{timeSpan.Days:0}天, {timeSpan.Hours:0}小时";
+			}
+			else
+			{
+				caption = $"{timeSpan.Days:0}天";
+			}
+		}
+		else
+		{
+			caption = "永久";
 		}
 		return caption;
 	}
@@ -72,45 +78,58 @@ public static class TimeSpanExtension
 	public static string TitleOfDetailPageDefault(this TimeSpan timeSpan)
 	{
 		string caption;
-		var totalMinutes = timeSpan.TotalMinutes;
-		if (totalMinutes < 1)
+		if (timeSpan.TotalMinutes < 1)
 		{
-			caption = string.Format("{0:F0}秒", timeSpan.TotalSeconds);
+			caption = $"{timeSpan.TotalSeconds:F0}秒";
 		}
-		else if (totalMinutes >= TimeDefinition.Forever.TotalMinutes)
+		else if (timeSpan.TotalHours < 1)
 		{
-			caption = "永久";
-		}
-		else
-		{
-			var totalHours = timeSpan.TotalHours;
-			if (totalHours < 1)
+			if (timeSpan.Seconds > 0)
 			{
-				caption = string.Format("{0:0}分钟, {1:F0}秒",
-				    timeSpan.Minutes,
-				    timeSpan.Seconds);
+				caption = $"{timeSpan.Minutes:0}分钟, {timeSpan.Seconds:0}秒";
 			}
 			else
 			{
-				var totalDays = timeSpan.TotalDays;
-				if (totalDays < 1)
-				{
-					caption = string.Format(
-					    "{0:0}小时, {1:0}分钟, {2:F0}秒",
-					    timeSpan.Hours,
-					    timeSpan.Minutes,
-					    timeSpan.Seconds);
-				}
-				else
-				{
-					caption = string.Format(
-					    "{0:0}天, {1:0}小时, {2:0}分钟, {3:F0}秒",
-					    timeSpan.Days,
-					    timeSpan.Hours,
-					    timeSpan.Minutes,
-					    timeSpan.Seconds);
-				}
+				caption = $"{timeSpan.Minutes:0}分钟";
 			}
+		}
+		else if (timeSpan.TotalDays < 1)
+		{
+			if (timeSpan.Seconds > 0)
+			{
+				caption = $"{timeSpan.Hours:0}小时, {timeSpan.Minutes:0}分钟, {timeSpan.Seconds:0}秒";
+			}
+			else if (timeSpan.Minutes > 0)
+			{
+				caption = $"{timeSpan.Hours:0}小时, {timeSpan.Minutes:0}分钟";
+			}
+			else
+			{
+				caption = $"{timeSpan.Hours:0}小时";
+			}
+		}
+		else if (timeSpan.TotalDays < TimeDefinition.Forever.TotalDays)
+		{
+			if (timeSpan.Seconds > 0)
+			{
+				caption = $"{timeSpan.Days:0}天, {timeSpan.Hours:0}小时, {timeSpan.Minutes:0}分钟, {timeSpan.Seconds:0}秒";
+			}
+			else if (timeSpan.Minutes > 0)
+			{
+				caption = $"{timeSpan.Days:0}天, {timeSpan.Hours:0}小时, {timeSpan.Minutes:0}分钟";
+			}
+			else if (timeSpan.Hours > 0)
+			{
+				caption = $"{timeSpan.Days:0}天, {timeSpan.Hours:0}小时";
+			}
+			else
+			{
+				caption = $"{timeSpan.Days:0}天";
+			}
+		}
+		else
+		{
+			caption = "永久";
 		}
 		return caption;
 	}

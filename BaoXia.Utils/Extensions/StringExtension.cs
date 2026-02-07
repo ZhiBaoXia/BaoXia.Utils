@@ -3013,7 +3013,7 @@ public static class StringExtension
 		switch (privacyInfoType)
 		{
 			default:
-			case PrivacyInfoType.Unknow:
+			case PrivacyInfoType.Unknown:
 			case PrivacyInfoType.PhoneNumber:
 				{
 					privacyContentErased

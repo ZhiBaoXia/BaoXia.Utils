@@ -2,7 +2,7 @@
 
 public enum PrivacyInfoType
 {
-	Unknow = 0,
+	Unknown = 0,
 
 	PhoneNumber = 1,
 

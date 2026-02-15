@@ -144,6 +144,6 @@ namespace BaoXia.Utils.Cache
 		}
 	}
 
-	#endregion
+		#endregion
 
 }

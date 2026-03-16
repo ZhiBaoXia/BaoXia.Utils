@@ -387,46 +387,92 @@ public class StringUtil
 	/// <param name="isOnlyUppercase">是否只使用大写字符串。</param>
 	/// <returns>返回指定长度随机内容字符串，随机内容只包含英文字母和阿拉伯数字。</returns>
 	public static string StringByFillRandomCharsToLength(
-	    int randomStringLength, int randomSeek = 0, bool isOnlyUppercase = true)
+	    int randomStringLength, int? randomSeek = null,
+	    RandomStringType randomStringType = RandomStringType.ArabicNumeralAndAlphabetCharsInUppercase)
 	{
-		string randomString = string.Empty;
 		Random random;
-		if (randomSeek != 0)
+		if (randomSeek != null)
 		{
-			random = new Random(randomSeek);
+			random = new Random(randomSeek.Value);
 		}
 		else
 		{
 			random = Random.Shared;
 		}
-		if (isOnlyUppercase)
+
+		char[] randomCharsPool;
+		switch (randomStringType)
 		{
-			for (int charIndex = 0;
-			    charIndex < randomStringLength;
-			    charIndex++)
-			{
-				var randomCharIndex = random.Next(StringConstants.kArabicNumeralAndAlphabetCharsInUppercase.Length);
-				{ }
-				randomString += StringConstants.kArabicNumeralAndAlphabetCharsInUppercase[randomCharIndex].ToString();
-			}
-		}
-		else
-		{
-			for (int charIndex = 0;
-			    charIndex < randomStringLength;
-			    charIndex++)
-			{
-				var chars = StringConstants.kArabicNumeralAndAlphabetCharsInUppercase;
-				if (random.Next(2) == 1)
+			default:
+			case RandomStringType.Random:
 				{
-					chars = StringConstants.kArabicNumeralAndAlphabetCharsInLowercase;
+					//
+					var charsPoolIndex = random.Next(StringConstants.AllChars.Length);
+					randomCharsPool = StringConstants.AllChars[charsPoolIndex];
+					//
 				}
-				var randomCharIndex = random.Next(chars.Length);
-				{ }
-				randomString += chars[randomCharIndex].ToString();
-			}
+				break;
+			case RandomStringType.ArabicNumeralChars:
+				{
+					//
+					randomCharsPool = StringConstants.ArabicNumeralChars;
+					//
+				}
+				break;
+			case RandomStringType.AlphabetChars:
+				{
+					//
+					randomCharsPool = StringConstants.AlphabetChars;
+					//
+				}
+				break;
+			case RandomStringType.AlphabetCharsInLowercase:
+				{
+					//
+					randomCharsPool = StringConstants.AlphabetCharsInLowercase;
+					//
+				}
+				break;
+			case RandomStringType.AlphabetCharsInUppercase:
+				{
+					//
+					randomCharsPool = StringConstants.AlphabetCharsInUppercase;
+					//
+				}
+				break;
+			case RandomStringType.ArabicNumeralAndAlphabetChars:
+				{
+					//
+					randomCharsPool = StringConstants.ArabicNumeralAndAlphabetChars;
+					//
+				}
+				break;
+			case RandomStringType.ArabicNumeralAndAlphabetCharsInLowercase:
+				{
+					//
+					randomCharsPool = StringConstants.ArabicNumeralAndAlphabetCharsInLowercase;
+					//
+				}
+				break;
+			case RandomStringType.ArabicNumeralAndAlphabetCharsInUppercase:
+				{
+					//
+					randomCharsPool = StringConstants.ArabicNumeralAndAlphabetCharsInUppercase;
+					//
+				}
+				break;
 		}
-		return randomString;
+
+		var randomStringBuilder = new StringBuilder(); ;
+		for (int charIndex = 0; charIndex < randomStringLength; charIndex++)
+		{
+			var randomCharIndex = random.Next(randomCharsPool.Length);
+			var randomChar = randomCharsPool[randomCharIndex];
+			//
+			randomStringBuilder.Append(randomChar);
+			//
+		}
+		return randomStringBuilder.ToString();
 	}
 
 	/// <summary>
@@ -437,11 +483,10 @@ public class StringUtil
 	/// <param name="isOnlyUppercase">是否只使用大写字符串。</param>
 	/// <returns>返回指定长度随机内容字符串，随机内容只包含英文字母和阿拉伯数字。</returns>
 	public static string RandomStringInLength(
-	    int randomStringLength,
-	    int randomSeek = 0,
-	    bool isOnlyUppercase = true)
+	    int randomStringLength, int? randomSeek = null,
+	    RandomStringType randomStringType = RandomStringType.ArabicNumeralAndAlphabetCharsInUppercase)
 	{
-		return StringByFillRandomCharsToLength(randomStringLength, randomSeek, isOnlyUppercase);
+		return StringByFillRandomCharsToLength(randomStringLength, randomSeek, randomStringType);
 	}
 
 	/// <summary>

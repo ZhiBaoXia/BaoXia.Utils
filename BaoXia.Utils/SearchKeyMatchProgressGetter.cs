@@ -12,11 +12,8 @@ public class SearchKeyMatchProgressGetter
 	#region 类方法
 
 	public static double GetMatchProgressWithSearchKey(
-	    string? searchKey,
-	    double defaultMatchProgress,
-	    string?[]? objectStrings,
-	    StringComparison comparisonType = StringComparison.OrdinalIgnoreCase,
-	    bool isMatchValueCharsOverlapEnable = false)
+		string? searchKey, double defaultMatchProgress, string?[]? objectStrings,
+		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase, bool isMatchValueCharsOverlapEnable = false)
 	{
 		if (string.IsNullOrEmpty(searchKey))
 		{
@@ -42,9 +39,7 @@ public class SearchKeyMatchProgressGetter
 	}
 
 	public static double GetMatchProgressWithSearchKey(
-	    string? searchKey,
-	    double defaultMatchProgress,
-	     params string?[]? objectStrings)
+		string? searchKey, double defaultMatchProgress, params string?[]? objectStrings)
 	{
 		return GetMatchProgressWithSearchKey(
 		    searchKey,
@@ -55,8 +50,7 @@ public class SearchKeyMatchProgressGetter
 	}
 
 	public static double GetMatchProgressWithSearchKey(
-	    string? searchKey,
-	     params string?[]? objectStrings)
+		string? searchKey, params string?[]? objectStrings)
 	{
 		return GetMatchProgressWithSearchKey(
 		    searchKey,

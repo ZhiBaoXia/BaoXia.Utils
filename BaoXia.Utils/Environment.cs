@@ -191,6 +191,12 @@ public class Environment
 
 	#region 类方法
 
+	//static Environment()
+	//{
+	//	JsonSerializerOptionsDefault.Converters.Add(new BxDateTimeJsonConverter());
+	//	JsonSerializerOptionsDefault.Converters.Add(new BxDateTimeOffsetJsonConverter());
+	//}
+
 	/// <summary>
 	/// 在当前应用程序中初始化环境信息。
 	/// </summary>

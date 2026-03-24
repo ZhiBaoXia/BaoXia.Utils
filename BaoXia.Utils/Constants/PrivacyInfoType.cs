@@ -10,5 +10,7 @@ public enum PrivacyInfoType
 
 	EnglishAccount = 3,
 
-	CNIdCardNumber = 4
+	CNIdCardNumber = 4,
+
+	CNPersonName = 5,
 }

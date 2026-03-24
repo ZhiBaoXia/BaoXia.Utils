@@ -3036,6 +3036,12 @@ public static class StringExtension
 					    = originalString.ToPrivacyStringForCNIdCardNumber(null);
 				}
 				break;
+			case PrivacyInfoType.CNPersonName:
+				{
+					privacyContentErased
+					    = originalString.ToPrivacyStringForCNPersonName(null);
+				}
+				break;
 		}
 		return privacyContentErased;
 	}
@@ -3184,27 +3190,6 @@ public static class StringExtension
 	}
 
 	/// <summary>
-	/// 将当前“真人姓名”字符串转为隐私字符串。
-	/// </summary>
-	/// <param name="personName">当前“电话毫秒”字符串。</param>
-	/// <param name="plaintextCharsCount">【注意】不要隐私处理的字符数量，默认位“2”。</param>
-	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
-	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
-	/// <returns>返回经过隐私处理的字符串。</returns
-	public static string ToPrivacyStringForCNPersonName(
-	    this string personName,
-	    int? plaintextCharsCount,
-	    StringPartType privacyStringPart = StringPartType.Right,
-	    string? privacytext = "*")
-	{
-		plaintextCharsCount ??= (personName.Length - 1);
-		return personName.ToPrivacyString(
-		    personName.Length - plaintextCharsCount.Value,
-		    privacyStringPart,
-		    privacytext);
-	}
-
-	/// <summary>
 	/// 将当前“身份证”字符串（18位）转为隐私字符串。
 	/// </summary>
 	/// <param name="idCardNumber">当前“电话毫秒”字符串。</param>
@@ -3229,21 +3214,43 @@ public static class StringExtension
 	/// <summary>
 	/// 将当前“身份证”字符串（18位）转为隐私字符串。
 	/// </summary>
-	/// <param name="idCardNumber">当前“电话毫秒”字符串。</param>
+	/// <param name="cnName">当前“电话毫秒”字符串。</param>
 	/// <param name="privacyCharsCount">要隐私处理的字符数量，默认位“10”。</param>
 	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
 	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
 	/// <returns>返回经过隐私处理的字符串。</returns>
 	public static string ToPrivacyStringForCNIdCardNumber(
-	    this string idCardNumber,
+	    this string cnName,
 	    int? plaintextCharsCount,
 	    StringPartType privacyStringPart = StringPartType.Center,
 	    string? privacytext = "*")
 	{
 		plaintextCharsCount ??= 7;
 		return ToPrivacyString(
-		    idCardNumber,
-		    idCardNumber.Length - plaintextCharsCount.Value,
+		    cnName,
+		    cnName.Length - plaintextCharsCount.Value,
+		    privacyStringPart,
+		    privacytext);
+	}
+
+
+	/// <summary>
+	/// 将当前“真人姓名”字符串转为隐私字符串。
+	/// </summary>
+	/// <param name="personName">当前“电话毫秒”字符串。</param>
+	/// <param name="plaintextCharsCount">【注意】不要隐私处理的字符数量，默认位“2”。</param>
+	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
+	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
+	/// <returns>返回经过隐私处理的字符串。</returns
+	public static string ToPrivacyStringForCNPersonName(
+	    this string personName,
+	    int? plaintextCharsCount,
+	    StringPartType privacyStringPart = StringPartType.Right,
+	    string? privacytext = "*")
+	{
+		plaintextCharsCount ??= (personName.Length - 1);
+		return personName.ToPrivacyString(
+		    personName.Length - plaintextCharsCount.Value,
 		    privacyStringPart,
 		    privacytext);
 	}

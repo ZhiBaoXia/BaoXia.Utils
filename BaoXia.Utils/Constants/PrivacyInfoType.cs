@@ -13,4 +13,6 @@ public enum PrivacyInfoType
 	CNIdCardNumber = 4,
 
 	CNPersonName = 5,
+
+	Url = 10000
 }

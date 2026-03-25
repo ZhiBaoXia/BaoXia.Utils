@@ -3042,6 +3042,12 @@ public static class StringExtension
 					    = originalString.ToPrivacyStringForCNPersonName(null);
 				}
 				break;
+			case PrivacyInfoType.Url:
+				{
+					privacyContentErased
+					    = originalString.ToPrivacyStringForUrl(null);
+				}
+				break;
 		}
 		return privacyContentErased;
 	}
@@ -3237,7 +3243,7 @@ public static class StringExtension
 	/// <summary>
 	/// 将当前“真人姓名”字符串转为隐私字符串。
 	/// </summary>
-	/// <param name="personName">当前“电话毫秒”字符串。</param>
+	/// <param name="personName">当前“真人姓名”字符串。</param>
 	/// <param name="plaintextCharsCount">【注意】不要隐私处理的字符数量，默认位“2”。</param>
 	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
 	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
@@ -3248,12 +3254,38 @@ public static class StringExtension
 	    StringPartType privacyStringPart = StringPartType.Right,
 	    string? privacytext = "*")
 	{
-		plaintextCharsCount ??= (personName.Length - 1);
+		plaintextCharsCount ??= 1;
 		return personName.ToPrivacyString(
 		    personName.Length - plaintextCharsCount.Value,
 		    privacyStringPart,
 		    privacytext);
 	}
+
+	/// <summary>
+	/// 将当前“Url”字符串转为隐私字符串。
+	/// </summary>
+	/// <param name="url">当前“Url”字符串。</param>
+	/// <param name="plaintextCharsCount">【注意】不要隐私处理的字符数量，默认位“2”。</param>
+	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
+	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
+	/// <returns>返回经过隐私处理的字符串。</returns
+	public static string ToPrivacyStringForUrl(
+	    this string url,
+	    int? plaintextCharsCount,
+	    StringPartType privacyStringPart = StringPartType.Right,
+	    string? privacytext = "*")
+	{
+		plaintextCharsCount = url.Length / 2;
+		if (plaintextCharsCount < 0)
+		{
+			plaintextCharsCount = url.Length;
+		}
+		return url.ToPrivacyString(
+			url.Length - plaintextCharsCount.Value,
+			privacyStringPart,
+			privacytext);
+	}
+
 
 	/// <summary>
 	/// 不区分大小写的比较两个字符串是否相当。

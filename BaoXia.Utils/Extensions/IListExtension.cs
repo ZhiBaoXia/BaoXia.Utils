@@ -1,6 +1,7 @@
 ﻿using BaoXia.Utils.Constants;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Extensions;
 
@@ -790,5 +791,32 @@ public static class IListExtension
 			// !!!
 		}
 		return pageItems;
+	}
+
+	public static async Task SortAsync<EnumerableItemType>(this IList<EnumerableItemType> list,
+		Func<EnumerableItemType, EnumerableItemType, Task<int>> toCompareItems)
+	{
+		if (list.Count <= 1)
+		{
+			return;
+		}
+
+		// 直接对List进行冒泡排序
+		bool isNeedSwapped;
+		do
+		{
+			isNeedSwapped = false;
+			var lastListItemIndex = list.Count - 1;
+			for (int listItemIndex = 0; listItemIndex < lastListItemIndex; listItemIndex++)
+			{
+				int compareResult = await toCompareItems(list[listItemIndex], list[listItemIndex + 1]);
+				if (compareResult > 0)
+				{
+					// 交换元素
+					(list[listItemIndex], list[listItemIndex + 1]) = (list[listItemIndex + 1], list[listItemIndex]);
+					isNeedSwapped = true;
+				}
+			}
+		} while (isNeedSwapped);
 	}
 }

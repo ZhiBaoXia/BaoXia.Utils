@@ -3,6 +3,7 @@ using BaoXia.Utils.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test.ExtensionsTest;
 
@@ -39,7 +40,7 @@ public class ListExtensionTest
 	public void InsertByOrderTest()
 	{
 		int[] itemsInOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-		int[] itemsInOrderDescending = itemsInOrder.Reverse().ToArray();
+		int[] itemsInOrderDescending = [.. itemsInOrder.Reverse()];
 		var itemInRandomOrder = new int[itemsInOrder.Length];
 		for (int itemIndex = 0;
 			itemIndex < itemInRandomOrder.Length;
@@ -360,6 +361,80 @@ public class ListExtensionTest
 					Assert.Fail();
 				}
 			}
+		}
+	}
+
+
+	[TestMethod]
+	public async Task SortAsyncTest()
+	{
+		////////////////////////////////////////////////
+		// 排序测试，01：
+		////////////////////////////////////////////////
+		var testList = new List<int>();
+		{
+			testList.Add(5);
+			testList.Add(4);
+			testList.Add(3);
+			testList.Add(2);
+			testList.Add(1);
+			testList.Add(0);
+		}
+		await testList.SortAsync(async (a, b) =>
+		{
+			await Task.CompletedTask;
+
+			return a.CompareTo(b);
+		});
+		for (var listItemIndex = 0; listItemIndex < testList.Count; listItemIndex++)
+		{
+			Assert.AreEqual(listItemIndex, testList[listItemIndex]);
+		}
+
+		////////////////////////////////////////////////
+		// 排序测试，02：
+		////////////////////////////////////////////////
+		testList = [];
+		{
+			testList.Add(0);
+			testList.Add(5);
+			testList.Add(1);
+			testList.Add(4);
+			testList.Add(3);
+			testList.Add(2);
+		}
+		await testList.SortAsync(async (a, b) =>
+		{
+			await Task.CompletedTask;
+
+			return a.CompareTo(b);
+		});
+		for (var listItemIndex = 0; listItemIndex < testList.Count; listItemIndex++)
+		{
+			Assert.AreEqual(listItemIndex, testList[listItemIndex]);
+		}
+
+		////////////////////////////////////////////////
+		// 排序测试，03：
+		////////////////////////////////////////////////
+		testList = [];
+		{
+			testList.Add(0);
+			testList.Add(1);
+			testList.Add(2);
+			testList.Add(3);
+			testList.Add(4);
+			testList.Add(5);
+		}
+		await testList.SortAsync(async (a, b) =>
+		{
+			await Task.CompletedTask;
+
+			return a.CompareTo(b);
+		});
+		for (var listItemIndex = 0; listItemIndex < testList.Count; listItemIndex++)
+		{
+			Assert.AreEqual(listItemIndex, testList[listItemIndex]);
 		}
 	}
 }

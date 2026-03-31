@@ -432,15 +432,9 @@ public static class IEnumerableExtension
 		return dictionary;
 	}
 
-	public static HashSet<KeyType>? ToItemHashSet<KeyType>(
-	    this IEnumerable<KeyType>? keys)
+	public static HashSet<KeyType> ToItemHashSet<KeyType>(this IEnumerable<KeyType> keys)
 	    where KeyType : notnull
 	{
-		if (keys == null)
-		{
-			return null;
-		}
-
 		var hashSet = new HashSet<KeyType>();
 		foreach (var key in keys)
 		{
@@ -487,17 +481,11 @@ public static class IEnumerableExtension
 	}
 
 	public static async Task<ItemSearchResult<ItemType>?> SearchAsync<ItemType>(
-	    this IEnumerable<ItemType> items,
-	    //
-	    int searchTasksCount,
+	    this IEnumerable<ItemType> items, int searchTasksCount,
 	    Func<ItemType, double>? toGetItemSearchMatchedProgress,
 	    Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
 	    Func<List<ItemSearchMatchInfo<ItemType>>, Task<List<ItemSearchMatchInfo<ItemType>>>>? toSortItemSearchMatchInfesAsync,
-	    //
-	    int pageIndex,
-	    int pageSize,
-	    //
-	    bool isGetItemSearchMatchInfesInPage = false)
+	    int pageIndex, int pageSize, bool isGetItemSearchMatchInfesInPage = false)
 	{
 		var itemsCount = items.GetCount();
 		if (itemsCount < 1)
@@ -907,5 +895,28 @@ public static class IEnumerableExtension
 		    itemsSearchedInPage,
 		    itemSearchMatchInfesInPage);
 		//
+	}
+
+	public static List<EnumerableItemType> SortToList<EnumerableItemType>(
+		this IEnumerable<EnumerableItemType> items, IComparer<EnumerableItemType> toCompareItemsAsync)
+	{
+		var itemList = new List<EnumerableItemType>(items);
+		{
+			itemList.Sort(toCompareItemsAsync);
+		}
+		return itemList;
+	}
+
+	public static async Task<List<EnumerableItemType>> SortToListAsync<EnumerableItemType>(
+		this IEnumerable<EnumerableItemType> items, Func<EnumerableItemType, EnumerableItemType, Task<int>> toCompareItemsAsync)
+	{
+		var itemList = new List<EnumerableItemType>(items);
+		{
+			await itemList.SortAsync(async (itemA, itemB) =>
+			{
+				return await toCompareItemsAsync(itemA, itemB);
+			});
+		}
+		return itemList;
 	}
 }

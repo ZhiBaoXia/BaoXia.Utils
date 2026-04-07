@@ -60,9 +60,7 @@ public class NotificationCenter : INotificationCenter
 	public NotificationCenter()
 	{ }
 
-	public NotificationCenter(
-	    string name,
-	    Func<String?, NotificationQueue>? toCreateNotificationQueue)
+	public NotificationCenter(string name, Func<String?, NotificationQueue>? toCreateNotificationQueue)
 	{
 		this.Name = name;
 		this.ToCreateNotificationQueue = toCreateNotificationQueue;
@@ -88,7 +86,7 @@ public class NotificationCenter : INotificationCenter
 		{
 			notificationQueue = _notificationQueues.GetOrAdd(
 			    queueName,
-			    (string queueNameInQueues) =>
+			    queueNameInQueues =>
 			    {
 				    return this.CreateNotificationQueue(queueNameInQueues);
 			    });

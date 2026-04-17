@@ -164,6 +164,32 @@ public class StringUtil
 		return string.Compare(strA, strB, stringComparison);
 	}
 
+	public static double GetMatchProgressValueOfStringsWithSearchKey(
+		string? searchKey, IEnumerable<string?> targetStrings, StringComparison comparisonType,
+		bool isMatchValueCharsOverlapEnable = false)
+	{
+		var matchProgress = 0.0;
+		foreach (var targetString in targetStrings)
+		{
+			if (string.IsNullOrEmpty(targetString))
+			{
+				continue;
+			}
+			var matchProgressOfSearchKey
+				= targetString.GetMatchProgressValueOf(searchKey, comparisonType, isMatchValueCharsOverlapEnable);
+			if (matchProgress < matchProgressOfSearchKey)
+			{
+				matchProgress = matchProgressOfSearchKey;
+			}
+		}
+		return matchProgress;
+	}
+
+	public static double GetMatchProgressValueOfStringsWithSearchKey(string? searchKey, params string?[] targetStrings)
+	{
+		return GetMatchProgressValueOfStringsWithSearchKey(searchKey, targetStrings, StringComparison.OrdinalIgnoreCase);
+	}
+
 	#endregion
 
 

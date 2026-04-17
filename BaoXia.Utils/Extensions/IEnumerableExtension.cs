@@ -702,19 +702,12 @@ public static class IEnumerableExtension
 		//
 	}
 
-
-	public static async Task<ItemSearchResult<ItemType>?> SearchAsync<ItemType>(
+	public static async Task<ItemSearchResult<ItemType>?> SearchWithAsyncMatcherAsync<ItemType>(
 	    this IEnumerable<ItemType> items,
-	    //
-	    int searchTasksCount,
-	    Func<ItemType, Task<double>>? toGetItemSearchMatchedProgressAsync,
+	    int searchTasksCount, Func<ItemType, Task<double>>? toGetItemSearchMatchedProgressAsync,
 	    Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
 	    Func<List<ItemSearchMatchInfo<ItemType>>, Task<List<ItemSearchMatchInfo<ItemType>>>>? toSortItemSearchMatchInfesAsync,
-	    //
-	    int pageIndex,
-	    int pageSize,
-	    //
-	    bool isGetItemSearchMatchInfesInPage = false)
+	    int pageIndex, int pageSize, bool isGetItemSearchMatchInfesInPage = false)
 	{
 		var itemsCount = items.GetCount();
 		if (itemsCount < 1)

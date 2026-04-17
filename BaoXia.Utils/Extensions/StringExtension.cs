@@ -3444,9 +3444,7 @@ public static class StringExtension
 	/// <param name="str">当前字符串。</param>
 	/// <param name="isIntNumber">是否只是整形数字。</param>
 	/// <returns>字符串是否为纯数字字符串时，返回：true，否则返回：false。</returns>
-	public static bool IsNumberString(
-	    this string? str,
-	    bool isIntNumber = true)
+	public static bool IsNumberString(this string? str, bool isIntNumber = true)
 	{
 		if (str == null
 		    || str.Length < 1)
@@ -3520,8 +3518,7 @@ public static class StringExtension
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
 	/// <returns>字符串是否为纯字母字符串时，返回：true，否则返回：false。</returns>
-	public static bool IsAlphabetString(
-	    this string? str)
+	public static bool IsAlphabetString(this string? str)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -3532,6 +3529,30 @@ public static class StringExtension
 		{
 			if ((character < 'a' || character > 'z')
 			    && (character < 'A' || character > 'Z'))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/// <summary>
+	/// 当前字符串是否为纯字母和数字的字符串。
+	/// </summary>
+	/// <param name="str">当前字符串。</param>
+	/// <returns>字符串为纯字母和数字的字符串时，返回：true，否则返回：false。</returns>
+	public static bool IsAlphabetAndNumberString(this string? str)
+	{
+		if (string.IsNullOrEmpty(str))
+		{
+			return false;
+		}
+
+		foreach (var character in str)
+		{
+			if ((character < 'a' || character > 'z')
+			    && (character < 'A' || character > 'Z')
+			    && (character < '0' || character > '9'))
 			{
 				return false;
 			}

@@ -43,7 +43,7 @@ namespace BaoXia.Utils.ConcurrentTools
 				Task[] allTasks;
 				lock (_allTasks)
 				{
-					allTasks = _allTasks.ToArray();
+					allTasks = [.. _allTasks];
 				}
 				return allTasks;
 			}
@@ -254,7 +254,7 @@ namespace BaoXia.Utils.ConcurrentTools
 		{
 			lock (_taskQueue)
 			{
-				return _taskQueue.ToArray();
+				return [.. _taskQueue];
 			}
 		}
 

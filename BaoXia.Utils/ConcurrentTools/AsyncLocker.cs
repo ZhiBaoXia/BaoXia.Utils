@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils.ConcurrentTools;
 
-public class AsyncLocker
+public class AsyncLocker : SemaphoreSlim
 {
 	////////////////////////////////////////////////
 	// @类方法
@@ -84,6 +84,21 @@ public class AsyncLocker
 			}
 		}
 	}
+
+	#endregion
+
+
+	////////////////////////////////////////////////
+	// @自身实现
+	////////////////////////////////////////////////
+
+	#region 自身实现
+
+	public AsyncLocker(int initialCount) : base(initialCount)
+	{ }
+
+	public AsyncLocker(int initialCount, int maxCount) : base(initialCount, maxCount)
+	{ }
 
 	#endregion
 }

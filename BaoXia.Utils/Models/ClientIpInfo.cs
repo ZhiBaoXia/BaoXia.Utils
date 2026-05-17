@@ -35,9 +35,7 @@ public class ClientIpInfo
 	public ClientIpInfo()
 	{
 	}
-	public ClientIpInfo(
-	    string? ipAddressChain,
-	    int ipPort)
+	public ClientIpInfo(string? ipAddressChain, int ipPort)
 	{
 		IpAddressChain = ipAddressChain;
 		IpPortLast = ipPort;

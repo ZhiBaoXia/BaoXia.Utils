@@ -266,10 +266,8 @@ public static class HttpRequestExtension
 			return new ClientIpInfo();
 		}
 
-		var ipPortLast
-		    = httpRequest.HttpContext.Connection.RemotePort;
-		var ipAddressChainList
-		    = httpRequest.GetClientConnectionAddressList();
+		var ipPortLast = httpRequest.HttpContext.Connection.RemotePort;
+		var ipAddressChainList = httpRequest.GetClientConnectionAddressList();
 		if (ipPortLast == 0)
 		{
 			for (var ipAddressIndex = ipAddressChainList.Count - 1;

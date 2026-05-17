@@ -10,8 +10,7 @@ public static class ControllerExtension
 	/// </summary>
 	/// <param name="controller">当前控制器对象。</param>
 	/// <returns>当前控制器对象的客户端Ip信息。</returns>
-	public static ClientIpInfo GetClientIpInfo(
-	    this Controller? controller)
+	public static ClientIpInfo GetClientIpInfo(this Controller? controller)
 	{
 		if (controller == null)
 		{

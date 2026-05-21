@@ -41,5 +41,41 @@ public class ClientIpInfo
 		IpPortLast = ipPort;
 	}
 
+	public string GetFirstIp()
+	{
+		var openOrderClientIpAddressLast = string.Empty;
+		if (IpAddressChain is { } ipAddressChain)
+		{
+			var indexOfLastComma = ipAddressChain.IndexOf(',');
+			if (indexOfLastComma >= 0)
+			{
+				openOrderClientIpAddressLast = ipAddressChain[..indexOfLastComma];
+			}
+			else
+			{
+				openOrderClientIpAddressLast = ipAddressChain;
+			}
+		}
+		return openOrderClientIpAddressLast;
+	}
+
+	public string GetLastIp()
+	{
+		var openOrderClientIpAddressLast = string.Empty;
+		if (IpAddressChain is { } ipAddressChain)
+		{
+			var indexOfLastComma = ipAddressChain.LastIndexOf(',');
+			if (indexOfLastComma >= 0)
+			{
+				openOrderClientIpAddressLast = ipAddressChain[(indexOfLastComma + 1)..];
+			}
+			else
+			{
+				openOrderClientIpAddressLast = ipAddressChain;
+			}
+		}
+		return openOrderClientIpAddressLast;
+	}
+
 	#endregion
 }

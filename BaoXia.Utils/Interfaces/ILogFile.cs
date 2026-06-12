@@ -30,9 +30,7 @@ public class ILogFile
 
 	#region 自身实现
 
-	public ILogFile(
-	    Utils.LogFile? logFile,
-	    Action<object?, string, object?, string?>? toReceiveLogInfo = null)
+	public ILogFile(Utils.LogFile? logFile, Action<object?, string, object?, string?>? toReceiveLogInfo = null)
 	{
 		LogFile = logFile;
 		ToReceiveLogInfo = toReceiveLogInfo;
@@ -43,11 +41,7 @@ public class ILogFile
 		ToReceiveLogInfo = toReceiveLogInfo;
 	}
 
-	public virtual void Logs(
-	    object? invoker,
-	    string description,
-	    object? infoObject,
-	    string? invokerFullName = null)
+	public virtual void Logs(object? invoker, string description, object? infoObject, string? invokerFullName = null)
 	{
 		this.LogFile?.Logs(invoker, description, infoObject, invokerFullName);
 		//

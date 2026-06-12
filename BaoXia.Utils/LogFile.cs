@@ -485,31 +485,27 @@ public class LogFile : IDisposable
 	/// <param name="logFileContent">日志内容</param>
 	/// <param name="logParamObject">日志内容，对象类型参数。</param>
 	/// <param name="invokerFullName">调用者名称，适用于静态方法，由开发者手动输入调用者名称。</param>
-	public void Logs(
-	    object? invoker,
-	    string logContent,
-	    object? logContentParamObject = null,
-	    string? invokerFullName = null)
+	public void Logs(object? invoker, string logContent, object? logContentParamObject = null, string? invokerFullName = null)
 	{
-		if ((logContent == null
-		    || logContent.Length < 1)
+		if ((logContent == null || logContent.Length < 1)
 		    && logContentParamObject == null)
 		{
 			return;
 		}
 
 		logContent ??= string.Empty;
-		if (logContentParamObject != null)
+		if (logContentParamObject is string logContentParamString)
 		{
-			logContent
-			    += "\r\n"
-			    + logContentParamObject.ToString();
+			logContent += "\r\n" + logContentParamString;
+		}
+		else if (logContentParamObject != null)
+		{
+			logContent += "\r\n" + logContentParamObject.ToJsonString();
 		}
 
 		if (logContent.Length > 0)
 		{
-			var keysInLogContentToIgnoreLogs
-			    = this.KeysInLogContentToIgnoreLogs;
+			var keysInLogContentToIgnoreLogs = this.KeysInLogContentToIgnoreLogs;
 			if (keysInLogContentToIgnoreLogs?.Length > 0)
 			{
 				for (var keyToIgnoreLogIndex = keysInLogContentToIgnoreLogs.Length - 1;
@@ -559,7 +555,6 @@ public class LogFile : IDisposable
 			WriteToConsole();
 		}
 #endif
-
 
 		var newLogRecord = new LogRecord()
 		{

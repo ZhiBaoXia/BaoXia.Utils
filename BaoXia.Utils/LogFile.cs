@@ -1,4 +1,5 @@
 ﻿using BaoXia.Utils.Extensions;
+using BaoXia.Utils.Interfaces;
 using BaoXia.Utils.Models;
 using System;
 using System.Collections.Concurrent;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils;
 
-public class LogFile : IDisposable
+public class LogFile : ILogFile, IDisposable
 {
 	////////////////////////////////////////////////
 	// @静态变量
@@ -322,10 +323,7 @@ public class LogFile : IDisposable
 	/// </summary>
 	/// <param name="type">日志类型，用于日志文件所在文件夹名称。</param>
 	/// <param name="name">日志名称，用于日志文件名称前缀。</param>
-	public LogFile(
-	    string? type,
-	    //
-	    string? name = null)
+	public LogFile(string? type, string? name = null)
 	{
 		this.Type = type;
 

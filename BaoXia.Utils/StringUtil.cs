@@ -718,19 +718,15 @@ public class StringUtil
 	/// <summary>
 	/// 通过序列化指定的对象，生成Json字符串。
 	/// </summary>
-	/// <param name="obj">要被序列化的对象。</param>
+	/// <param name="object">要被序列化的对象。</param>
 	/// <returns>对象序列化后的Json字符串。</returns>
-	public static string StringByJsonSerializeObject(
-	    object? obj,
-	    JsonSerializerOptions? jsonSerializerOptions = null)
+	public static string StringByJsonSerializeObject(object? @object, JsonSerializerOptions? jsonSerializerOptions = null)
 	{
-		if (obj == null)
+		if (@object == null)
 		{
 			return string.Empty;
 		}
-		var str = System.Text.Json.JsonSerializer.Serialize(
-		    obj,
-		    jsonSerializerOptions ?? Environment.JsonSerializerOptions);
+		var str = System.Text.Json.JsonSerializer.Serialize(@object, jsonSerializerOptions ?? Environment.JsonSerializerOptions);
 		{ }
 		return str;
 	}

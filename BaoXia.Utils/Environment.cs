@@ -25,7 +25,10 @@ public class Environment
 
 		ReadCommentHandling = JsonCommentHandling.Skip,
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-		PropertyNameCaseInsensitive = true
+		PropertyNameCaseInsensitive = true,
+
+		// 关键：遇到 JSON 有、实体没有的字段，直接忽略，不抛异常
+		//UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip
 	};
 #else
 	public static readonly JsonSerializerOptions JsonSerializerOptionsDefault = new()

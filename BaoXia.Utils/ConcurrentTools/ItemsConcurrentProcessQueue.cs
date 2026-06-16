@@ -62,8 +62,7 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 		//
 		TaskToProcessItem.TryRun(async () =>
 		{
-			while (ItemQueueNeedProcessed.TryDequeue(
-		out var itemNeedProcess))
+			while (ItemQueueNeedProcessed.TryDequeue(out var itemNeedProcess))
 			{
 				// !!!
 				await toProcessItemAsync(itemNeedProcess);

@@ -98,20 +98,11 @@ public class ConcurrentDictionaryWith2Keys
 	#region 自身实现，更新数据部分。
 
 
-	public ItemType? Add(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-	    ItemType? item,
-	    Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+	public ItemType? Add(PrimaryDeictionaryKeyType primaryDeictionaryKey, SecondaryDeictionaryKeyType secondaryDeictionaryKey,
+	    ItemType? item, Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
-		var secondaryDictionaries
-		    = PrimaryDictionaries.GetOrAdd(
-		    primaryDeictionaryKey,
-		    (_) => []);
-		var itemIndexInfo
-		    = secondaryDictionaries.GetOrAdd(
-		    secondaryDeictionaryKey,
-		    (_) => new());
+		var secondaryDictionaries = PrimaryDictionaries.GetOrAdd(primaryDeictionaryKey, (_) => []);
+		var itemIndexInfo = secondaryDictionaries.GetOrAdd(secondaryDeictionaryKey, (_) => new());
 		lock (itemIndexInfo)
 		{
 			// !!!
@@ -153,22 +144,12 @@ public class ConcurrentDictionaryWith2Keys
 		}
 	}
 
-	public ItemType? GetOrAdd(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-	    Func<PrimaryDeictionaryKeyType,
-	    SecondaryDeictionaryKeyType,
-	    ItemType?> toCreateItem,
+	public ItemType? GetOrAdd(PrimaryDeictionaryKeyType primaryDeictionaryKey, SecondaryDeictionaryKeyType secondaryDeictionaryKey,
+	    Func<PrimaryDeictionaryKeyType, SecondaryDeictionaryKeyType, ItemType?> toCreateItem,
 	    Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
-		var secondaryDictionaries
-		    = PrimaryDictionaries.GetOrAdd(
-		    primaryDeictionaryKey,
-		    (_) => []);
-		var itemIndexInfo
-		    = secondaryDictionaries.GetOrAdd(
-		    secondaryDeictionaryKey,
-		    (_) => new());
+		var secondaryDictionaries = PrimaryDictionaries.GetOrAdd(primaryDeictionaryKey, (_) => []);
+		var itemIndexInfo = secondaryDictionaries.GetOrAdd(secondaryDeictionaryKey, (_) => new());
 		var lastIndexItem = itemIndexInfo.FirstItem;
 		if (lastIndexItem != null)
 		{
@@ -182,19 +163,13 @@ public class ConcurrentDictionaryWith2Keys
 				return lastIndexItem;
 			}
 
-			// !!!
-			var newIndexItem = toCreateItem(
-			    primaryDeictionaryKey,
-			    secondaryDeictionaryKey);
+
+			var newIndexItem = toCreateItem(primaryDeictionaryKey, secondaryDeictionaryKey);
 			if (toUpdateIndexItemWithNewItem != null)
 			{
 				newIndexItem = toUpdateIndexItemWithNewItem(newIndexItem, lastIndexItem);
 			}
-			newIndexItem = WillUpdateIndexItemWithPrimaryDeictionaryKey(
-			    primaryDeictionaryKey,
-			    secondaryDeictionaryKey,
-			    //
-			    newIndexItem);
+			newIndexItem = WillUpdateIndexItemWithPrimaryDeictionaryKey(primaryDeictionaryKey, secondaryDeictionaryKey, newIndexItem);
 			if (newIndexItem != null)
 			{
 				if (itemIndexInfo.Items.Length == 1)
@@ -222,17 +197,10 @@ public class ConcurrentDictionaryWith2Keys
 		}
 	}
 
-	public ItemType? GetOrAdd(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-	    ItemType newItem,
-	    Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
+	public ItemType? GetOrAdd(PrimaryDeictionaryKeyType primaryDeictionaryKey, SecondaryDeictionaryKeyType secondaryDeictionaryKey,
+	    ItemType newItem, Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
-		return GetOrAdd(
-		    primaryDeictionaryKey,
-		    secondaryDeictionaryKey,
-		    (_, _) => newItem,
-		    toUpdateIndexItemWithNewItem);
+		return GetOrAdd(primaryDeictionaryKey, secondaryDeictionaryKey, (_, _) => newItem, toUpdateIndexItemWithNewItem);
 	}
 
 	public bool TryRemove(
@@ -278,10 +246,7 @@ public class ConcurrentDictionaryWith2Keys
 	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 	    out ItemType? itemRemoved)
 	{
-		_ = TryRemove(
-		    primaryDeictionaryKey,
-		    secondaryDeictionaryKey,
-		    out itemRemoved);
+		_ = TryRemove(primaryDeictionaryKey, secondaryDeictionaryKey, out itemRemoved);
 	}
 
 	public void Clear(

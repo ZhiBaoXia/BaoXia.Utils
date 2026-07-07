@@ -258,8 +258,7 @@ public static class HttpRequestExtension
 	/// </summary>
 	/// <param name="httpRequest">当前Http请求对象。</param>
 	/// <returns>当前Http请求对象的客户端Ip信息。</returns>
-	public static ClientIpInfo GetClientIpInfo(
-	    this HttpRequest? httpRequest)
+	public static ClientIpInfo GetClientIpInfo(this HttpRequest? httpRequest)
 	{
 		if (httpRequest == null)
 		{

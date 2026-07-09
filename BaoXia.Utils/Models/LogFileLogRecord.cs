@@ -2,7 +2,7 @@
 
 namespace BaoXia.Utils.Models;
 
-public class LogRecord
+public class LogFileLogRecord
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -31,7 +31,7 @@ public class LogRecord
 	/// <summary>
 	/// 默认构造函数。
 	/// </summary>
-	public LogRecord()
+	public LogFileLogRecord()
 	{ }
 
 
@@ -40,7 +40,7 @@ public class LogRecord
 	/// </summary>
 	/// <param name="invoker">当前日志的调用者名称。</param>
 	/// <param name="content">当前日志内容。</param>
-	public LogRecord(
+	public LogFileLogRecord(
 	    string invoker,
 	    string content)
 	{

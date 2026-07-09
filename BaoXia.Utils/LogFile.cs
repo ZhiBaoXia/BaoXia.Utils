@@ -63,7 +63,7 @@ public class LogFile : ILogFile, IDisposable
 	/// <summary>
 	/// 日志持久化回调节点。
 	/// </summary>
-	public static Func<LogFile, IEnumerable<LogRecord>, bool>? ToStorageLogRecords { get; set; } = null;
+	public static Func<LogFile, IEnumerable<LogFileLogRecord>, bool>? ToStorageLogRecords { get; set; } = null;
 
 	/// <summary>
 	/// 全局日志文件对象集合。
@@ -206,7 +206,7 @@ public class LogFile : ILogFile, IDisposable
 	    Func<long>? toGetMaxBytesCountPerLogFile,
 	    Func<int>? toGetLogRecordsCountPerFileWrite,
 	    Func<double>? toGetTimeoutSecondsToStorageLogRecords,
-	    Func<LogFile, IEnumerable<LogRecord>, bool>? toStorageLogRecords = null)
+	    Func<LogFile, IEnumerable<LogFileLogRecord>, bool>? toStorageLogRecords = null)
 	{
 		LogFile.ToGetAutoFlushLogBufferIntervalSeconds = toGetAutoFlushLogBufferIntervalSeconds;
 		/// 
@@ -286,9 +286,9 @@ public class LogFile : ILogFile, IDisposable
 	/// <summary>
 	/// 日志内容缓冲。
 	/// </summary>
-	protected readonly ConcurrentQueue<LogRecord> _logRecords = new();
+	protected readonly ConcurrentQueue<LogFileLogRecord> _logRecords = new();
 
-	public ConcurrentQueue<LogRecord> LogRecords
+	public ConcurrentQueue<LogFileLogRecord> LogRecords
 	{
 		get
 		{
@@ -421,7 +421,7 @@ public class LogFile : ILogFile, IDisposable
 
 	#region 事件节点
 
-	protected bool DidTryStorageLogRecords(List<LogRecord> logRecordsNeedStorage)
+	protected bool DidTryStorageLogRecords(List<LogFileLogRecord> logRecordsNeedStorage)
 	{
 		if (logRecordsNeedStorage.Count < 1)
 		{
@@ -663,7 +663,7 @@ public class LogFile : ILogFile, IDisposable
 		}
 #endif
 
-		var newLogRecord = new LogRecord()
+		var newLogRecord = new LogFileLogRecord()
 		{
 			LogTime = DateTime.Now,
 			Invoker = invokerFullName,
@@ -684,7 +684,7 @@ public class LogFile : ILogFile, IDisposable
 			return;
 		}
 
-		var newLogRecordsNeedWriteToFile = new List<LogRecord>();
+		var newLogRecordsNeedWriteToFile = new List<LogFileLogRecord>();
 		while (_logRecords.TryDequeue(out var logRecord)
 		    && logRecordsCountNeedWriteToFile > 0)
 		{

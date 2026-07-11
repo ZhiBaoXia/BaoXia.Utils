@@ -25,9 +25,7 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 
 	#region 自身实现
 
-	public void ProcessItem(
-	    ItemType? item,
-	    Action<ItemType> toProcessItem)
+	public void ProcessItem(ItemType? item, Action<ItemType> toProcessItem)
 	{
 		if (item == null)
 		{

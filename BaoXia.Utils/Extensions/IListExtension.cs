@@ -70,16 +70,8 @@ public static class IListExtension
 		return itemsCountJustAdd;
 	}
 
-	public static void InsertWithOrder<ItemType>(
-	    this IList<ItemType> list,
-	    ItemType? newItem,
-	    Func<ItemType, ItemType, int> toCompareItem)
+	public static void InsertWithOrder<ItemType>(this IList<ItemType> list, ItemType newItem, Func<ItemType, ItemType, int> toCompareItem)
 	{
-		if (newItem == null)
-		{
-			return;
-		}
-
 		if (list.Count < 1)
 		{
 			// !!!
@@ -88,39 +80,29 @@ public static class IListExtension
 			// !!!
 		}
 
-		for (var itemIndex = 0;
-		    itemIndex < list.Count;
-		    itemIndex++)
+		var objectInsertIndex = list.FindItemIndexWithDichotomy(true, (item, itemIndex) =>
 		{
-			var item = list[itemIndex];
-			var compareResult = toCompareItem(newItem, item);
-			if (compareResult < 0)
+			return toCompareItem(item, newItem);
+		}, DichotomyClosestItemType.LessThanObjectMax, out var objectInsertIndexPrev, out _);
+		if (objectInsertIndex < 0)
+		{
+			if (objectInsertIndexPrev != null)
 			{
-				// !!!
-				list.Insert(itemIndex, newItem);
-				return;
-				// !!!
+				objectInsertIndex = objectInsertIndexPrev.Value + 1;
 			}
-			if (itemIndex == (list.Count - 1))
+			else
 			{
-				// !!!
-				list.Insert(itemIndex + 1, newItem);
-				return;
-				// !!!
+				objectInsertIndex = 0;
 			}
 		}
+		// !!!
+		list.Insert(objectInsertIndex, newItem);
+		// !!!
 	}
 
 	public static void InsertWithOrderDescending<ItemType>(
-	    this IList<ItemType> list,
-	    ItemType? newItem,
-	    Func<ItemType, ItemType, int> toCompareItem)
+		this IList<ItemType> list, ItemType newItem, Func<ItemType, ItemType, int> toCompareItem)
 	{
-		if (newItem == null)
-		{
-			return;
-		}
-
 		if (list.Count < 1)
 		{
 			// !!!
@@ -129,27 +111,24 @@ public static class IListExtension
 			// !!!
 		}
 
-		for (var itemIndex = 0;
-		    itemIndex < list.Count;
-		    itemIndex++)
+		var objectInsertIndex = list.FindItemIndexWithDichotomy(false, (item, itemIndex) =>
 		{
-			var item = list[itemIndex];
-			var compareResult = toCompareItem(newItem, item);
-			if (compareResult > 0)
+			return toCompareItem(item, newItem);
+		}, DichotomyClosestItemType.GreaterThanObjectMin, out var objectInsertIndexPrev, out _);
+		if (objectInsertIndex < 0)
+		{
+			if (objectInsertIndexPrev != null)
 			{
-				// !!!
-				list.Insert(itemIndex, newItem);
-				return;
-				// !!!
+				objectInsertIndex = objectInsertIndexPrev.Value + 1;
 			}
-			if (itemIndex == (list.Count - 1))
+			else
 			{
-				// !!!
-				list.Insert(itemIndex + 1, newItem);
-				return;
-				// !!!
+				objectInsertIndex = 0;
 			}
 		}
+		// !!!
+		list.Insert(objectInsertIndex, newItem);
+		// !!!
 	}
 
 	/// <summary>

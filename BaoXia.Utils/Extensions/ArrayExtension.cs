@@ -196,9 +196,7 @@ public static class ArrayExtension
 	}
 
 	public static ItemType[] ArrayByInsertWithOrder<ItemType>(
-	    this ItemType[] items,
-	    ItemType newItem,
-	    Func<ItemType, ItemType, int> toCompareItem)
+	    this ItemType[] items, ItemType newItem, Func<ItemType, ItemType, int> toCompareItem)
 	{
 		if (items.Length < 1)
 		{
@@ -232,41 +230,11 @@ public static class ArrayExtension
 		items = items.ArrayByInsertAt(objectInsertIndex, newItem);
 		// !!!
 		return items;
-
-		//for (var itemIndex = 0;
-		//	itemIndex < items.Length;
-		//	itemIndex++)
-		//{
-		//	var item = items[itemIndex];
-		//	var compareResult = toCompareItem(newItem, item);
-		//	if (compareResult < 0)
-		//	{
-		//		// !!!
-		//		return items.ArrayByInsertAt(itemIndex, newItem);
-		//		// !!!
-		//	}
-		//	if (itemIndex == (items.Length - 1))
-		//	{
-		//		// !!!
-		//		return items.ArrayByInsertAt(itemIndex + 1, newItem);
-		//		// !!!
-		//	}
-		//}
-		//return items;
 	}
 
 	public static ItemType[] ArrayByInsertWithOrderDescending<ItemType>(
-	    this ItemType[] items,
-	    ItemType newItem,
-	    Func<ItemType, ItemType, int> toCompareItem)
+	    this ItemType[] items, ItemType newItem, Func<ItemType, ItemType, int> toCompareItem)
 	{
-		if (items.Length < 1)
-		{
-			// !!!
-			return items.ArrayByAdd(newItem);
-			// !!!
-		}
-
 		if (items.Length < 1)
 		{
 			// !!!

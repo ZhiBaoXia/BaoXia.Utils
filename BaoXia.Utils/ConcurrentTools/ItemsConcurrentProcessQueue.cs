@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BaoXia.Utils.ConcurrentTools;
@@ -12,9 +13,50 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 
 	#region 自身属性
 
-	public ConcurrentQueue<ItemType> ItemQueueNeedProcessed { get; set; } = new();
+	private readonly Lock _processStateLocker = new();
 
-	public Tasks TaskToProcessItem { get; set; } = new(tasksCountToProcessItemMax);
+	private readonly Queue<(ItemType Item, Func<ItemType, Task> ToProcessItemAsync)> _itemsNeedProcessed = [];
+
+	private readonly int _tasksCountToProcessItemMax
+		= tasksCountToProcessItemMax > 0
+		? tasksCountToProcessItemMax
+		: int.MaxValue;
+
+	private int _tasksCountProcessingItem;
+
+	private bool _isCanceled;
+
+	private bool _isCurrentProcessCanceled;
+
+	private readonly List<Exception> _currentProcessExceptions = [];
+
+	private TaskCompletionSource<bool> _taskCompletionSourceToWhenAll
+		= CreateTaskCompletionSourceCompleted();
+
+	private TaskCompletionSource<bool> _taskCompletionSourceToWhenAny
+		= CreateTaskCompletionSourceCompleted();
+
+	private Task TaskToWhenAll
+	{
+		get
+		{
+			lock (_processStateLocker)
+			{
+				return _taskCompletionSourceToWhenAll.Task;
+			}
+		}
+	}
+
+	private Task TaskToWhenAny
+	{
+		get
+		{
+			lock (_processStateLocker)
+			{
+				return _taskCompletionSourceToWhenAny.Task;
+			}
+		}
+	}
 
 	#endregion
 
@@ -25,93 +67,210 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 
 	#region 自身实现
 
+	private static TaskCompletionSource<bool> CreateTaskCompletionSource()
+	{
+		return new(TaskCreationOptions.RunContinuationsAsynchronously);
+	}
+
+	private static TaskCompletionSource<bool> CreateTaskCompletionSourceCompleted()
+	{
+		var taskCompletionSource = CreateTaskCompletionSource();
+		taskCompletionSource.SetResult(true);
+		return taskCompletionSource;
+	}
+
+	private void BeginNewProcessLocked()
+	{
+		_taskCompletionSourceToWhenAll = CreateTaskCompletionSource();
+		_taskCompletionSourceToWhenAny = CreateTaskCompletionSource();
+		_currentProcessExceptions.Clear();
+		_isCurrentProcessCanceled = false;
+	}
+
+	private void StartTaskToProcessItemLocked()
+	{
+		_tasksCountProcessingItem++;
+		_ = Task.Run(ProcessItemsAsync);
+	}
+
+	private void AddItemNeedProcessed(ItemType item, Func<ItemType, Task> toProcessItemAsync)
+	{
+		lock (_processStateLocker)
+		{
+			if (_isCanceled)
+			{
+				throw new OperationCanceledException();
+			}
+			if (_tasksCountProcessingItem < 1 && _itemsNeedProcessed.Count < 1)
+			{
+				BeginNewProcessLocked();
+			}
+
+			// !!!
+			_itemsNeedProcessed.Enqueue((item, toProcessItemAsync));
+			// !!!
+			if (_tasksCountProcessingItem < _tasksCountToProcessItemMax)
+			{
+				StartTaskToProcessItemLocked();
+			}
+		}
+	}
+
+	private void CompleteCurrentProcessLocked()
+	{
+		if (_currentProcessExceptions.Count > 0)
+		{
+			_taskCompletionSourceToWhenAll.TrySetException([.. _currentProcessExceptions]);
+		}
+		else if (_isCurrentProcessCanceled)
+		{
+			_taskCompletionSourceToWhenAll.TrySetCanceled();
+		}
+		else
+		{
+			_taskCompletionSourceToWhenAll.TrySetResult(true);
+		}
+	}
+
+	private void EndTaskToProcessItemLocked()
+	{
+		_tasksCountProcessingItem--;
+		_taskCompletionSourceToWhenAny.TrySetResult(true);
+
+		if (_isCanceled != true
+			&& _itemsNeedProcessed.Count > 0
+			&& _tasksCountProcessingItem < _tasksCountToProcessItemMax)
+		{
+			// !!!
+			StartTaskToProcessItemLocked();
+			// !!!
+		}
+		if (_tasksCountProcessingItem < 1
+			&& _itemsNeedProcessed.Count < 1)
+		{
+			CompleteCurrentProcessLocked();
+		}
+	}
+
+	private async Task ProcessItemsAsync()
+	{
+		while (true)
+		{
+			(ItemType Item, Func<ItemType, Task> ToProcessItemAsync) itemNeedProcessed;
+			lock (_processStateLocker)
+			{
+				if (_isCanceled
+					|| !_itemsNeedProcessed.TryDequeue(out itemNeedProcessed))
+				{
+					EndTaskToProcessItemLocked();
+					return;
+				}
+			}
+
+			try
+			{
+				// !!!
+				await itemNeedProcessed.ToProcessItemAsync(itemNeedProcessed.Item);
+				// !!!
+			}
+			catch (OperationCanceledException)
+			{
+				lock (_processStateLocker)
+				{
+					_isCurrentProcessCanceled = true;
+				}
+			}
+			catch (Exception exception)
+			{
+				lock (_processStateLocker)
+				{
+					_currentProcessExceptions.Add(exception);
+				}
+			}
+		}
+	}
+
+	////////////////////////////////////////////////
+
 	public void ProcessItem(ItemType? item, Action<ItemType> toProcessItem)
 	{
 		if (item == null)
 		{
 			return;
 		}
-		// !!!
-		ItemQueueNeedProcessed.Enqueue(item);
-		//
-		TaskToProcessItem.TryRun(() =>
+		ArgumentNullException.ThrowIfNull(toProcessItem);
+
+		AddItemNeedProcessed(item, (itemNeedProcess) =>
 		{
-			while (ItemQueueNeedProcessed.TryDequeue(
-		out var itemNeedProcess))
-			{
-				// !!!
-				toProcessItem(itemNeedProcess);
-				// !!!
-			}
+			toProcessItem(itemNeedProcess);
+			return Task.CompletedTask;
 		});
-		// !!!
 	}
 
-	public void ProcessItem(
-	    ItemType? item,
-	    Func<ItemType, Task> toProcessItemAsync)
+	public void ProcessItem(ItemType? item, Func<ItemType, Task> toProcessItemAsync)
 	{
 		if (item == null)
 		{
 			return;
 		}
-		// !!!
-		ItemQueueNeedProcessed.Enqueue(item);
-		//
-		TaskToProcessItem.TryRun(async () =>
-		{
-			while (ItemQueueNeedProcessed.TryDequeue(out var itemNeedProcess))
-			{
-				// !!!
-				await toProcessItemAsync(itemNeedProcess);
-				// !!!
-			}
-		});
-		// !!!
+		ArgumentNullException.ThrowIfNull(toProcessItemAsync);
+
+		AddItemNeedProcessed(item, toProcessItemAsync);
 	}
 
 	public void WaitAll()
 	{
-		// !!!
-		TaskToProcessItem.WaitAll();
-		// !!!
+		TaskToWhenAll.Wait();
 	}
 
 	public void WaitAny()
 	{
-		// !!!
-		TaskToProcessItem.WaitAny();
-		// !!!
+		TaskToWhenAny.Wait();
 	}
 
 	public async Task WhenAll()
 	{
-		// !!!
-		await TaskToProcessItem.WhenAll();
-		// !!!
+		await TaskToWhenAll;
 	}
 
 	public async Task WhenAny()
 	{
-		// !!!
-		await TaskToProcessItem.WhenAny();
-		// !!!
+		await TaskToWhenAny;
 	}
 
 	public void Cancel()
 	{
-		TaskToProcessItem.Cancel();
+		lock (_processStateLocker)
+		{
+			if (_isCanceled)
+			{
+				return;
+			}
+			_isCanceled = true;
+
+			if (_tasksCountProcessingItem > 0
+				|| _itemsNeedProcessed.Count > 0)
+			{
+				_isCurrentProcessCanceled = true;
+				_itemsNeedProcessed.Clear();
+				if (_tasksCountProcessingItem < 1)
+				{
+					_taskCompletionSourceToWhenAny.TrySetResult(true);
+					CompleteCurrentProcessLocked();
+				}
+			}
+		}
 	}
 
 	public void CancelAndWaitAll()
 	{
-		TaskToProcessItem.Cancel();
+		Cancel();
 		WaitAll();
 	}
 
 	public async Task CancelAndWhenAll()
 	{
-		TaskToProcessItem.Cancel();
+		Cancel();
 		await WhenAll();
 	}
 

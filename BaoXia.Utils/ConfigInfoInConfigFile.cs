@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils;
 
@@ -45,7 +46,7 @@ public class ConfigInfoInConfigFile<ConfigType> where ConfigType : class
 	#region 自身实现
 
 	public ConfigInfoInConfigFile(ConfigFile? configFile, string? configPropertyName,
-		ConfigType defaultConfig, Action<ConfigFile>? toReceiveConfigFileChanged = null)
+		ConfigType defaultConfig, Func<ConfigFile, Task>? toReceiveConfigFileChanged = null)
 	{
 		_configFile = configFile;
 		_configPropertyName = configPropertyName;

@@ -177,7 +177,7 @@ namespace BaoXia.Utils
 		/// <summary>
 		/// 配置文件发生变化时的要进行通知的事件链。
 		/// </summary>
-		protected List<Action<ConfigFile>>? _configFileChangedEvents;
+		protected List<Func<ConfigFile, Task>>? _configFileChangedEventsAsync;
 
 		////////////////////////////////////////////////
 		// @自身实现
@@ -269,9 +269,9 @@ namespace BaoXia.Utils
 							this.SetPropertiesWithSameNameFrom(newConfigFile, nameof(FilePath));
 							// !!! 异步通知配置文件发生变化，避免在静态类初始化时触发相关事件， !!!
 							// !!! 从而逻辑递归 !!!
-							Task.Run(() =>
+							Task.Run(async () =>
 							{
-								this.DidLoadConfigFileCompletedFromFilePath(finalConfigFilePath, this);
+								await this.DidLoadConfigFileCompletedFromFilePathAsync(finalConfigFilePath, this);
 							});
 							//
 							return true;
@@ -353,21 +353,21 @@ namespace BaoXia.Utils
 			return this.Save(false, out _);
 		}
 
-		public void AddConfigFileChangedEvent(Action<ConfigFile> configFileChangedEvent)
+		public void AddConfigFileChangedEvent(Func<ConfigFile, Task> configFileChangedEvent)
 		{
 			lock (this)
 			{
-				_configFileChangedEvents ??= [];
-				if (!_configFileChangedEvents.Contains(configFileChangedEvent))
+				_configFileChangedEventsAsync ??= [];
+				if (!_configFileChangedEventsAsync.Contains(configFileChangedEvent))
 				{
-					_configFileChangedEvents.Add(configFileChangedEvent);
+					_configFileChangedEventsAsync.Add(configFileChangedEvent);
 				}
 			}
 		}
 
-		public void RemoveConfigFileChangedEvent(Action<ConfigFile> configFileChangedEvent)
+		public void RemoveConfigFileChangedEvent(Func<ConfigFile, Task> configFileChangedEvent)
 		{
-			_configFileChangedEvents?.Remove(configFileChangedEvent);
+			_configFileChangedEventsAsync?.Remove(configFileChangedEvent);
 		}
 
 		////////////////////////////////////////////////
@@ -433,20 +433,23 @@ namespace BaoXia.Utils
 		/// </summary>
 		/// <param name="filePath">加载配置文件所在的文件路径。</param>
 		/// <param name="configFile">成功加载生成的配置文件对象。</param>
-		protected virtual void DidLoadConfigFileCompletedFromFilePath(string filePath, ConfigFile configFile)
+		protected virtual async Task DidLoadConfigFileCompletedFromFilePathAsync(string filePath, ConfigFile configFile)
 		{
-			Action<ConfigFile>[]? configFileChangedEvents;
+			Func<ConfigFile, Task>[]? configFileChangedEvents;
 			lock (this)
 			{
-				configFileChangedEvents = _configFileChangedEvents?.ToArray();
+				configFileChangedEvents = _configFileChangedEventsAsync?.ToArray();
 			}
 			if (configFileChangedEvents?.Length > 0)
 			{
-				foreach (var configFileChangedEvent in configFileChangedEvents)
+				foreach (var configFileChangedEventAsync in configFileChangedEvents)
 				{
 					try
 					{
-						configFileChangedEvent?.Invoke(this);
+						if (configFileChangedEventAsync != null)
+						{
+							await configFileChangedEventAsync.Invoke(this);
+						}
 					}
 					catch
 					{ }

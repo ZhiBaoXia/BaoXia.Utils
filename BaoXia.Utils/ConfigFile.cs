@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BaoXia.Utils
@@ -25,7 +26,7 @@ namespace BaoXia.Utils
 
 		static readonly List<ConfigFile> _configFiles = [];
 
-		static readonly object _configFileConstructLocker = new();
+		static readonly Lock _configFileConstructLocker = new();
 		static bool _isConfigFileConstructWithAutoLoadEnable = true;
 		protected class ConfigFileConstructWithAutoLoadDisabler : IDisposable
 		{
@@ -128,11 +129,8 @@ namespace BaoXia.Utils
 					return;
 				}
 
-				if (_fileWatcher != null)
-				{
-					_fileWatcher.Dispose();
-					_fileWatcher = null;
-				}
+				_fileWatcher?.Dispose();
+				_fileWatcher = null;
 
 				_filePath = value;
 
@@ -221,11 +219,8 @@ namespace BaoXia.Utils
 		/// </summary>
 		~ConfigFile()
 		{
-			if (_fileWatcher != null)
-			{
-				_fileWatcher.Dispose();
-				_fileWatcher = null;
-			}
+			_fileWatcher?.Dispose();
+			_fileWatcher = null;
 			lock (_configFiles)
 			{
 				_configFiles.Remove(this);
@@ -260,8 +255,7 @@ namespace BaoXia.Utils
 		public bool Load()
 		{
 			var finalConfigFilePath = this.FinalFilePath;
-			if (!string.IsNullOrEmpty(finalConfigFilePath)
-			    && System.IO.File.Exists(finalConfigFilePath))
+			if (!string.IsNullOrEmpty(finalConfigFilePath) && System.IO.File.Exists(finalConfigFilePath))
 			{
 				var newConfigJson = System.IO.File.ReadAllText(finalConfigFilePath);
 				if (newConfigJson?.Length > 0)
@@ -269,20 +263,15 @@ namespace BaoXia.Utils
 					lock (_configFileConstructLocker)
 					{
 						using var autoLoadDisabler = new ConfigFileConstructWithAutoLoadDisabler();
-						using var newConfigFile
-						    = (ConfigFile?)newConfigJson.ToObjectByJsonDeserialize(this.GetType());
+						using var newConfigFile = (ConfigFile?)newConfigJson.ToObjectByJsonDeserialize(this.GetType());
 						if (newConfigFile != null)
 						{
-							this.SetPropertiesWithSameNameFrom(
-							    newConfigFile,
-							    "FilePath");
+							this.SetPropertiesWithSameNameFrom(newConfigFile, nameof(FilePath));
 							// !!! 异步通知配置文件发生变化，避免在静态类初始化时触发相关事件， !!!
 							// !!! 从而逻辑递归 !!!
 							Task.Run(() =>
 							{
-								this.DidLoadConfigFileCompletedFromFilePath(
-			 finalConfigFilePath,
-			 this);
+								this.DidLoadConfigFileCompletedFromFilePath(finalConfigFilePath, this);
 							});
 							//
 							return true;
@@ -293,9 +282,7 @@ namespace BaoXia.Utils
 			return false;
 		}
 
-		public bool Save(
-		    bool isBackupLastFile,
-		    out string? configBackupFilePath)
+		public bool Save(bool isBackupLastFile, out string? configBackupFilePath)
 		{
 			//
 			configBackupFilePath = null;
@@ -308,8 +295,7 @@ namespace BaoXia.Utils
 			}
 
 			// 1/2，备份旧的配置信息：
-			if (isBackupLastFile
-			    && System.IO.File.Exists(finalConfigFilePath))
+			if (isBackupLastFile && System.IO.File.Exists(finalConfigFilePath))
 			{
 				var configDictionaryPath = finalConfigFilePath.ToFileSystemDirectoryPath(true);
 
@@ -421,18 +407,14 @@ namespace BaoXia.Utils
 		/// </summary>
 		/// <param name="sender">事件发送者。</param>
 		/// <param name="configFile">文件系统事件参数。</param>
-		protected virtual void DidConfigFileChanged(
-		    object sender,
-		    FileSystemEventArgs fileSystemEventArgs)
+		protected virtual void DidConfigFileChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
 		{
 #if DEBUG
 			var myType = this.GetType();
 			var myName = myType.Namespace + "." + myType.Name;
 			System.Diagnostics.Trace.WriteLine(myName + "，检测到配置文件内容发生变化：" + _filePath);
 #endif
-			for (var tryLoadIndex = 0;
-			    tryLoadIndex < ConfigFile.TryLoadsCountAtConfigFileContentChanged;
-			    tryLoadIndex++)
+			for (var tryLoadIndex = 0; tryLoadIndex < ConfigFile.TryLoadsCountAtConfigFileContentChanged; tryLoadIndex++)
 			{
 				try
 				{
@@ -451,9 +433,7 @@ namespace BaoXia.Utils
 		/// </summary>
 		/// <param name="filePath">加载配置文件所在的文件路径。</param>
 		/// <param name="configFile">成功加载生成的配置文件对象。</param>
-		protected virtual void DidLoadConfigFileCompletedFromFilePath(
-		    string filePath,
-		    ConfigFile configFile)
+		protected virtual void DidLoadConfigFileCompletedFromFilePath(string filePath, ConfigFile configFile)
 		{
 			Action<ConfigFile>[]? configFileChangedEvents;
 			lock (this)
@@ -490,11 +470,8 @@ namespace BaoXia.Utils
 
 		public void Dispose()
 		{
-			if (_fileWatcher != null)
-			{
-				_fileWatcher.Dispose();
-				_fileWatcher = null;
-			}
+			_fileWatcher?.Dispose();
+			_fileWatcher = null;
 			lock (_configFiles)
 			{
 				_configFiles.Remove(this);

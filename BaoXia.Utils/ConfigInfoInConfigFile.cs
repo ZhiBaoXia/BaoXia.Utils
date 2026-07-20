@@ -44,18 +44,12 @@ public class ConfigInfoInConfigFile<ConfigType> where ConfigType : class
 
 	#region 自身实现
 
-	public ConfigInfoInConfigFile(
-	    ConfigFile? configFile,
-	    string? configPropertyName,
-	    //
-	    ConfigType defaultConfig,
-	    //
-	    Action<ConfigFile>? toReceiveConfigFileChanged = null)
+	public ConfigInfoInConfigFile(ConfigFile? configFile, string? configPropertyName,
+		ConfigType defaultConfig, Action<ConfigFile>? toReceiveConfigFileChanged = null)
 	{
 		_configFile = configFile;
 		_configPropertyName = configPropertyName;
-		if (_configFile != null
-		    && !string.IsNullOrEmpty(_configPropertyName))
+		if (_configFile != null && !string.IsNullOrEmpty(_configPropertyName))
 		{
 			var configPropertyInfoInConfigFile
 			    = _configFile

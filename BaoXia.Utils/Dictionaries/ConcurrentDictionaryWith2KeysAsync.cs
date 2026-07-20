@@ -145,7 +145,7 @@ public class ConcurrentDictionaryWith2KeysAsync
 		    secondaryDeictionaryKey,
 		    (_) => DidCreateDictionaryValueContainer());
 		var newIndexItem
-		    = await AsyncLocker.LockAsync(
+		    = await AsyncLock.LockAsync(
 		    itemIndexInfo.ItemOperateLocker,
 		    null,
 		    async (_) =>
@@ -212,7 +212,7 @@ public class ConcurrentDictionaryWith2KeysAsync
 			return lastIndexItem;
 		}
 		var newIndexItem
-		    = await AsyncLocker.LockAsync(
+		    = await AsyncLock.LockAsync(
 		    itemIndexInfo.ItemOperateLocker,
 		    null,
 		    async (_) =>
@@ -296,7 +296,7 @@ public class ConcurrentDictionaryWith2KeysAsync
 		}
 
 		var itemRemoved
-		    = await AsyncLocker.LockAsync(
+		    = await AsyncLock.LockAsync(
 		    itemIndexInfo.ItemOperateLocker,
 		    null,
 		    async (_) =>

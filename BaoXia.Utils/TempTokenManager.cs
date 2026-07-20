@@ -103,7 +103,7 @@ public class TempTokenManager
 	    DateTimeOffset createTime)
 	{
 		var tokenInfo
-		    = await AsyncLocker.LockAsync(
+		    = await AsyncLock.LockAsync(
 		    _tokenInfesLocker,
 		    null,
 		    async (_) =>

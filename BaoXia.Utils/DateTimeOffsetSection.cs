@@ -5,7 +5,7 @@ using System;
 namespace BaoXia.Utils;
 
 public class DateTimeOffsetSection(
-    TimeSectionType type = TimeSectionType.NotLoop,
+    DateTimeComparisonCycle type = DateTimeComparisonCycle.NotLoop,
     DateTimeOffset? beginTime = null,
     DateTimeOffset? endTime = null)
 {
@@ -15,7 +15,7 @@ public class DateTimeOffsetSection(
 
 	#region 自身属性
 
-	public TimeSectionType Type { get; set; } = type;
+	public DateTimeComparisonCycle Type { get; set; } = type;
 
 	public DateTimeOffset? BeginTime { get; set; } = beginTime;
 
@@ -32,7 +32,7 @@ public class DateTimeOffsetSection(
 
 	public static bool IsTimeInSection(
 	    DateTimeOffset dateTime,
-	    TimeSectionType timeSectionType,
+	    DateTimeComparisonCycle timeSectionType,
 	    DateTimeOffset? beginTime,
 	    DateTimeOffset? endTime)
 	{
@@ -66,91 +66,35 @@ public class DateTimeOffsetSection(
 		return true;
 	}
 
-	private static bool DidIsTimeInSection(
-	    DateTimeOffset dateTime,
-	    DateTimeOffset beginTime,
-	    DateTimeOffset endTime,
-	    TimeSectionType timeSectionType)
+	private static bool DidIsTimeInSection(DateTimeOffset dateTime, DateTimeOffset beginTime, DateTimeOffset endTime,
+	    DateTimeComparisonCycle dateTimeCompareCycle)
 	{
-		DateTimeCycle dateTimeCompareCycle;
-		switch (timeSectionType)
+		if (dateTimeCompareCycle == DateTimeComparisonCycle.NotLoop)
 		{
-			default:
-			case TimeSectionType.NotLoop:
-				{
-					if (dateTime >= beginTime
-					    && dateTime < endTime)
-					{
-						return true;
-					}
-					return false;
-				}
-			case TimeSectionType.LoopInCentury:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Century;
-				}
-				break;
-			case TimeSectionType.LoopInYear:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Year;
-				}
-				break;
-			case TimeSectionType.LoopInMonth:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Month;
-				}
-				break;
-			case TimeSectionType.LoopInWeek:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Week;
-				}
-				break;
-			case TimeSectionType.LoopInDay:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Day;
-				}
-				break;
-			case TimeSectionType.LoopInHour:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Hour;
-				}
-				break;
-			case TimeSectionType.LoopInMinute:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Minute;
-				}
-				break;
+			if (dateTime >= beginTime
+			    && dateTime < endTime)
+			{
+				return true;
+			}
+			return false;
 		}
 
-		if (beginTime.CompareTo(
-		    endTime,
-		    dateTimeCompareCycle)
-		    <= 0)
+		if (beginTime.CompareTo(endTime, dateTimeCompareCycle) <= 0)
 		{
-			if (dateTime.CompareTo(
-			    beginTime,
-			    dateTimeCompareCycle) >= 0
-			&& dateTime.CompareTo(
-			    endTime,
-			    dateTimeCompareCycle) < 0)
+			if (dateTime.CompareTo(beginTime, dateTimeCompareCycle) >= 0 && dateTime.CompareTo(endTime, dateTimeCompareCycle) < 0)
 			{
 				return true;
 			}
 		}
 		else
 		{
-			if (dateTime.CompareTo(
-			    beginTime,
-			    dateTimeCompareCycle)
-			    >= 0
+			if (dateTime.CompareTo(beginTime, dateTimeCompareCycle) >= 0
 			    // && dateTime <= 当前时间范围最大值
 			    )
 			{
 				return true;
 			}
-			if (dateTime.CompareTo(
-			    endTime,
-			    dateTimeCompareCycle)
+			if (dateTime.CompareTo(endTime, dateTimeCompareCycle)
 			    < 0
 			    // && dateTime >= 当前时间范围最小值
 			    )
@@ -162,60 +106,10 @@ public class DateTimeOffsetSection(
 	}
 
 	private static bool DidIsBeginTimeLessOrEqualTime(
-	    DateTimeOffset dateTime,
-	    DateTimeOffset beginTime,
-	    TimeSectionType timeSectionType)
+		DateTimeOffset dateTime, DateTimeOffset beginTime, DateTimeComparisonCycle timeSectionType)
 	{
-		DateTimeCycle dateTimeCompareCycle;
-		switch (timeSectionType)
-		{
-			default:
-			case TimeSectionType.NotLoop:
-				{
-					dateTimeCompareCycle = DateTimeCycle.All;
-				}
-				break;
-			case TimeSectionType.LoopInCentury:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Century;
-				}
-				break;
-			case TimeSectionType.LoopInYear:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Year;
-				}
-				break;
-			case TimeSectionType.LoopInMonth:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Month;
-				}
-				break;
-			case TimeSectionType.LoopInWeek:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Week;
-				}
-				break;
-			case TimeSectionType.LoopInDay:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Day;
-				}
-				break;
-			case TimeSectionType.LoopInHour:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Hour;
-				}
-				break;
-			case TimeSectionType.LoopInMinute:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Minute;
-				}
-				break;
-		}
 
-		if (dateTime.CompareTo(
-		    beginTime,
-		    dateTimeCompareCycle)
-		    >= 0)
+		if (dateTime.CompareTo(beginTime, timeSectionType) >= 0)
 		{
 			return true;
 		}
@@ -223,60 +117,9 @@ public class DateTimeOffsetSection(
 	}
 
 	private static bool DidIsEndTimeGreatThanTime(
-	    DateTimeOffset dateTime,
-	    DateTimeOffset endTime,
-	    TimeSectionType timeSectionType)
+	    DateTimeOffset dateTime, DateTimeOffset endTime, DateTimeComparisonCycle dateTimeCompareCycle)
 	{
-		DateTimeCycle dateTimeCompareCycle;
-		switch (timeSectionType)
-		{
-			default:
-			case TimeSectionType.NotLoop:
-				{
-					dateTimeCompareCycle = DateTimeCycle.All;
-				}
-				break;
-			case TimeSectionType.LoopInCentury:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Century;
-				}
-				break;
-			case TimeSectionType.LoopInYear:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Year;
-				}
-				break;
-			case TimeSectionType.LoopInMonth:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Month;
-				}
-				break;
-			case TimeSectionType.LoopInWeek:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Week;
-				}
-				break;
-			case TimeSectionType.LoopInDay:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Day;
-				}
-				break;
-			case TimeSectionType.LoopInHour:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Hour;
-				}
-				break;
-			case TimeSectionType.LoopInMinute:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Minute;
-				}
-				break;
-		}
-
-		if (dateTime.CompareTo(
-		    endTime,
-		    dateTimeCompareCycle)
-		    <= 0)
+		if (dateTime.CompareTo(endTime, dateTimeCompareCycle) <= 0)
 		{
 			return true;
 		}

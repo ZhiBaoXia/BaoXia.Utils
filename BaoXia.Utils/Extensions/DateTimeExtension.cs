@@ -436,17 +436,17 @@ public static class DateTimeExtension
 	public static int CompareTo(
 	    this DateTime dateTime,
 	    DateTime anotherDateTime,
-	    DateTimeCycle compareCycle)
+	    DateTimeComparisonCycle compareCycle)
 	{
 		switch (compareCycle)
 		{
 			default:
-			case DateTimeCycle.All:
-			case DateTimeCycle.Century:
+			case DateTimeComparisonCycle.NotLoop:
+			case DateTimeComparisonCycle.LoopInCentury:
 				{
 					return dateTime.CompareTo(anotherDateTime);
 				}
-			case DateTimeCycle.Year:
+			case DateTimeComparisonCycle.LoopInYear:
 				{
 					if (dateTime.Month < anotherDateTime.Month)
 					{
@@ -498,7 +498,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Month:
+			case DateTimeComparisonCycle.LoopInMonth:
 				{
 					if (dateTime.Day < anotherDateTime.Day)
 					{
@@ -542,7 +542,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Week:
+			case DateTimeComparisonCycle.LoopInWeek:
 				{
 					if (dateTime.DayOfWeek < anotherDateTime.DayOfWeek)
 					{
@@ -586,7 +586,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Day:
+			case DateTimeComparisonCycle.LoopInDay:
 				{
 					if (dateTime.Hour < anotherDateTime.Hour)
 					{
@@ -622,7 +622,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Hour:
+			case DateTimeComparisonCycle.LoopInHour:
 				{
 					if (dateTime.Minute < anotherDateTime.Minute)
 					{
@@ -650,7 +650,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Minute:
+			case DateTimeComparisonCycle.LoopInMinute:
 				{
 					if (dateTime.Second < anotherDateTime.Second)
 					{
@@ -670,7 +670,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Second:
+			case DateTimeComparisonCycle.LoopInSecond:
 				{
 					if (dateTime.Millisecond < anotherDateTime.Millisecond)
 					{
@@ -682,7 +682,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Millisecond:
+			case DateTimeComparisonCycle.LoopInMillisecond:
 				{
 					// !!!⚠ 毫秒以下不进行比较，永远相等。 ⚠!!!
 				}

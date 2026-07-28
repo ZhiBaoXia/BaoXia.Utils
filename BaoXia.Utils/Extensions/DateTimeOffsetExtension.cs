@@ -572,19 +572,17 @@ public static class DateTimeOffsetExtension
 	/// <param name="compareCycle"></param>
 	/// <returns></returns>
 	public static int CompareTo(
-	    this DateTimeOffset dateTimeOffset,
-	    DateTimeOffset anotherDateTime,
-	    DateTimeCycle compareCycle)
+		this DateTimeOffset dateTimeOffset, DateTimeOffset anotherDateTime, DateTimeComparisonCycle compareCycle)
 	{
 		switch (compareCycle)
 		{
 			default:
-			case DateTimeCycle.All:
-			case DateTimeCycle.Century:
+			case DateTimeComparisonCycle.NotLoop:
+			case DateTimeComparisonCycle.LoopInCentury:
 				{
 					return dateTimeOffset.CompareTo(anotherDateTime);
 				}
-			case DateTimeCycle.Year:
+			case DateTimeComparisonCycle.LoopInYear:
 				{
 					if (dateTimeOffset.Month < anotherDateTime.Month)
 					{
@@ -636,7 +634,7 @@ public static class DateTimeOffsetExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Month:
+			case DateTimeComparisonCycle.LoopInMonth:
 				{
 					if (dateTimeOffset.Day < anotherDateTime.Day)
 					{
@@ -680,7 +678,7 @@ public static class DateTimeOffsetExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Week:
+			case DateTimeComparisonCycle.LoopInWeek:
 				{
 					if (dateTimeOffset.DayOfWeek < anotherDateTime.DayOfWeek)
 					{
@@ -724,7 +722,7 @@ public static class DateTimeOffsetExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Day:
+			case DateTimeComparisonCycle.LoopInDay:
 				{
 					if (dateTimeOffset.Hour < anotherDateTime.Hour)
 					{
@@ -760,7 +758,7 @@ public static class DateTimeOffsetExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Hour:
+			case DateTimeComparisonCycle.LoopInHour:
 				{
 					if (dateTimeOffset.Minute < anotherDateTime.Minute)
 					{
@@ -788,7 +786,7 @@ public static class DateTimeOffsetExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Minute:
+			case DateTimeComparisonCycle.LoopInMinute:
 				{
 					if (dateTimeOffset.Second < anotherDateTime.Second)
 					{
@@ -808,7 +806,7 @@ public static class DateTimeOffsetExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Second:
+			case DateTimeComparisonCycle.LoopInSecond:
 				{
 					if (dateTimeOffset.Millisecond < anotherDateTime.Millisecond)
 					{
@@ -820,7 +818,7 @@ public static class DateTimeOffsetExtension
 					}
 				}
 				break;
-			case DateTimeCycle.Millisecond:
+			case DateTimeComparisonCycle.LoopInMillisecond:
 				{
 					// !!!⚠ 毫秒以下不进行比较，永远相等。 ⚠!!!
 				}

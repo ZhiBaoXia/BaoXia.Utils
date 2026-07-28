@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Test
 {
@@ -45,8 +46,10 @@ namespace BaoXia.Utils.Test
 
 			var configFileForLoad = new TestConfigFile();
 			{
-				configFileForLoad.AddConfigFileChangedEvent((configFile) =>
+				configFileForLoad.AddConfigFileChangedEvent(async (configFile) =>
 				{
+					await Task.CompletedTask;
+
 					if (configFile is not TestConfigFile testConfigFile)
 					{
 						Assert.Fail();

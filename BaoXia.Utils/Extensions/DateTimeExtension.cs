@@ -253,29 +253,29 @@ public static class DateTimeExtension
 	/// </summary>
 	/// <param name="dateTime">当前时间对象。</param>
 	/// <returns>当前时间所属季度的第一天（零点）的时间对象。</returns>
-	public static DateTime FirstDayOfThisSession(this DateTime dateTime)
+	public static DateTime FirstDayOfThisQuarter(this DateTime dateTime)
 	{
 		var thisMonth = dateTime.Month;
-		var firstMonthOfThisSession = thisMonth;
-		if (thisMonth >= TimeConstants.FirstMonthOfSession1 && thisMonth <= TimeConstants.LastMonthOfSession1)
+		var firstMonthOfThisQuarter = thisMonth;
+		if (thisMonth >= TimeConstants.FirstMonthOfQuarter1 && thisMonth <= TimeConstants.LastMonthOfQuarter1)
 		{
-			firstMonthOfThisSession = 1;
+			firstMonthOfThisQuarter = 1;
 		}
-		else if (thisMonth >= TimeConstants.FirstMonthOfSession2 && thisMonth <= TimeConstants.LastMonthOfSession2)
+		else if (thisMonth >= TimeConstants.FirstMonthOfQuarter2 && thisMonth <= TimeConstants.LastMonthOfQuarter2)
 		{
-			firstMonthOfThisSession = 4;
+			firstMonthOfThisQuarter = 4;
 		}
-		else if (thisMonth >= TimeConstants.FirstMonthOfSession3 && thisMonth <= TimeConstants.LastMonthOfSession3)
+		else if (thisMonth >= TimeConstants.FirstMonthOfQuarter3 && thisMonth <= TimeConstants.LastMonthOfQuarter3)
 		{
-			firstMonthOfThisSession = 7;
+			firstMonthOfThisQuarter = 7;
 		}
-		else if (thisMonth >= TimeConstants.FirstMonthOfSession4 && thisMonth <= TimeConstants.LastMonthOfSession4)
+		else if (thisMonth >= TimeConstants.FirstMonthOfQuarter4 && thisMonth <= TimeConstants.LastMonthOfQuarter4)
 		{
-			firstMonthOfThisSession = 10;
+			firstMonthOfThisQuarter = 10;
 		}
-		var firstDayOfThisSession = new DateTime(dateTime.Year, firstMonthOfThisSession, 1);
+		var firstDayOfThisQuarter = new DateTime(dateTime.Year, firstMonthOfThisQuarter, 1);
 		{ }
-		return firstDayOfThisSession;
+		return firstDayOfThisQuarter;
 	}
 
 	/// <summary>
@@ -283,11 +283,11 @@ public static class DateTimeExtension
 	/// </summary>
 	/// <param name="dateTime">当前时间对象。</param>
 	/// <returns>当前时间上一个季度的第一天（零点）的时间对象。</returns>
-	public static DateTime FirstDayOfPrevSession(this DateTime dateTime)
+	public static DateTime FirstDayOfPrevQuarter(this DateTime dateTime)
 	{
 		return dateTime
-		    .AddMonths(-TimeConstants.MonthsPerSession)
-		    .FirstDayOfThisSession();
+		    .AddMonths(-TimeConstants.MonthsPerQuarter)
+		    .FirstDayOfThisQuarter();
 	}
 
 	/// <summary>
@@ -295,13 +295,12 @@ public static class DateTimeExtension
 	/// </summary>
 	/// <param name="dateTime">当前时间对象。</param>
 	/// <returns>当前时间下一个季度的第一天（零点）的时间对象。</returns>
-	public static DateTime FirstDayOfNextSession(this DateTime dateTime)
+	public static DateTime FirstDayOfNextQuarter(this DateTime dateTime)
 	{
 		return dateTime
-		    .AddMonths(+TimeConstants.MonthsPerSession)
-		    .FirstDayOfThisSession();
+		    .AddMonths(+TimeConstants.MonthsPerQuarter)
+		    .FirstDayOfThisQuarter();
 	}
-
 
 	/// <summary>
 	/// 返回当前时间所属年份的第一天（零点）的时间对象。
@@ -441,12 +440,12 @@ public static class DateTimeExtension
 		switch (compareCycle)
 		{
 			default:
-			case DateTimeComparisonCycle.NotLoop:
-			case DateTimeComparisonCycle.LoopInCentury:
+			case DateTimeComparisonCycle.None:
+			case DateTimeComparisonCycle.Century:
 				{
 					return dateTime.CompareTo(anotherDateTime);
 				}
-			case DateTimeComparisonCycle.LoopInYear:
+			case DateTimeComparisonCycle.Year:
 				{
 					if (dateTime.Month < anotherDateTime.Month)
 					{
@@ -498,7 +497,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeComparisonCycle.LoopInMonth:
+			case DateTimeComparisonCycle.Month:
 				{
 					if (dateTime.Day < anotherDateTime.Day)
 					{
@@ -542,7 +541,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeComparisonCycle.LoopInWeek:
+			case DateTimeComparisonCycle.Week:
 				{
 					if (dateTime.DayOfWeek < anotherDateTime.DayOfWeek)
 					{
@@ -586,7 +585,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeComparisonCycle.LoopInDay:
+			case DateTimeComparisonCycle.Day:
 				{
 					if (dateTime.Hour < anotherDateTime.Hour)
 					{
@@ -622,7 +621,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeComparisonCycle.LoopInHour:
+			case DateTimeComparisonCycle.Hour:
 				{
 					if (dateTime.Minute < anotherDateTime.Minute)
 					{
@@ -650,7 +649,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeComparisonCycle.LoopInMinute:
+			case DateTimeComparisonCycle.Minute:
 				{
 					if (dateTime.Second < anotherDateTime.Second)
 					{
@@ -670,7 +669,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeComparisonCycle.LoopInSecond:
+			case DateTimeComparisonCycle.Second:
 				{
 					if (dateTime.Millisecond < anotherDateTime.Millisecond)
 					{
@@ -682,7 +681,7 @@ public static class DateTimeExtension
 					}
 				}
 				break;
-			case DateTimeComparisonCycle.LoopInMillisecond:
+			case DateTimeComparisonCycle.Millisecond:
 				{
 					// !!!⚠ 毫秒以下不进行比较，永远相等。 ⚠!!!
 				}
@@ -1249,9 +1248,7 @@ public static class DateTimeExtension
 		    isNeedSecondsField);
 	}
 
-	public static string TitleOfListElementDefault(
-	    this DateTime dateTime,
-	    bool isNeedSecondsField = false)
+	public static string TitleOfListElementDefault(this DateTime dateTime, bool isNeedSecondsField = false)
 	{
 		string caption;
 		var now = DateTime.Now;
@@ -1299,9 +1296,7 @@ public static class DateTimeExtension
 		return caption;
 	}
 
-	public static string TitleOfDetailPageDefault(
-	    this DateTime dateTime,
-	    bool isNeedSecondsField = false)
+	public static string TitleOfDetailPageDefault(this DateTime dateTime, bool isNeedSecondsField = false)
 	{
 		string caption;
 		var now = DateTime.Now;
@@ -1361,6 +1356,89 @@ public static class DateTimeExtension
 			}
 		}
 		return caption;
+	}
+
+	public static string TitleOfQuarter(this DateTime dateTime, bool isYearTitleEnable = false)
+	{
+		string quarterTitle;
+		var month = dateTime.Month;
+		if (month >= 1 && month <= 3)
+		{
+			quarterTitle = "一季度";
+		}
+		else if (month >= 4 && month <= 6)
+		{
+			quarterTitle = "二季度";
+		}
+		else if (month >= 7 && month <= 9)
+		{
+			quarterTitle = "三季度";
+		}
+		else if (month >= 10 && month <= 12)
+		{
+			quarterTitle = "四季度";
+		}
+		else
+		{
+			quarterTitle = "未知季度";
+		}
+		if (isYearTitleEnable)
+		{
+			quarterTitle = dateTime.ToString("yyyy") + "年_" + quarterTitle;
+		}
+		return quarterTitle;
+	}
+
+	public static string TitleOfWeek(this DateTime dateTime, bool isMonthTitleEnable = false, bool isYearTitleEnable = false)
+	{
+		var weekNumberInMonth = (dateTime.Day - 1) / TimeConstants.DaysPerWeek + 1;
+		var weekTitle = weekNumberInMonth switch
+		{
+			1 => "第一周",
+			2 => "第二周",
+			3 => "第三周",
+			4 => "第四周",
+			5 => "第五周",
+			_ => "未知周"
+		};
+		if (isYearTitleEnable)
+		{
+			return dateTime.ToString("yyyy年MM月_") + weekTitle;
+		}
+		if (isMonthTitleEnable)
+		{
+			return dateTime.ToString("MM月_") + weekTitle;
+		}
+		return weekTitle;
+	}
+
+	public static string TitleOfDateTimeWithAdaptivePrecision(this DateTime dateTime, bool isMillsecondsPrecisionEnable = false)
+	{
+		if (isMillsecondsPrecisionEnable)
+		{
+			if (dateTime.Hour == 0 && dateTime.Minute == 0 && dateTime.Second == 0 && dateTime.Millisecond == 0)
+			{
+				return dateTime.ToString("yyyy年MM月dd日");
+			}
+			else if (dateTime.Second == 0 && dateTime.Millisecond == 0)
+			{
+				return dateTime.ToString("yyyy年MM月dd日 HH:mm");
+			}
+			else if (dateTime.Millisecond == 0)
+			{
+				return dateTime.ToString("yyyy年MM月dd日 HH:mm:ss");
+			}
+			return dateTime.ToString("yyyy年MM月dd日 HH:mm:ss:fff");
+		}
+		if (dateTime.Hour == 0 && dateTime.Minute == 0 && dateTime.Second == 0)
+		{
+			return dateTime.ToString("yyyy年MM月dd日");
+		}
+		else if (dateTime.Second == 0)
+		{
+			return dateTime.ToString("yyyy年MM月dd日 HH:mm");
+		}
+		return dateTime.ToString("yyyy年MM月dd日 HH:mm:ss");
 	}
 
 	#endregion

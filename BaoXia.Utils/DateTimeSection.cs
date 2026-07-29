@@ -5,7 +5,7 @@ using System;
 namespace BaoXia.Utils;
 
 public class DateTimeSection(
-    DateTimeComparisonCycle type = DateTimeComparisonCycle.NotLoop,
+    DateTimeComparisonCycle type = DateTimeComparisonCycle.None,
     DateTime? beginTime = null,
     DateTime? endTime = null)
 {
@@ -72,7 +72,7 @@ public class DateTimeSection(
 	    DateTime endTime,
 	    DateTimeComparisonCycle dateTimeCompareCycle)
 	{
-		if (dateTimeCompareCycle == DateTimeComparisonCycle.NotLoop)
+		if (dateTimeCompareCycle == DateTimeComparisonCycle.None)
 		{
 			if (dateTime >= beginTime
 			    && dateTime < endTime)

@@ -8,50 +8,50 @@ public enum DateTimeComparisonCycle
 	/// <summary>
 	/// 不循环。
 	/// </summary>
-	NotLoop,
+	None,
 
 	/// <summary>
 	/// 每世纪循环。
 	/// </summary>
-	LoopInCentury,
+	Century,
 
 	/// <summary>
 	/// 每年循环。
 	/// </summary>
-	LoopInYear,
+	Year,
 
 	/// <summary>
 	/// 每月循环。
 	/// </summary>
-	LoopInMonth,
+	Month,
 
 	/// <summary>
 	/// 每周循环。
 	/// </summary>
-	LoopInWeek,
+	Week,
 
 	/// <summary>
 	/// 每日循环。
 	/// </summary>
-	LoopInDay,
+	Day,
 
 	/// <summary>
 	/// 每小时循环。
 	/// </summary>
-	LoopInHour,
+	Hour,
 
 	/// <summary>
 	/// 每分钟循环。
 	/// </summary>
-	LoopInMinute,
+	Minute,
 
 	/// <summary>
 	/// 每秒循环。
 	/// </summary>
-	LoopInSecond,
+	Second,
 
 	/// <summary>
 	/// 每毫秒循环。
 	/// </summary>
-	LoopInMillisecond
+	Millisecond
 }

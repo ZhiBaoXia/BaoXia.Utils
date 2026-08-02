@@ -10,6 +10,28 @@ public static class DoubleExtension
 
 	#region 类方法
 
+	public static double ChangeRateTo(this double currentValue, double targetValue)
+	{
+		var changeValue = currentValue - targetValue;
+		double changeRate;
+		if (targetValue != 0)
+		{
+			changeRate = changeValue / targetValue;
+		}
+		else if (changeValue > 0)
+		{
+			changeRate = 1;
+		}
+		else if (changeValue < 0)
+		{
+			changeRate = -1;
+		}
+		else
+		{
+			changeRate = 0;
+		}
+		return changeRate;
+	}
 
 	public static double TryParse(string? doubleString, double defaultValue = 0.0)
 	{
@@ -38,7 +60,7 @@ public static class DoubleExtension
 		// 默认值精度说明符：具体取决于数值类型。
 		// 更多信息：常规（“G”）格式说明符。
 		var doubleValueString = doubleValue.ToString("G");
-		var dotIndex = doubleValueString.IndexOf(".");
+		var dotIndex = doubleValueString.IndexOf('.');
 		var doubleValueDecimalDigits = 0;
 		if (dotIndex >= 0)
 		{

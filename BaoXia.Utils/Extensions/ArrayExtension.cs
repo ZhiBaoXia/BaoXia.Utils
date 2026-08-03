@@ -212,7 +212,7 @@ public static class ArrayExtension
 		    {
 			    return toCompareItem(item, newItem);
 		    },
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out var objectInsertIndexPrev,
 		    out _);
 		if (objectInsertIndex < 0)
@@ -249,7 +249,7 @@ public static class ArrayExtension
 		    {
 			    return toCompareItem(item, newItem);
 		    },
-		    DichotomyClosestItemType.GreaterThanObjectMin,
+		    DichotomyClosestItemType.GreaterThanTargetItemMin,
 		    out var objectInsertIndexPrev,
 		    out _);
 		if (objectInsertIndex < 0)
@@ -751,7 +751,7 @@ public static class ArrayExtension
 		switch (closestItemType)
 		{
 			default:
-			case DichotomyClosestItemType.LessThanObjectMax:
+			case DichotomyClosestItemType.LessThanTargetItemMax:
 				{
 					if (isItemsSortedWithAscending)
 					{
@@ -763,7 +763,7 @@ public static class ArrayExtension
 					}
 				}
 				break;
-			case DichotomyClosestItemType.GreaterThanObjectMin:
+			case DichotomyClosestItemType.GreaterThanTargetItemMin:
 				{
 					if (isItemsSortedWithAscending)
 					{
@@ -954,7 +954,7 @@ public static class ArrayExtension
 		    searchRangeLength,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}
@@ -969,7 +969,7 @@ public static class ArrayExtension
 		    isItemsSortedWithAscending,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}
@@ -988,7 +988,7 @@ public static class ArrayExtension
 		    searchRangeEndIndex,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}
@@ -1003,7 +1003,7 @@ public static class ArrayExtension
 		    isItemsSortedWithAscending,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}

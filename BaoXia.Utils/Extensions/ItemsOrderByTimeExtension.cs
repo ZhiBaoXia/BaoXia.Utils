@@ -44,7 +44,7 @@ public static class ItemsOrderByTimeExtension
 		    },
 		    // 无论升序、降序，
 		    // 都要找到大于等于“beginTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanObjectMin,
+		    DichotomyClosestItemType.GreaterThanTargetItemMin,
 		    out var firstItemIndex_NearestAndGreatThan,
 		    out _);
 		if (firstItemIndex_NearestAndGreatThan == null)
@@ -96,7 +96,7 @@ public static class ItemsOrderByTimeExtension
 		    //
 		    // 无论升序、降序，
 		    // 都要找到大于等于“endTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanObjectMin,
+		    DichotomyClosestItemType.GreaterThanTargetItemMin,
 		    out var endItemIndex_NearestAndGreatThan,
 		    out _);
 		if (endItemIndex_NearestAndGreatThan == null)
@@ -230,7 +230,7 @@ public static class ItemsOrderByTimeExtension
 		    },
 		    // 无论升序、降序，
 		    // 都要找到大于等于“beginTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanObjectMin,
+		    DichotomyClosestItemType.GreaterThanTargetItemMin,
 		    out var firstItemIndex_NearestAndGreatThan,
 		    out _);
 		if (firstItemIndex_NearestAndGreatThan == null)
@@ -282,7 +282,7 @@ public static class ItemsOrderByTimeExtension
 		    //
 		    // 无论升序、降序，
 		    // 都要找到大于等于“endTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanObjectMin,
+		    DichotomyClosestItemType.GreaterThanTargetItemMin,
 		    out var endItemIndex_NearestAndGreatThan,
 		    out _);
 		if (endItemIndex_NearestAndGreatThan == null)

@@ -83,7 +83,7 @@ public static class IListExtension
 		var objectInsertIndex = list.FindItemIndexWithDichotomy(true, (item, itemIndex) =>
 		{
 			return toCompareItem(item, newItem);
-		}, DichotomyClosestItemType.LessThanObjectMax, out var objectInsertIndexPrev, out _);
+		}, DichotomyClosestItemType.LessThanTargetItemMax, out var objectInsertIndexPrev, out _);
 		if (objectInsertIndex < 0)
 		{
 			if (objectInsertIndexPrev != null)
@@ -114,7 +114,7 @@ public static class IListExtension
 		var objectInsertIndex = list.FindItemIndexWithDichotomy(false, (item, itemIndex) =>
 		{
 			return toCompareItem(item, newItem);
-		}, DichotomyClosestItemType.GreaterThanObjectMin, out var objectInsertIndexPrev, out _);
+		}, DichotomyClosestItemType.GreaterThanTargetItemMin, out var objectInsertIndexPrev, out _);
 		if (objectInsertIndex < 0)
 		{
 			if (objectInsertIndexPrev != null)
@@ -415,7 +415,7 @@ public static class IListExtension
 		switch (closestItemType)
 		{
 			default:
-			case DichotomyClosestItemType.LessThanObjectMax:
+			case DichotomyClosestItemType.LessThanTargetItemMax:
 				{
 					if (isItemsSortedWithAscending)
 					{
@@ -427,7 +427,7 @@ public static class IListExtension
 					}
 				}
 				break;
-			case DichotomyClosestItemType.GreaterThanObjectMin:
+			case DichotomyClosestItemType.GreaterThanTargetItemMin:
 				{
 					if (isItemsSortedWithAscending)
 					{
@@ -618,7 +618,7 @@ public static class IListExtension
 		    searchRangeLength,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}
@@ -633,7 +633,7 @@ public static class IListExtension
 		    isItemsSortedWithAscending,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}
@@ -652,7 +652,7 @@ public static class IListExtension
 		    searchRangeEndIndex,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}
@@ -667,7 +667,7 @@ public static class IListExtension
 		    isItemsSortedWithAscending,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}

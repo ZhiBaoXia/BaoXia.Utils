@@ -8,13 +8,14 @@ public static class IntExtension
 
 	#region 类方法
 
-	public static double ChangeRateTo(this int currentValue, int targetValue)
+	public static double ChangeRateTo(this int currentValue, int? targetValue)
 	{
-		var changeValue = currentValue - targetValue;
+		var finalTargetValue = targetValue ?? 0;
+		var changeValue = currentValue - finalTargetValue;
 		double changeRate;
-		if (targetValue != 0)
+		if (finalTargetValue != 0)
 		{
-			changeRate = (double)changeValue / targetValue;
+			changeRate = (double)changeValue / finalTargetValue;
 		}
 		else if (changeValue > 0)
 		{

@@ -8,13 +8,14 @@ public static class DecimalExtension
 
 	#region 类方法
 
-	public static double ChangeRateTo(this decimal currentValue, decimal targetValue)
+	public static double ChangeRateTo(this decimal currentValue, decimal? targetValue)
 	{
-		var changeValue = currentValue - targetValue;
+		var finalTargetValue = targetValue ?? 0.0M;
+		var changeValue = currentValue - finalTargetValue;
 		double changeRate;
-		if (targetValue != 0)
+		if (finalTargetValue != 0)
 		{
-			changeRate = (double)(changeValue / targetValue);
+			changeRate = (double)(changeValue / finalTargetValue);
 		}
 		else if (changeValue > 0)
 		{

@@ -1498,7 +1498,7 @@ public static class DateTimeOffsetExtension
 		return caption;
 	}
 
-	public static string TitleOfQuarter(this DateTimeOffset dateTime, bool isYearTitleEnable = false)
+	public static string TitleOfQuarter(this DateTimeOffset dateTime, bool isYearTitleEnable = false, bool isTitleForFileName = true)
 	{
 		string quarterTitle;
 		var month = dateTime.Month;
@@ -1524,12 +1524,20 @@ public static class DateTimeOffsetExtension
 		}
 		if (isYearTitleEnable)
 		{
-			quarterTitle = dateTime.ToString("yyyy") + "年_" + quarterTitle;
+			if (isTitleForFileName)
+			{
+				quarterTitle = dateTime.ToString("yyyy") + "年_" + quarterTitle;
+			}
+			else
+			{
+				quarterTitle = dateTime.ToString("yyyy") + "年 " + quarterTitle;
+			}
 		}
 		return quarterTitle;
 	}
 
-	public static string TitleOfWeek(this DateTimeOffset dateTime, bool isMonthTitleEnable = false, bool isYearTitleEnable = false)
+	public static string TitleOfWeek(
+		this DateTimeOffset dateTime, bool isMonthTitleEnable = false, bool isYearTitleEnable = false, bool isTitleForFileName = true)
 	{
 		var weekNumberInMonth = (dateTime.Day - 1) / TimeConstants.DaysPerWeek + 1;
 		var weekTitle = weekNumberInMonth switch
@@ -1543,11 +1551,25 @@ public static class DateTimeOffsetExtension
 		};
 		if (isYearTitleEnable)
 		{
-			return dateTime.ToString("yyyy年MM月_") + weekTitle;
+			if (isTitleForFileName)
+			{
+				return dateTime.ToString("yyyy年MM月_") + weekTitle;
+			}
+			else
+			{
+				return dateTime.ToString("yyyy年MM月 ") + weekTitle;
+			}
 		}
 		if (isMonthTitleEnable)
 		{
-			return dateTime.ToString("MM月_") + weekTitle;
+			if (isTitleForFileName)
+			{
+				return dateTime.ToString("MM月_") + weekTitle;
+			}
+			else
+			{
+				return dateTime.ToString("MM月 ") + weekTitle;
+			}
 		}
 		return weekTitle;
 	}

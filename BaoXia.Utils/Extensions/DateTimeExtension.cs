@@ -1228,26 +1228,6 @@ public static class DateTimeExtension
 	}
 
 
-	[Obsolete("当前函数，已更名，推荐使用“TitleOfListElementDefault”方法替代。")]
-	public static string CaptionOfListElementDefault(
-	    this DateTime dateTime,
-	    bool isNeedSecondsField = false)
-	{
-		return DateTimeExtension.TitleOfListElementDefault(
-		    dateTime,
-		    isNeedSecondsField);
-	}
-
-	[Obsolete("当前函数，已更名，推荐使用“TitleOfDetailPageDefault”方法替代。")]
-	public static string CaptionOfDetailPageDefault(
-	    this DateTime dateTime,
-	    bool isNeedSecondsField = false)
-	{
-		return DateTimeExtension.TitleOfDetailPageDefault(
-		    dateTime,
-		    isNeedSecondsField);
-	}
-
 	public static string TitleOfListElementDefault(this DateTime dateTime, bool isNeedSecondsField = false)
 	{
 		string caption;
@@ -1389,7 +1369,68 @@ public static class DateTimeExtension
 		return quarterTitle;
 	}
 
-	public static string TitleOfWeek(this DateTime dateTime, bool isMonthTitleEnable = false, bool isYearTitleEnable = false)
+	public static string TitleOfMonthInChineseNumber(this DateTime dateTime)
+	{
+		switch (dateTime.Month)
+		{
+			default:
+				{
+					return "未知";
+				}
+			case 1:
+				{
+					return "一月";
+				}
+			case 2:
+				{
+					return "二月";
+				}
+			case 3:
+				{
+					return "三月";
+				}
+			case 4:
+				{
+					return "四月";
+				}
+			case 5:
+				{
+					return "五月";
+				}
+			case 6:
+				{
+					return "六月";
+				}
+			case 7:
+				{
+					return "七月";
+				}
+			case 8:
+				{
+					return "八月";
+				}
+			case 9:
+				{
+					return "九月";
+				}
+			case 10:
+				{
+					return "十月";
+				}
+			case 11:
+				{
+					return "十一月";
+				}
+			case 12:
+				{
+					return "十二月";
+				}
+		}
+	}
+
+	public static string TitleOfWeek(
+		this DateTime dateTime, bool isMonthTitleEnable = false, bool isMonthChineseTitleEnable = true,
+		bool isYearTitleEnable = false, bool isTitleForFileName = true)
 	{
 		var weekNumberInMonth = (dateTime.Day - 1) / TimeConstants.DaysPerWeek + 1;
 		var weekTitle = weekNumberInMonth switch
@@ -1403,11 +1444,33 @@ public static class DateTimeExtension
 		};
 		if (isYearTitleEnable)
 		{
-			return dateTime.ToString("yyyy年MM月_") + weekTitle;
+			if (isTitleForFileName)
+			{
+				return dateTime.ToString("yyyy年MM月_") + weekTitle;
+			}
+			else
+			{
+				return dateTime.ToString("yyyy年MM月 ") + weekTitle;
+			}
 		}
 		if (isMonthTitleEnable)
 		{
-			return dateTime.ToString("MM月_") + weekTitle;
+			if (isTitleForFileName)
+			{
+				if (isMonthChineseTitleEnable)
+				{
+					return dateTime.TitleOfMonthInChineseNumber() + "_" + weekTitle;
+				}
+				return dateTime.ToString("MM月_") + weekTitle;
+			}
+			else
+			{
+				if (isMonthChineseTitleEnable)
+				{
+					return dateTime.TitleOfMonthInChineseNumber() + " " + weekTitle;
+				}
+				return dateTime.ToString("MM月 ") + weekTitle;
+			}
 		}
 		return weekTitle;
 	}

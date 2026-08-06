@@ -11,18 +11,6 @@ public static class TimeSpanExtension
 
 	#region 类方法
 
-	[Obsolete("当前函数，已更名，推荐使用“TitleOfListElementDefault”方法替代。")]
-	public static string CaptionOfListElementDefault(this TimeSpan timeSpan)
-	{
-		return TimeSpanExtension.TitleOfListElementDefault(timeSpan);
-	}
-
-	[Obsolete("当前函数，已更名，推荐使用“TitleOfDetailPageDefault”方法替代。")]
-	public static string CaptionOfDetailPageDefault(this TimeSpan timeSpan)
-	{
-		return TimeSpanExtension.TitleOfDetailPageDefault(timeSpan);
-	}
-
 	public static string TitleOfListElementDefault(this TimeSpan timeSpan)
 	{
 		string caption;

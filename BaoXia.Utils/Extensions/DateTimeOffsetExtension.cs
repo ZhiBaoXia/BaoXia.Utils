@@ -1363,28 +1363,6 @@ public static class DateTimeOffsetExtension
 		    isEqualsToContinuous);
 	}
 
-
-	[Obsolete("当前函数，已更名，推荐使用“TitleOfListElementDefault”方法替代。")]
-	public static string CaptionOfListElementDefault(
-	    this DateTimeOffset dateTimeOffset,
-	    bool isNeedSecondsField = false)
-	{
-		return DateTimeOffsetExtension.TitleOfListElementDefault(
-		    dateTimeOffset,
-		    isNeedSecondsField);
-
-	}
-
-	[Obsolete("当前函数，已更名，推荐使用“TitleOfDetailPageDefault”方法替代。")]
-	public static string CaptionOfDetailPageDefault(
-	    this DateTimeOffset dateTimeOffset,
-	    bool isNeedSecondsField = false)
-	{
-		return DateTimeOffsetExtension.TitleOfDetailPageDefault(
-		    dateTimeOffset,
-		    isNeedSecondsField);
-	}
-
 	public static string TitleOfListElementDefault(
 	    this DateTimeOffset dateTimeOffset,
 	    bool isNeedSecondsField = false)
@@ -1536,8 +1514,68 @@ public static class DateTimeOffsetExtension
 		return quarterTitle;
 	}
 
+	public static string TitleOfMonthInChineseNumber(this DateTimeOffset dateTime)
+	{
+		switch (dateTime.Month)
+		{
+			default:
+				{
+					return "未知";
+				}
+			case 1:
+				{
+					return "一月";
+				}
+			case 2:
+				{
+					return "二月";
+				}
+			case 3:
+				{
+					return "三月";
+				}
+			case 4:
+				{
+					return "四月";
+				}
+			case 5:
+				{
+					return "五月";
+				}
+			case 6:
+				{
+					return "六月";
+				}
+			case 7:
+				{
+					return "七月";
+				}
+			case 8:
+				{
+					return "八月";
+				}
+			case 9:
+				{
+					return "九月";
+				}
+			case 10:
+				{
+					return "十月";
+				}
+			case 11:
+				{
+					return "十一月";
+				}
+			case 12:
+				{
+					return "十二月";
+				}
+		}
+	}
+
 	public static string TitleOfWeek(
-		this DateTimeOffset dateTime, bool isMonthTitleEnable = false, bool isYearTitleEnable = false, bool isTitleForFileName = true)
+		this DateTimeOffset dateTime, bool isMonthTitleEnable = false, bool isMonthChineseTitleEnable = true,
+		bool isYearTitleEnable = false, bool isTitleForFileName = true)
 	{
 		var weekNumberInMonth = (dateTime.Day - 1) / TimeConstants.DaysPerWeek + 1;
 		var weekTitle = weekNumberInMonth switch
@@ -1564,14 +1602,49 @@ public static class DateTimeOffsetExtension
 		{
 			if (isTitleForFileName)
 			{
+				if (isMonthChineseTitleEnable)
+				{
+					return dateTime.TitleOfMonthInChineseNumber() + "_" + weekTitle;
+				}
 				return dateTime.ToString("MM月_") + weekTitle;
 			}
 			else
 			{
+				if (isMonthChineseTitleEnable)
+				{
+					return dateTime.TitleOfMonthInChineseNumber() + " " + weekTitle;
+				}
 				return dateTime.ToString("MM月 ") + weekTitle;
 			}
 		}
 		return weekTitle;
+	}
+
+	public static string TitleOfWeekDay(this DateTimeOffset dateTime, bool isWeekStartsWithMonday = true)
+	{
+		var weekDayNumber = (int)dateTime.DayOfWeek;
+		if (isWeekStartsWithMonday)
+		{
+			if (weekDayNumber == 0)
+			{
+				weekDayNumber = TimeConstants.DaysPerWeek;
+			}
+		}
+		else
+		{
+			weekDayNumber++;
+		}
+		return weekDayNumber switch
+		{
+			1 => "周一",
+			2 => "周二",
+			3 => "周三",
+			4 => "周四",
+			5 => "周五",
+			6 => "周六",
+			7 => "周日",
+			_ => string.Empty
+		};
 	}
 
 	public static string TitleOfDateTimeWithAdaptivePrecision(this DateTimeOffset dateTime, bool isMillsecondsPrecisionEnable = false)

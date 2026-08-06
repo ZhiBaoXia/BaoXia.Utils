@@ -1591,44 +1591,14 @@ public static class DateTimeOffsetExtension
 		//	+ 1;
 
 		//  每月1号，所在的周，哪个月拥有的周天数多，则算作哪个月的第一周：
-		var firstDayOfThisMonth = dateTime.FirstDayOfThisMonth();
-		// 一周从周一开始，获取1号在所在周中的索引（周一为0，周日为6）：
-		var firstDayOfWeekIndex = firstDayOfThisMonth.DayOfWeek == DayOfWeek.Sunday
-			? TimeConstants.DaysPerWeek - 1
-			: (int)firstDayOfThisMonth.DayOfWeek - 1;
-		// 1号所在周的周一：
-		var mondayOfWeekOfFirstDay = firstDayOfThisMonth.AddDays(-firstDayOfWeekIndex);
-		// 统计1号所在周中，属于当前月与属于上个月的天数：
-		var daysInThisMonth = 0;
-		var daysInPreviousMonth = 0;
-		for (var dayOffset = 0;
-			dayOffset < TimeConstants.DaysPerWeek;
-			dayOffset++)
-		{
-			var dayInWeek = mondayOfWeekOfFirstDay.AddDays(dayOffset);
-			if (dayInWeek.Year == firstDayOfThisMonth.Year
-				&& dayInWeek.Month == firstDayOfThisMonth.Month)
-			{
-				daysInThisMonth++;
-			}
-			else
-			{
-				daysInPreviousMonth++;
-			}
-		}
-		// 当前月天数多（或相等），则1号所在周为当前月第一周，否则下一周为第一周：
-		var firstMondayOfFirstWeek = daysInThisMonth >= daysInPreviousMonth
-			? mondayOfWeekOfFirstDay
-			: mondayOfWeekOfFirstDay.AddDays(TimeConstants.DaysPerWeek);
-		// 当前日期所在周的周一：
-		var dayOfWeekIndexOfCurrentDate = dateTime.DayOfWeek == DayOfWeek.Sunday
+		// 一周从周一开始，周四所在的月份即为当前周拥有天数较多的月份：
+		var dayOfWeekIndex = dateTime.DayOfWeek == DayOfWeek.Sunday
 			? TimeConstants.DaysPerWeek - 1
 			: (int)dateTime.DayOfWeek - 1;
-		var mondayOfWeek = dateTime.AddDays(-dayOfWeekIndexOfCurrentDate);
-		// 当前日期是当前月的第几周：
-		var weekNumberInMonth = (int)(mondayOfWeek - firstMondayOfFirstWeek).TotalDays
-			/ TimeConstants.DaysPerWeek
-			+ 1;
+		var mondayOfWeek = dateTime.ZeroOfThisDay().AddDays(-dayOfWeekIndex);
+		var thursdayOfWeek = mondayOfWeek.AddDays((int)DayOfWeek.Thursday - (int)DayOfWeek.Monday);
+		// 当前周是归属月份中第几个包含周四的周，即为该月第几周：
+		var weekNumberInMonth = (thursdayOfWeek.Day - 1) / TimeConstants.DaysPerWeek + 1;
 
 		var weekTitle = weekNumberInMonth switch
 		{
@@ -1637,18 +1607,17 @@ public static class DateTimeOffsetExtension
 			3 => "第三周",
 			4 => "第四周",
 			5 => "第五周",
-			6 => "第六周",
 			_ => "未知周"
 		};
 		if (isYearTitleEnable)
 		{
 			if (isTitleForFileName)
 			{
-				return dateTime.ToString("yyyy年MM月_") + weekTitle;
+				return thursdayOfWeek.ToString("yyyy年MM月_") + weekTitle;
 			}
 			else
 			{
-				return dateTime.ToString("yyyy年MM月 ") + weekTitle;
+				return thursdayOfWeek.ToString("yyyy年MM月 ") + weekTitle;
 			}
 		}
 		if (isMonthTitleEnable)
@@ -1657,17 +1626,17 @@ public static class DateTimeOffsetExtension
 			{
 				if (isMonthChineseTitleEnable)
 				{
-					return dateTime.TitleOfMonthInChineseNumber() + "_" + weekTitle;
+					return thursdayOfWeek.TitleOfMonthInChineseNumber() + "_" + weekTitle;
 				}
-				return dateTime.ToString("MM月_") + weekTitle;
+				return thursdayOfWeek.ToString("MM月_") + weekTitle;
 			}
 			else
 			{
 				if (isMonthChineseTitleEnable)
 				{
-					return dateTime.TitleOfMonthInChineseNumber() + " " + weekTitle;
+					return thursdayOfWeek.TitleOfMonthInChineseNumber() + " " + weekTitle;
 				}
-				return dateTime.ToString("MM月 ") + weekTitle;
+				return thursdayOfWeek.ToString("MM月 ") + weekTitle;
 			}
 		}
 		return weekTitle;

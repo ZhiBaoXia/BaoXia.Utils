@@ -1432,7 +1432,29 @@ public static class DateTimeExtension
 		this DateTime dateTime, bool isMonthTitleEnable = false, bool isMonthChineseTitleEnable = true,
 		bool isYearTitleEnable = false, bool isTitleForFileName = true)
 	{
-		var weekNumberInMonth = (dateTime.Day - 1) / TimeConstants.DaysPerWeek + 1;
+		// 月份内，每隔7天为一周：
+		//var weekNumberInMonth = (dateTime.Day - 1) / TimeConstants.DaysPerWeek + 1;
+
+		// 月份内，每到周日为一周：
+		//var firstDayOfMonth = dateTime.FirstDayOfThisMonth();
+		//var daysCountBeforeFirstDayOfMonthInWeek
+		//	= ((int)firstDayOfMonth.DayOfWeek + TimeConstants.DaysPerWeek - 1)
+		//	% TimeConstants.DaysPerWeek;
+		//var weekNumberInMonth
+		//	= (dateTime.Day + daysCountBeforeFirstDayOfMonthInWeek - 1)
+		//	/ TimeConstants.DaysPerWeek
+		//	+ 1;
+
+		//  每月1号，所在的周，哪个月拥有的周天数多，则算作哪个月的第一周：
+		// 一周从周一开始，周四所在的月份即为当前周拥有天数较多的月份：
+		var dayOfWeekIndex = dateTime.DayOfWeek == DayOfWeek.Sunday
+			? TimeConstants.DaysPerWeek - 1
+			: (int)dateTime.DayOfWeek - 1;
+		var mondayOfWeek = dateTime.ZeroOfThisDay().AddDays(-dayOfWeekIndex);
+		var thursdayOfWeek = mondayOfWeek.AddDays((int)DayOfWeek.Thursday - (int)DayOfWeek.Monday);
+		// 当前周是归属月份中第几个包含周四的周，即为该月第几周：
+		var weekNumberInMonth = (thursdayOfWeek.Day - 1) / TimeConstants.DaysPerWeek + 1;
+
 		var weekTitle = weekNumberInMonth switch
 		{
 			1 => "第一周",
@@ -1446,11 +1468,11 @@ public static class DateTimeExtension
 		{
 			if (isTitleForFileName)
 			{
-				return dateTime.ToString("yyyy年MM月_") + weekTitle;
+				return thursdayOfWeek.ToString("yyyy年MM月_") + weekTitle;
 			}
 			else
 			{
-				return dateTime.ToString("yyyy年MM月 ") + weekTitle;
+				return thursdayOfWeek.ToString("yyyy年MM月 ") + weekTitle;
 			}
 		}
 		if (isMonthTitleEnable)
@@ -1459,20 +1481,49 @@ public static class DateTimeExtension
 			{
 				if (isMonthChineseTitleEnable)
 				{
-					return dateTime.TitleOfMonthInChineseNumber() + "_" + weekTitle;
+					return thursdayOfWeek.TitleOfMonthInChineseNumber() + "_" + weekTitle;
 				}
-				return dateTime.ToString("MM月_") + weekTitle;
+				return thursdayOfWeek.ToString("MM月_") + weekTitle;
 			}
 			else
 			{
 				if (isMonthChineseTitleEnable)
 				{
-					return dateTime.TitleOfMonthInChineseNumber() + " " + weekTitle;
+					return thursdayOfWeek.TitleOfMonthInChineseNumber() + " " + weekTitle;
 				}
-				return dateTime.ToString("MM月 ") + weekTitle;
+				return thursdayOfWeek.ToString("MM月 ") + weekTitle;
 			}
 		}
 		return weekTitle;
+	}
+
+	public static string TitleOfWeekDay(this DateTime dateTime, bool isWeekStartsWithMonday = true)
+	{
+		var weekDayNumber = (int)dateTime.DayOfWeek;
+		if (isWeekStartsWithMonday)
+		{
+			if (weekDayNumber == 0)
+			{
+				weekDayNumber = TimeConstants.DaysPerWeek;
+			}
+		}
+		else
+		{
+			weekDayNumber++;
+		}
+		return weekDayNumber switch
+		{
+			1 => "周一",
+
+
+			2 => "周二",
+			3 => "周三",
+			4 => "周四",
+			5 => "周五",
+			6 => "周六",
+			7 => "周日",
+			_ => string.Empty
+		};
 	}
 
 	public static string TitleOfDateTimeWithAdaptivePrecision(this DateTime dateTime, bool isMillsecondsPrecisionEnable = false)

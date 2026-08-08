@@ -12,7 +12,7 @@ public static class ItemsOrderByTimeExtension
 
 	#region 类方法
 
-	private static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
+	private static ItemType[]? GetItemsSortByTimeInTimeRange<ItemType>(
 	    ItemType[] items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
@@ -162,14 +162,14 @@ public static class ItemsOrderByTimeExtension
 		return objectItems;
 	}
 
-	public static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
+	public static ItemType[]? GetItemsSortByTimeInTimeRange<ItemType>(
 	    this ItemType[] items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
 	    DateTimeOffset endTime,
 	    Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		return GetItemsSortByTimeInTimeSection(
+		return GetItemsSortByTimeInTimeRange(
 		    items,
 		    isItemsSortedWithAscending,
 		    beginTime,
@@ -179,14 +179,14 @@ public static class ItemsOrderByTimeExtension
 		    out _);
 	}
 
-	public static int GetCountOfItemsSortByTimeInTimeSection<ItemType>(
+	public static int GetCountOfItemsSortByTimeInTimeRange<ItemType>(
 	    this ItemType[] items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
 	    DateTimeOffset endTime,
 	    Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		GetItemsSortByTimeInTimeSection<ItemType>(
+		GetItemsSortByTimeInTimeRange<ItemType>(
 		    items,
 		    isItemsSortedWithAscending,
 		    beginTime,
@@ -198,7 +198,7 @@ public static class ItemsOrderByTimeExtension
 		return objectItemsCount;
 	}
 
-	private static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
+	private static ItemType[]? GetItemsSortByTimeInTimeRange<ItemType>(
 	    IList<ItemType> items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
@@ -345,14 +345,14 @@ public static class ItemsOrderByTimeExtension
 		return objectItems;
 	}
 
-	public static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
+	public static ItemType[]? GetItemsSortByTimeInTimeRange<ItemType>(
 	    this IList<ItemType> items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
 	    DateTimeOffset endTime,
 	    Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		return GetItemsSortByTimeInTimeSection<ItemType>(
+		return GetItemsSortByTimeInTimeRange<ItemType>(
 		    items,
 		    isItemsSortedWithAscending,
 		    beginTime,
@@ -362,14 +362,14 @@ public static class ItemsOrderByTimeExtension
 		    out _);
 	}
 
-	public static int GetCountOfItemsSortByTimeInTimeSection<ItemType>(
+	public static int GetCountOfItemsSortByTimeInTimeRange<ItemType>(
 	    this IList<ItemType> items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
 	    DateTimeOffset endTime,
 	    Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		GetItemsSortByTimeInTimeSection<ItemType>(
+		GetItemsSortByTimeInTimeRange<ItemType>(
 		    items,
 		    isItemsSortedWithAscending,
 		    beginTime,

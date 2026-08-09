@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils.ConcurrentTools;
 
-public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMax)
+public class ItemsConcurrentProcessQueue<ItemType>
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -17,10 +17,30 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 
 	private readonly Queue<(ItemType Item, Func<ItemType, Task> ToProcessItemAsync)> _itemsNeedProcessed = [];
 
-	private readonly int _tasksCountToProcessItemMax
-		= tasksCountToProcessItemMax > 0
-		? tasksCountToProcessItemMax
-		: int.MaxValue;
+	private readonly int? _tasksCountToProcessItemMaxSpecified = null;
+
+	private readonly Func<int>? _toGetTasksCountToProcessItemMax = null;
+
+	public int TasksCountToProcessItemMax
+	{
+		get
+		{
+			int tasksCountToProcessItemMax = 0;
+			if (_toGetTasksCountToProcessItemMax != null)
+			{
+				tasksCountToProcessItemMax = _toGetTasksCountToProcessItemMax();
+			}
+			else if (_tasksCountToProcessItemMaxSpecified != null)
+			{
+				tasksCountToProcessItemMax = _tasksCountToProcessItemMaxSpecified.Value;
+			}
+			if (tasksCountToProcessItemMax <= 0)
+			{
+				return int.MaxValue;
+			}
+			return tasksCountToProcessItemMax;
+		}
+	}
 
 	private int _tasksCountProcessingItem;
 
@@ -67,6 +87,16 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 
 	#region 自身实现
 
+	public ItemsConcurrentProcessQueue(int tasksCountToProcessItemMax)
+	{
+		_tasksCountToProcessItemMaxSpecified = tasksCountToProcessItemMax;
+	}
+
+	public ItemsConcurrentProcessQueue(Func<int>? toGetTasksCountToProcessItemMax)
+	{
+		_toGetTasksCountToProcessItemMax = toGetTasksCountToProcessItemMax;
+	}
+
 	private static TaskCompletionSource<bool> CreateTaskCompletionSource()
 	{
 		return new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -109,7 +139,7 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 			// !!!
 			_itemsNeedProcessed.Enqueue((item, toProcessItemAsync));
 			// !!!
-			if (_tasksCountProcessingItem < _tasksCountToProcessItemMax)
+			if (_tasksCountProcessingItem < TasksCountToProcessItemMax)
 			{
 				StartTaskToProcessItemLocked();
 			}
@@ -139,7 +169,7 @@ public class ItemsConcurrentProcessQueue<ItemType>(int tasksCountToProcessItemMa
 
 		if (_isCanceled != true
 			&& _itemsNeedProcessed.Count > 0
-			&& _tasksCountProcessingItem < _tasksCountToProcessItemMax)
+			&& _tasksCountProcessingItem < TasksCountToProcessItemMax)
 		{
 			// !!!
 			StartTaskToProcessItemLocked();

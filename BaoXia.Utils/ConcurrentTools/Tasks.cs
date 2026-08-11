@@ -120,8 +120,7 @@ namespace BaoXia.Utils.ConcurrentTools
 		////////////////////////////////////////////////
 
 
-		public Task<Task<TaskResultType?>>? TryRun<TaskResultType>(
-		    Func<Task<TaskResultType?>> function)
+		public Task<Task<TaskResultType?>>? TryRun<TaskResultType>(Func<Task<TaskResultType?>> function)
 		{
 			if (IsWorkerThreadIdle)
 			{

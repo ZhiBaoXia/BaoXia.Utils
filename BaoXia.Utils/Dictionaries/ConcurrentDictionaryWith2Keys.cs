@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 
 namespace BaoXia.Utils.Dictionaries;
@@ -62,14 +62,20 @@ public class ConcurrentDictionaryWith2Keys
 	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
 	    out ItemType? item)
 	{
-		item = Get(
+		item = default;
+		if (!PrimaryDictionaries.TryGetValue(
 		    primaryDeictionaryKey,
-		    secondaryDeictionaryKey);
-		if (item != null)
+		    out var secondaryDictionaries))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		if (!secondaryDictionaries.TryGetValue(
+		    secondaryDeictionaryKey,
+		    out var itemIndexInfo))
+		{
+			return false;
+		}
+		return itemIndexInfo.TryGetFirstItem(out item);
 	}
 
 	public int GetCount()
@@ -150,15 +156,13 @@ public class ConcurrentDictionaryWith2Keys
 	{
 		var secondaryDictionaries = PrimaryDictionaries.GetOrAdd(primaryDeictionaryKey, (_) => []);
 		var itemIndexInfo = secondaryDictionaries.GetOrAdd(secondaryDeictionaryKey, (_) => new());
-		var lastIndexItem = itemIndexInfo.FirstItem;
-		if (lastIndexItem != null)
+		if (itemIndexInfo.TryGetFirstItem(out var lastIndexItem))
 		{
 			return lastIndexItem;
 		}
 		lock (itemIndexInfo)
 		{
-			lastIndexItem = itemIndexInfo.FirstItem;
-			if (lastIndexItem != null)
+			if (itemIndexInfo.TryGetFirstItem(out lastIndexItem))
 			{
 				return lastIndexItem;
 			}
@@ -227,10 +231,7 @@ public class ConcurrentDictionaryWith2Keys
 
 		lock (itemIndexInfo)
 		{
-			// !!!
-			itemRemoved = itemIndexInfo.FirstItem;
-			// !!!
-			if (itemRemoved == null)
+			if (!itemIndexInfo.TryGetFirstItem(out itemRemoved))
 			{
 				return false;
 			}
@@ -249,8 +250,12 @@ public class ConcurrentDictionaryWith2Keys
 		_ = TryRemove(primaryDeictionaryKey, secondaryDeictionaryKey, out itemRemoved);
 	}
 
-	public void Clear(
-	    PrimaryDeictionaryKeyType? primaryDeictionaryKey = default)
+	public void Clear()
+	{
+		PrimaryDictionaries.Clear();
+	}
+
+	public void Clear(PrimaryDeictionaryKeyType primaryDeictionaryKey)
 	{
 		if (primaryDeictionaryKey == null)
 		{

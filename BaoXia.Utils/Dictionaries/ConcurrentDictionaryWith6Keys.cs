@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 
 namespace BaoXia.Utils.Dictionaries;
@@ -187,18 +187,44 @@ public class ConcurrentDictionaryWith6Keys
 	    SixthDeictionaryKeyType sixthDeictionaryKey,
 	    out ItemType? item)
 	{
-		item = Get(
+		item = default;
+		if (!PrimaryDictionaries.TryGetValue(
 		    primaryDeictionaryKey,
-		    secondaryDeictionaryKey,
-		    thirdaryDeictionaryKey,
-		    fourthDeictionaryKey,
-		    fifthDeictionaryKey,
-		    sixthDeictionaryKey);
-		if (item != null)
+		    out var secondaryDictionaries))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		if (!secondaryDictionaries.TryGetValue(
+		    secondaryDeictionaryKey,
+		    out var thirdaryDictionaries))
+		{
+			return false;
+		}
+		if (!thirdaryDictionaries.TryGetValue(
+		    thirdaryDeictionaryKey,
+		    out var fourthDictionaries))
+		{
+			return false;
+		}
+		if (!fourthDictionaries.TryGetValue(
+		    fourthDeictionaryKey,
+		    out var fifthDictionaries))
+		{
+			return false;
+		}
+		if (!fifthDictionaries.TryGetValue(
+		    fifthDeictionaryKey,
+		    out var sixthDictionaries))
+		{
+			return false;
+		}
+		if (!sixthDictionaries.TryGetValue(
+		    sixthDeictionaryKey,
+		    out var itemIndexInfo))
+		{
+			return false;
+		}
+		return itemIndexInfo.TryGetFirstItem(out item);
 	}
 
 	public int GetCount()
@@ -359,15 +385,13 @@ public class ConcurrentDictionaryWith6Keys
 		var itemIndexInfo = sixthDictionaries.GetOrAdd(
 		    sixthDeictionaryKey,
 		    (_) => new());
-		var lastIndexItem = itemIndexInfo.FirstItem;
-		if (lastIndexItem != null)
+		if (itemIndexInfo.TryGetFirstItem(out var lastIndexItem))
 		{
 			return lastIndexItem;
 		}
 		lock (itemIndexInfo)
 		{
-			lastIndexItem = itemIndexInfo.FirstItem;
-			if (lastIndexItem != null)
+			if (itemIndexInfo.TryGetFirstItem(out lastIndexItem))
 			{
 				return lastIndexItem;
 			}
@@ -493,10 +517,7 @@ public class ConcurrentDictionaryWith6Keys
 
 		lock (itemIndexInfo)
 		{
-			// !!!
-			itemRemoved = itemIndexInfo.FirstItem;
-			// !!!
-			if (itemRemoved == null)
+			if (!itemIndexInfo.TryGetFirstItem(out itemRemoved))
 			{
 				return false;
 			}
@@ -545,12 +566,12 @@ public class ConcurrentDictionaryWith6Keys
 	}
 
 
-	public void Clear(
-	    PrimaryDeictionaryKeyType? primaryDeictionaryKey = default,
-	    SecondaryDeictionaryKeyType? secondaryDeictionaryKey = default,
-	    ThirdaryDeictionaryKeyType? thirdaryDeictionaryKey = default,
-	    FourthDeictionaryKeyType? fourthDeictionaryKey = default,
-	    FifthDeictionaryKeyType? fifthDeictionaryKey = default)
+	public void Clear()
+	{
+		PrimaryDictionaries.Clear();
+	}
+
+	public void Clear(PrimaryDeictionaryKeyType primaryDeictionaryKey)
 	{
 		if (primaryDeictionaryKey == null)
 		{
@@ -563,11 +584,27 @@ public class ConcurrentDictionaryWith6Keys
 		{
 			return;
 		}
+		secondaryDictionaries.Clear();
+	}
 
-
+	public void Clear(
+	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
+	    SecondaryDeictionaryKeyType secondaryDeictionaryKey)
+	{
+		if (primaryDeictionaryKey == null)
+		{
+			Clear();
+			return;
+		}
 		if (secondaryDeictionaryKey == null)
 		{
-			secondaryDictionaries.Clear();
+			Clear(primaryDeictionaryKey);
+			return;
+		}
+		if (!PrimaryDictionaries.TryGetValue(
+		    primaryDeictionaryKey,
+		    out var secondaryDictionaries))
+		{
 			return;
 		}
 		if (!secondaryDictionaries.TryGetValue(
@@ -576,11 +613,39 @@ public class ConcurrentDictionaryWith6Keys
 		{
 			return;
 		}
+		thirdaryDeictionaries.Clear();
+	}
 
-
+	public void Clear(
+	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
+	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
+	    ThirdaryDeictionaryKeyType thirdaryDeictionaryKey)
+	{
+		if (primaryDeictionaryKey == null)
+		{
+			Clear();
+			return;
+		}
+		if (secondaryDeictionaryKey == null)
+		{
+			Clear(primaryDeictionaryKey);
+			return;
+		}
 		if (thirdaryDeictionaryKey == null)
 		{
-			thirdaryDeictionaries.Clear();
+			Clear(primaryDeictionaryKey, secondaryDeictionaryKey);
+			return;
+		}
+		if (!PrimaryDictionaries.TryGetValue(
+		    primaryDeictionaryKey,
+		    out var secondaryDictionaries))
+		{
+			return;
+		}
+		if (!secondaryDictionaries.TryGetValue(
+		    secondaryDeictionaryKey,
+		    out var thirdaryDeictionaries))
+		{
 			return;
 		}
 		if (!thirdaryDeictionaries.TryGetValue(
@@ -589,11 +654,51 @@ public class ConcurrentDictionaryWith6Keys
 		{
 			return;
 		}
+		fourthDeictionaries.Clear();
+	}
 
-
+	public void Clear(
+	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
+	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
+	    ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
+	    FourthDeictionaryKeyType fourthDeictionaryKey)
+	{
+		if (primaryDeictionaryKey == null)
+		{
+			Clear();
+			return;
+		}
+		if (secondaryDeictionaryKey == null)
+		{
+			Clear(primaryDeictionaryKey);
+			return;
+		}
+		if (thirdaryDeictionaryKey == null)
+		{
+			Clear(primaryDeictionaryKey, secondaryDeictionaryKey);
+			return;
+		}
 		if (fourthDeictionaryKey == null)
 		{
-			fourthDeictionaries.Clear();
+			Clear(primaryDeictionaryKey, secondaryDeictionaryKey, thirdaryDeictionaryKey);
+			return;
+		}
+		if (!PrimaryDictionaries.TryGetValue(
+		    primaryDeictionaryKey,
+		    out var secondaryDictionaries))
+		{
+			return;
+		}
+		if (!secondaryDictionaries.TryGetValue(
+		    secondaryDeictionaryKey,
+		    out var thirdaryDeictionaries))
+		{
+			return;
+		}
+		if (!thirdaryDeictionaries.TryGetValue(
+		    thirdaryDeictionaryKey,
+		    out var fourthDeictionaries))
+		{
 			return;
 		}
 		if (!fourthDeictionaries.TryGetValue(
@@ -602,15 +707,67 @@ public class ConcurrentDictionaryWith6Keys
 		{
 			return;
 		}
+		fifthDeictionaries.Clear();
+	}
 
-
+	public void Clear(
+	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
+	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
+	    ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
+	    FourthDeictionaryKeyType fourthDeictionaryKey,
+	    FifthDeictionaryKeyType fifthDeictionaryKey)
+	{
+		if (primaryDeictionaryKey == null)
+		{
+			Clear();
+			return;
+		}
+		if (secondaryDeictionaryKey == null)
+		{
+			Clear(primaryDeictionaryKey);
+			return;
+		}
+		if (thirdaryDeictionaryKey == null)
+		{
+			Clear(primaryDeictionaryKey, secondaryDeictionaryKey);
+			return;
+		}
+		if (fourthDeictionaryKey == null)
+		{
+			Clear(primaryDeictionaryKey, secondaryDeictionaryKey, thirdaryDeictionaryKey);
+			return;
+		}
 		if (fifthDeictionaryKey == null)
 		{
-			fifthDeictionaries.Clear();
+			Clear(primaryDeictionaryKey, secondaryDeictionaryKey, thirdaryDeictionaryKey, fourthDeictionaryKey);
+			return;
+		}
+		if (!PrimaryDictionaries.TryGetValue(
+		    primaryDeictionaryKey,
+		    out var secondaryDictionaries))
+		{
+			return;
+		}
+		if (!secondaryDictionaries.TryGetValue(
+		    secondaryDeictionaryKey,
+		    out var thirdaryDeictionaries))
+		{
+			return;
+		}
+		if (!thirdaryDeictionaries.TryGetValue(
+		    thirdaryDeictionaryKey,
+		    out var fourthDeictionaries))
+		{
+			return;
+		}
+		if (!fourthDeictionaries.TryGetValue(
+		    fourthDeictionaryKey,
+		    out var fifthDeictionaries))
+		{
 			return;
 		}
 		if (!fifthDeictionaries.TryGetValue(
-		       fifthDeictionaryKey,
+		    fifthDeictionaryKey,
 		       out var sixthDeictionaries))
 		{
 			return;

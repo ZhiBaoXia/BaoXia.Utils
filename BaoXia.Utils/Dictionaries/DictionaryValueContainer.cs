@@ -1,7 +1,6 @@
-﻿namespace BaoXia.Utils.Dictionaries;
+namespace BaoXia.Utils.Dictionaries;
 
-public class DictionaryValueContainer
-    <ItemType>
+public class DictionaryValueContainer<ItemType>
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -15,9 +14,10 @@ public class DictionaryValueContainer
 	{
 		get
 		{
-			if (Items.Length > 0)
+			var items = Items;
+			if (items.Length > 0)
 			{
-				return Items[0];
+				return items[0];
 			}
 			return default;
 		}
@@ -27,9 +27,10 @@ public class DictionaryValueContainer
 	{
 		get
 		{
-			if (Items.Length > 0)
+			var items = Items;
+			if (items.Length > 0)
 			{
-				return Items[^1];
+				return items[^1];
 			}
 			return default;
 		}
@@ -51,10 +52,21 @@ public class DictionaryValueContainer
 		Items = [];
 	}
 
-	public DictionaryValueContainer(
-	    ItemType[] items)
+	public DictionaryValueContainer(ItemType[] items)
 	{
 		Items = items;
+	}
+
+	public bool TryGetFirstItem(out ItemType? item)
+	{
+		var items = Items;
+		if (items.Length > 0)
+		{
+			item = items[0];
+			return true;
+		}
+		item = default;
+		return false;
 	}
 
 	#endregion

@@ -59,19 +59,29 @@ public class ClientIpInfo
 		return openOrderClientIpAddressLast;
 	}
 
-	public string GetLastIp()
+	public string? GetLastIp(bool isPortNeedRetain = false)
 	{
-		var openOrderClientIpAddressLast = string.Empty;
-		if (IpAddressChain is { } ipAddressChain)
+		if (IpAddressChain is not { } ipAddressChain)
 		{
-			var indexOfLastComma = ipAddressChain.LastIndexOf(',');
-			if (indexOfLastComma >= 0)
+			return null;
+		}
+		var openOrderClientIpAddressLast = string.Empty;
+		var indexOfLastComma = ipAddressChain.LastIndexOf(',');
+		if (indexOfLastComma >= 0)
+		{
+			openOrderClientIpAddressLast = ipAddressChain[(indexOfLastComma + 1)..];
+		}
+		else
+		{
+			openOrderClientIpAddressLast = ipAddressChain;
+		}
+
+		if (openOrderClientIpAddressLast != null && !isPortNeedRetain)
+		{
+			var indexOfColon = ipAddressChain.LastIndexOf(':');
+			if (indexOfColon >= 0)
 			{
-				openOrderClientIpAddressLast = ipAddressChain[(indexOfLastComma + 1)..];
-			}
-			else
-			{
-				openOrderClientIpAddressLast = ipAddressChain;
+				openOrderClientIpAddressLast = openOrderClientIpAddressLast[..indexOfColon];
 			}
 		}
 		return openOrderClientIpAddressLast;

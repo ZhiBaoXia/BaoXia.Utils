@@ -78,7 +78,7 @@ public class ClientIpInfo
 
 		if (openOrderClientIpAddressLast != null && !isPortNeedRetain)
 		{
-			var indexOfColon = ipAddressChain.LastIndexOf(':');
+			var indexOfColon = openOrderClientIpAddressLast.LastIndexOf(':');
 			if (indexOfColon >= 0)
 			{
 				openOrderClientIpAddressLast = openOrderClientIpAddressLast[..indexOfColon];

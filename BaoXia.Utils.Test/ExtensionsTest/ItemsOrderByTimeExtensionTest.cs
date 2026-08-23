@@ -18,7 +18,7 @@ public class ItemsOrderByTimeExtensionTest
 	/// 【目标结束时间】等于【测试集合】中的任意值。
 	/// </summary>
 	[TestMethod]
-	public void GetItemsSortByTimeInTimeSection_01_Test()
+	public void GetItemsSortByTimeInTimeRange_01_Test()
 	{
 		var testItems = new TestItem[100];
 		var now = DateTimeOffset.Now;
@@ -45,7 +45,7 @@ public class ItemsOrderByTimeExtensionTest
 
 		var objectBeginTime = testItems[1].Time;
 		var objectEndTime = testItems[^1].Time;
-		var objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		var objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			true,
 			objectBeginTime,
 			objectEndTime,
@@ -75,7 +75,7 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		objectBeginTime = testItems[^2].Time;
 		objectEndTime = testItems[0].Time;
-		objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			false,
 			objectBeginTime,
 			objectEndTime,
@@ -97,7 +97,7 @@ public class ItemsOrderByTimeExtensionTest
 	/// 【目标结束时间】小于【测试集合】最大值。
 	/// </summary>
 	[TestMethod]
-	public void GetItemsSortByTimeInTimeSection_02_Test()
+	public void GetItemsSortByTimeInTimeRange_02_Test()
 	{
 		var testItems = new TestItem[100];
 		var now = DateTimeOffset.Now;
@@ -124,7 +124,7 @@ public class ItemsOrderByTimeExtensionTest
 
 		var objectBeginTime = testItems[1].Time.AddHours(-1);
 		var objectEndTime = testItems[^1].Time.AddHours(-1);
-		var objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		var objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			true,
 			objectBeginTime,
 			objectEndTime,
@@ -154,7 +154,7 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		objectBeginTime = testItems[^2].Time.AddHours(-1);
 		objectEndTime = testItems[0].Time.AddHours(-1);
-		objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			false,
 			objectBeginTime,
 			objectEndTime,
@@ -176,7 +176,7 @@ public class ItemsOrderByTimeExtensionTest
 	/// 【目标结束时间】大于【测试集合】最大值。
 	/// </summary>
 	[TestMethod]
-	public void GetItemsSortByTimeInTimeSection_03_Test()
+	public void GetItemsSortByTimeInTimeRange_03_Test()
 	{
 		var testItems = new TestItem[100];
 		var now = DateTimeOffset.Now;
@@ -203,7 +203,7 @@ public class ItemsOrderByTimeExtensionTest
 
 		var objectBeginTime = testItems[0].Time.AddHours(-1);
 		var objectEndTime = testItems[^1].Time.AddHours(1);
-		var objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		var objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			true,
 			objectBeginTime,
 			objectEndTime,
@@ -233,7 +233,7 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		objectBeginTime = testItems[^1].Time.AddHours(-1);
 		objectEndTime = testItems[0].Time.AddHours(1);
-		objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			false,
 			objectBeginTime,
 			objectEndTime,
@@ -255,7 +255,7 @@ public class ItemsOrderByTimeExtensionTest
 	/// 【目标结束时间】大于【测试集合】最大值。
 	/// </summary>
 	[TestMethod]
-	public void GetItemsSortByTimeInTimeSection_04_Test()
+	public void GetItemsSortByTimeInTimeRange_04_Test()
 	{
 		var testItems = new TestItem[100];
 		var now = DateTimeOffset.Now;
@@ -282,7 +282,7 @@ public class ItemsOrderByTimeExtensionTest
 
 		var objectBeginTime = testItems[1].Time;
 		var objectEndTime = testItems[^1].Time.AddDays(1);
-		var objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		var objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			true,
 			objectBeginTime,
 			objectEndTime,
@@ -312,7 +312,7 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		objectBeginTime = testItems[^2].Time;
 		objectEndTime = testItems[0].Time.AddDays(1);
-		objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			false,
 			objectBeginTime,
 			objectEndTime,
@@ -334,7 +334,7 @@ public class ItemsOrderByTimeExtensionTest
 	/// 【目标结束时间】等于【测试集合】中的任意值。
 	/// </summary>
 	[TestMethod]
-	public void GetItemsSortByTimeInTimeSection_05_Test()
+	public void GetItemsSortByTimeInTimeRange_05_Test()
 	{
 		var testItems = new TestItem[100];
 		var now = DateTimeOffset.Now;
@@ -361,7 +361,7 @@ public class ItemsOrderByTimeExtensionTest
 
 		var objectBeginTime = testItems[0].Time.AddDays(-1);
 		var objectEndTime = testItems[^1].Time;
-		var objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		var objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			true,
 			objectBeginTime,
 			objectEndTime,
@@ -391,7 +391,7 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		objectBeginTime = testItems[^1].Time.AddDays(-1);
 		objectEndTime = testItems[0].Time;
-		objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			false,
 			objectBeginTime,
 			objectEndTime,
@@ -413,7 +413,7 @@ public class ItemsOrderByTimeExtensionTest
 	/// 【目标结束时间】小于【测试集合】最小值。
 	/// </summary>
 	[TestMethod]
-	public void GetItemsSortByTimeInTimeSection_06_Test()
+	public void GetItemsSortByTimeInTimeRange_06_Test()
 	{
 		var testItems = new TestItem[100];
 		var now = DateTimeOffset.Now;
@@ -440,7 +440,7 @@ public class ItemsOrderByTimeExtensionTest
 
 		var objectBeginTime = testItems[0].Time.AddDays(-2);
 		var objectEndTime = objectBeginTime.AddDays(1);
-		var objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		var objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			true,
 			objectBeginTime,
 			objectEndTime,
@@ -468,7 +468,7 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		objectBeginTime = testItems[^1].Time.AddDays(-2);
 		objectEndTime = objectBeginTime.AddDays(1);
-		objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			false,
 			objectBeginTime,
 			objectEndTime,
@@ -488,7 +488,7 @@ public class ItemsOrderByTimeExtensionTest
 	/// 【目标起始时间】等于【目标结束时间】。
 	/// </summary>
 	[TestMethod]
-	public void GetItemsSortByTimeInTimeSection_07_Test()
+	public void GetItemsSortByTimeInTimeRange_07_Test()
 	{
 		var testItems = new TestItem[100];
 		var now = DateTimeOffset.Now;
@@ -515,7 +515,7 @@ public class ItemsOrderByTimeExtensionTest
 
 		var objectBeginTime = testItems[0].Time;
 		var objectEndTime = objectBeginTime;
-		var objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		var objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			true,
 			objectBeginTime,
 			objectEndTime,
@@ -543,7 +543,7 @@ public class ItemsOrderByTimeExtensionTest
 			});
 		objectBeginTime = testItems[^1].Time;
 		objectEndTime = objectBeginTime;
-		objectItems = testItems.GetItemsSortByTimeInTimeSection(
+		objectItems = testItems.GetItemsSortByTimeInTimeRange(
 			false,
 			objectBeginTime,
 			objectEndTime,

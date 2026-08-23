@@ -170,15 +170,15 @@ public class DateTimeExtensionTest
 			Assert.IsTrue(firstDayOfNextMonth.Equals(new DateTime(2023, 10, 1, 0, 0, 0, 0)));
 		}
 
-		var firstDayOfPrevSession = dateTime.FirstDayOfPrevSession();
+		var firstDayOfPrevSession = dateTime.FirstDayOfPrevQuarter();
 		{
 			Assert.IsTrue(firstDayOfPrevSession.Equals(new DateTime(2023, 4, 1, 0, 0, 0, 0)));
 		}
-		var firstDayOfThisSession = dateTime.FirstDayOfThisSession();
+		var firstDayOfThisSession = dateTime.FirstDayOfThisQuarter();
 		{
 			Assert.IsTrue(firstDayOfThisSession.Equals(new DateTime(2023, 7, 1, 0, 0, 0, 0)));
 		}
-		var firstDayOfNextSession = dateTime.FirstDayOfNextSession();
+		var firstDayOfNextSession = dateTime.FirstDayOfNextQuarter();
 		{
 			Assert.IsTrue(firstDayOfNextSession.Equals(new DateTime(2023, 10, 1, 0, 0, 0, 0)));
 		}

@@ -366,7 +366,7 @@ public class ArrayExtensionTest
 					return testItem.CompareTo(objectTestItemIndex);
 				},
 				//
-				DichotomyClosestItemType.LessThanObjectMax,
+				DichotomyClosestItemType.LessThanTargetItemMax,
 				out var itemIndexNearestAtLeft,
 				out var itemNearestAtLeft);
 
@@ -415,7 +415,7 @@ public class ArrayExtensionTest
 					return testItem.CompareTo(objectTestItemIndex);
 				},
 				//
-				DichotomyClosestItemType.GreaterThanObjectMin,
+				DichotomyClosestItemType.GreaterThanTargetItemMin,
 				out var itemIndexNearestAtRight,
 				out var itemNearestAtRight);
 			if ((objectTestItemIndex % 2) == 0)

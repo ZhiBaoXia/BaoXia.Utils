@@ -11,7 +11,7 @@ public class DateTimeSectionTest
 	public void IsTimeInSectionWith_NotLoop_AscTimeSection_Test()
 	{
 		var timeSection = new DateTimeSection(
-			DateTimeComparisonCycle.NotLoop,
+			DateTimeComparisonCycle.None,
 			new DateTime(2023, 10, 18, 20, 0, 0),
 			new DateTime(2023, 10, 18, 22, 0, 0));
 		var testCases = new (DateTime Time, bool TestResult)[]
@@ -37,7 +37,7 @@ testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
 	public void IsTimeInSectionWith_NotLoop_DescTimeSection_Test()
 	{
 		var timeSection = new DateTimeSection(
-			DateTimeComparisonCycle.NotLoop,
+			DateTimeComparisonCycle.None,
 			new DateTime(2023, 10, 18, 22, 0, 0),
 			new DateTime(2023, 10, 18, 20, 0, 0));
 		var testCases = new (DateTime Time, bool TestResult)[]
@@ -63,7 +63,7 @@ testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
 	public void IsTimeInSectionWith_Year_AscTimeSection_Test()
 	{
 		var timeSection = new DateTimeSection(
-			DateTimeComparisonCycle.LoopInYear,
+			DateTimeComparisonCycle.Year,
 			new DateTime(2023, 5, 1, 0, 0, 0),
 			new DateTime(2023, 6, 1, 0, 0, 0));
 		var testCases = new (DateTime Time, bool TestResult)[]
@@ -88,7 +88,7 @@ testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
 	public void IsTimeInSectionWith_Year_DescTimeSection_Test()
 	{
 		var timeSection = new DateTimeSection(
-			DateTimeComparisonCycle.LoopInYear,
+			DateTimeComparisonCycle.Year,
 			new DateTime(2023, 6, 1, 0, 0, 0),
 			new DateTime(2023, 5, 1, 0, 0, 0));
 		var testCases = new (DateTime Time, bool TestResult)[]
@@ -116,11 +116,11 @@ testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
 		var timeSections = new DateTimeSection[]
 			{
 				new(
-					DateTimeComparisonCycle.LoopInDay,
+					DateTimeComparisonCycle.Day,
 					new DateTime(2023, 10, 18, 4, 30, 0),
 					new DateTime(2023, 10, 19, 23, 30, 0)),
 				new(
-					DateTimeComparisonCycle.LoopInDay,
+					DateTimeComparisonCycle.Day,
 					new DateTime(2023, 10, 19, 4, 30, 0),
 					new DateTime(2023, 10, 18, 23, 30, 0))
 			};
@@ -168,11 +168,11 @@ testCase.TestResult, timeSection.IsTimeInSection(testCase.Time)
 		var timeSections = new DateTimeSection[]
 			{
 				new (
-					DateTimeComparisonCycle.LoopInDay,
+					DateTimeComparisonCycle.Day,
 					new DateTime(2023, 10, 18, 23, 30, 0),
 					new DateTime(2023, 10, 19, 4, 30, 0)),
 				new(
-					DateTimeComparisonCycle.LoopInDay,
+					DateTimeComparisonCycle.Day,
 					new DateTime(2023, 10, 19, 23, 30, 0),
 					new DateTime(2023, 10, 18, 4, 30, 0))
 			};

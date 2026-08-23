@@ -41,22 +41,30 @@ public class ClientIpInfo
 		IpPortLast = ipPort;
 	}
 
-	public string GetFirstIp()
+	public string GetFirstIp(bool isPortNeedRetain = false)
 	{
-		var openOrderClientIpAddressLast = string.Empty;
+		var clientIpAddressFirst = string.Empty;
 		if (IpAddressChain is { } ipAddressChain)
 		{
 			var indexOfLastComma = ipAddressChain.IndexOf(',');
 			if (indexOfLastComma >= 0)
 			{
-				openOrderClientIpAddressLast = ipAddressChain[..indexOfLastComma];
+				clientIpAddressFirst = ipAddressChain[..indexOfLastComma];
 			}
 			else
 			{
-				openOrderClientIpAddressLast = ipAddressChain;
+				clientIpAddressFirst = ipAddressChain;
+				if (!isPortNeedRetain)
+				{
+					var indexOfColon = clientIpAddressFirst.IndexOf(':');
+					if (indexOfColon >= 0)
+					{
+						clientIpAddressFirst = clientIpAddressFirst[..indexOfColon];
+					}
+				}
 			}
 		}
-		return openOrderClientIpAddressLast;
+		return clientIpAddressFirst;
 	}
 
 	public string? GetLastIp(bool isPortNeedRetain = false)
@@ -65,26 +73,26 @@ public class ClientIpInfo
 		{
 			return null;
 		}
-		var openOrderClientIpAddressLast = string.Empty;
+		string clientIpAddressLast;
 		var indexOfLastComma = ipAddressChain.LastIndexOf(',');
 		if (indexOfLastComma >= 0)
 		{
-			openOrderClientIpAddressLast = ipAddressChain[(indexOfLastComma + 1)..];
+			clientIpAddressLast = ipAddressChain[(indexOfLastComma + 1)..];
 		}
 		else
 		{
-			openOrderClientIpAddressLast = ipAddressChain;
+			clientIpAddressLast = ipAddressChain;
 		}
 
-		if (openOrderClientIpAddressLast != null && !isPortNeedRetain)
+		if (clientIpAddressLast != null && !isPortNeedRetain)
 		{
-			var indexOfColon = openOrderClientIpAddressLast.LastIndexOf(':');
+			var indexOfColon = clientIpAddressLast.IndexOf(':');
 			if (indexOfColon >= 0)
 			{
-				openOrderClientIpAddressLast = openOrderClientIpAddressLast[..indexOfColon];
+				clientIpAddressLast = clientIpAddressLast[..indexOfColon];
 			}
 		}
-		return openOrderClientIpAddressLast;
+		return clientIpAddressLast;
 	}
 
 	#endregion

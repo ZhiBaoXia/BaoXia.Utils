@@ -16,7 +16,7 @@ public static class HttpRequestExtension
 
 	protected class HttpHeaderKeys
 	{
-		public const string BxService_Gateway_ClientIp = "BxService-Gateway-ClientIp";
+		public const string BxService_Gateway_ClientIp = "BaoXia-Gateway-ClientIp";
 	}
 
 	#endregion
@@ -48,10 +48,9 @@ public static class HttpRequestExtension
 		return absoluteUri;
 	}
 
-	public static List<string> GetClientConnectionAddressList(
-	    this HttpRequest request)
+	public static List<string> GetClientConnectionAddressList(this HttpRequest request)
 	{
-		var clientHttpProxyAddressSet = new HashSet<string>();
+		//var clientHttpProxyAddressSet = new HashSet<string>();
 		var clientHttpProxyAddressList = new List<string>();
 
 		////////////////////////////////////////////////
@@ -73,10 +72,10 @@ public static class HttpRequestExtension
 							var forwardClientAddressTrimed = forwardClientAddress.Trim();
 							if (forwardClientAddressTrimed?.Length > 0)
 							{
-								if (clientHttpProxyAddressSet.Contains(forwardClientAddressTrimed) == false)
+								//if (clientHttpProxyAddressSet.Contains(forwardClientAddressTrimed) == false)
 								{
 									// !!!
-									clientHttpProxyAddressSet.Add(forwardClientAddressTrimed);
+									//clientHttpProxyAddressSet.Add(forwardClientAddressTrimed);
 									clientHttpProxyAddressList.Add(forwardClientAddressTrimed);
 									// !!!
 								}
@@ -93,10 +92,10 @@ public static class HttpRequestExtension
 					var x_Real_IpTrimed = x_Real_Ip?.Trim();
 					if (x_Real_IpTrimed?.Length > 0)
 					{
-						if (clientHttpProxyAddressSet.Contains(x_Real_IpTrimed) == false)
+						//if (clientHttpProxyAddressSet.Contains(x_Real_IpTrimed) == false)
 						{
 							// !!!
-							clientHttpProxyAddressSet.Add(x_Real_IpTrimed);
+							//clientHttpProxyAddressSet.Add(x_Real_IpTrimed);
 							clientHttpProxyAddressList.Add(x_Real_IpTrimed);
 							// !!!
 						}
@@ -107,34 +106,12 @@ public static class HttpRequestExtension
 
 
 		////////////////////////////////////////////////
-		// 2/，获取【Tcp连接】中的客户端地址信息。
-		////////////////////////////////////////////////
-		if (request.HttpContext?.Connection is { } tcpIpConnection)
-		{
-			var remoteIpAddress = tcpIpConnection.RemoteIpAddress?.ToString();
-			if (remoteIpAddress?.Length > 0)
-			{
-				remoteIpAddress += ":" + tcpIpConnection.RemotePort;
-				if (clientHttpProxyAddressSet.Contains(remoteIpAddress) == false)
-				{
-					// !!!
-					clientHttpProxyAddressSet.Add(remoteIpAddress);
-					clientHttpProxyAddressList.Add(remoteIpAddress);
-					// !!!
-				}
-			}
-		}
-
-
-		////////////////////////////////////////////////
 		// 3/，获取【宝匣网关】中的客户端地址信息。
 		////////////////////////////////////////////////
-		if (request.Headers?.TryGetValue(
-		    HttpHeaderKeys.BxService_Gateway_ClientIp,
-		    out var bxService_Gateway_ClientIp) == true
-		    && bxService_Gateway_ClientIp.Count > 0)
+		if (request.Headers?.TryGetValue(HttpHeaderKeys.BxService_Gateway_ClientIp, out var bxServiceGatewayClientIp) == true
+		    && bxServiceGatewayClientIp.Count > 0)
 		{
-			foreach (var clientIp in bxService_Gateway_ClientIp)
+			foreach (var clientIp in bxServiceGatewayClientIp)
 			{
 				var clientIpAddresses = clientIp?.Split(",", System.StringSplitOptions.RemoveEmptyEntries);
 				if (clientIpAddresses != null)
@@ -144,10 +121,10 @@ public static class HttpRequestExtension
 						var clientIpAddressTrimed = clientIpAddress.Trim();
 						if (clientIpAddressTrimed?.Length > 0)
 						{
-							if (clientHttpProxyAddressSet.Contains(clientIpAddressTrimed) == false)
+							//if (clientHttpProxyAddressSet.Contains(clientIpAddressTrimed) == false)
 							{
 								// !!!
-								clientHttpProxyAddressSet.Add(clientIpAddressTrimed);
+								//clientHttpProxyAddressSet.Add(clientIpAddressTrimed);
 								clientHttpProxyAddressList.Add(clientIpAddressTrimed);
 								// !!!
 							}
@@ -156,20 +133,35 @@ public static class HttpRequestExtension
 				}
 			}
 		}
+
+		////////////////////////////////////////////////
+		// 2/，获取【Tcp连接】中的客户端地址信息。
+		////////////////////////////////////////////////
+		if (request.HttpContext?.Connection is { } tcpIpConnection)
+		{
+			var remoteIpAddress = tcpIpConnection.RemoteIpAddress?.ToString();
+			if (remoteIpAddress?.Length > 0)
+			{
+				remoteIpAddress += ":" + tcpIpConnection.RemotePort;
+				//if (clientHttpProxyAddressSet.Contains(remoteIpAddress) == false)
+				{
+					// !!!
+					//clientHttpProxyAddressSet.Add(remoteIpAddress);
+					clientHttpProxyAddressList.Add(remoteIpAddress);
+					// !!!
+				}
+			}
+		}
+
 		return clientHttpProxyAddressList;
 	}
 
-	public static string? GetClientConnectionAddressesString(
-	    this HttpRequest request)
+	public static string? GetClientConnectionAddressesString(this HttpRequest request)
 	{
-		var clientHttpProxyAddressList
-		    = request.GetClientConnectionAddressList();
+		var clientHttpProxyAddressList = request.GetClientConnectionAddressList();
 		if (clientHttpProxyAddressList.Count > 0)
 		{
-			return StringUtil.StringWithStrings(
-			    clientHttpProxyAddressList,
-			    ",",
-			    true);
+			return StringUtil.StringWithStrings(clientHttpProxyAddressList, ",", true);
 		}
 		return null;
 	}
@@ -232,26 +224,23 @@ public static class HttpRequestExtension
 	/// </summary>
 	/// <param name="request">当前请求对象。</param>
 	/// <returns>当前请求对象的连接端口号。</returns>
-	public static int GetClientConnectionPortLast(this HttpRequest request)
-	{
-		var clientConnectionPortLast = request.HttpContext.Connection.RemotePort;
-		// 宝匣网关的客户端地址。
-		if (request.Headers?
-		    .TryGetValue(
-		    HttpHeaderKeys.BxService_Gateway_ClientIp,
-		    out var bxService_Gateway_ClientIp) == true
-		    && bxService_Gateway_ClientIp.Count > 0)
-		{
-			var clientIp = bxService_Gateway_ClientIp[^1];
-			if (TryGetClientConnectionPortFromIpAddress(clientIp, out var clientIpPort))
-			{
-				// !!!
-				clientConnectionPortLast = clientIpPort;
-				// !!!
-			}
-		}
-		return clientConnectionPortLast;
-	}
+	//public static int GetClientConnectionPortLast(this HttpRequest request)
+	//{
+	//	var clientConnectionPortLast = request.HttpContext.Connection.RemotePort;
+	//	// 宝匣网关的客户端地址。
+	//	if (request.Headers?.TryGetValue(HttpHeaderKeys.BxService_Gateway_ClientIp, out var bxService_Gateway_ClientIp) == true
+	//	    && bxService_Gateway_ClientIp.Count > 0)
+	//	{
+	//		var clientIp = bxService_Gateway_ClientIp[^1];
+	//		if (TryGetClientConnectionPortFromIpAddress(clientIp, out var clientIpPort))
+	//		{
+	//			// !!!
+	//			clientConnectionPortLast = clientIpPort;
+	//			// !!!
+	//		}
+	//	}
+	//	return clientConnectionPortLast;
+	//}
 
 	/// <summary>
 	/// 获取客户端的Ip信息。

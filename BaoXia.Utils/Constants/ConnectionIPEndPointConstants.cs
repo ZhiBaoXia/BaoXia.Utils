@@ -8,7 +8,7 @@ public class ConnectionIPEndPointConstants
 
 	#region 静态常量
 
-	public const char ConnectionIPEndPointsSparator = ',';
+	public const char ConnectionIpEndPointsSparator = ',';
 
 	#endregion
 }

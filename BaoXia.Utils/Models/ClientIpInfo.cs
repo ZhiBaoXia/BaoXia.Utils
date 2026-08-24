@@ -10,7 +10,7 @@ public class ClientIpInfo
 
 	public string? IpAddressChain { get; set; }
 
-	public string? ConnectionIPEndPointsString { get; set; }
+	public string? ConnectionIpEndPointsString { get; set; }
 
 	public int IpPortLast { get; set; }
 

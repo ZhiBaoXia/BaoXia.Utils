@@ -8,7 +8,7 @@ namespace BaoXia.Utils.Extensions;
 /// <summary>
 /// “String”安全扩展类。
 /// </summary>
-public static class IPEndPointsExtension
+public static class IpEndPointsExtension
 {
 	////////////////////////////////////////////////
 	// @类方法
@@ -18,7 +18,7 @@ public static class IPEndPointsExtension
 
 	extension(IEnumerable<IPEndPoint>? ipEndPoints)
 	{
-		public string? ToClientConnectionIPEndPointsString()
+		public string? ToClientConnectionIpEndPointsString()
 		{
 			if (ipEndPoints.IsEmpty())
 			{
@@ -29,7 +29,7 @@ public static class IPEndPointsExtension
 			{
 				if (stringBuilder.Length > 0)
 				{
-					stringBuilder.Append(ConnectionIPEndPointConstants.ConnectionIPEndPointsSparator);
+					stringBuilder.Append(ConnectionIPEndPointConstants.ConnectionIpEndPointsSparator);
 				}
 				//
 				stringBuilder.Append(clientConnectionAddressInfo.ToString());

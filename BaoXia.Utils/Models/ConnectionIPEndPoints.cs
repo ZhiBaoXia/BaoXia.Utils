@@ -6,7 +6,7 @@ using System.Net;
 
 namespace BaoXia.Utils.Models;
 
-public class ConnectionIPEndPoints
+public class ConnectionIpEndPoints
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -29,7 +29,7 @@ public class ConnectionIPEndPoints
 	private long _lastIPEndPointAddressUpdateTicks = 0;
 
 
-	public List<IPEndPoint>? IPEndPoints
+	public List<IPEndPoint>? IpEndPoints
 	{
 		get
 		{
@@ -90,9 +90,9 @@ public class ConnectionIPEndPoints
 		get
 		{
 
-			if (IPEndPoints is { } connectionIPEndPoints && connectionIPEndPoints.Count > 0)
+			if (IpEndPoints is { } connectionIpEndPoints && connectionIpEndPoints.Count > 0)
 			{
-				return connectionIPEndPoints[0];
+				return connectionIpEndPoints[0];
 			}
 			return null;
 		}
@@ -121,9 +121,9 @@ public class ConnectionIPEndPoints
 	{
 		get
 		{
-			if (IPEndPoints is { } connectionIPEndPoints && connectionIPEndPoints.Count > 0)
+			if (IpEndPoints is { } connectionIpEndPoints && connectionIpEndPoints.Count > 0)
 			{
-				return connectionIPEndPoints[^1];
+				return connectionIpEndPoints[^1];
 			}
 			return null;
 		}
@@ -159,18 +159,18 @@ public class ConnectionIPEndPoints
 
 	#region 类方法
 
-	public static bool TryParse(string? connectionIPEndPointsString, [NotNullWhen(true)] out ConnectionIPEndPoints? connectionIPEndPoints)
+	public static bool TryParse(string? connectionIpEndPointsString, [NotNullWhen(true)] out ConnectionIpEndPoints? connectionIpEndPoints)
 	{
 		//
-		connectionIPEndPoints = null;
+		connectionIpEndPoints = null;
 		//
-		if (string.IsNullOrEmpty(connectionIPEndPointsString))
+		if (string.IsNullOrEmpty(connectionIpEndPointsString))
 		{
 			return false;
 		}
 
-		var connectionIPEndPointStrings = connectionIPEndPointsString.Split(
-			ConnectionIPEndPointConstants.ConnectionIPEndPointsSparator,
+		var connectionIPEndPointStrings = connectionIpEndPointsString.Split(
+			ConnectionIPEndPointConstants.ConnectionIpEndPointsSparator,
 			StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 		if (connectionIPEndPointStrings == null || connectionIPEndPointStrings.Length < 1)
 		{
@@ -193,9 +193,9 @@ public class ConnectionIPEndPoints
 			return false;
 		}
 
-		connectionIPEndPoints = new ConnectionIPEndPoints(ipEndPoints);
+		connectionIpEndPoints = new ConnectionIpEndPoints(ipEndPoints);
 		{ }
-		return connectionIPEndPoints != null;
+		return connectionIpEndPoints != null;
 	}
 
 	#endregion
@@ -208,12 +208,12 @@ public class ConnectionIPEndPoints
 
 	#region 自身实现
 
-	public ConnectionIPEndPoints()
+	public ConnectionIpEndPoints()
 	{ }
 
-	public ConnectionIPEndPoints(List<IPEndPoint>? ipEndPoints)
+	public ConnectionIpEndPoints(List<IPEndPoint>? ipEndPoints)
 	{
-		IPEndPoints = ipEndPoints;
+		IpEndPoints = ipEndPoints;
 	}
 
 	public bool Contains(string ipAddress)

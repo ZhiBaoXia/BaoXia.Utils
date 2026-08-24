@@ -12,11 +12,11 @@ public static class ClientIpInfoExtension
 
 	extension(ClientIpInfo clientIpInfo)
 	{
-		public ConnectionIPEndPoints? ToConnectionIPEndPoints()
+		public ConnectionIpEndPoints? ToConnectionIpEndPoints()
 		{
-			_ = ConnectionIPEndPoints.TryParse(clientIpInfo.ConnectionIPEndPointsString, out var connectionIPEndPoints);
+			_ = ConnectionIpEndPoints.TryParse(clientIpInfo.ConnectionIpEndPointsString, out var connectionIpEndPoints);
 			{ }
-			return connectionIPEndPoints;
+			return connectionIpEndPoints;
 		}
 	}
 

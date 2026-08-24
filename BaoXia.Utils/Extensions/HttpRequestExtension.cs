@@ -18,7 +18,7 @@ public static class HttpRequestExtension
 
 	protected class HttpHeaderKeys
 	{
-		public const string BxService_Gateway_ConnectionIPEndPoints = "BaoXia-Gateway-ConnectionIPEndPoints";
+		public const string BxService_Gateway_ConnectionIpEndPoints = "BaoXia-Gateway-ConnectionIpEndPoints";
 	}
 
 	#endregion
@@ -50,15 +50,15 @@ public static class HttpRequestExtension
 		return absoluteUri;
 	}
 
-	public static ConnectionIPEndPoints GetConnectionIPEndPoints(this HttpRequest request)
+	public static ConnectionIpEndPoints GetConnectionIpEndPoints(this HttpRequest request)
 	{
-		var connectionIPEndPoints = new List<IPEndPoint>();
-		var isConnectionIPEndPointsGetFromBxGatewayHttpHeader = false;
+		var connectionIpEndPoints = new List<IPEndPoint>();
+		var isConnectionIpEndPointsGetFromBxGatewayHttpHeader = false;
 
 		////////////////////////////////////////////
 		// 1/，如果存在【宝匣网关】中的客户端地址信息，则只使用【宝匣网关】中的客户端地址信息。
 		////////////////////////////////////////////////
-		if (request.Headers?.TryGetValue(HttpHeaderKeys.BxService_Gateway_ConnectionIPEndPoints,
+		if (request.Headers?.TryGetValue(HttpHeaderKeys.BxService_Gateway_ConnectionIpEndPoints,
 			out var bxGatewayConnectionIPEndPointValues) == true
 			&& bxGatewayConnectionIPEndPointValues.Count > 0)
 		{
@@ -74,14 +74,14 @@ public static class HttpRequestExtension
 							&& IPEndPoint.TryParse(bxGatewayConnectionIPEndPointString, out var connectionIPEndPoint))
 						{
 							// !!!
-							connectionIPEndPoints.Add(connectionIPEndPoint);
+							connectionIpEndPoints.Add(connectionIPEndPoint);
 							// !!!
 						}
 					}
 				}
 			}
 			//
-			isConnectionIPEndPointsGetFromBxGatewayHttpHeader = true;
+			isConnectionIpEndPointsGetFromBxGatewayHttpHeader = true;
 			//
 		}
 		else
@@ -105,7 +105,7 @@ public static class HttpRequestExtension
 								if (IPEndPoint.TryParse(forwardClientAddress, out var connectionIPEndPoint))
 								{
 									// !!!
-									connectionIPEndPoints.Add(connectionIPEndPoint);
+									connectionIpEndPoints.Add(connectionIPEndPoint);
 									// !!!
 								}
 							}
@@ -120,7 +120,7 @@ public static class HttpRequestExtension
 						if (xRealIp?.Length > 0 && IPEndPoint.TryParse(xRealIp, out var connectionIPEndPoint))
 						{
 							// !!!
-							connectionIPEndPoints.Add(connectionIPEndPoint);
+							connectionIpEndPoints.Add(connectionIPEndPoint);
 							// !!!
 						}
 					}
@@ -135,20 +135,20 @@ public static class HttpRequestExtension
 		if (request.HttpContext?.Connection is { } httpConnection
 			&& httpConnection.RemoteIpAddress is { } remoteIpAddress)
 		{
-			if (isConnectionIPEndPointsGetFromBxGatewayHttpHeader && connectionIPEndPoints.Count > 0)
+			if (isConnectionIpEndPointsGetFromBxGatewayHttpHeader && connectionIpEndPoints.Count > 0)
 			{
-				bxGatewayPrevIPEndPoint = connectionIPEndPoints[^1];
+				bxGatewayPrevIPEndPoint = connectionIpEndPoints[^1];
 			}
 
 			var connectionEndPoint = new IPEndPoint(remoteIpAddress, httpConnection.RemotePort);
 			// !!!
-			connectionIPEndPoints.Add(connectionEndPoint);
+			connectionIpEndPoints.Add(connectionEndPoint);
 			// !!!
 		}
 
 		return new()
 		{
-			IPEndPoints = connectionIPEndPoints,
+			IpEndPoints = connectionIpEndPoints,
 
 			BxGatewayPrevIPEndPoint = bxGatewayPrevIPEndPoint
 		};
@@ -156,7 +156,7 @@ public static class HttpRequestExtension
 
 	public static string? GetClientConnectionAddressInfesString(this HttpRequest request)
 	{
-		var clientConnectionAddressInfesString = request.GetConnectionIPEndPoints().IPEndPoints.ToClientConnectionIPEndPointsString();
+		var clientConnectionAddressInfesString = request.GetConnectionIpEndPoints().IpEndPoints.ToClientConnectionIpEndPointsString();
 		{ }
 		return clientConnectionAddressInfesString;
 	}
@@ -173,12 +173,12 @@ public static class HttpRequestExtension
 			return new ClientIpInfo();
 		}
 
-		var clientConnectionAddressInfes = httpRequest.GetConnectionIPEndPoints();
+		var clientConnectionAddressInfes = httpRequest.GetConnectionIpEndPoints();
 
 
 		var endPointInfo = new ClientIpInfo()
 		{
-			IpAddressChain = clientConnectionAddressInfes.IPEndPoints.ToClientConnectionIPEndPointsString(),
+			IpAddressChain = clientConnectionAddressInfes.IpEndPoints.ToClientConnectionIpEndPointsString(),
 			IpPortLast = clientConnectionAddressInfes.LastIPEndPoint?.Port ?? 0
 
 		};

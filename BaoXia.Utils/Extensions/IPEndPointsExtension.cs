@@ -1,5 +1,6 @@
 ﻿using BaoXia.Utils.Constants;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace BaoXia.Utils.Extensions;
@@ -7,7 +8,7 @@ namespace BaoXia.Utils.Extensions;
 /// <summary>
 /// “String”安全扩展类。
 /// </summary>
-public static class StringsHttpExtension
+public static class IPEndPointsExtension
 {
 	////////////////////////////////////////////////
 	// @类方法
@@ -15,22 +16,24 @@ public static class StringsHttpExtension
 
 	#region 类方法
 
-	extension(IEnumerable<string>? clientConnectionAddressInfes)
+	extension(IEnumerable<IPEndPoint>? ipEndPoints)
 	{
-		public string? ToClientConnectionAddressInfesString()
+		public string? ToClientConnectionIPEndPointsString()
 		{
-			if (clientConnectionAddressInfes.IsEmpty())
+			if (ipEndPoints.IsEmpty())
 			{
 				return null;
 			}
 			var stringBuilder = new StringBuilder();
-			foreach (var clientConnectionAddressInfo in clientConnectionAddressInfes)
+			foreach (var clientConnectionAddressInfo in ipEndPoints)
 			{
 				if (stringBuilder.Length > 0)
 				{
-					stringBuilder.Append(ClientConnectionAddressInfoConstants.ClientConnectionAddressInfoSparator);
+					stringBuilder.Append(ConnectionIPEndPointConstants.ConnectionIPEndPointsSparator);
 				}
-				stringBuilder.Append(clientConnectionAddressInfo);
+				//
+				stringBuilder.Append(clientConnectionAddressInfo.ToString());
+				//
 			}
 			return stringBuilder.ToString();
 		}

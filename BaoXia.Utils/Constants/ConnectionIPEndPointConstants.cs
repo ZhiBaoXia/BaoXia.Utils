@@ -1,6 +1,6 @@
 ﻿namespace BaoXia.Utils.Constants;
 
-public class ClientConnectionAddressInfoConstants
+public class ConnectionIPEndPointConstants
 {
 	////////////////////////////////////////////////
 	// @静态常量
@@ -8,7 +8,7 @@ public class ClientConnectionAddressInfoConstants
 
 	#region 静态常量
 
-	public const char ClientConnectionAddressInfoSparator = ',';
+	public const char ConnectionIPEndPointsSparator = ',';
 
 	#endregion
 }

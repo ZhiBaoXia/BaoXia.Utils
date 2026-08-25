@@ -206,10 +206,7 @@ public class StringUtil
 	/// <param name="spliter">创建字符串时使用的数值分隔符，默认为“,”。</param>
 	/// <param name="numberFormat">指定的数字字符串格式字符串。</param>
 	/// <returns>整型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
-	public static string StringWithInts(
-	    IEnumerable<int>? intArray,
-	    string? spliter = ",",
-	    string? numberFormat = null)
+	public static string StringWithInts(IEnumerable<int>? intArray, string? spliter = ",", string? numberFormat = null)
 	{
 		if (EnumerableUtil.IsEmpty(intArray))
 		{

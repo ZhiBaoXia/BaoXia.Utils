@@ -47,19 +47,5 @@ public class ClientIpInfo
 		KeyIpAddress = keyIpAddress;
 	}
 
-	public string? GetFirsIpEndPoint(bool isPortNeedRetain = false)
-	{
-		_ = ConnectionIpEndPoints.TryParseToFirstIpEndPoint(ConnectionIpEndPointsString, out var firstIpEndPoint);
-		{ }
-		return firstIpEndPoint?.Address?.ToString();
-	}
-
-	public string? GetLastIp(bool isPortNeedRetain = false)
-	{
-		_ = ConnectionIpEndPoints.TryParseToLastIpEndPoint(ConnectionIpEndPointsString, out var firstIpEndPoint);
-		{ }
-		return firstIpEndPoint?.Address?.ToString();
-	}
-
 	#endregion
 }

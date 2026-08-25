@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using System.Threading;
 
 namespace BaoXia.Utils.Models;
 
@@ -14,6 +15,8 @@ public class ConnectionIpEndPoints
 
 	#region 自身属性
 
+	private readonly Lock _ipEndPointsLock = new();
+
 	private List<IPEndPoint>? _ipEndPoints = null;
 
 	private long _ipEndPointsUpdateTicks = 0;
@@ -22,12 +25,14 @@ public class ConnectionIpEndPoints
 
 	private long _ipAddressStringsUpdateTicks = 0;
 
-	private string? _firstIPEndPointAddress = null;
-	private long _firstIPEndPointAddressUpdateTicks = 0;
+	private string? _firstIpEndPointAddress = null;
+	private long _firstIpEndPointAddressUpdateTicks = 0;
 
-	private string? _lastIPEndPointAddress = null;
-	private long _lastIPEndPointAddressUpdateTicks = 0;
+	private string? _lastIpEndPointAddress = null;
+	private long _lastIpEndPointAddressUpdateTicks = 0;
 
+	private string? _keyIpEndPointAddress = null;
+	private long _keyIpEndPointAddressUpdateTicks = 0;
 
 	public List<IPEndPoint>? IpEndPoints
 	{
@@ -37,7 +42,7 @@ public class ConnectionIpEndPoints
 		}
 		set
 		{
-			lock (this)
+			lock (_ipEndPointsLock)
 			{
 				_ipEndPoints = value;
 				_ipEndPointsUpdateTicks = DateTime.Now.Ticks;
@@ -45,14 +50,22 @@ public class ConnectionIpEndPoints
 				_ipAddressStrings = null;
 				_ipAddressStringsUpdateTicks = 0;
 
-				_firstIPEndPointAddress = null;
-				_firstIPEndPointAddressUpdateTicks = 0;
+				_firstIpEndPointAddress = null;
+				_firstIpEndPointAddressUpdateTicks = 0;
 
-				_lastIPEndPointAddress = null;
-				_lastIPEndPointAddressUpdateTicks = 0;
+				_lastIpEndPointAddress = null;
+				_lastIpEndPointAddressUpdateTicks = 0;
+
+				_keyIpEndPointAddress = null;
+				_keyIpEndPointAddressUpdateTicks = 0;
 			}
 		}
 	}
+
+	public IPEndPoint? XRealIpEndPoint { get; set; }
+	public IPEndPoint? XForwardedForIpEndPoint { get; set; }
+	public IPEndPoint? BxGatewayPrevIpEndPoint { get; set; }
+	public IPEndPoint? TcpIpRemoteIpEndPoint { get; set; }
 
 
 	public HashSet<string>? IPAddressStrings
@@ -61,7 +74,7 @@ public class ConnectionIpEndPoints
 		{
 			if (_ipAddressStringsUpdateTicks != _ipEndPointsUpdateTicks)
 			{
-				lock (this)
+				lock (_ipEndPointsLock)
 				{
 					if (_ipAddressStringsUpdateTicks != _ipEndPointsUpdateTicks)
 					{
@@ -85,7 +98,7 @@ public class ConnectionIpEndPoints
 		}
 	}
 
-	public IPEndPoint? FirstIPEndPoint
+	public IPEndPoint? FirstIpEndPoint
 	{
 		get
 		{
@@ -98,26 +111,26 @@ public class ConnectionIpEndPoints
 		}
 	}
 
-	public string? FirstIPEndPointAddress
+	public string? FirstIpEndPointAddress
 	{
 		get
 		{
-			if (_firstIPEndPointAddressUpdateTicks != _ipEndPointsUpdateTicks)
+			if (_firstIpEndPointAddressUpdateTicks != _ipEndPointsUpdateTicks)
 			{
-				lock (this)
+				lock (_ipEndPointsLock)
 				{
-					if (_firstIPEndPointAddressUpdateTicks != _ipEndPointsUpdateTicks)
+					if (_firstIpEndPointAddressUpdateTicks != _ipEndPointsUpdateTicks)
 					{
-						_firstIPEndPointAddress = FirstIPEndPoint?.Address.ToString();
-						_firstIPEndPointAddressUpdateTicks = _ipEndPointsUpdateTicks;
+						_firstIpEndPointAddress = FirstIpEndPoint?.Address.ToString();
+						_firstIpEndPointAddressUpdateTicks = _ipEndPointsUpdateTicks;
 					}
 				}
 			}
-			return _firstIPEndPointAddress;
+			return _firstIpEndPointAddress;
 		}
 	}
 
-	public IPEndPoint? LastIPEndPoint
+	public IPEndPoint? LastIpEndPoint
 	{
 		get
 		{
@@ -129,26 +142,64 @@ public class ConnectionIpEndPoints
 		}
 	}
 
-	public string? LastIPEndPointAddress
+	public string? LastIpEndPointAddress
 	{
 		get
 		{
-			if (_lastIPEndPointAddressUpdateTicks != _ipEndPointsUpdateTicks)
+			if (_lastIpEndPointAddressUpdateTicks != _ipEndPointsUpdateTicks)
 			{
-				lock (this)
+				lock (_ipEndPointsLock)
 				{
-					if (_lastIPEndPointAddressUpdateTicks != _ipEndPointsUpdateTicks)
+					if (_lastIpEndPointAddressUpdateTicks != _ipEndPointsUpdateTicks)
 					{
-						_lastIPEndPointAddress = LastIPEndPoint?.Address.ToString();
-						_lastIPEndPointAddressUpdateTicks = _ipEndPointsUpdateTicks;
+						_lastIpEndPointAddress = LastIpEndPoint?.Address.ToString();
+						_lastIpEndPointAddressUpdateTicks = _ipEndPointsUpdateTicks;
 					}
 				}
 			}
-			return _lastIPEndPointAddress;
+			return _lastIpEndPointAddress;
 		}
 	}
 
-	public IPEndPoint? BxGatewayPrevIPEndPoint { get; set; }
+	public IPEndPoint? KeyIpEndPoint
+	{
+		get
+		{
+			if (XRealIpEndPoint != null)
+			{
+				return XRealIpEndPoint;
+			}
+			if (XForwardedForIpEndPoint != null)
+			{
+				return XForwardedForIpEndPoint;
+			}
+			if (BxGatewayPrevIpEndPoint != null)
+			{
+				return BxGatewayPrevIpEndPoint;
+			}
+			return TcpIpRemoteIpEndPoint;
+		}
+	}
+
+	public string? KeyIpEndPointAddress
+	{
+		get
+		{
+			if (_keyIpEndPointAddressUpdateTicks != _ipEndPointsUpdateTicks)
+			{
+				lock (_ipEndPointsLock)
+				{
+					if (_keyIpEndPointAddressUpdateTicks != _ipEndPointsUpdateTicks)
+					{
+						_keyIpEndPointAddress = KeyIpEndPoint?.Address.ToString();
+						_keyIpEndPointAddressUpdateTicks = _ipEndPointsUpdateTicks;
+					}
+				}
+			}
+			return _keyIpEndPointAddress;
+		}
+	}
+
 
 	#endregion
 
@@ -193,13 +244,64 @@ public class ConnectionIpEndPoints
 			return false;
 		}
 
-		connectionIpEndPoints = new ConnectionIpEndPoints(ipEndPoints);
+		connectionIpEndPoints = new ConnectionIpEndPoints(ipEndPoints, null, null, null, null);
 		{ }
 		return connectionIpEndPoints != null;
 	}
 
-	#endregion
+	public static bool TryParseToFirstIpEndPoint(string? connectionIpEndPointsString, [NotNullWhen(true)] out IPEndPoint? firstIpEndPoint)
+	{
+		//
+		firstIpEndPoint = null;
+		//
+		if (string.IsNullOrEmpty(connectionIpEndPointsString))
+		{
+			return false;
+		}
 
+		var connectionIPEndPointStrings = connectionIpEndPointsString.Split(
+			ConnectionIPEndPointConstants.ConnectionIpEndPointsSparator,
+			StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+		if (connectionIPEndPointStrings == null || connectionIPEndPointStrings.Length < 1)
+		{
+			return false;
+		}
+
+		var connectionIPEndPointString = connectionIPEndPointStrings[0];
+		if (IPEndPoint.TryParse(connectionIPEndPointString, out firstIpEndPoint))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public static bool TryParseToLastIpEndPoint(string? connectionIpEndPointsString, [NotNullWhen(true)] out IPEndPoint? lastIpEndPoint)
+	{
+		//
+		lastIpEndPoint = null;
+		//
+		if (string.IsNullOrEmpty(connectionIpEndPointsString))
+		{
+			return false;
+		}
+
+		var connectionIPEndPointStrings = connectionIpEndPointsString.Split(
+			ConnectionIPEndPointConstants.ConnectionIpEndPointsSparator,
+			StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+		if (connectionIPEndPointStrings == null || connectionIPEndPointStrings.Length < 1)
+		{
+			return false;
+		}
+
+		var connectionIPEndPointString = connectionIPEndPointStrings[^1];
+		if (IPEndPoint.TryParse(connectionIPEndPointString, out lastIpEndPoint))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	#endregion
 
 
 	////////////////////////////////////////////////
@@ -208,12 +310,15 @@ public class ConnectionIpEndPoints
 
 	#region 自身实现
 
-	public ConnectionIpEndPoints()
-	{ }
-
-	public ConnectionIpEndPoints(List<IPEndPoint>? ipEndPoints)
+	public ConnectionIpEndPoints(List<IPEndPoint>? ipEndPoints, IPEndPoint? xRealIpEndPoint, IPEndPoint? xForwardedForIpEndPoint,
+		IPEndPoint? bxGatewayPrevIpEndPoint, IPEndPoint? tcpIpRemoteIpEndPoint)
 	{
 		IpEndPoints = ipEndPoints;
+
+		XRealIpEndPoint = xRealIpEndPoint;
+		XForwardedForIpEndPoint = xForwardedForIpEndPoint;
+		BxGatewayPrevIpEndPoint = bxGatewayPrevIpEndPoint;
+		TcpIpRemoteIpEndPoint = tcpIpRemoteIpEndPoint;
 	}
 
 	public bool Contains(string ipAddress)

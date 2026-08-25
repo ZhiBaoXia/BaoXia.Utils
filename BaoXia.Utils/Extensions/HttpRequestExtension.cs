@@ -53,16 +53,18 @@ public static class HttpRequestExtension
 	public static ConnectionIpEndPoints GetConnectionIpEndPoints(this HttpRequest request)
 	{
 		var connectionIpEndPoints = new List<IPEndPoint>();
-		var isConnectionIpEndPointsGetFromBxGatewayHttpHeader = false;
 
 		////////////////////////////////////////////
 		// 1/，如果存在【宝匣网关】中的客户端地址信息，则只使用【宝匣网关】中的客户端地址信息。
 		////////////////////////////////////////////////
+		IPEndPoint? bxGatewayPrevIpEndPoint = null;
+		IPEndPoint? xForwardedForIpEndPoint = null;
+		IPEndPoint? xRealIpEndPoint = null;
 		if (request.Headers?.TryGetValue(HttpHeaderKeys.BxService_Gateway_ConnectionIpEndPoints,
-			out var bxGatewayConnectionIPEndPointValues) == true
-			&& bxGatewayConnectionIPEndPointValues.Count > 0)
+			out var bxGatewayConnectionIpEndPointValues) == true
+			&& bxGatewayConnectionIpEndPointValues.Count > 0)
 		{
-			foreach (var bxGatewayConnectionIPEndPointValue in bxGatewayConnectionIPEndPointValues)
+			foreach (var bxGatewayConnectionIPEndPointValue in bxGatewayConnectionIpEndPointValues)
 			{
 				var bxGatewayConnectionIPEndPointStrings = bxGatewayConnectionIPEndPointValue?.Split(
 					',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -75,14 +77,12 @@ public static class HttpRequestExtension
 						{
 							// !!!
 							connectionIpEndPoints.Add(connectionIPEndPoint);
+							bxGatewayPrevIpEndPoint = connectionIPEndPoint;
 							// !!!
 						}
 					}
 				}
 			}
-			//
-			isConnectionIpEndPointsGetFromBxGatewayHttpHeader = true;
-			//
 		}
 		else
 		{
@@ -92,11 +92,11 @@ public static class HttpRequestExtension
 			if (request.Headers is IHeaderDictionary requestHeaders)
 			{
 				// “X-Forwarded-For”的客户端地址。
-				if (requestHeaders.TryGetValue("X-Forwarded-For", out var x_Forwarded_For) == true && x_Forwarded_For.Count > 0)
+				if (requestHeaders.TryGetValue("X-Forwarded-For", out var xForwardedForValues) == true && xForwardedForValues.Count > 0)
 				{
-					foreach (var forward in x_Forwarded_For)
+					foreach (var xForwardedForValue in xForwardedForValues)
 					{
-						var forwardClientAddresses = forward?.Split(
+						var forwardClientAddresses = xForwardedForValue?.Split(
 							',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 						if (forwardClientAddresses != null)
 						{
@@ -106,6 +106,7 @@ public static class HttpRequestExtension
 								{
 									// !!!
 									connectionIpEndPoints.Add(connectionIPEndPoint);
+									xForwardedForIpEndPoint = connectionIPEndPoint;
 									// !!!
 								}
 							}
@@ -121,6 +122,7 @@ public static class HttpRequestExtension
 						{
 							// !!!
 							connectionIpEndPoints.Add(connectionIPEndPoint);
+							xRealIpEndPoint = connectionIPEndPoint;
 							// !!!
 						}
 					}
@@ -131,27 +133,19 @@ public static class HttpRequestExtension
 		////////////////////////////////////////////////
 		// 2/，获取【Tcp连接】中的客户端地址信息。
 		////////////////////////////////////////////////
-		IPEndPoint? bxGatewayPrevIPEndPoint = null;
+		IPEndPoint? tcpIpRemoteIpEndPoint = null;
 		if (request.HttpContext?.Connection is { } httpConnection
 			&& httpConnection.RemoteIpAddress is { } remoteIpAddress)
 		{
-			if (isConnectionIpEndPointsGetFromBxGatewayHttpHeader && connectionIpEndPoints.Count > 0)
-			{
-				bxGatewayPrevIPEndPoint = connectionIpEndPoints[^1];
-			}
 
-			var connectionEndPoint = new IPEndPoint(remoteIpAddress, httpConnection.RemotePort);
+			var remoteIpEndPoint = new IPEndPoint(remoteIpAddress, httpConnection.RemotePort);
 			// !!!
-			connectionIpEndPoints.Add(connectionEndPoint);
+			connectionIpEndPoints.Add(remoteIpEndPoint);
+			tcpIpRemoteIpEndPoint = remoteIpEndPoint;
 			// !!!
 		}
 
-		return new()
-		{
-			IpEndPoints = connectionIpEndPoints,
-
-			BxGatewayPrevIPEndPoint = bxGatewayPrevIPEndPoint
-		};
+		return new(connectionIpEndPoints, xRealIpEndPoint, xForwardedForIpEndPoint, bxGatewayPrevIpEndPoint, tcpIpRemoteIpEndPoint);
 	}
 
 	public static string? GetClientConnectionAddressInfesString(this HttpRequest request)
@@ -178,9 +172,8 @@ public static class HttpRequestExtension
 
 		var endPointInfo = new ClientIpInfo()
 		{
-			IpAddressChain = clientConnectionAddressInfes.IpEndPoints.ToClientConnectionIpEndPointsString(),
-			IpPortLast = clientConnectionAddressInfes.LastIPEndPoint?.Port ?? 0
-
+			ConnectionIpEndPointsString = clientConnectionAddressInfes.IpEndPoints.ToClientConnectionIpEndPointsString(),
+			KeyIpAddress = clientConnectionAddressInfes.KeyIpEndPoint?.Address.ToString()
 		};
 		return endPointInfo;
 	}

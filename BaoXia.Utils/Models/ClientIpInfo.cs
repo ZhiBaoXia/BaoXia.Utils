@@ -8,11 +8,15 @@ public class ClientIpInfo
 
 	#region 自身属性
 
-	public string? IpAddressChain { get; set; }
-
+	/// <summary>
+	/// 连接的Ip终结点集合字符串，含端口号。
+	/// </summary>
 	public string? ConnectionIpEndPointsString { get; set; }
 
-	public int IpPortLast { get; set; }
+	/// <summary>
+	/// 关键Ip地址，不含端口号。
+	/// </summary>
+	public string? KeyIpAddress { get; set; }
 
 	#endregion
 
@@ -37,64 +41,24 @@ public class ClientIpInfo
 	public ClientIpInfo()
 	{
 	}
-	public ClientIpInfo(string? ipAddressChain, int ipPort)
+	public ClientIpInfo(string? connectionIpEndPointsString, string? keyIpAddress)
 	{
-		IpAddressChain = ipAddressChain;
-		IpPortLast = ipPort;
+		ConnectionIpEndPointsString = connectionIpEndPointsString;
+		KeyIpAddress = keyIpAddress;
 	}
 
-	public string GetFirstIp(bool isPortNeedRetain = false)
+	public string? GetFirsIpEndPoint(bool isPortNeedRetain = false)
 	{
-		var clientIpAddressFirst = string.Empty;
-		if (IpAddressChain is { } ipAddressChain)
-		{
-			var indexOfLastComma = ipAddressChain.IndexOf(',');
-			if (indexOfLastComma >= 0)
-			{
-				clientIpAddressFirst = ipAddressChain[..indexOfLastComma];
-			}
-			else
-			{
-				clientIpAddressFirst = ipAddressChain;
-				if (!isPortNeedRetain)
-				{
-					var indexOfColon = clientIpAddressFirst.IndexOf(':');
-					if (indexOfColon >= 0)
-					{
-						clientIpAddressFirst = clientIpAddressFirst[..indexOfColon];
-					}
-				}
-			}
-		}
-		return clientIpAddressFirst;
+		_ = ConnectionIpEndPoints.TryParseToFirstIpEndPoint(ConnectionIpEndPointsString, out var firstIpEndPoint);
+		{ }
+		return firstIpEndPoint?.Address?.ToString();
 	}
 
 	public string? GetLastIp(bool isPortNeedRetain = false)
 	{
-		if (IpAddressChain is not { } ipAddressChain)
-		{
-			return null;
-		}
-		string clientIpAddressLast;
-		var indexOfLastComma = ipAddressChain.LastIndexOf(',');
-		if (indexOfLastComma >= 0)
-		{
-			clientIpAddressLast = ipAddressChain[(indexOfLastComma + 1)..];
-		}
-		else
-		{
-			clientIpAddressLast = ipAddressChain;
-		}
-
-		if (clientIpAddressLast != null && !isPortNeedRetain)
-		{
-			var indexOfColon = clientIpAddressLast.IndexOf(':');
-			if (indexOfColon >= 0)
-			{
-				clientIpAddressLast = clientIpAddressLast[..indexOfColon];
-			}
-		}
-		return clientIpAddressLast;
+		_ = ConnectionIpEndPoints.TryParseToLastIpEndPoint(ConnectionIpEndPointsString, out var firstIpEndPoint);
+		{ }
+		return firstIpEndPoint?.Address?.ToString();
 	}
 
 	#endregion

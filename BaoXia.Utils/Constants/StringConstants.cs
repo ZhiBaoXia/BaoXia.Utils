@@ -47,8 +47,8 @@ public class StringConstants
 	/// <summary>
 	/// 数字和全部字符常量。
 	/// </summary>
-	public static readonly char[][] AllChars = { ArabicNumeralChars, AlphabetChars, AlphabetCharsInLowercase, AlphabetCharsInUppercase,
-		ArabicNumeralAndAlphabetChars,ArabicNumeralAndAlphabetCharsInLowercase, ArabicNumeralAndAlphabetCharsInUppercase };
+	public static readonly char[][] AllChars = [ ArabicNumeralChars, AlphabetChars, AlphabetCharsInLowercase, AlphabetCharsInUppercase,
+		ArabicNumeralAndAlphabetChars,ArabicNumeralAndAlphabetCharsInLowercase, ArabicNumeralAndAlphabetCharsInUppercase ];
 
 	#endregion
 }

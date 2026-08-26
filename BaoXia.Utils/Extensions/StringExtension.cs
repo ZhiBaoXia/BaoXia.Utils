@@ -232,28 +232,27 @@ public static class StringExtension
 		return stringTrimed;
 	}
 
-	public static string? Trim(
-	    this string originalString,
-	    IEnumerable<string?>? trimStrings,
-	    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+	public static string? Trim(this string originalString, IEnumerable<string?>? trimStrings,
+		StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 	{
 		if (trimStrings == null)
 		{
 			return originalString;
 		}
 
-		var stringTrimed = TrimStart(
-		    originalString,
-		    trimStrings,
-		    stringComparison);
+		var stringTrimed = TrimStart(originalString, trimStrings, stringComparison);
 		if (stringTrimed?.Length > 0)
 		{
-			stringTrimed = TrimEnd(
-			    stringTrimed,
-			    trimStrings,
-			    stringComparison);
+			stringTrimed = TrimEnd(stringTrimed, trimStrings, stringComparison);
 		}
 		return stringTrimed;
+	}
+
+	public static string TrimTrailingPunctuation(this string originalString)
+	{
+		return originalString.TrimEnd(
+			',', '.', ':', ';',
+			'，', '。', '：', '；');
 	}
 
 	/// <summary>
@@ -1842,46 +1841,6 @@ public static class StringExtension
 	}
 
 	/// <summary>
-	/// 使用“Environment.AESKey_Default”作为加密Key，通过“AES”算法对当前字符串进行加密。
-	/// </summary>
-	/// <param name="plaintext">当前“明文”字符串。</param>
-	/// <param name="key">指定的加密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
-	/// <returns>返回加密后的字符串。</returns>
-
-	[Obsolete("当前函数，使用“Aes/Ecb算法”，存在安全隐患（相同明文、密钥时，密文永远相同，因此可通过重复明文的方式进行破解），推荐使用“ToNewCiphertext”方法替代。")]
-	public static string? StringByEncrypted(
-	    this string plaintext,
-	    string? key = null)
-	{
-		key ??= Environment.AESKeyDeafult;
-
-		var plaintextBytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
-		{ }
-		var cipherBytes = AES.EncryptToBytesWithECB(plaintextBytes, key);
-		if (cipherBytes.Length < 1)
-		{
-			return null;
-		}
-		var ciphertext = Convert.ToBase64String(cipherBytes);
-		{ }
-		return ciphertext;
-	}
-
-	/// <summary>
-	/// 使用“Environment.AESKey_Default”作为加密Key，通过“AES”算法对当前字符串进行解密。
-	/// </summary>
-	/// <param name="ciphertext">当前“密文”字符串。，</param>
-	/// <param name="key">指定的解密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
-	/// <returns>返回解密后的字符串。</returns>
-	[Obsolete("当前函数，使用“Aes/Ecb算法”，存在安全隐患（相同明文、密钥时，密文永远相同，因此可通过重复明文的方式进行破解），推荐使用“ToPlaintext”方法替代。")]
-	public static string StringByDecrypted(
-	    this string ciphertext,
-	    string? key = null)
-	{
-		return ToPlaintext(ciphertext, key);
-	}
-
-	/// <summary>
 	/// 使用Utf8编码，将当前字符串转为字节数组。
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
@@ -1907,8 +1866,7 @@ public static class StringExtension
 	/// <returns>
 	/// 当前字符串对象对应的字符大小写哈希码，如：“Abc”的哈希码为“100”，“aBc”的哈希码为“010”。 
 	/// </returns>
-	public static string ToHashCodeByCharCase(
-	    this string? plaintext)
+	public static string ToHashCodeByCharCase(this string? plaintext)
 	{
 		var hashCodeBuilder = new StringBuilder();
 		if (!string.IsNullOrEmpty(plaintext))

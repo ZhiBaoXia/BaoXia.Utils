@@ -19,6 +19,7 @@ namespace BaoXia.Utils
 
 		public const int TryLoadsCountAtConfigFileContentChanged = 3;
 
+		[JsonIgnore]
 		public string? ConfigFileSecondFileExtensionNameSpecifed { get; set; }
 
 
@@ -166,6 +167,7 @@ namespace BaoXia.Utils
 		/// <summary>
 		/// 实际读写的文件绝对路径。
 		/// </summary>
+		[JsonIgnore]
 		public string? FinalFilePath
 		{
 			get

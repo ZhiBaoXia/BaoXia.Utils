@@ -50,19 +50,19 @@ public class AsyncLock : SemaphoreSlim
 	}
 
 	public static async Task LockAsync<SemaphoreSlimType>(
-	    SemaphoreSlimType? lockerGot,
+	    SemaphoreSlimType? lockerGotFromFunctionParams,
 	    Func<SemaphoreSlimType?>? toGetLocker,
 	    Func<SemaphoreSlimType?, Task> toExecuteAsync)
 	    where SemaphoreSlimType : SemaphoreSlim
 	{
 		var isLockerNeedRelease = false;
-		if (lockerGot == null)
+		if (lockerGotFromFunctionParams == null)
 		{
 			// !!!
-			lockerGot = toGetLocker?.Invoke();
-			if (lockerGot != null)
+			lockerGotFromFunctionParams = toGetLocker?.Invoke();
+			if (lockerGotFromFunctionParams != null)
 			{
-				await lockerGot.WaitAsync();
+				await lockerGotFromFunctionParams.WaitAsync();
 				isLockerNeedRelease = true;
 				// !!!
 			}
@@ -70,14 +70,14 @@ public class AsyncLock : SemaphoreSlim
 		}
 		try
 		{
-			await toExecuteAsync(lockerGot);
+			await toExecuteAsync(lockerGotFromFunctionParams);
 		}
 		finally
 		{
 			if (isLockerNeedRelease)
 			{
 				// !!!
-				lockerGot?.Release();
+				lockerGotFromFunctionParams?.Release();
 				//lockerGot = null;
 				//isLockerNeedRelease = false;
 				// !!!

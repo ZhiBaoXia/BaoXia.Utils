@@ -99,33 +99,26 @@ public class TempTokenManager
 	}
 
 	public async Task<TempTokenInfoClass> CreateTokenInfoAsync(
-	    TempTokenCreateParamClass tokenCreateParam,
-	    DateTimeOffset createTime)
+		TempTokenCreateParamClass tokenCreateParam, DateTimeOffset createTime)
 	{
-		var tokenInfo
-		    = await AsyncLock.LockAsync(
-		    _tokenInfesLocker,
-		    null,
-		    async (_) =>
-		    {
-			    TempTokenInfoClass tokenInfo;
-			    while (true)
-			    {
-				    tokenInfo = await DidCreateTempTokenInfoAsync(tokenCreateParam, createTime);
-				    if (!_tokenInfes.ContainsKey(tokenInfo.TokenValue))
-				    {
-					    break;
-				    }
-			    }
-			    ////////////////////////////////////////////////
-			    // !!!
-			    _tokenInfes.AddOrSet(
-		tokenInfo.TokenValue,
-		tokenInfo);
-			    // !!!
-			    ////////////////////////////////////////////////
-			    return tokenInfo;
-		    });
+		var tokenInfo = await AsyncLock.LockAsync(null, () => _tokenInfesLocker, async (_) =>
+		{
+			TempTokenInfoClass tokenInfo;
+			while (true)
+			{
+				tokenInfo = await DidCreateTempTokenInfoAsync(tokenCreateParam, createTime);
+				if (!_tokenInfes.ContainsKey(tokenInfo.TokenValue))
+				{
+					break;
+				}
+			}
+			////////////////////////////////////////////////
+			// !!!
+			_tokenInfes.AddOrSet(tokenInfo.TokenValue, tokenInfo);
+			// !!!
+			////////////////////////////////////////////////
+			return tokenInfo;
+		});
 		return tokenInfo;
 	}
 

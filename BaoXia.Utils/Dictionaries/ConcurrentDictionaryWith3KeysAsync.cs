@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace BaoXia.Utils.Dictionaries;
 
 public class ConcurrentDictionaryWith3KeysAsync
-    <PrimaryDeictionaryKeyType,
-    SecondaryDeictionaryKeyType,
-    ThirdaryDeictionaryKeyType,
+    <PrimaryDictionaryKeyType,
+    SecondaryDictionaryKeyType,
+    ThirdaryDictionaryKeyType,
     ItemType>
-    where PrimaryDeictionaryKeyType : notnull
-    where SecondaryDeictionaryKeyType : notnull
-    where ThirdaryDeictionaryKeyType : notnull
+    where PrimaryDictionaryKeyType : notnull
+    where SecondaryDictionaryKeyType : notnull
+    where ThirdaryDictionaryKeyType : notnull
 {
 	////////////////////////////////////////////////
 	// @静态常量
@@ -50,9 +50,9 @@ public class ConcurrentDictionaryWith3KeysAsync
 
 	#region 自身属性
 
-	public readonly ConcurrentDictionary<PrimaryDeictionaryKeyType,
-	    ConcurrentDictionary<SecondaryDeictionaryKeyType,
-	    ConcurrentDictionary<ThirdaryDeictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>>> PrimaryDictionaries = new();
+	public readonly ConcurrentDictionary<PrimaryDictionaryKeyType,
+	    ConcurrentDictionary<SecondaryDictionaryKeyType,
+	    ConcurrentDictionary<ThirdaryDictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>>> PrimaryDictionaries = new();
 
 	private string? _name = null;
 	public string? Name { get => _name; set => _name = value; }
@@ -66,47 +66,47 @@ public class ConcurrentDictionaryWith3KeysAsync
 
 	#region 自身实现，获取数据部分。
 
-	public ConcurrentDictionary<SecondaryDeictionaryKeyType,
-	    ConcurrentDictionary<ThirdaryDeictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>>? GetSecondaryDictionaries(PrimaryDeictionaryKeyType primaryDeictionaryKey)
+	public ConcurrentDictionary<SecondaryDictionaryKeyType,
+	    ConcurrentDictionary<ThirdaryDictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>>? GetSecondaryDictionaries(PrimaryDictionaryKeyType primaryDictionaryKey)
 	{
-		_ = PrimaryDictionaries.TryGetValue(primaryDeictionaryKey, out var secondaryDictionaries);
+		_ = PrimaryDictionaries.TryGetValue(primaryDictionaryKey, out var secondaryDictionaries);
 		{ }
 		return secondaryDictionaries;
 	}
 
-	public ConcurrentDictionary<ThirdaryDeictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>? GetThirdaryDictionaries(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey)
+	public ConcurrentDictionary<ThirdaryDictionaryKeyType, DictionaryValueContainer<ItemType, ItemOperateLocker>>? GetThirdaryDictionaries(
+	    PrimaryDictionaryKeyType primaryDictionaryKey,
+	    SecondaryDictionaryKeyType secondaryDictionaryKey)
 	{
-		var secondaryDictionaries = GetSecondaryDictionaries(primaryDeictionaryKey);
+		var secondaryDictionaries = GetSecondaryDictionaries(primaryDictionaryKey);
 		if (secondaryDictionaries == null)
 		{
 			return null;
 		}
-		_ = secondaryDictionaries.TryGetValue(secondaryDeictionaryKey, out var thirdaryDictionaries);
+		_ = secondaryDictionaries.TryGetValue(secondaryDictionaryKey, out var thirdaryDictionaries);
 		{ }
 		return thirdaryDictionaries;
 	}
 
 	public ItemType? Get(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-	    ThirdaryDeictionaryKeyType thirdaryDeictionaryKey)
+	    PrimaryDictionaryKeyType primaryDictionaryKey,
+	    SecondaryDictionaryKeyType secondaryDictionaryKey,
+	    ThirdaryDictionaryKeyType thirdaryDictionaryKey)
 	{
 		if (!PrimaryDictionaries.TryGetValue(
-		    primaryDeictionaryKey,
+		    primaryDictionaryKey,
 		    out var secondaryDictionaries))
 		{
 			return default;
 		}
 		if (!secondaryDictionaries.TryGetValue(
-		    secondaryDeictionaryKey,
+		    secondaryDictionaryKey,
 		    out var thirdaryDictionaries))
 		{
 			return default;
 		}
 		if (thirdaryDictionaries.TryGetValue(
-		    thirdaryDeictionaryKey,
+		    thirdaryDictionaryKey,
 		    out var enityIndexInfo))
 		{
 			return enityIndexInfo.FirstItem;
@@ -115,15 +115,15 @@ public class ConcurrentDictionaryWith3KeysAsync
 	}
 
 	public bool TryGet(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-	    ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
+	    PrimaryDictionaryKeyType primaryDictionaryKey,
+	    SecondaryDictionaryKeyType secondaryDictionaryKey,
+	    ThirdaryDictionaryKeyType thirdaryDictionaryKey,
 	    out ItemType? item)
 	{
 		item = Get(
-		    primaryDeictionaryKey,
-		    secondaryDeictionaryKey,
-		    thirdaryDeictionaryKey);
+		    primaryDictionaryKey,
+		    secondaryDictionaryKey,
+		    thirdaryDictionaryKey);
 		if (item != null)
 		{
 			return true;
@@ -134,16 +134,16 @@ public class ConcurrentDictionaryWith3KeysAsync
 	public int GetCount()
 	{
 		int allItemsCount = 0;
-		foreach (var primaryDeictionaryKeyValue in PrimaryDictionaries)
+		foreach (var primaryDictionaryKeyValue in PrimaryDictionaries)
 		{
-			var secondaryDeictionaries = primaryDeictionaryKeyValue.Value;
-			foreach (var secondaryDeictionaryKeyValue in secondaryDeictionaries)
+			var secondaryDeictionaries = primaryDictionaryKeyValue.Value;
+			foreach (var secondaryDictionaryKeyValue in secondaryDeictionaries)
 			{
-				var thirdaryDeictionaries = secondaryDeictionaryKeyValue.Value;
-				foreach (var thirdaryDeictionaryKeyValue in thirdaryDeictionaries)
+				var thirdaryDeictionaries = secondaryDictionaryKeyValue.Value;
+				foreach (var thirdaryDictionaryKeyValue in thirdaryDeictionaries)
 				{
 					// !!!
-					allItemsCount += thirdaryDeictionaryKeyValue.Value.ItemsCount;
+					allItemsCount += thirdaryDictionaryKeyValue.Value.ItemsCount;
 					// !!!
 				}
 			}
@@ -161,249 +161,201 @@ public class ConcurrentDictionaryWith3KeysAsync
 	#region 自身实现，更新数据部分。
 
 	public async Task<ItemType?> AddAsync(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-	    ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
+	    PrimaryDictionaryKeyType primaryDictionaryKey,
+	    SecondaryDictionaryKeyType secondaryDictionaryKey,
+	    ThirdaryDictionaryKeyType thirdaryDictionaryKey,
 	    ItemType? item,
 	    Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
-		var secondaryDictionaries
-		    = PrimaryDictionaries.GetOrAdd(
-		    primaryDeictionaryKey,
-		    (_) => []);
-		var thirdaryDictionaries
-		    = secondaryDictionaries.GetOrAdd(
-		    secondaryDeictionaryKey,
-		    (_) => []);
-		var itemIndexInfo
-		    = thirdaryDictionaries.GetOrAdd(
-		    thirdaryDeictionaryKey,
-		    (_) => DidCreateDictionaryValueContainer());
-		var newIndexItem
-		    = await AsyncLock.LockAsync(
-		    itemIndexInfo.ItemOperateLocker,
-		    null,
-		    async (_) =>
-		    {
-			    // !!!
-			    var lastIndexItem = itemIndexInfo.FirstItem;
-			    var newIndexItem = item;
-			    if (toUpdateIndexItemWithNewItem != null)
-			    {
-				    newIndexItem = toUpdateIndexItemWithNewItem(item, lastIndexItem);
-			    }
-			    newIndexItem = WillUpdateIndexItemWithPrimaryDeictionaryKey(
-		primaryDeictionaryKey,
-		secondaryDeictionaryKey,
-		thirdaryDeictionaryKey,
-		//
-		newIndexItem);
-			    if (newIndexItem != null)
-			    {
-				    if (itemIndexInfo.Items.Length == 1)
-				    {
-					    // !!!
-					    itemIndexInfo.Items[0] = newIndexItem;
-					    // !!!
-				    }
-				    else
-				    {
-					    // !!!
-					    itemIndexInfo.Items = [newIndexItem];
-					    // !!!
-				    }
-			    }
-			    else
-			    {
-				    // !!!
-				    itemIndexInfo.Items = [];
-				    // !!!
-			    }
-			    // !!!
-			    return await Task.FromResult(newIndexItem);
-			    // !!!
-		    });
+		var secondaryDictionaries = PrimaryDictionaries.GetOrAdd(primaryDictionaryKey, (_) => []);
+		var thirdaryDictionaries = secondaryDictionaries.GetOrAdd(secondaryDictionaryKey, (_) => []);
+		var itemIndexInfo = thirdaryDictionaries.GetOrAdd(thirdaryDictionaryKey, (_) => DidCreateDictionaryValueContainer());
+		var newIndexItem = await AsyncLock.LockAsync(null, () => itemIndexInfo.ItemOperateLocker, async (_) =>
+		{
+			// !!!
+			var lastIndexItem = itemIndexInfo.FirstItem;
+			var newIndexItem = item;
+			if (toUpdateIndexItemWithNewItem != null)
+			{
+				newIndexItem = toUpdateIndexItemWithNewItem(item, lastIndexItem);
+			}
+			newIndexItem = WillUpdateIndexItemWithPrimaryDictionaryKey(
+				primaryDictionaryKey, secondaryDictionaryKey, thirdaryDictionaryKey, newIndexItem);
+			if (newIndexItem != null)
+			{
+				if (itemIndexInfo.Items.Length == 1)
+				{
+					// !!!
+					itemIndexInfo.Items[0] = newIndexItem;
+					// !!!
+				}
+				else
+				{
+					// !!!
+					itemIndexInfo.Items = [newIndexItem];
+					// !!!
+				}
+			}
+			else
+			{
+				// !!!
+				itemIndexInfo.Items = [];
+				// !!!
+			}
+			// !!!
+			return await Task.FromResult(newIndexItem);
+			// !!!
+		});
 		return newIndexItem;
 	}
 
 	public async Task<ItemType?> GetOrAddAsync(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-	    ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
-	    Func<PrimaryDeictionaryKeyType,
-	    SecondaryDeictionaryKeyType,
-	    ThirdaryDeictionaryKeyType,
+	    PrimaryDictionaryKeyType primaryDictionaryKey,
+	    SecondaryDictionaryKeyType secondaryDictionaryKey,
+	    ThirdaryDictionaryKeyType thirdaryDictionaryKey,
+	    Func<PrimaryDictionaryKeyType,
+	    SecondaryDictionaryKeyType,
+	    ThirdaryDictionaryKeyType,
 	    Task<ItemType?>> toCreateItemAsync,
 	    Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
-		var secondaryDictionaries
-		    = PrimaryDictionaries.GetOrAdd(
-		    primaryDeictionaryKey,
-		    (_) => []);
-		var thirdaryDictionaries
-		    = secondaryDictionaries.GetOrAdd(
-		    secondaryDeictionaryKey,
-		    (_) => []);
-		var itemIndexInfo
-		    = thirdaryDictionaries.GetOrAdd(
-		    thirdaryDeictionaryKey,
-		    (_) => DidCreateDictionaryValueContainer());
+		var secondaryDictionaries = PrimaryDictionaries.GetOrAdd(primaryDictionaryKey, (_) => []);
+		var thirdaryDictionaries = secondaryDictionaries.GetOrAdd(secondaryDictionaryKey, (_) => []);
+		var itemIndexInfo = thirdaryDictionaries.GetOrAdd(thirdaryDictionaryKey, (_) => DidCreateDictionaryValueContainer());
 		var lastIndexItem = itemIndexInfo.FirstItem;
 		if (lastIndexItem != null)
 		{
 			return lastIndexItem;
 		}
-		var newIndexItem
-		    = await AsyncLock.LockAsync(
-		    itemIndexInfo.ItemOperateLocker,
-		    null,
-		    async (_) =>
-		    {
-			    lastIndexItem = itemIndexInfo.FirstItem;
-			    if (lastIndexItem != null)
-			    {
-				    return lastIndexItem;
-			    }
+		var newIndexItem = await AsyncLock.LockAsync(null, () => itemIndexInfo.ItemOperateLocker, async (_) =>
+		{
+			lastIndexItem = itemIndexInfo.FirstItem;
+			if (lastIndexItem != null)
+			{
+				return lastIndexItem;
+			}
 
-			    // !!!
-			    var newIndexItem
-		= await toCreateItemAsync(
-		primaryDeictionaryKey,
-		secondaryDeictionaryKey,
-		thirdaryDeictionaryKey);
-			    if (toUpdateIndexItemWithNewItem != null)
-			    {
-				    newIndexItem = toUpdateIndexItemWithNewItem(newIndexItem, lastIndexItem);
-			    }
-			    newIndexItem = WillUpdateIndexItemWithPrimaryDeictionaryKey(
-		primaryDeictionaryKey,
-		secondaryDeictionaryKey,
-		thirdaryDeictionaryKey,
-		//
-		newIndexItem);
-			    if (newIndexItem != null)
-			    {
-				    if (itemIndexInfo.Items.Length == 1)
-				    {
-					    // !!!
-					    itemIndexInfo.Items[0] = newIndexItem;
-					    // !!!
-				    }
-				    else
-				    {
-					    // !!!
-					    itemIndexInfo.Items = [newIndexItem];
-					    // !!!
-				    }
-			    }
-			    else
-			    {
-				    // !!!
-				    itemIndexInfo.Items = [];
-				    // !!!
-			    }
-			    // !!!
-			    return newIndexItem;
-			    // !!!
-		    });
+			// !!!
+			var newIndexItem = await toCreateItemAsync(primaryDictionaryKey, secondaryDictionaryKey, thirdaryDictionaryKey);
+			if (toUpdateIndexItemWithNewItem != null)
+			{
+				newIndexItem = toUpdateIndexItemWithNewItem(newIndexItem, lastIndexItem);
+			}
+			newIndexItem = WillUpdateIndexItemWithPrimaryDictionaryKey(
+				primaryDictionaryKey, secondaryDictionaryKey, thirdaryDictionaryKey, newIndexItem);
+			if (newIndexItem != null)
+			{
+				if (itemIndexInfo.Items.Length == 1)
+				{
+					// !!!
+					itemIndexInfo.Items[0] = newIndexItem;
+					// !!!
+				}
+				else
+				{
+					// !!!
+					itemIndexInfo.Items = [newIndexItem];
+					// !!!
+				}
+			}
+			else
+			{
+				// !!!
+				itemIndexInfo.Items = [];
+				// !!!
+			}
+			// !!!
+			return newIndexItem;
+			// !!!
+		});
 		return newIndexItem;
 	}
 
 	public async Task<ItemType?> GetOrAddAsync(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-	    ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
+	    PrimaryDictionaryKeyType primaryDictionaryKey,
+	    SecondaryDictionaryKeyType secondaryDictionaryKey,
+	    ThirdaryDictionaryKeyType thirdaryDictionaryKey,
 	    ItemType newItem,
 	    Func<ItemType?, ItemType?, ItemType?>? toUpdateIndexItemWithNewItem = null)
 	{
 		return await GetOrAddAsync(
-		    primaryDeictionaryKey,
-		    secondaryDeictionaryKey,
-		    thirdaryDeictionaryKey,
+		    primaryDictionaryKey,
+		    secondaryDictionaryKey,
+		    thirdaryDictionaryKey,
 		    async (_, _, _) => await Task.FromResult(newItem),
 		    toUpdateIndexItemWithNewItem);
 	}
 
 	public async Task<ItemType?> TryRemoveAsync(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-	    ThirdaryDeictionaryKeyType thirdaryDeictionaryKey)
+	    PrimaryDictionaryKeyType primaryDictionaryKey,
+	    SecondaryDictionaryKeyType secondaryDictionaryKey,
+	    ThirdaryDictionaryKeyType thirdaryDictionaryKey)
 	{
-		if (!PrimaryDictionaries.TryGetValue(
-		    primaryDeictionaryKey,
-		    out var secondaryDictionaries))
+		if (!PrimaryDictionaries.TryGetValue(primaryDictionaryKey, out var secondaryDictionaries))
 		{
 			return default;
 		}
-		if (!secondaryDictionaries.TryGetValue(
-		    secondaryDeictionaryKey,
-		    out var thirdaryDictionaries))
+		if (!secondaryDictionaries.TryGetValue(secondaryDictionaryKey, out var thirdaryDictionaries))
 		{
 			return default;
 		}
-		if (!thirdaryDictionaries.TryGetValue(
-		    thirdaryDeictionaryKey,
-		    out var itemIndexInfo))
+		if (!thirdaryDictionaries.TryGetValue(thirdaryDictionaryKey, out var itemIndexInfo))
 		{
 			return default;
 		}
 
-		var itemRemoved
-		    = await AsyncLock.LockAsync(
-		    itemIndexInfo.ItemOperateLocker,
-		    null,
-		    async (_) =>
-		    {
-			    // !!!
-			    var itemRemoved = itemIndexInfo.FirstItem;
-			    // !!!
-			    if (itemRemoved == null)
-			    {
-				    return default;
-			    }
-			    // !!!
-			    itemIndexInfo.Items = [];
-			    // !!!
-			    return await Task.FromResult(itemRemoved);
-		    });
+		var itemRemoved = await AsyncLock.LockAsync(null, () => itemIndexInfo.ItemOperateLocker, async (_) =>
+		{
+			// !!!
+			var itemRemoved = itemIndexInfo.FirstItem;
+			// !!!
+			if (itemRemoved == null)
+			{
+				return default;
+			}
+			// !!!
+			itemIndexInfo.Items = [];
+			// !!!
+			return await Task.FromResult(itemRemoved);
+		});
 		return itemRemoved;
 	}
 
 	public async Task<ItemType?> RemoveAsync(
-	    PrimaryDeictionaryKeyType primaryDeictionaryKey,
-	    SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-	    ThirdaryDeictionaryKeyType thirdaryDeictionaryKey)
+	    PrimaryDictionaryKeyType primaryDictionaryKey,
+	    SecondaryDictionaryKeyType secondaryDictionaryKey,
+	    ThirdaryDictionaryKeyType thirdaryDictionaryKey)
 	{
 		return await TryRemoveAsync(
-		    primaryDeictionaryKey,
-		    secondaryDeictionaryKey,
-		    thirdaryDeictionaryKey);
+		    primaryDictionaryKey,
+		    secondaryDictionaryKey,
+		    thirdaryDictionaryKey);
 	}
 
 	public void Clear(
-	    PrimaryDeictionaryKeyType? primaryDeictionaryKey = default,
-	    SecondaryDeictionaryKeyType? secondaryDeictionaryKey = default)
+	    PrimaryDictionaryKeyType? primaryDictionaryKey = default,
+	    SecondaryDictionaryKeyType? secondaryDictionaryKey = default)
 	{
-		if (primaryDeictionaryKey == null)
+		if (primaryDictionaryKey == null)
 		{
 			PrimaryDictionaries.Clear();
 			return;
 		}
 		if (!PrimaryDictionaries.TryGetValue(
-		    primaryDeictionaryKey,
+		    primaryDictionaryKey,
 		    out var secondaryDictionaries))
 		{
 			return;
 		}
 
 
-		if (secondaryDeictionaryKey == null)
+		if (secondaryDictionaryKey == null)
 		{
 			secondaryDictionaries.Clear();
 			return;
 		}
 		if (!secondaryDictionaries.TryGetValue(
-		    secondaryDeictionaryKey,
+		    secondaryDictionaryKey,
 		    out var thirdaryDeictionaries))
 		{
 			return;
@@ -429,10 +381,10 @@ public class ConcurrentDictionaryWith3KeysAsync
 		return new DictionaryValueContainer<ItemType, ItemOperateLocker>(new ItemOperateLocker(1));
 	}
 
-	protected virtual ItemType? WillUpdateIndexItemWithPrimaryDeictionaryKey(
-		PrimaryDeictionaryKeyType primaryDeictionaryKey,
-		SecondaryDeictionaryKeyType secondaryDeictionaryKey,
-		ThirdaryDeictionaryKeyType thirdaryDeictionaryKey,
+	protected virtual ItemType? WillUpdateIndexItemWithPrimaryDictionaryKey(
+		PrimaryDictionaryKeyType primaryDictionaryKey,
+		SecondaryDictionaryKeyType secondaryDictionaryKey,
+		ThirdaryDictionaryKeyType thirdaryDictionaryKey,
 		//
 		ItemType? newIndexItem)
 	{

@@ -2133,8 +2133,7 @@ public static class StringExtension
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
 	/// <returns>去除字符串起始处的“\”和“/”符号后的相对路径字符串。</returns>
-	public static string ToFileSystemRelativePath(
-	    this string? str)
+	public static string ToFileSystemRelativePath(this string? str)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -2178,9 +2177,7 @@ public static class StringExtension
 	/// <param name="str">当前字符串。</param>
 	/// <param name="rootPath">指定的根路径。</param>
 	/// <returns>当前字符串最终确认的绝对路径，当当前字符串为”null“，或长度无效时，返回”null“。</returns>
-	public static string ToAbsoluteFilePathInRootPath(
-	    this string? str,
-	    string? rootPath)
+	public static string ToAbsoluteFilePathInRootPath(this string? str, string? rootPath)
 	{
 		string absoluteFilePath;
 		if (System.IO.Path.IsPathRooted(str) == true)
@@ -2203,15 +2200,27 @@ public static class StringExtension
 		return absoluteFilePath;
 	}
 
+	public static string ToSetDirectorySeparatorToCurrentSystem(this string? filePath)
+	{
+		if (filePath == null)
+		{
+			return string.Empty;
+		}
+
+		filePath = filePath.Replace('\\', System.IO.Path.DirectorySeparatorChar);
+		filePath = filePath.Replace('/', System.IO.Path.DirectorySeparatorChar);
+
+		return filePath;
+	}
+
+
 	/// <summary>
 	/// 生成格式合法的以“/”结尾的URI系统路径字符串。
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
 	/// <param name="isCurrentStringFileUri">当前字符串是否为文件URI，如果是，则会取当前文件所在的文件夹路径。</param>
 	/// <returns>格式合法的以“/”结尾的URI系统路径字符串。</returns>
-	public static string ToUriSystemDirectoryPath(
-	    this string? str,
-	    bool isCurrentStringFileUri = false)
+	public static string ToUriSystemDirectoryPath(this string? str, bool isCurrentStringFileUri = false)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -3227,21 +3236,15 @@ public static class StringExtension
 	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
 	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
 	/// <returns>返回经过隐私处理的字符串。</returns
-	public static string ToPrivacyStringForUrl(
-	    this string url,
-	    int? plaintextCharsCount,
-	    StringPartType privacyStringPart = StringPartType.Right,
+	public static string ToPrivacyStringForUrl(this string url, int? plaintextCharsCount, StringPartType privacyStringPart = StringPartType.Right,
 	    string? privacytext = "*")
 	{
-		plaintextCharsCount = url.Length / 2;
-		if (plaintextCharsCount < 0)
+		plaintextCharsCount ??= url.Length / 2;
+		if (plaintextCharsCount < 0 || plaintextCharsCount.Value > url.Length)
 		{
 			plaintextCharsCount = url.Length;
 		}
-		return url.ToPrivacyString(
-			url.Length - plaintextCharsCount.Value,
-			privacyStringPart,
-			privacytext);
+		return url.ToPrivacyString(url.Length - plaintextCharsCount.Value, privacyStringPart, privacytext);
 	}
 
 

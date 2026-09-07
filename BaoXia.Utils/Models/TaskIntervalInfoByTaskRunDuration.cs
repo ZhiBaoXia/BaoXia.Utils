@@ -1,6 +1,6 @@
 ﻿namespace BaoXia.Utils.Models;
 
-public class TaskIntervalInfoByDurationSeconds
+public class TaskIntervalInfoByTaskRunDuration
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -21,10 +21,10 @@ public class TaskIntervalInfoByDurationSeconds
 
 	#region 自身实现
 
-	public TaskIntervalInfoByDurationSeconds()
+	public TaskIntervalInfoByTaskRunDuration()
 	{ }
 
-	public TaskIntervalInfoByDurationSeconds(double maxDurationSeconds, double updateIntervalSeconds)
+	public TaskIntervalInfoByTaskRunDuration(double maxDurationSeconds, double updateIntervalSeconds)
 	{
 		MaxDurationSeconds = maxDurationSeconds;
 		TaskIntervalSeconds = updateIntervalSeconds;

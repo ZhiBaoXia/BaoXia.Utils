@@ -12,6 +12,54 @@ public static class TaskIntervalInfosByDurationSecondsArrayExntesion
 
 	#region 类方法
 
+	extension(IEnumerable<TaskIntervalInfoByTaskRunDuration>? taskIntervalInfosByTaskRunDuration)
+	{
+		public bool IsTaskIntervalInfosValid(double taskIntervalSecondsMin, double taskIntervalSecondsMax)
+		{
+			if (taskIntervalInfosByTaskRunDuration == null
+				|| !double.IsFinite(taskIntervalSecondsMin)
+				|| !double.IsFinite(taskIntervalSecondsMax)
+				|| taskIntervalSecondsMin <= 0.0
+				|| taskIntervalSecondsMax < taskIntervalSecondsMin)
+			{
+				return false;
+			}
+
+			var isTaskIntervalInfoExisted = false;
+			var taskIntervalSecondsActualMin = double.MaxValue;
+			var taskIntervalInfosWithoutDurationSecondsMaxCount = 0;
+			foreach (var taskIntervalInfoByTaskRunDuration in taskIntervalInfosByTaskRunDuration)
+			{
+				if (taskIntervalInfoByTaskRunDuration == null
+					|| !double.IsFinite(taskIntervalInfoByTaskRunDuration.MaxDurationSeconds)
+					|| !double.IsFinite(taskIntervalInfoByTaskRunDuration.TaskIntervalSeconds)
+					|| taskIntervalInfoByTaskRunDuration.TaskIntervalSeconds <= 0.0)
+				{
+					return false;
+				}
+				isTaskIntervalInfoExisted = true;
+
+				if (taskIntervalInfoByTaskRunDuration.MaxDurationSeconds <= 0.0)
+				{
+					taskIntervalInfosWithoutDurationSecondsMaxCount++;
+					if (taskIntervalInfosWithoutDurationSecondsMaxCount > 1)
+					{
+						return false;
+					}
+				}
+				if (taskIntervalSecondsActualMin > taskIntervalInfoByTaskRunDuration.TaskIntervalSeconds)
+				{
+					taskIntervalSecondsActualMin = taskIntervalInfoByTaskRunDuration.TaskIntervalSeconds;
+				}
+			}
+
+			return isTaskIntervalInfoExisted
+				&& taskIntervalInfosWithoutDurationSecondsMaxCount == 1
+				&& taskIntervalSecondsActualMin >= taskIntervalSecondsMin
+				&& taskIntervalSecondsActualMin <= taskIntervalSecondsMax;
+		}
+	}
+
 	extension(IEnumerable<TaskIntervalInfoByTaskRunDuration> taskIntervalInfosByTaskRunDuration)
 	{
 		public double? GetMinTaskIntervalSeconds()
@@ -19,7 +67,7 @@ public static class TaskIntervalInfosByDurationSecondsArrayExntesion
 			double? minIntervalSeconds = null;
 			foreach (var taskIntervalInfoByDurationSeconds in taskIntervalInfosByTaskRunDuration)
 			{
-				if (minIntervalSeconds > taskIntervalInfoByDurationSeconds.TaskIntervalSeconds)
+				if (minIntervalSeconds == null || minIntervalSeconds.Value > taskIntervalInfoByDurationSeconds.TaskIntervalSeconds)
 				{
 					minIntervalSeconds = taskIntervalInfoByDurationSeconds.TaskIntervalSeconds;
 				}

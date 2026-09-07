@@ -1,5 +1,8 @@
-﻿namespace BaoXia.Utils.Models;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace BaoXia.Utils.Models;
+
+[Owned]
 public class TaskIntervalInfoByTaskRunDuration
 {
 	////////////////////////////////////////////////

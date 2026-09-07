@@ -34,25 +34,32 @@ public class TaskIntervalChecker<TTask, TTaskKey>(Func<TTask, TTaskKey> toGetKey
 		double defaultTaskCheckIntervalSecondsMin,
 		bool isTaskIntervalInfosNeedResort = false)
 	{
-		if (ItemAutoCheckTimes.TryGetValue(taskKey, out var lastTaskCheckTime))
+		double? taskCheckIntervalSecondsMin = null;
+		while (true)
 		{
-			var taskRunDuration = operateTime - timeStartTime;
-			var taskCheckIntervalSecondsMin = taskIntervalInfosByTaskRunDuration.GetTaskIntervalSecondsWithTaskRunDuration(
-				taskRunDuration, isTaskIntervalInfosNeedResort);
+			if (!ItemAutoCheckTimes.TryGetValue(taskKey, out var lastTaskCheckTime))
+			{
+				if (ItemAutoCheckTimes.TryAdd(taskKey, operateTime))
+				{
+					return true;
+				}
+				continue;
+			}
+
+			taskCheckIntervalSecondsMin ??= taskIntervalInfosByTaskRunDuration.GetTaskIntervalSecondsWithTaskRunDuration(
+				operateTime - timeStartTime, isTaskIntervalInfosNeedResort)
+				?? defaultTaskCheckIntervalSecondsMin;
 			var taskCheckIntervalSeconds = operateTime - lastTaskCheckTime;
-			taskCheckIntervalSecondsMin ??= defaultTaskCheckIntervalSecondsMin;
 			if (taskCheckIntervalSeconds.TotalSeconds < taskCheckIntervalSecondsMin)
 			{
 				return false;
 			}
+
+			if (ItemAutoCheckTimes.TryUpdate(taskKey, operateTime, lastTaskCheckTime))
+			{
+				return true;
+			}
 		}
-		// !!!
-		ItemAutoCheckTimes.AddOrUpdate(taskKey, operateTime, (paymentOrderId, lastPaymentOrderNeedUpdate) =>
-		{
-			return operateTime;
-		});
-		// !!!
-		return true;
 	}
 
 	public void CleanTaskCheckTimesWithTaskKeys(IEnumerable<TTaskKey> taskKeysNeedCheck)

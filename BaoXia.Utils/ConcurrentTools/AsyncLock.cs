@@ -94,7 +94,7 @@ public class AsyncLock : SemaphoreSlim
 
 	#region 自身实现
 
-	public AsyncLock(int initialCount) : base(initialCount)
+	public AsyncLock(int initialCount = 1) : base(initialCount)
 	{ }
 
 	public AsyncLock(int initialCount, int maxCount) : base(initialCount, maxCount)

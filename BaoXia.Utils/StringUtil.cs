@@ -94,6 +94,7 @@ public class StringUtil
 		return CharUtil.IsNumberChar(stringValue[^1]);
 	}
 
+
 	#endregion
 
 

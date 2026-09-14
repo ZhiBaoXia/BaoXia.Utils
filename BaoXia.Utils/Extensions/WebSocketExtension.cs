@@ -242,6 +242,20 @@ public static class WebSocketExtension
 		}
 	}
 
+	public static async Task SendStringAsync(this WebSocket webSocket, string responseString, CancellationToken cancellationToken)
+	{
+		var responseStringBytes = responseString.ToUtf8Bytes();
+		//
+		await webSocket.SendAsync(responseStringBytes, WebSocketMessageType.Text, true, cancellationToken);
+		//
+	}
+
+	public static async Task SendObjectAsync(this WebSocket webSocket, object responseObject, CancellationToken cancellationToken)
+	{
+		var responseObjectJsonString = responseObject.ToJsonString();
+		{ }
+		await SendStringAsync(webSocket, responseObjectJsonString, cancellationToken);
+	}
 
 	public static async Task<bool> TryToCloseAsync(
 	    this WebSocket webSocket,

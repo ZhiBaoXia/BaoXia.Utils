@@ -121,7 +121,7 @@ public class NotificationCenter : INotificationCenter
 
 	#region 自身实现
 
-	public void PostNotification(
+	public void SendNotification(
 	    string? queueName,
 	    string notificationName,
 	    IEnumerable<string>? tagNames = null,
@@ -162,7 +162,7 @@ public class NotificationCenter : INotificationCenter
 		// !!!
 	}
 
-	public void PostNotification(
+	public void SendNotification(
 	    string notificationName,
 	    IEnumerable<string>? tagNames = null,
 	    string? description = null,
@@ -175,7 +175,7 @@ public class NotificationCenter : INotificationCenter
 	    Action<List<Object>?>? toNotificationSended = null,
 	    Func<List<Object>?, Task>? toNotificationSendedAsync = null)
 	{
-		this.PostNotification(
+		this.SendNotification(
 		       null,
 		       notificationName,
 		    tagNames,
@@ -189,16 +189,13 @@ public class NotificationCenter : INotificationCenter
 		    toNotificationSendedAsync);
 	}
 
-	public void Post(
-	    INotificationListenParam listenParam,
-	    object? paramObject,
-	    object sender)
+	public void Send(INotificationListenParam listenParam, object? paramObject, object sender)
 	{
 		if (sender is not string senderName)
 		{
 			senderName = sender?.GetType().FullName ?? string.Empty;
 		}
-		PostNotification(
+		SendNotification(
 		    listenParam.QueueName,
 		    listenParam.NotificationName,
 		    null,

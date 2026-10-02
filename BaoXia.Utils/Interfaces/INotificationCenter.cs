@@ -16,7 +16,7 @@ public interface INotificationCenter
 
 	#region 自身实现
 
-	public void PostNotification(
+	public void SendNotification(
 	    string? queueName,
 	    string notificationName,
 	    IEnumerable<string>? tagNames = null,
@@ -29,7 +29,7 @@ public interface INotificationCenter
 	    Action<List<Object>?>? toNotificationSended = null,
 	    Func<List<Object>?, Task>? toNotificationSendedAsync = null);
 
-	public void PostNotification(
+	public void SendNotification(
 	    string notificationName,
 	    IEnumerable<string>? tagNames = null,
 	    string? description = null,
@@ -42,7 +42,7 @@ public interface INotificationCenter
 	    Action<List<Object>?>? toNotificationSended = null,
 	    Func<List<Object>?, Task>? toNotificationSendedAsync = null);
 
-	public void Post(
+	public void Send(
 	    INotificationListenParam listenParam,
 	    object? paramObject,
 	    object sender);

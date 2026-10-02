@@ -232,28 +232,27 @@ public static class StringExtension
 		return stringTrimed;
 	}
 
-	public static string? Trim(
-	    this string originalString,
-	    IEnumerable<string?>? trimStrings,
-	    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+	public static string? Trim(this string originalString, IEnumerable<string?>? trimStrings,
+		StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 	{
 		if (trimStrings == null)
 		{
 			return originalString;
 		}
 
-		var stringTrimed = TrimStart(
-		    originalString,
-		    trimStrings,
-		    stringComparison);
+		var stringTrimed = TrimStart(originalString, trimStrings, stringComparison);
 		if (stringTrimed?.Length > 0)
 		{
-			stringTrimed = TrimEnd(
-			    stringTrimed,
-			    trimStrings,
-			    stringComparison);
+			stringTrimed = TrimEnd(stringTrimed, trimStrings, stringComparison);
 		}
 		return stringTrimed;
+	}
+
+	public static string TrimTrailingPunctuation(this string originalString)
+	{
+		return originalString.TrimEnd(
+			',', '.', ':', ';',
+			'，', '。', '：', '；');
 	}
 
 	/// <summary>
@@ -1842,48 +1841,6 @@ public static class StringExtension
 	}
 
 	/// <summary>
-	/// 使用“Environment.AESKey_Default”作为加密Key，通过“AES”算法对当前字符串进行加密。
-	/// </summary>
-	/// <param name="plaintext">当前“明文”字符串。</param>
-	/// <param name="key">指定的加密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
-	/// <returns>返回加密后的字符串。</returns>
-
-	[Obsolete("当前函数，使用“Aes/Ecb算法”，存在安全隐患（相同明文、密钥时，密文永远相同，因此可通过重复明文的方式进行破解），推荐使用“ToNewCiphertext”方法替代。")]
-	public static string? StringByEncrypted(
-	    this string plaintext,
-	    string? key = null)
-	{
-		key ??= Environment.AESKeyDeafult;
-
-		var plaintextBytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
-		{ }
-#pragma warning disable CS0618 // 类型或成员已过时
-		var cipherBytes = AES.EncryptToBytesWithECB(plaintextBytes, key);
-#pragma warning restore CS0618 // 类型或成员已过时
-		if (cipherBytes.Length < 1)
-		{
-			return null;
-		}
-		var ciphertext = Convert.ToBase64String(cipherBytes);
-		{ }
-		return ciphertext;
-	}
-
-	/// <summary>
-	/// 使用“Environment.AESKey_Default”作为加密Key，通过“AES”算法对当前字符串进行解密。
-	/// </summary>
-	/// <param name="ciphertext">当前“密文”字符串。，</param>
-	/// <param name="key">指定的解密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
-	/// <returns>返回解密后的字符串。</returns>
-	[Obsolete("当前函数，使用“Aes/Ecb算法”，存在安全隐患（相同明文、密钥时，密文永远相同，因此可通过重复明文的方式进行破解），推荐使用“ToPlaintext”方法替代。")]
-	public static string StringByDecrypted(
-	    this string ciphertext,
-	    string? key = null)
-	{
-		return ToPlaintext(ciphertext, key);
-	}
-
-	/// <summary>
 	/// 使用Utf8编码，将当前字符串转为字节数组。
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
@@ -1909,8 +1866,7 @@ public static class StringExtension
 	/// <returns>
 	/// 当前字符串对象对应的字符大小写哈希码，如：“Abc”的哈希码为“100”，“aBc”的哈希码为“010”。 
 	/// </returns>
-	public static string ToHashCodeByCharCase(
-	    this string? plaintext)
+	public static string ToHashCodeByCharCase(this string? plaintext)
 	{
 		var hashCodeBuilder = new StringBuilder();
 		if (!string.IsNullOrEmpty(plaintext))
@@ -2177,8 +2133,7 @@ public static class StringExtension
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
 	/// <returns>去除字符串起始处的“\”和“/”符号后的相对路径字符串。</returns>
-	public static string ToFileSystemRelativePath(
-	    this string? str)
+	public static string ToFileSystemRelativePath(this string? str)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -2222,9 +2177,7 @@ public static class StringExtension
 	/// <param name="str">当前字符串。</param>
 	/// <param name="rootPath">指定的根路径。</param>
 	/// <returns>当前字符串最终确认的绝对路径，当当前字符串为”null“，或长度无效时，返回”null“。</returns>
-	public static string ToAbsoluteFilePathInRootPath(
-	    this string? str,
-	    string? rootPath)
+	public static string ToAbsoluteFilePathInRootPath(this string? str, string? rootPath)
 	{
 		string absoluteFilePath;
 		if (System.IO.Path.IsPathRooted(str) == true)
@@ -2247,15 +2200,27 @@ public static class StringExtension
 		return absoluteFilePath;
 	}
 
+	public static string ToSetDirectorySeparatorToCurrentSystem(this string? filePath)
+	{
+		if (filePath == null)
+		{
+			return string.Empty;
+		}
+
+		filePath = filePath.Replace('\\', System.IO.Path.DirectorySeparatorChar);
+		filePath = filePath.Replace('/', System.IO.Path.DirectorySeparatorChar);
+
+		return filePath;
+	}
+
+
 	/// <summary>
 	/// 生成格式合法的以“/”结尾的URI系统路径字符串。
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
 	/// <param name="isCurrentStringFileUri">当前字符串是否为文件URI，如果是，则会取当前文件所在的文件夹路径。</param>
 	/// <returns>格式合法的以“/”结尾的URI系统路径字符串。</returns>
-	public static string ToUriSystemDirectoryPath(
-	    this string? str,
-	    bool isCurrentStringFileUri = false)
+	public static string ToUriSystemDirectoryPath(this string? str, bool isCurrentStringFileUri = false)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -3038,6 +3003,18 @@ public static class StringExtension
 					    = originalString.ToPrivacyStringForCNIdCardNumber(null);
 				}
 				break;
+			case PrivacyInfoType.CNPersonName:
+				{
+					privacyContentErased
+					    = originalString.ToPrivacyStringForCNPersonName(null);
+				}
+				break;
+			case PrivacyInfoType.Url:
+				{
+					privacyContentErased
+					    = originalString.ToPrivacyStringForUrl(null);
+				}
+				break;
 		}
 		return privacyContentErased;
 	}
@@ -3167,20 +3144,20 @@ public static class StringExtension
 	/// <summary>
 	/// 将当前“电话号码”字符串（11位）转为隐私字符串。
 	/// </summary>
-	/// <param name="account">当前“电话毫秒”字符串。</param>
+	/// <param name="personName">当前“电话毫秒”字符串。</param>
 	/// <param name="plaintextCharsCount">【注意】不要隐私处理的字符数量，默认位“2”。</param>
 	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
 	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
 	/// <returns>返回经过隐私处理的字符串。</returns
 	public static string ToPrivacyStringForAccount(
-	    this string account,
+	    this string personName,
 	    int? plaintextCharsCount,
 	    StringPartType privacyStringPart = StringPartType.Center,
 	    string? privacytext = "*")
 	{
 		plaintextCharsCount ??= 2;
-		return account.ToPrivacyString(
-		    account.Length - plaintextCharsCount.Value,
+		return personName.ToPrivacyString(
+		    personName.Length - plaintextCharsCount.Value,
 		    privacyStringPart,
 		    privacytext);
 	}
@@ -3210,24 +3187,66 @@ public static class StringExtension
 	/// <summary>
 	/// 将当前“身份证”字符串（18位）转为隐私字符串。
 	/// </summary>
-	/// <param name="idCardNumber">当前“电话毫秒”字符串。</param>
+	/// <param name="cnName">当前“电话毫秒”字符串。</param>
 	/// <param name="privacyCharsCount">要隐私处理的字符数量，默认位“10”。</param>
 	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
 	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
 	/// <returns>返回经过隐私处理的字符串。</returns>
 	public static string ToPrivacyStringForCNIdCardNumber(
-	    this string idCardNumber,
+	    this string cnName,
 	    int? plaintextCharsCount,
 	    StringPartType privacyStringPart = StringPartType.Center,
 	    string? privacytext = "*")
 	{
 		plaintextCharsCount ??= 7;
 		return ToPrivacyString(
-		    idCardNumber,
-		    idCardNumber.Length - plaintextCharsCount.Value,
+		    cnName,
+		    cnName.Length - plaintextCharsCount.Value,
 		    privacyStringPart,
 		    privacytext);
 	}
+
+
+	/// <summary>
+	/// 将当前“真人姓名”字符串转为隐私字符串。
+	/// </summary>
+	/// <param name="personName">当前“真人姓名”字符串。</param>
+	/// <param name="plaintextCharsCount">【注意】不要隐私处理的字符数量，默认位“2”。</param>
+	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
+	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
+	/// <returns>返回经过隐私处理的字符串。</returns
+	public static string ToPrivacyStringForCNPersonName(
+	    this string personName,
+	    int? plaintextCharsCount,
+	    StringPartType privacyStringPart = StringPartType.Right,
+	    string? privacytext = "*")
+	{
+		plaintextCharsCount ??= 1;
+		return personName.ToPrivacyString(
+		    personName.Length - plaintextCharsCount.Value,
+		    privacyStringPart,
+		    privacytext);
+	}
+
+	/// <summary>
+	/// 将当前“Url”字符串转为隐私字符串。
+	/// </summary>
+	/// <param name="url">当前“Url”字符串。</param>
+	/// <param name="plaintextCharsCount">【注意】不要隐私处理的字符数量，默认位“2”。</param>
+	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
+	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
+	/// <returns>返回经过隐私处理的字符串。</returns
+	public static string ToPrivacyStringForUrl(this string url, int? plaintextCharsCount, StringPartType privacyStringPart = StringPartType.Right,
+	    string? privacytext = "*")
+	{
+		plaintextCharsCount ??= url.Length / 2;
+		if (plaintextCharsCount < 0 || plaintextCharsCount.Value > url.Length)
+		{
+			plaintextCharsCount = url.Length;
+		}
+		return url.ToPrivacyString(url.Length - plaintextCharsCount.Value, privacyStringPart, privacytext);
+	}
+
 
 	/// <summary>
 	/// 不区分大小写的比较两个字符串是否相当。
@@ -3386,9 +3405,7 @@ public static class StringExtension
 	/// <param name="str">当前字符串。</param>
 	/// <param name="isIntNumber">是否只是整形数字。</param>
 	/// <returns>字符串是否为纯数字字符串时，返回：true，否则返回：false。</returns>
-	public static bool IsNumberString(
-	    this string? str,
-	    bool isIntNumber = true)
+	public static bool IsNumberString(this string? str, bool isIntNumber = true)
 	{
 		if (str == null
 		    || str.Length < 1)
@@ -3462,8 +3479,7 @@ public static class StringExtension
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
 	/// <returns>字符串是否为纯字母字符串时，返回：true，否则返回：false。</returns>
-	public static bool IsAlphabetString(
-	    this string? str)
+	public static bool IsAlphabetString(this string? str)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -3474,6 +3490,30 @@ public static class StringExtension
 		{
 			if ((character < 'a' || character > 'z')
 			    && (character < 'A' || character > 'Z'))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/// <summary>
+	/// 当前字符串是否为纯字母和数字的字符串。
+	/// </summary>
+	/// <param name="str">当前字符串。</param>
+	/// <returns>字符串为纯字母和数字的字符串时，返回：true，否则返回：false。</returns>
+	public static bool IsAlphabetAndNumberString(this string? str)
+	{
+		if (string.IsNullOrEmpty(str))
+		{
+			return false;
+		}
+
+		foreach (var character in str)
+		{
+			if ((character < 'a' || character > 'z')
+			    && (character < 'A' || character > 'Z')
+			    && (character < '0' || character > '9'))
 			{
 				return false;
 			}

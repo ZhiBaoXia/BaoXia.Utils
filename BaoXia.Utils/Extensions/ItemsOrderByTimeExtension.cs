@@ -12,7 +12,7 @@ public static class ItemsOrderByTimeExtension
 
 	#region 类方法
 
-	private static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
+	private static ItemType[]? GetItemsSortByTimeInTimeRange<ItemType>(
 	    ItemType[] items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
@@ -44,7 +44,7 @@ public static class ItemsOrderByTimeExtension
 		    },
 		    // 无论升序、降序，
 		    // 都要找到大于等于“beginTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanObjectMin,
+		    DichotomyClosestItemType.GreaterThanTargetItemMin,
 		    out var firstItemIndex_NearestAndGreatThan,
 		    out _);
 		if (firstItemIndex_NearestAndGreatThan == null)
@@ -96,7 +96,7 @@ public static class ItemsOrderByTimeExtension
 		    //
 		    // 无论升序、降序，
 		    // 都要找到大于等于“endTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanObjectMin,
+		    DichotomyClosestItemType.GreaterThanTargetItemMin,
 		    out var endItemIndex_NearestAndGreatThan,
 		    out _);
 		if (endItemIndex_NearestAndGreatThan == null)
@@ -162,14 +162,14 @@ public static class ItemsOrderByTimeExtension
 		return objectItems;
 	}
 
-	public static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
+	public static ItemType[]? GetItemsSortByTimeInTimeRange<ItemType>(
 	    this ItemType[] items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
 	    DateTimeOffset endTime,
 	    Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		return GetItemsSortByTimeInTimeSection(
+		return GetItemsSortByTimeInTimeRange(
 		    items,
 		    isItemsSortedWithAscending,
 		    beginTime,
@@ -179,14 +179,14 @@ public static class ItemsOrderByTimeExtension
 		    out _);
 	}
 
-	public static int GetCountOfItemsSortByTimeInTimeSection<ItemType>(
+	public static int GetCountOfItemsSortByTimeInTimeRange<ItemType>(
 	    this ItemType[] items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
 	    DateTimeOffset endTime,
 	    Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		GetItemsSortByTimeInTimeSection<ItemType>(
+		GetItemsSortByTimeInTimeRange<ItemType>(
 		    items,
 		    isItemsSortedWithAscending,
 		    beginTime,
@@ -198,7 +198,7 @@ public static class ItemsOrderByTimeExtension
 		return objectItemsCount;
 	}
 
-	private static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
+	private static ItemType[]? GetItemsSortByTimeInTimeRange<ItemType>(
 	    IList<ItemType> items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
@@ -230,7 +230,7 @@ public static class ItemsOrderByTimeExtension
 		    },
 		    // 无论升序、降序，
 		    // 都要找到大于等于“beginTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanObjectMin,
+		    DichotomyClosestItemType.GreaterThanTargetItemMin,
 		    out var firstItemIndex_NearestAndGreatThan,
 		    out _);
 		if (firstItemIndex_NearestAndGreatThan == null)
@@ -282,7 +282,7 @@ public static class ItemsOrderByTimeExtension
 		    //
 		    // 无论升序、降序，
 		    // 都要找到大于等于“endTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanObjectMin,
+		    DichotomyClosestItemType.GreaterThanTargetItemMin,
 		    out var endItemIndex_NearestAndGreatThan,
 		    out _);
 		if (endItemIndex_NearestAndGreatThan == null)
@@ -345,14 +345,14 @@ public static class ItemsOrderByTimeExtension
 		return objectItems;
 	}
 
-	public static ItemType[]? GetItemsSortByTimeInTimeSection<ItemType>(
+	public static ItemType[]? GetItemsSortByTimeInTimeRange<ItemType>(
 	    this IList<ItemType> items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
 	    DateTimeOffset endTime,
 	    Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		return GetItemsSortByTimeInTimeSection<ItemType>(
+		return GetItemsSortByTimeInTimeRange<ItemType>(
 		    items,
 		    isItemsSortedWithAscending,
 		    beginTime,
@@ -362,14 +362,14 @@ public static class ItemsOrderByTimeExtension
 		    out _);
 	}
 
-	public static int GetCountOfItemsSortByTimeInTimeSection<ItemType>(
+	public static int GetCountOfItemsSortByTimeInTimeRange<ItemType>(
 	    this IList<ItemType> items,
 	    bool isItemsSortedWithAscending,
 	    DateTimeOffset beginTime,
 	    DateTimeOffset endTime,
 	    Func<ItemType, DateTimeOffset, int> toCompareTimeWithItem)
 	{
-		GetItemsSortByTimeInTimeSection<ItemType>(
+		GetItemsSortByTimeInTimeRange<ItemType>(
 		    items,
 		    isItemsSortedWithAscending,
 		    beginTime,

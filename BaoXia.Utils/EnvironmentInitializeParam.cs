@@ -35,7 +35,7 @@ namespace BaoXia.Utils
 		/// <summary>
 		/// 自定义持久化的实现，当该值不为空时，日志组件不会写入记录文件。
 		/// </summary>
-		public Func<LogFile, IEnumerable<LogRecord>, bool>? ToStorageLogRecords = null;
+		public Func<LogFile, IEnumerable<LogFileLogRecord>, bool>? ToStorageLogRecords = null;
 
 		/// <summary>
 		/// 全局默认的Json序列化选项，默认规则：
@@ -79,7 +79,7 @@ namespace BaoXia.Utils
 		    Func<long>? toGetMaxBytesCountPerLogFile = null,
 		    Func<int>? toGetLogRecordsCountPerFileWrite = null,
 		    Func<double>? toGetTimeoutSecondsToStorageLogRecords = null,
-		    Func<LogFile, IEnumerable<LogRecord>, bool>? toStorageLogRecords = null,
+		    Func<LogFile, IEnumerable<LogFileLogRecord>, bool>? toStorageLogRecords = null,
 		    System.Text.Json.JsonSerializerOptions? jsonSerializerOptions = null)
 		{
 			if (toGetAutoFlushLogBufferIntervalSeconds != null)

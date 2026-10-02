@@ -419,12 +419,8 @@ namespace BaoXia.Utils.Extensions
 		#region “POST GetObject”相关方法。
 
 		public static async Task<ObjectType?> PostToGetObjectAsync<ObjectType>(
-		    this HttpClient httpClient,
-		    string? requestUri,
-		    string? requestBody,
-		    Dictionary<string, string?>? headers,
-		    Encoding? requestBodyEncoding,
-		    JsonSerializerOptions? jsonSerializerOptions,
+		    this HttpClient httpClient, string? requestUri, string? requestBody,
+		    Dictionary<string, string?>? headers, Encoding? requestBodyEncoding, JsonSerializerOptions? jsonSerializerOptions,
 		    CancellationToken cancellationToken = default)
 		{
 			var responseString = await PostToGetStringAsync(

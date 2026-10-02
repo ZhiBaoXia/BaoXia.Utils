@@ -25,7 +25,10 @@ public class Environment
 
 		ReadCommentHandling = JsonCommentHandling.Skip,
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-		PropertyNameCaseInsensitive = true
+		PropertyNameCaseInsensitive = true,
+
+		// 关键：遇到 JSON 有、实体没有的字段，直接忽略，不抛异常
+		//UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip
 	};
 #else
 	public static readonly JsonSerializerOptions JsonSerializerOptionsDefault = new()
@@ -190,6 +193,12 @@ public class Environment
 	////////////////////////////////////////////////
 
 	#region 类方法
+
+	//static Environment()
+	//{
+	//	JsonSerializerOptionsDefault.Converters.Add(new BxDateTimeJsonConverter());
+	//	JsonSerializerOptionsDefault.Converters.Add(new BxDateTimeOffsetJsonConverter());
+	//}
 
 	/// <summary>
 	/// 在当前应用程序中初始化环境信息。

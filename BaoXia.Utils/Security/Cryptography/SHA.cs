@@ -38,10 +38,7 @@ public static class SHA
 	/// <param name="offset">指定的字节数组偏移量。</param>
 	/// <param name="count">指定的字节数组长度。</param>
 	/// <returns>字节数组对应的16进制字符串。</returns>
-	public static string CreateHexStringFromBytes(
-	    byte[] sourceBytes,
-	    int offset,
-	    int count)
+	public static string CreateHexStringFromBytes(byte[] sourceBytes, int offset, int count)
 	{
 		if (sourceBytes == null
 		    || sourceBytes.Length < 1

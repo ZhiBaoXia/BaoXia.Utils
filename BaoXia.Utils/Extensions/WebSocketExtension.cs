@@ -32,9 +32,7 @@ public static class WebSocketExtension
 	}
 
 	public static async Task<WebSocketReceiveDataResult> ReceiveByteArrayAsync(
-	    this WebSocket webSocket,
-	    BytesBuffer? receiveBuffer,
-	    CancellationToken cancellationToken,
+	    this WebSocket webSocket, BytesBuffer? receiveBuffer, CancellationToken cancellationToken,
 	    WebSocketReceiveDataResult? receiveDataResultSpecified = null)
 	{
 		if (receiveBuffer == null)
@@ -49,12 +47,8 @@ public static class WebSocketExtension
 		WebSocketReceiveResult receiveResult;
 		do
 		{
-			var requestBodyBufferBytes
-			    = receiveBuffer.GetEmptyBufferSegment();
-			receiveResult
-			    = await webSocket.ReceiveAsync(
-			    requestBodyBufferBytes,
-			    cancellationToken);
+			var requestBodyBufferBytes = receiveBuffer.GetEmptyBufferSegment();
+			receiveResult = await webSocket.ReceiveAsync(requestBodyBufferBytes, cancellationToken);
 			// !!!
 			receiveBuffer.BytesCount += receiveResult.Count;
 			// !!!
@@ -78,10 +72,7 @@ public static class WebSocketExtension
 	    WebSocketReceiveDataResult? receiveDataResultSpecified = null)
 	{
 		var receiveResult = await WebSocketExtension.ReceiveByteArrayAsync(
-		    webSocket,
-		    receiveBuffer,
-		    cancellationToken,
-		    receiveDataResultSpecified);
+		    webSocket, receiveBuffer, cancellationToken, receiveDataResultSpecified);
 		var bytesReceived = receiveResult.BytesReceived;
 		if (bytesReceived?.Length > 0)
 		{
@@ -251,6 +242,20 @@ public static class WebSocketExtension
 		}
 	}
 
+	public static async Task SendStringAsync(this WebSocket webSocket, string responseString, CancellationToken cancellationToken)
+	{
+		var responseStringBytes = responseString.ToUtf8Bytes();
+		//
+		await webSocket.SendAsync(responseStringBytes, WebSocketMessageType.Text, true, cancellationToken);
+		//
+	}
+
+	public static async Task SendObjectAsync(this WebSocket webSocket, object responseObject, CancellationToken cancellationToken)
+	{
+		var responseObjectJsonString = responseObject.ToJsonString();
+		{ }
+		await SendStringAsync(webSocket, responseObjectJsonString, cancellationToken);
+	}
 
 	public static async Task<bool> TryToCloseAsync(
 	    this WebSocket webSocket,

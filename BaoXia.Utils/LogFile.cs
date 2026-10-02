@@ -1,4 +1,5 @@
 ﻿using BaoXia.Utils.Extensions;
+using BaoXia.Utils.Interfaces;
 using BaoXia.Utils.Models;
 using System;
 using System.Collections.Concurrent;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils;
 
-public class LogFile : IDisposable
+public class LogFile : ILogFile, IDisposable
 {
 	////////////////////////////////////////////////
 	// @静态变量
@@ -62,7 +63,7 @@ public class LogFile : IDisposable
 	/// <summary>
 	/// 日志持久化回调节点。
 	/// </summary>
-	public static Func<LogFile, IEnumerable<LogRecord>, bool>? ToStorageLogRecords { get; set; } = null;
+	public static Func<LogFile, IEnumerable<LogFileLogRecord>, bool>? ToStorageLogRecords { get; set; } = null;
 
 	/// <summary>
 	/// 全局日志文件对象集合。
@@ -205,7 +206,7 @@ public class LogFile : IDisposable
 	    Func<long>? toGetMaxBytesCountPerLogFile,
 	    Func<int>? toGetLogRecordsCountPerFileWrite,
 	    Func<double>? toGetTimeoutSecondsToStorageLogRecords,
-	    Func<LogFile, IEnumerable<LogRecord>, bool>? toStorageLogRecords = null)
+	    Func<LogFile, IEnumerable<LogFileLogRecord>, bool>? toStorageLogRecords = null)
 	{
 		LogFile.ToGetAutoFlushLogBufferIntervalSeconds = toGetAutoFlushLogBufferIntervalSeconds;
 		/// 
@@ -285,9 +286,9 @@ public class LogFile : IDisposable
 	/// <summary>
 	/// 日志内容缓冲。
 	/// </summary>
-	protected readonly ConcurrentQueue<LogRecord> _logRecords = new();
+	protected readonly ConcurrentQueue<LogFileLogRecord> _logRecords = new();
 
-	public ConcurrentQueue<LogRecord> LogRecords
+	public ConcurrentQueue<LogFileLogRecord> LogRecords
 	{
 		get
 		{
@@ -322,10 +323,7 @@ public class LogFile : IDisposable
 	/// </summary>
 	/// <param name="type">日志类型，用于日志文件所在文件夹名称。</param>
 	/// <param name="name">日志名称，用于日志文件名称前缀。</param>
-	public LogFile(
-	    string? type,
-	    //
-	    string? name = null)
+	public LogFile(string? type, string? name = null)
 	{
 		this.Type = type;
 
@@ -407,167 +405,11 @@ public class LogFile : IDisposable
 	}
 
 	/// <summary>
-	/// 清空日志内容缓冲到日志文件。
-	/// </summary>
-	/// <param name="isClearBufferOnly">是否只是清空缓存。</param>
-	public void FlushLogBuffer(bool isClearBufferOnly = false)
-	{
-		var logRecordsCountNeedWriteToFile = _logRecords.Count;
-		if (logRecordsCountNeedWriteToFile < 1)
-		{
-			return;
-		}
-
-		var newLogRecordsNeedWriteToFile = new List<LogRecord>();
-		while (_logRecords.TryDequeue(out var logRecord)
-		    && logRecordsCountNeedWriteToFile > 0)
-		{
-			newLogRecordsNeedWriteToFile.Add(logRecord);
-			//
-			logRecordsCountNeedWriteToFile--;
-			//
-		}
-
-		if (isClearBufferOnly)
-		{
-			return;
-		}
-
-		if (newLogRecordsNeedWriteToFile.Count > 0)
-		{
-			var timeoutSecondsToStorageLogRecords = 0.0;
-			var toGetTimeoutSecondsToStorageLogRecords
-			    = LogFile.ToGetTimeoutSecondsToStorageLogRecords;
-			if (toGetTimeoutSecondsToStorageLogRecords != null)
-			{
-				timeoutSecondsToStorageLogRecords
-				    = toGetTimeoutSecondsToStorageLogRecords();
-			}
-
-			try
-			{
-				using var timeoutCancellationTokenSource
-				    = timeoutSecondsToStorageLogRecords > 0.0
-				    ? new CancellationTokenSource()
-				    : null;
-				// !!!
-				timeoutCancellationTokenSource?.CancelAfter(
-				    (int)(1000.0 * timeoutSecondsToStorageLogRecords));
-				// !!!
-
-				////////////////////////////////////////////////
-				// !!!
-				this.DidTryStorageLogRecords(newLogRecordsNeedWriteToFile);
-				// !!!
-				////////////////////////////////////////////////
-			}
-			catch (TaskCanceledException)
-			{
-				// !!! 避免内存泄露 !!!
-				newLogRecordsNeedWriteToFile.Clear();
-				// !!!
-			}
-		}
-	}
-
-	/// <summary>
 	/// 清空日志内容缓冲。
 	/// </summary>
 	public void ClearLogBuffer()
 	{
 		this.FlushLogBuffer(true);
-	}
-
-	/// <summary>
-	/// 记录日志信息。
-	/// </summary>
-	/// <param name="invoker">调用者</param>
-	/// <param name="logFileContent">日志内容</param>
-	/// <param name="logParamObject">日志内容，对象类型参数。</param>
-	/// <param name="invokerFullName">调用者名称，适用于静态方法，由开发者手动输入调用者名称。</param>
-	public void Logs(
-	    object? invoker,
-	    string logContent,
-	    object? logContentParamObject = null,
-	    string? invokerFullName = null)
-	{
-		if ((logContent == null
-		    || logContent.Length < 1)
-		    && logContentParamObject == null)
-		{
-			return;
-		}
-
-		logContent ??= string.Empty;
-		if (logContentParamObject != null)
-		{
-			logContent
-			    += "\r\n"
-			    + logContentParamObject.ToString();
-		}
-
-		if (logContent.Length > 0)
-		{
-			var keysInLogContentToIgnoreLogs
-			    = this.KeysInLogContentToIgnoreLogs;
-			if (keysInLogContentToIgnoreLogs?.Length > 0)
-			{
-				for (var keyToIgnoreLogIndex = keysInLogContentToIgnoreLogs.Length - 1;
-				    keyToIgnoreLogIndex >= 0;
-				    keyToIgnoreLogIndex--)
-				{
-					var keyToIgnoreLog = keysInLogContentToIgnoreLogs[keyToIgnoreLogIndex];
-					if (keyToIgnoreLog?.Length > 0)
-					{
-						if (logContent.IndexOfIgnoreCase(keyToIgnoreLog) >= 0)
-						{
-							return;
-						}
-					}
-				}
-			}
-			// !!! 进行XML字符转义操作 !!!
-			logContent = SecurityElement.Escape(logContent);
-			// !!!
-		}
-
-		invokerFullName ??= invoker?.GetType()?.FullName;
-
-		void WriteToConsole()
-		{
-			var logName = this.Name ?? string.Empty;
-			var now = DateTime.Now;
-			var timestamp = now.MillisecondsFrom1970(Constants.TimeZoneNumber.Utc0, true);
-			var timestampCaption = now.ToString("yyyy_MM_dd hh:mm:ss ms");
-			System.Diagnostics.Debug.WriteLine(
-			    System.Environment.NewLine
-			    + logName
-			    + " "
-			    + invokerFullName
-			    + " "
-			    + timestampCaption
-			    + System.Environment.NewLine
-			    + logContent);
-		}
-		if (IsConsoleWriteEnable)
-		{
-			WriteToConsole();
-		}
-#if DEBUG
-		else
-		{
-			WriteToConsole();
-		}
-#endif
-
-
-		var newLogRecord = new LogRecord()
-		{
-			LogTime = DateTime.Now,
-			Invoker = invokerFullName,
-			Content = logContent
-		};
-		_logRecords.Enqueue(newLogRecord);
 	}
 
 	#endregion
@@ -579,7 +421,7 @@ public class LogFile : IDisposable
 
 	#region 事件节点
 
-	protected bool DidTryStorageLogRecords(List<LogRecord> logRecordsNeedStorage)
+	protected bool DidTryStorageLogRecords(List<LogFileLogRecord> logRecordsNeedStorage)
 	{
 		if (logRecordsNeedStorage.Count < 1)
 		{
@@ -711,6 +553,189 @@ public class LogFile : IDisposable
 		}
 		return true;
 	}
+
+	#endregion
+
+
+
+	////////////////////////////////////////////////
+	// @实现“ILogFile”
+	////////////////////////////////////////////////
+
+	#region 实现“ILogFile”
+
+
+	/// <summary>
+	/// 记录日志信息。
+	/// </summary>
+	/// <param name="invoker">调用者</param>
+	/// <param name="logFileContent">日志内容</param>
+	/// <param name="logParamObject">日志内容，对象类型参数。</param>
+	/// <param name="invokerFullName">调用者名称，适用于静态方法，由开发者手动输入调用者名称。</param>
+	public void Logs(object invoker, string logContent, object? logContentParamObject = null)
+	{
+		if ((logContent == null || logContent.Length < 1)
+		    && logContentParamObject == null)
+		{
+			return;
+		}
+
+		logContent ??= string.Empty;
+		if (logContentParamObject is string logContentParamString)
+		{
+			logContent += "\r\n" + logContentParamString;
+		}
+		// 异常对象的特殊处理。
+		else if (logContentParamObject is Exception exception)
+		{
+			logContent += "\r\n" + exception.ToString();
+		}
+		else if (logContentParamObject != null)
+		{
+			try
+			{
+				logContent += "\r\n" + logContentParamObject.ToJsonString();
+			}
+			catch
+			{
+				logContent += "\r\n" + logContentParamObject.ToString();
+			}
+		}
+
+		if (logContent.Length > 0)
+		{
+			var keysInLogContentToIgnoreLogs = this.KeysInLogContentToIgnoreLogs;
+			if (keysInLogContentToIgnoreLogs?.Length > 0)
+			{
+				for (var keyToIgnoreLogIndex = keysInLogContentToIgnoreLogs.Length - 1;
+				    keyToIgnoreLogIndex >= 0;
+				    keyToIgnoreLogIndex--)
+				{
+					var keyToIgnoreLog = keysInLogContentToIgnoreLogs[keyToIgnoreLogIndex];
+					if (keyToIgnoreLog?.Length > 0)
+					{
+						if (logContent.IndexOfIgnoreCase(keyToIgnoreLog) >= 0)
+						{
+							return;
+						}
+					}
+				}
+			}
+			// !!! 进行XML字符转义操作 !!!
+			logContent = SecurityElement.Escape(logContent);
+			// !!!
+		}
+
+		string invokerFullName;
+		if (invoker is string invokerFullNameString)
+		{
+			invokerFullName = invokerFullNameString;
+		}
+		else
+		{
+			invokerFullName = invoker.GetType().FullName ?? "未知类型";
+		}
+
+		void WriteToConsole()
+		{
+			var logName = this.Name ?? string.Empty;
+			var now = DateTime.Now;
+			var timestamp = now.MillisecondsFrom1970(Constants.TimeZoneNumber.Utc0, true);
+			var timestampCaption = now.ToString("yyyy_MM_dd hh:mm:ss ms");
+			System.Diagnostics.Debug.WriteLine(
+			    System.Environment.NewLine
+			    + logName
+			    + " "
+			    + invokerFullName
+			    + " "
+			    + timestampCaption
+			    + System.Environment.NewLine
+			    + logContent);
+		}
+		if (IsConsoleWriteEnable)
+		{
+			WriteToConsole();
+		}
+#if DEBUG
+		else
+		{
+			WriteToConsole();
+		}
+#endif
+
+		var newLogRecord = new LogFileLogRecord()
+		{
+			LogTime = DateTime.Now,
+			Invoker = invokerFullName,
+			Content = logContent
+		};
+		_logRecords.Enqueue(newLogRecord);
+	}
+
+	/// <summary>
+	/// 清空日志内容缓冲到日志文件。
+	/// </summary>
+	/// <param name="isClearBufferOnly">是否只是清空缓存。</param>
+	public void FlushLogBuffer(bool isClearBufferOnly = false)
+	{
+		var logRecordsCountNeedWriteToFile = _logRecords.Count;
+		if (logRecordsCountNeedWriteToFile < 1)
+		{
+			return;
+		}
+
+		var newLogRecordsNeedWriteToFile = new List<LogFileLogRecord>();
+		while (_logRecords.TryDequeue(out var logRecord)
+		    && logRecordsCountNeedWriteToFile > 0)
+		{
+			newLogRecordsNeedWriteToFile.Add(logRecord);
+			//
+			logRecordsCountNeedWriteToFile--;
+			//
+		}
+
+		if (isClearBufferOnly)
+		{
+			return;
+		}
+
+		if (newLogRecordsNeedWriteToFile.Count > 0)
+		{
+			var timeoutSecondsToStorageLogRecords = 0.0;
+			var toGetTimeoutSecondsToStorageLogRecords
+			    = LogFile.ToGetTimeoutSecondsToStorageLogRecords;
+			if (toGetTimeoutSecondsToStorageLogRecords != null)
+			{
+				timeoutSecondsToStorageLogRecords
+				    = toGetTimeoutSecondsToStorageLogRecords();
+			}
+
+			try
+			{
+				using var timeoutCancellationTokenSource
+				    = timeoutSecondsToStorageLogRecords > 0.0
+				    ? new CancellationTokenSource()
+				    : null;
+				// !!!
+				timeoutCancellationTokenSource?.CancelAfter(
+				    (int)(1000.0 * timeoutSecondsToStorageLogRecords));
+				// !!!
+
+				////////////////////////////////////////////////
+				// !!!
+				this.DidTryStorageLogRecords(newLogRecordsNeedWriteToFile);
+				// !!!
+				////////////////////////////////////////////////
+			}
+			catch (TaskCanceledException)
+			{
+				// !!! 避免内存泄露 !!!
+				newLogRecordsNeedWriteToFile.Clear();
+				// !!!
+			}
+		}
+	}
+
 
 	#endregion
 

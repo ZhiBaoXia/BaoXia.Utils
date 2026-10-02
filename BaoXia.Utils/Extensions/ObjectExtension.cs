@@ -27,9 +27,9 @@ public static class ObjectExtension
 		return ObjectUtil.CreateObject(objectType);
 	}
 
-	public static ObjectType? CreateObject<ObjectType>()
+	public static ObjectClass? CreateObject<ObjectClass>()
 	{
-		return ObjectUtil.CreateObject<ObjectType>();
+		return ObjectUtil.CreateObject<ObjectClass>();
 	}
 
 	public static object? CreateObject(object? @object)
@@ -720,14 +720,14 @@ public static class ObjectExtension
 	/// <summary>
 	/// 浅拷贝，通过设置同名属性，克隆产生新对象。
 	/// </summary>
-	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
+	/// <typeparam name="ObjectClass">当前对象类型。</typeparam>
 	/// <param name="currentObject">当前对象。</param>
 	/// <returns>拥有相同属性的，克隆产生的新对象。</returns>
-	public static ObjectType CloneShallow<ObjectType>(this ObjectType currentObject)
-	    where ObjectType
+	public static ObjectClass CloneShallow<ObjectClass>(this ObjectClass currentObject)
+	    where ObjectClass
 	    : class, new()
 	{
-		var newObject = new ObjectType();
+		var newObject = new ObjectClass();
 		{
 			newObject.SetPropertiesWithSameNameFrom((object)currentObject);
 		}
@@ -737,22 +737,22 @@ public static class ObjectExtension
 	/// <summary>
 	/// 深拷贝。
 	/// </summary>
-	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
+	/// <typeparam name="ObjectClass">当前对象类型。</typeparam>
 	/// <param name="item">当前对象。</param>
 	/// <param name="propertyNamesExcepted">要排除的属性名称</param>
 	/// <param name="propertiesBindingFlags">要拷贝属性的绑定标志。</param>
 	/// <param name="toIsPropertyInfoOfObjectValidToGenerate">用于拷贝筛选属性的回调。</param>
 	/// <param name="propertyLayerNumberMax">深拷贝的层数，“-1”表示不限制层数。</param>
 	/// <returns>拥有相同属性的，克隆产生的新对象。</returns>
-	public static ObjectType CloneDeep<ObjectType>(
-	    this ObjectType item,
+	public static ObjectClass CloneDeep<ObjectClass>(
+	    this ObjectClass item,
 	    string[]? propertyNamesExcepted = null,
 	    BindingFlags propertiesBindingFlags = BindingFlags.Default,
 	    Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
 	    int propertyLayerNumberMax = -1)
-	    where ObjectType : new()
+	    where ObjectClass : new()
 	{
-		var itemCloned = new ObjectType();
+		var itemCloned = new ObjectClass();
 		if (propertiesBindingFlags == BindingFlags.Default)
 		{
 			propertiesBindingFlags
@@ -1156,22 +1156,22 @@ public static class ObjectExtension
 		return itemCloned;
 	}
 
-	public static ObjectType Clone<ObjectType>(
-	    this ObjectType currentObject)
-	    where ObjectType
+	public static ObjectClass Clone<ObjectClass>(
+	    this ObjectClass currentObject)
+	    where ObjectClass
 	    : class, new()
 	{
 		return CloneShallow(currentObject);
 	}
 
-	public static ObjectType Clone<ObjectType>(
-	    this ObjectType currentObject,
+	public static ObjectClass Clone<ObjectClass>(
+	    this ObjectClass currentObject,
 	    bool isDeepClone,
 	    string[]? propertyNamesExcepted = null,
 	    BindingFlags propertiesBindingFlags = BindingFlags.Default,
 	    Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
 	    int propertyLayerNumberMax = -1)
-	    where ObjectType
+	    where ObjectClass
 	    : class, new()
 	{
 		if (isDeepClone == false)
@@ -1186,10 +1186,10 @@ public static class ObjectExtension
 		    propertyLayerNumberMax);
 	}
 
-	public static ObjectType[] CloneItemsToArray<ObjectType>(this IEnumerable<ObjectType> objects)
-	    where ObjectType : class, new()
+	public static ObjectClass[] CloneItemsToArray<ObjectClass>(this IEnumerable<ObjectClass> objects)
+	    where ObjectClass : class, new()
 	{
-		var objectArray = new ObjectType[objects.GetCount()];
+		var objectArray = new ObjectClass[objects.GetCount()];
 		var objectIndex = 0;
 		foreach (var obj in objects)
 		{
@@ -1202,13 +1202,42 @@ public static class ObjectExtension
 		return objectArray;
 	}
 
-	public static List<ObjectType> CloneItemsToList<ObjectType>(this IEnumerable<ObjectType> objects)
-	    where ObjectType : class, new()
+	public static ObjectClass[] CloneItemsToArray<ObjectClass>(
+		this IEnumerable<ObjectClass> objects, Func<ObjectClass, ObjectClass> toUpdateItem)
+		where ObjectClass : class, new()
 	{
-		var objectList = new List<ObjectType>();
+		var objectArray = new ObjectClass[objects.GetCount()];
+		var objectIndex = 0;
+		foreach (var obj in objects)
+		{
+			if (objectIndex < objectArray.Length)
+			{
+				objectArray[objectIndex] = toUpdateItem(obj.CloneShallow());
+			}
+			objectIndex++;
+		}
+		return objectArray;
+	}
+
+	public static List<ObjectClass> CloneItemsToList<ObjectClass>(this IEnumerable<ObjectClass> objects)
+	    where ObjectClass : class, new()
+	{
+		var objectList = new List<ObjectClass>();
 		foreach (var obj in objects)
 		{
 			objectList.Add(obj.CloneShallow());
+		}
+		return objectList;
+	}
+
+	public static List<ObjectClass> CloneItemsToList<ObjectClass>(
+		this IEnumerable<ObjectClass> objects, Func<ObjectClass, ObjectClass> toUpdateItem)
+	    where ObjectClass : class, new()
+	{
+		var objectList = new List<ObjectClass>();
+		foreach (var obj in objects)
+		{
+			objectList.Add(toUpdateItem(obj.CloneShallow()));
 		}
 		return objectList;
 	}
@@ -1624,11 +1653,11 @@ public static class ObjectExtension
 	/// <summary>
 	/// 将当前对象序列化为Json字符串。
 	/// </summary>
-	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
+	/// <typeparam name="ObjectClass">当前对象类型。</typeparam>
 	/// <param name="item">当前对象。</param>
 	/// <returns>对象序列化产生的Json字符串。</returns>
-	public static string ToJsonString<ObjectType>(
-	    this ObjectType item,
+	public static string ToJsonString<ObjectClass>(
+	    this ObjectClass item,
 	    JsonSerializerOptions? jsonSerializerOptions = null)
 	{
 		var jsonString = StringUtil.StringByJsonSerializeObject(

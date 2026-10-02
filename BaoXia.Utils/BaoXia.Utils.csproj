@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
@@ -46,10 +46,12 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Cache\Index\" />
 	  <Folder Include="TestUtils\MethodTestUtils\" />
 	</ItemGroup>
+
+  <PropertyGroup Label="NuGetFlow.Versions"><Version>10.0.0</Version><PackageVersion>10.0.0</PackageVersion><AssemblyVersion>10.0.0.0</AssemblyVersion><FileVersion>10.0.0.0</FileVersion></PropertyGroup>
 </Project>

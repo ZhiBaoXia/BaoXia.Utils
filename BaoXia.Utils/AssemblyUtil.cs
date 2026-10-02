@@ -55,17 +55,15 @@ namespace BaoXia.Utils
 		/// </summary>
 		/// <param name="applicationAssembly">使用”Assembly.GetExecutingAssembly()“指定的当前应用程序程序集，之所以需要指定，是为了避免在程序包管理器控制台，执行EF命令等操作时，无法扫描到当前项目中的服务。。</param>
 		/// <param name="baseClassSpecified">指定要获取类型的要继承的基类，默认为“null”，不指定。</param>
-		/// <param name="baseInterfaceSpecified">指定要获取类型的要实现的接口，默认为“null”，不指定。</param>
-		/// <param name="customAttributeTypeSpecified">指定要获取类型的要拥有的特性，默认为“null”，不指定。</param>
+		/// <param name="orBaseInterfaceSpecified">指定要获取类型的要实现的接口，默认为“null”，不指定。</param>
+		/// <param name="orCustomAttributeTypeSpecified">指定要获取类型的要拥有的特性，默认为“null”，不指定。</param>
 		/// <param name="isIncludeTypesInEntryAssembly">是否包含“应用程序的入口点的程序集”中的类型。</param>
 		/// <param name="isIncludeTypesInCurrentAssembly">是否包含“当前正在执行的代码的程序集”中的类型。</param>
 		/// <param name="isIncludeTypesInCallingAssembly">是否包含“当前正在执行的代码的程序集”中的类型。</param>
 		/// <returns>当前当前应用程序中所有的类型信息。</returns>
-		public static List<Type> GetAllTypesInApplicationAssembly(
+		public static List<Type> GetAllTypesWithAnyBaseClassSpecifiedInApplicationAssembly(
 		    Assembly? applicationAssembly,
-		    Type? baseClassSpecified = null,
-		    Type? baseInterfaceSpecified = null,
-		    Type? customAttributeTypeSpecified = null,
+		    Type? baseClassSpecified = null, Type? orBaseInterfaceSpecified = null, Type? orCustomAttributeTypeSpecified = null,
 		    bool isIncludeTypesInCurrentAssembly = true,
 		    bool isIncludeTypesInEntryAssembly = true,
 		    bool isIncludeTypesInCallingAssembly = true)
@@ -132,10 +130,8 @@ namespace BaoXia.Utils
 			////////////////////////////////////////////////
 
 			// !!!
-			allTypesInApplicationAssembly.RemoveTypesExceptBaseClassSpecified(
-			    baseClassSpecified,
-			    baseInterfaceSpecified,
-			    customAttributeTypeSpecified);
+			allTypesInApplicationAssembly.RemoveTypesExceptAnyBaseClassSpecified(
+				baseClassSpecified, orBaseInterfaceSpecified, orCustomAttributeTypeSpecified);
 			// !!!
 
 			return allTypesInApplicationAssembly;

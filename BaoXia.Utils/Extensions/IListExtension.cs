@@ -1,6 +1,7 @@
 ﻿using BaoXia.Utils.Constants;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Extensions;
 
@@ -69,16 +70,8 @@ public static class IListExtension
 		return itemsCountJustAdd;
 	}
 
-	public static void InsertWithOrder<ItemType>(
-	    this IList<ItemType> list,
-	    ItemType? newItem,
-	    Func<ItemType, ItemType, int> toCompareItem)
+	public static void InsertWithOrder<ItemType>(this IList<ItemType> list, ItemType newItem, Func<ItemType, ItemType, int> toCompareItem)
 	{
-		if (newItem == null)
-		{
-			return;
-		}
-
 		if (list.Count < 1)
 		{
 			// !!!
@@ -87,39 +80,29 @@ public static class IListExtension
 			// !!!
 		}
 
-		for (var itemIndex = 0;
-		    itemIndex < list.Count;
-		    itemIndex++)
+		var objectInsertIndex = list.FindItemIndexWithDichotomy(true, (item, itemIndex) =>
 		{
-			var item = list[itemIndex];
-			var compareResult = toCompareItem(newItem, item);
-			if (compareResult < 0)
+			return toCompareItem(item, newItem);
+		}, DichotomyClosestItemType.LessThanTargetItemMax, out var objectInsertIndexPrev, out _);
+		if (objectInsertIndex < 0)
+		{
+			if (objectInsertIndexPrev != null)
 			{
-				// !!!
-				list.Insert(itemIndex, newItem);
-				return;
-				// !!!
+				objectInsertIndex = objectInsertIndexPrev.Value + 1;
 			}
-			if (itemIndex == (list.Count - 1))
+			else
 			{
-				// !!!
-				list.Insert(itemIndex + 1, newItem);
-				return;
-				// !!!
+				objectInsertIndex = 0;
 			}
 		}
+		// !!!
+		list.Insert(objectInsertIndex, newItem);
+		// !!!
 	}
 
 	public static void InsertWithOrderDescending<ItemType>(
-	    this IList<ItemType> list,
-	    ItemType? newItem,
-	    Func<ItemType, ItemType, int> toCompareItem)
+		this IList<ItemType> list, ItemType newItem, Func<ItemType, ItemType, int> toCompareItem)
 	{
-		if (newItem == null)
-		{
-			return;
-		}
-
 		if (list.Count < 1)
 		{
 			// !!!
@@ -128,27 +111,24 @@ public static class IListExtension
 			// !!!
 		}
 
-		for (var itemIndex = 0;
-		    itemIndex < list.Count;
-		    itemIndex++)
+		var objectInsertIndex = list.FindItemIndexWithDichotomy(false, (item, itemIndex) =>
 		{
-			var item = list[itemIndex];
-			var compareResult = toCompareItem(newItem, item);
-			if (compareResult > 0)
+			return toCompareItem(item, newItem);
+		}, DichotomyClosestItemType.GreaterThanTargetItemMin, out var objectInsertIndexPrev, out _);
+		if (objectInsertIndex < 0)
+		{
+			if (objectInsertIndexPrev != null)
 			{
-				// !!!
-				list.Insert(itemIndex, newItem);
-				return;
-				// !!!
+				objectInsertIndex = objectInsertIndexPrev.Value + 1;
 			}
-			if (itemIndex == (list.Count - 1))
+			else
 			{
-				// !!!
-				list.Insert(itemIndex + 1, newItem);
-				return;
-				// !!!
+				objectInsertIndex = 0;
 			}
 		}
+		// !!!
+		list.Insert(objectInsertIndex, newItem);
+		// !!!
 	}
 
 	/// <summary>
@@ -435,7 +415,7 @@ public static class IListExtension
 		switch (closestItemType)
 		{
 			default:
-			case DichotomyClosestItemType.LessThanObjectMax:
+			case DichotomyClosestItemType.LessThanTargetItemMax:
 				{
 					if (isItemsSortedWithAscending)
 					{
@@ -447,7 +427,7 @@ public static class IListExtension
 					}
 				}
 				break;
-			case DichotomyClosestItemType.GreaterThanObjectMin:
+			case DichotomyClosestItemType.GreaterThanTargetItemMin:
 				{
 					if (isItemsSortedWithAscending)
 					{
@@ -638,7 +618,7 @@ public static class IListExtension
 		    searchRangeLength,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}
@@ -653,7 +633,7 @@ public static class IListExtension
 		    isItemsSortedWithAscending,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}
@@ -672,7 +652,7 @@ public static class IListExtension
 		    searchRangeEndIndex,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}
@@ -687,7 +667,7 @@ public static class IListExtension
 		    isItemsSortedWithAscending,
 		    toGetCompareResultByCompareToObjectItemWithItemExisted,
 		    //
-		    DichotomyClosestItemType.LessThanObjectMax,
+		    DichotomyClosestItemType.LessThanTargetItemMax,
 		    out _,
 		    out _);
 	}
@@ -790,5 +770,32 @@ public static class IListExtension
 			// !!!
 		}
 		return pageItems;
+	}
+
+	public static async Task SortAsync<EnumerableItemType>(this IList<EnumerableItemType> list,
+		Func<EnumerableItemType, EnumerableItemType, Task<int>> toCompareItems)
+	{
+		if (list.Count <= 1)
+		{
+			return;
+		}
+
+		// 直接对List进行冒泡排序
+		bool isNeedSwapped;
+		do
+		{
+			isNeedSwapped = false;
+			var lastListItemIndex = list.Count - 1;
+			for (int listItemIndex = 0; listItemIndex < lastListItemIndex; listItemIndex++)
+			{
+				int compareResult = await toCompareItems(list[listItemIndex], list[listItemIndex + 1]);
+				if (compareResult > 0)
+				{
+					// 交换元素
+					(list[listItemIndex], list[listItemIndex + 1]) = (list[listItemIndex + 1], list[listItemIndex]);
+					isNeedSwapped = true;
+				}
+			}
+		} while (isNeedSwapped);
 	}
 }

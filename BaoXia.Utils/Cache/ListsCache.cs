@@ -7,21 +7,21 @@ namespace BaoXia.Utils.Cache;
 /// 列表缓存。
 /// </summary>
 public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
-	    Func<ListKeyType, CreateListCacheParamType?, ListItemType[]?> didCreateList,
-	    Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, ListItemType[]?>? didWillUpdateList,
-	    Action<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?>? didListUpdated,
-	    Func<double>? toDidGetIntervalSecondsToCleanItemCache,
-	    Func<double>? didGetNoneReadSecondsToRemoveListCache,
-	    Func<double>? didGetNoneUpdateSecondsToUpdateItemCache,
-	    Func<int>? toDidGetThreadsCountToCreateItemAsync)
-	: ItemsCache<ListKeyType, ListItemType[], CreateListCacheParamType>(didCreateList,
-		didWillUpdateList,
-		didListUpdated,
-		  toDidGetIntervalSecondsToCleanItemCache,
-		  didGetNoneReadSecondsToRemoveListCache,
-		  didGetNoneUpdateSecondsToUpdateItemCache,
-		  toDidGetThreadsCountToCreateItemAsync)
-	    where ListKeyType : notnull
+    Func<ListKeyType, CreateListCacheParamType?, ListItemType[]?> didCreateList,
+    Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, ListItemType[]?>? didWillUpdateList,
+    Action<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?>? didListUpdated,
+    Func<double>? toDidGetIntervalSecondsToCleanItemCache,
+    Func<double>? didGetNoneReadSecondsToRemoveListCache,
+    Func<double>? didGetNoneUpdateSecondsToUpdateItemCache,
+    Func<int>? toDidGetThreadsCountToCreateItemAsync)
+    : ItemsCache<ListKeyType, ListItemType[], CreateListCacheParamType>(didCreateList,
+    didWillUpdateList,
+    didListUpdated,
+      toDidGetIntervalSecondsToCleanItemCache,
+      didGetNoneReadSecondsToRemoveListCache,
+      didGetNoneUpdateSecondsToUpdateItemCache,
+      toDidGetThreadsCountToCreateItemAsync)
+    where ListKeyType : notnull
 {
 	////////////////////////////////////////////////
 	// @静态常量
@@ -46,19 +46,19 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 	#region 自身实现
 
 	public ListsCache(
-		Func<ListKeyType, CreateListCacheParamType?, ListItemType[]?> didCreateList,
-		Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, ListItemType[]?>? didWillUpdateList,
-		Action<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?>? didListUpdated,
-		Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
-		Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
-		Func<int>? toDidGetThreadsCountToCreateItemAsync = null)
-		: this(didCreateList,
-			  didWillUpdateList,
-			  didListUpdated,
-			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
-			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
-			  toDidGetNoneUpdateSecondsToUpdateItemCache,
-			  toDidGetThreadsCountToCreateItemAsync)
+	    Func<ListKeyType, CreateListCacheParamType?, ListItemType[]?> didCreateList,
+	    Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, ListItemType[]?>? didWillUpdateList,
+	    Action<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?>? didListUpdated,
+	    Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
+	    Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
+	    Func<int>? toDidGetThreadsCountToCreateItemAsync = null)
+	    : this(didCreateList,
+	      didWillUpdateList,
+	      didListUpdated,
+	      toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
+	      toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
+	      toDidGetNoneUpdateSecondsToUpdateItemCache,
+	      toDidGetThreadsCountToCreateItemAsync)
 	{ }
 
 	protected ListItemType[] RecreateListWithItemOperation(
@@ -150,7 +150,7 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 				currentList ??= [];
 			}
 			currentList
-				= RecreateListWithItemOperation(
+			    = RecreateListWithItemOperation(
 			    currentList,
 			    newListItem,
 			    ItemOperation.InsertOrUpdate);
@@ -162,30 +162,30 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 			////////////////////////////////////////////////
 			// !!!
 			currentList = DidWillUpdateItemCache(
-				listKey,
-				lastList,
-				currentList,
-				createListParam);
+			    listKey,
+			    lastList,
+			    currentList,
+			    createListParam);
 			// !!!
 			////////////////////////////////////////////////
 
 			if (currentList != null
-				|| IsNullValueValidToCache)
+			    || IsNullValueValidToCache)
 			{
 				// !!!
 				listContainerNeedAddItem.SetItem(
-					currentList,
-					createListParam,
-					isNeedUpdateItemLastReadTime);
+				    currentList,
+				    createListParam,
+				    isNeedUpdateItemLastReadTime);
 				// !!!
 
 				////////////////////////////////////////////////
 				// !!!
 				DidItemCacheUpdated(
-					listKey,
-					lastList,
-					currentList,
-					createListParam);
+				    listKey,
+				    lastList,
+				    currentList,
+				    createListParam);
 				// !!!
 				////////////////////////////////////////////////
 			}
@@ -211,7 +211,7 @@ public class ListsCache<ListKeyType, ListItemType, CreateListCacheParamType>(
 		if (_itemContainersCache.TryGetValue(
 		    listKey,
 		    out var listContainer)
-			&& listContainer != null)
+		    && listContainer != null)
 		{
 			////////////////////////////////////////////////
 			// 2/4，排队更新列表对象（容器）。

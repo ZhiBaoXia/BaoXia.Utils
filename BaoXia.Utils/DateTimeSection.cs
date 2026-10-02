@@ -5,9 +5,9 @@ using System;
 namespace BaoXia.Utils;
 
 public class DateTimeSection(
-	TimeSectionType type = TimeSectionType.NotLoop,
-	DateTime? beginTime = null,
-	DateTime? endTime = null)
+    DateTimeComparisonCycle type = DateTimeComparisonCycle.None,
+    DateTime? beginTime = null,
+    DateTime? endTime = null)
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -15,7 +15,7 @@ public class DateTimeSection(
 
 	#region 自身属性
 
-	public TimeSectionType Type { get; set; } = type;
+	public DateTimeComparisonCycle Type { get; set; } = type;
 
 	public DateTime? BeginTime { get; set; } = beginTime;
 
@@ -31,33 +31,33 @@ public class DateTimeSection(
 	#region 类方法
 
 	public static bool IsTimeInSection(
-		DateTime dateTime,
-		TimeSectionType timeSectionType,
-		DateTime? beginTime,
-		DateTime? endTime)
+	    DateTime dateTime,
+	    DateTimeComparisonCycle timeSectionType,
+	    DateTime? beginTime,
+	    DateTime? endTime)
 	{
 		if (beginTime != null
-			&& endTime != null)
+		    && endTime != null)
 		{
 			return DidIsTimeInSection(
-				dateTime,
-				beginTime.Value,
-				endTime.Value,
-				timeSectionType);
+			    dateTime,
+			    beginTime.Value,
+			    endTime.Value,
+			    timeSectionType);
 		}
 		else if (beginTime != null)
 		{
 			return DidIsBeginTimeLessOrEqualTime(
-				dateTime,
-				beginTime.Value,
-				timeSectionType);
+			    dateTime,
+			    beginTime.Value,
+			    timeSectionType);
 		}
 		else if (endTime != null)
 		{
 			return DidIsEndTimeGreatThanTime(
-				dateTime,
-				endTime.Value,
-				timeSectionType);
+			    dateTime,
+			    endTime.Value,
+			    timeSectionType);
 		}
 		// 起始时间和结束时间都为空时，
 		// 表示不对时间进行限制。
@@ -67,72 +67,32 @@ public class DateTimeSection(
 	}
 
 	private static bool DidIsTimeInSection(
-		DateTime dateTime,
-		DateTime beginTime,
-		DateTime endTime,
-		TimeSectionType timeSectionType)
+	    DateTime dateTime,
+	    DateTime beginTime,
+	    DateTime endTime,
+	    DateTimeComparisonCycle dateTimeCompareCycle)
 	{
-		DateTimeCycle dateTimeCompareCycle;
-		switch (timeSectionType)
+		if (dateTimeCompareCycle == DateTimeComparisonCycle.None)
 		{
-			default:
-			case TimeSectionType.NotLoop:
-				{
-					if (dateTime >= beginTime
-						&& dateTime < endTime)
-					{
-						return true;
-					}
-					return false;
-				}
-			case TimeSectionType.LoopInCentury:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Century;
-				}
-				break;
-			case TimeSectionType.LoopInYear:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Year;
-				}
-				break;
-			case TimeSectionType.LoopInMonth:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Month;
-				}
-				break;
-			case TimeSectionType.LoopInWeek:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Week;
-				}
-				break;
-			case TimeSectionType.LoopInDay:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Day;
-				}
-				break;
-			case TimeSectionType.LoopInHour:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Hour;
-				}
-				break;
-			case TimeSectionType.LoopInMinute:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Minute;
-				}
-				break;
+			if (dateTime >= beginTime
+			    && dateTime < endTime)
+			{
+				return true;
+			}
+			return false;
 		}
 
 		if (beginTime.CompareTo(
-			endTime,
-			dateTimeCompareCycle)
-			<= 0)
+		    endTime,
+		    dateTimeCompareCycle)
+		    <= 0)
 		{
 			if (dateTime.CompareTo(
-				beginTime,
-				dateTimeCompareCycle) >= 0
+			    beginTime,
+			    dateTimeCompareCycle) >= 0
 			&& dateTime.CompareTo(
-				endTime,
-				dateTimeCompareCycle) < 0)
+			    endTime,
+			    dateTimeCompareCycle) < 0)
 			{
 				return true;
 			}
@@ -140,20 +100,20 @@ public class DateTimeSection(
 		else
 		{
 			if (dateTime.CompareTo(
-				beginTime,
-				dateTimeCompareCycle)
-				>= 0
-				// && dateTime <= 当前时间范围最大值
-				)
+			    beginTime,
+			    dateTimeCompareCycle)
+			    >= 0
+			    // && dateTime <= 当前时间范围最大值
+			    )
 			{
 				return true;
 			}
 			if (dateTime.CompareTo(
-				endTime,
-				dateTimeCompareCycle)
-				< 0
-				// && dateTime >= 当前时间范围最小值
-				)
+			    endTime,
+			    dateTimeCompareCycle)
+			    < 0
+			    // && dateTime >= 当前时间范围最小值
+			    )
 			{
 				return true;
 			}
@@ -162,60 +122,9 @@ public class DateTimeSection(
 	}
 
 	private static bool DidIsBeginTimeLessOrEqualTime(
-		DateTime dateTime,
-		DateTime beginTime,
-		TimeSectionType timeSectionType)
+		DateTime dateTime, DateTime beginTime, DateTimeComparisonCycle dateTimeComparisonCycle)
 	{
-		DateTimeCycle dateTimeCompareCycle;
-		switch (timeSectionType)
-		{
-			default:
-			case TimeSectionType.NotLoop:
-				{
-					dateTimeCompareCycle = DateTimeCycle.All;
-				}
-				break;
-			case TimeSectionType.LoopInCentury:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Century;
-				}
-				break;
-			case TimeSectionType.LoopInYear:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Year;
-				}
-				break;
-			case TimeSectionType.LoopInMonth:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Month;
-				}
-				break;
-			case TimeSectionType.LoopInWeek:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Week;
-				}
-				break;
-			case TimeSectionType.LoopInDay:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Day;
-				}
-				break;
-			case TimeSectionType.LoopInHour:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Hour;
-				}
-				break;
-			case TimeSectionType.LoopInMinute:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Minute;
-				}
-				break;
-		}
-
-		if (dateTime.CompareTo(
-			beginTime,
-			dateTimeCompareCycle)
-			>= 0)
+		if (dateTime.CompareTo(beginTime, dateTimeComparisonCycle) >= 0)
 		{
 			return true;
 		}
@@ -223,60 +132,9 @@ public class DateTimeSection(
 	}
 
 	private static bool DidIsEndTimeGreatThanTime(
-		DateTime dateTime,
-		DateTime endTime,
-		TimeSectionType timeSectionType)
+		DateTime dateTime, DateTime endTime, DateTimeComparisonCycle dateTimeCompareCycle)
 	{
-		DateTimeCycle dateTimeCompareCycle;
-		switch (timeSectionType)
-		{
-			default:
-			case TimeSectionType.NotLoop:
-				{
-					dateTimeCompareCycle = DateTimeCycle.All;
-				}
-				break;
-			case TimeSectionType.LoopInCentury:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Century;
-				}
-				break;
-			case TimeSectionType.LoopInYear:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Year;
-				}
-				break;
-			case TimeSectionType.LoopInMonth:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Month;
-				}
-				break;
-			case TimeSectionType.LoopInWeek:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Week;
-				}
-				break;
-			case TimeSectionType.LoopInDay:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Day;
-				}
-				break;
-			case TimeSectionType.LoopInHour:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Hour;
-				}
-				break;
-			case TimeSectionType.LoopInMinute:
-				{
-					dateTimeCompareCycle = DateTimeCycle.Minute;
-				}
-				break;
-		}
-
-		if (dateTime.CompareTo(
-			endTime,
-			dateTimeCompareCycle)
-			<= 0)
+		if (dateTime.CompareTo(endTime, dateTimeCompareCycle) <= 0)
 		{
 			return true;
 		}
@@ -296,10 +154,10 @@ public class DateTimeSection(
 	public bool IsTimeInSection(DateTime dateTime)
 	{
 		return IsTimeInSection(
-			dateTime,
-			Type,
-			BeginTime,
-			EndTime);
+		    dateTime,
+		    Type,
+		    BeginTime,
+		    EndTime);
 	}
 
 	#endregion

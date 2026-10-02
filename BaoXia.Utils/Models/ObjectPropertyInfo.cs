@@ -28,9 +28,9 @@ public class ObjectPropertyInfo
 	public bool IsPropertyTypeCollection => PropertyType.IsCollectible; //.IsAssignableTo(typeof(System.Collections.ICollection));
 
 	public bool IsPropertyTypeNoneChildProperties =>
-		IsPropertyTypeValue
-		|| IsPropertyTypeString
-		|| IsPropertyTypeCollection;
+	    IsPropertyTypeValue
+	    || IsPropertyTypeString
+	    || IsPropertyTypeCollection;
 
 	public string Name => PropertyInfo.Name;
 
@@ -40,8 +40,8 @@ public class ObjectPropertyInfo
 		{
 			var propertyLinkName = Name;
 			for (var parentObjectPropertyInfo = ParentObjectPropertyInfo;
-				parentObjectPropertyInfo != null;
-				parentObjectPropertyInfo = parentObjectPropertyInfo.ParentObjectPropertyInfo)
+			    parentObjectPropertyInfo != null;
+			    parentObjectPropertyInfo = parentObjectPropertyInfo.ParentObjectPropertyInfo)
 			{
 				propertyLinkName = parentObjectPropertyInfo.Name + "." + propertyLinkName;
 			}

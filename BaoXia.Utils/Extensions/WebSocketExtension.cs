@@ -32,10 +32,8 @@ public static class WebSocketExtension
 	}
 
 	public static async Task<WebSocketReceiveDataResult> ReceiveByteArrayAsync(
-		this WebSocket webSocket,
-		BytesBuffer? receiveBuffer,
-		CancellationToken cancellationToken,
-		WebSocketReceiveDataResult? receiveDataResultSpecified = null)
+	    this WebSocket webSocket, BytesBuffer? receiveBuffer, CancellationToken cancellationToken,
+	    WebSocketReceiveDataResult? receiveDataResultSpecified = null)
 	{
 		if (receiveBuffer == null)
 		{
@@ -49,12 +47,8 @@ public static class WebSocketExtension
 		WebSocketReceiveResult receiveResult;
 		do
 		{
-			var requestBodyBufferBytes
-				= receiveBuffer.GetEmptyBufferSegment();
-			receiveResult
-				= await webSocket.ReceiveAsync(
-					requestBodyBufferBytes,
-					cancellationToken);
+			var requestBodyBufferBytes = receiveBuffer.GetEmptyBufferSegment();
+			receiveResult = await webSocket.ReceiveAsync(requestBodyBufferBytes, cancellationToken);
 			// !!!
 			receiveBuffer.BytesCount += receiveResult.Count;
 			// !!!
@@ -71,17 +65,14 @@ public static class WebSocketExtension
 	}
 
 	public static async Task<WebSocketReceiveDataResult> ReceiveStringAsync(
-		this WebSocket webSocket,
-		BytesBuffer? receiveBuffer,
-		CancellationToken cancellationToken,
-		System.Text.Encoding? textEncoding = null,
-		WebSocketReceiveDataResult? receiveDataResultSpecified = null)
+	    this WebSocket webSocket,
+	    BytesBuffer? receiveBuffer,
+	    CancellationToken cancellationToken,
+	    System.Text.Encoding? textEncoding = null,
+	    WebSocketReceiveDataResult? receiveDataResultSpecified = null)
 	{
 		var receiveResult = await WebSocketExtension.ReceiveByteArrayAsync(
-			webSocket,
-			receiveBuffer,
-			cancellationToken,
-			receiveDataResultSpecified);
+		    webSocket, receiveBuffer, cancellationToken, receiveDataResultSpecified);
 		var bytesReceived = receiveResult.BytesReceived;
 		if (bytesReceived?.Length > 0)
 		{
@@ -94,19 +85,19 @@ public static class WebSocketExtension
 	}
 
 	public static async Task<WebSocketReceiveDataResult> ReceiveJsonDocumentAsync(
-		this WebSocket webSocket,
-		BytesBuffer? receiveBuffer,
-		CancellationToken cancellationToken,
-		System.Text.Encoding? textEncoding = null,
-		JsonDocumentOptions jsonDeserializeOptions = default,
-		WebSocketReceiveDataResult? receiveDataResultSpecified = null)
+	    this WebSocket webSocket,
+	    BytesBuffer? receiveBuffer,
+	    CancellationToken cancellationToken,
+	    System.Text.Encoding? textEncoding = null,
+	    JsonDocumentOptions jsonDeserializeOptions = default,
+	    WebSocketReceiveDataResult? receiveDataResultSpecified = null)
 	{
 		var receiveResult = await WebSocketExtension.ReceiveStringAsync(
-			webSocket,
-			receiveBuffer,
-			cancellationToken,
-			textEncoding,
-			receiveDataResultSpecified);
+		    webSocket,
+		    receiveBuffer,
+		    cancellationToken,
+		    textEncoding,
+		    receiveDataResultSpecified);
 		var stringReceived = receiveResult.StringReceived;
 		if (stringReceived?.Length > 0)
 		{
@@ -121,18 +112,18 @@ public static class WebSocketExtension
 	}
 
 	public static async Task<WebSocketReceiveObjectResult<ObjectType>> ReceiveObjectAsync<ObjectType>(
-		this WebSocket webSocket,
-		BytesBuffer? receiveBuffer,
-		CancellationToken cancellationToken,
-		System.Text.Encoding? textEncoding = null)
+	    this WebSocket webSocket,
+	    BytesBuffer? receiveBuffer,
+	    CancellationToken cancellationToken,
+	    System.Text.Encoding? textEncoding = null)
 	{
 		var receiveObjectResult = new WebSocketReceiveObjectResult<ObjectType>();
 		var receiveResult = await WebSocketExtension.ReceiveStringAsync(
-			webSocket,
-			receiveBuffer,
-			cancellationToken,
-			textEncoding,
-			receiveObjectResult);
+		    webSocket,
+		    receiveBuffer,
+		    cancellationToken,
+		    textEncoding,
+		    receiveObjectResult);
 		if (receiveResult != receiveObjectResult)
 		{
 			throw new ApplicationException("“receiveResult”应当为指定的“receiveObjectResult”对象。");
@@ -148,9 +139,9 @@ public static class WebSocketExtension
 	}
 
 	public static async IAsyncEnumerable<WebSocketReceiveDataResult?> ReceiveByteArraysAsync(
-		this WebSocket webSocket,
-		BytesBuffer? receiveBuffer,
-		[EnumeratorCancellation] CancellationToken cancellationToken)
+	    this WebSocket webSocket,
+	    BytesBuffer? receiveBuffer,
+	    [EnumeratorCancellation] CancellationToken cancellationToken)
 	{
 		if (receiveBuffer == null)
 		{
@@ -161,10 +152,10 @@ public static class WebSocketExtension
 		while (receiveDataResult?.Result?.CloseStatus == null)
 		{
 			receiveDataResult
-				= await WebSocketExtension.ReceiveByteArrayAsync(
-					webSocket,
-					receiveBuffer,
-					cancellationToken);
+			    = await WebSocketExtension.ReceiveByteArrayAsync(
+			    webSocket,
+			    receiveBuffer,
+			    cancellationToken);
 			// !!!
 			yield return receiveDataResult;
 			// !!!
@@ -172,10 +163,10 @@ public static class WebSocketExtension
 	}
 
 	public static async IAsyncEnumerable<WebSocketReceiveDataResult?> ReceiveStringsAsync(
-		this WebSocket webSocket,
-		BytesBuffer? receiveBuffer,
-		[EnumeratorCancellation] CancellationToken cancellationToken,
-		System.Text.Encoding? textEncoding = null)
+	    this WebSocket webSocket,
+	    BytesBuffer? receiveBuffer,
+	    [EnumeratorCancellation] CancellationToken cancellationToken,
+	    System.Text.Encoding? textEncoding = null)
 	{
 		if (receiveBuffer == null)
 		{
@@ -186,11 +177,11 @@ public static class WebSocketExtension
 		while (receiveDataResult?.Result?.CloseStatus == null)
 		{
 			receiveDataResult
-				= await WebSocketExtension.ReceiveStringAsync(
-					webSocket,
-					receiveBuffer,
-					cancellationToken,
-					textEncoding);
+			    = await WebSocketExtension.ReceiveStringAsync(
+			    webSocket,
+			    receiveBuffer,
+			    cancellationToken,
+			    textEncoding);
 			// !!!
 			yield return receiveDataResult;
 			// !!!
@@ -198,11 +189,11 @@ public static class WebSocketExtension
 	}
 
 	public static async IAsyncEnumerable<WebSocketReceiveDataResult?> ReceiveJsonDocumentsAsync(
-		this WebSocket webSocket,
-		BytesBuffer? receiveBuffer,
-		[EnumeratorCancellation] CancellationToken cancellationToken,
-		System.Text.Encoding? textEncoding = null,
-		JsonDocumentOptions jsonDeserializeOptions = default)
+	    this WebSocket webSocket,
+	    BytesBuffer? receiveBuffer,
+	    [EnumeratorCancellation] CancellationToken cancellationToken,
+	    System.Text.Encoding? textEncoding = null,
+	    JsonDocumentOptions jsonDeserializeOptions = default)
 	{
 		if (receiveBuffer == null)
 		{
@@ -213,12 +204,12 @@ public static class WebSocketExtension
 		while (receiveDataResult?.Result?.CloseStatus == null)
 		{
 			receiveDataResult
-				= await WebSocketExtension.ReceiveJsonDocumentAsync(
-					webSocket,
-					receiveBuffer,
-					cancellationToken,
-					textEncoding,
-					jsonDeserializeOptions);
+			    = await WebSocketExtension.ReceiveJsonDocumentAsync(
+			    webSocket,
+			    receiveBuffer,
+			    cancellationToken,
+			    textEncoding,
+			    jsonDeserializeOptions);
 			// !!!
 			yield return receiveDataResult;
 			// !!!
@@ -226,10 +217,10 @@ public static class WebSocketExtension
 	}
 
 	public static async IAsyncEnumerable<WebSocketReceiveObjectResult<ObjectType>?> ReceiveObjectsAsync<ObjectType>(
-		this WebSocket webSocket,
-		BytesBuffer? receiveBuffer,
-		[EnumeratorCancellation] CancellationToken cancellationToken,
-		System.Text.Encoding? textEncoding = null)
+	    this WebSocket webSocket,
+	    BytesBuffer? receiveBuffer,
+	    [EnumeratorCancellation] CancellationToken cancellationToken,
+	    System.Text.Encoding? textEncoding = null)
 	{
 		if (receiveBuffer == null)
 		{
@@ -240,23 +231,37 @@ public static class WebSocketExtension
 		while (receiveObjectResult?.Result?.CloseStatus == null)
 		{
 			receiveObjectResult
-				= await WebSocketExtension.ReceiveObjectAsync<ObjectType>(
-					webSocket,
-					receiveBuffer,
-					cancellationToken,
-					textEncoding);
+			    = await WebSocketExtension.ReceiveObjectAsync<ObjectType>(
+			    webSocket,
+			    receiveBuffer,
+			    cancellationToken,
+			    textEncoding);
 			// !!!
 			yield return receiveObjectResult;
 			// !!!
 		}
 	}
 
+	public static async Task SendStringAsync(this WebSocket webSocket, string responseString, CancellationToken cancellationToken)
+	{
+		var responseStringBytes = responseString.ToUtf8Bytes();
+		//
+		await webSocket.SendAsync(responseStringBytes, WebSocketMessageType.Text, true, cancellationToken);
+		//
+	}
+
+	public static async Task SendObjectAsync(this WebSocket webSocket, object responseObject, CancellationToken cancellationToken)
+	{
+		var responseObjectJsonString = responseObject.ToJsonString();
+		{ }
+		await SendStringAsync(webSocket, responseObjectJsonString, cancellationToken);
+	}
 
 	public static async Task<bool> TryToCloseAsync(
-		this WebSocket webSocket,
-		WebSocketCloseStatus closeStatus,
-		string? statusDescription,
-		CancellationToken cancellationToken)
+	    this WebSocket webSocket,
+	    WebSocketCloseStatus closeStatus,
+	    string? statusDescription,
+	    CancellationToken cancellationToken)
 	{
 		switch (webSocket.State)
 		{
@@ -270,9 +275,9 @@ public static class WebSocketExtension
 			case WebSocketState.CloseReceived:
 				{
 					await webSocket.CloseOutputAsync(
-						closeStatus,
-						statusDescription,
-						cancellationToken);
+					    closeStatus,
+					    statusDescription,
+					    cancellationToken);
 				}
 				break;
 			default:
@@ -280,9 +285,9 @@ public static class WebSocketExtension
 			case WebSocketState.Open:
 				{
 					await webSocket.CloseAsync(
-						closeStatus,
-						statusDescription,
-						cancellationToken);
+					    closeStatus,
+					    statusDescription,
+					    cancellationToken);
 				}
 				break;
 		}

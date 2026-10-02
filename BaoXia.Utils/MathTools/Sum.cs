@@ -6,8 +6,8 @@ namespace BaoXia.Utils.MathTools
 	public static class Sum
 	{
 		public static NumberType? OfList<NumberType>(
-			Func<NumberType?, NumberType?, NumberType?> toGetSumOfItems,
-			IEnumerable<NumberType> items)
+		    Func<NumberType?, NumberType?, NumberType?> toGetSumOfItems,
+		    IEnumerable<NumberType> items)
 		{
 			if (toGetSumOfItems == null)
 			{
@@ -27,12 +27,12 @@ namespace BaoXia.Utils.MathTools
 		}
 
 		public static NumberType? Of<NumberType>(
-			Func<NumberType?, NumberType?, NumberType?> toGetSumOfItems,
-			params NumberType[] items)
+		    Func<NumberType?, NumberType?, NumberType?> toGetSumOfItems,
+		    params NumberType[] items)
 		{
 			return Sum.OfList(
-				toGetSumOfItems,
-				items);
+			    toGetSumOfItems,
+			    items);
 		}
 
 		////////////////////////////////////////////////

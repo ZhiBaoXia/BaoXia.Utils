@@ -74,10 +74,10 @@ namespace BaoXia.Utils.MathTools
 			public int RankLevel { get; set; }
 
 			public Operator(
-				OperatorType type,
-				OperatorId Id,
-				string keyword,
-				int rankLevel)
+			    OperatorType type,
+			    OperatorId Id,
+			    string keyword,
+			    int rankLevel)
 			{
 				this.Type = type;
 				this.Id = Id;
@@ -86,9 +86,9 @@ namespace BaoXia.Utils.MathTools
 			}
 
 			public Operator(
-				OperatorType type,
-				OperatorId Id,
-				int rankLevel)
+			    OperatorType type,
+			    OperatorId Id,
+			    int rankLevel)
 			{
 				this.Type = type;
 				this.Id = Id;
@@ -96,22 +96,22 @@ namespace BaoXia.Utils.MathTools
 			}
 
 			public Operator(
-				OperatorType type,
-				OperatorId Id)
+			    OperatorType type,
+			    OperatorId Id)
 			{
 				this.Type = type;
 				this.Id = Id;
 			}
 
 			public Operator(
-				double number)
+			    double number)
 			{
 				this.Type = OperatorType.CalculationItem;
 				this.Id = OperatorId.Number;
 				this.Number = number;
 			}
 			public Operator(
-				string variableName)
+			    string variableName)
 			{
 				this.Type = OperatorType.CalculationItem;
 				this.Id = OperatorId.Variable;
@@ -119,8 +119,8 @@ namespace BaoXia.Utils.MathTools
 			}
 
 			public Operator(
-				string functionName,
-				string[]? functionParams)
+			    string functionName,
+			    string[]? functionParams)
 			{
 				this.Type = OperatorType.CalculationItem;
 				this.Id = OperatorId.Function;
@@ -137,8 +137,8 @@ namespace BaoXia.Utils.MathTools
 
 
 			public CalculationNumber(
-				string name,
-				double number)
+			    string name,
+			    double number)
 			{
 				this.Name = name;
 				this.Number = number;
@@ -168,8 +168,8 @@ namespace BaoXia.Utils.MathTools
 			{ }
 
 			public CalculationUnit(
-				int calculationDepth,
-				CalculationNumber leftNumber)
+			    int calculationDepth,
+			    CalculationNumber leftNumber)
 			{
 				this.CalculationDepth = calculationDepth;
 
@@ -177,8 +177,8 @@ namespace BaoXia.Utils.MathTools
 			}
 
 			public CalculationUnit(
-				int calculationDepth,
-				Operator calculationOperator)
+			    int calculationDepth,
+			    Operator calculationOperator)
 			{
 				this.CalculationDepth = calculationDepth;
 				this.CalculationOperator = calculationOperator;
@@ -223,29 +223,29 @@ namespace BaoXia.Utils.MathTools
 		private static readonly Operator[] AllOperators =
 		[
                         ////////////////////////////////////////////////
-			// 计算块操作符：
+                        // 计算块操作符：
                         ////////////////////////////////////////////////
                         SectionBegin,
-			SectionEnd,
+	SectionEnd,
                                 
                         ////////////////////////////////////////////////
                         // 数字操作符：
                         ////////////////////////////////////////////////
                         Number,
-			Variable,
-			Function,
+	Variable,
+	Function,
 
                         ////////////////////////////////////////////////
                         // 计算操作符：
                         ////////////////////////////////////////////////
                         Plus,
-			Minus,
-			And,
-			Or,
-			Multiply,
-			Divide,
-			Modulo,
-			Power,
+	Minus,
+	And,
+	Or,
+	Multiply,
+	Divide,
+	Modulo,
+	Power,
 
                         ////////////////////////////////////////////////
                         // 比较操作符：
@@ -253,20 +253,20 @@ namespace BaoXia.Utils.MathTools
                         // 注意，由于“<，>，=”和“<=，>=，=，!=”有符号重叠，
                         // 因此，一定注意他们在“AllOperators”中的顺序。
                         LessThanOrEqual,
-			GreaterThanOrEqual,
-			LessThan,
-			GreaterThan,
+	GreaterThanOrEqual,
+	LessThan,
+	GreaterThan,
                         // 注意
                         Equal,
-			NotEqual
+	NotEqual
 		];
 
 		private static readonly Func<string[]> ToGetAllOperatorKeywords = () =>
 		{
 			var allOperatorKeywords = new string[AllOperators.Length];
 			for (var operatorIndex = 0;
-			operatorIndex < AllOperators.Length;
-			operatorIndex++)
+	    operatorIndex < AllOperators.Length;
+	    operatorIndex++)
 			{
 				var currentOperator = AllOperators[operatorIndex];
 				var currentOperatorKeyword = currentOperator.Keyword;
@@ -293,16 +293,16 @@ namespace BaoXia.Utils.MathTools
 		#region 类方法
 
 		public static List<Operator>? GetOperatorsFromString(
-			string? str,
-			int beginCharIndex,
-			bool isIgnoreSpace,
-			StringComparison stringComparison,
-			out int operatorsEndCharIndex)
+		    string? str,
+		    int beginCharIndex,
+		    bool isIgnoreSpace,
+		    StringComparison stringComparison,
+		    out int operatorsEndCharIndex)
 		{
 			operatorsEndCharIndex = beginCharIndex;
 
 			if (str == null
-				|| str.Length < 1)
+			    || str.Length < 1)
 			{
 				return null;
 			}
@@ -313,7 +313,7 @@ namespace BaoXia.Utils.MathTools
 
 			var operators = new List<Operator>();
 			for (var charIndex = beginCharIndex;
-				charIndex < str.Length;)
+			    charIndex < str.Length;)
 			{
 				var character = str[charIndex];
 				if (character == ' ')
@@ -335,10 +335,10 @@ namespace BaoXia.Utils.MathTools
 				foreach (var normalOperator in AllOperators)
 				{
 					if (CharExtension.IsCharsOfStringEqualsKey(
-						normalOperator.Keyword,
-						str,
-						charIndex,
-						out _))
+					    normalOperator.Keyword,
+					    str,
+					    charIndex,
+					    out _))
 					{
 						// !!!
 						operatorMatched = normalOperator;
@@ -354,11 +354,11 @@ namespace BaoXia.Utils.MathTools
 				if (operatorMatched == null)
 				{
 					operatorMatchedCharsCount
-						= CharExtension.GetFloatNumberCharsCountFromString(
-							str,
-							charIndex,
-							isIgnoreSpace,
-							out var number);
+					    = CharExtension.GetFloatNumberCharsCountFromString(
+					    str,
+					    charIndex,
+					    isIgnoreSpace,
+					    out var number);
 					if (operatorMatchedCharsCount > 0)
 					{
 						// !!!
@@ -369,19 +369,19 @@ namespace BaoXia.Utils.MathTools
 				if (operatorMatched == null)
 				{
 					operatorMatchedCharsCount
-						= CharExtension.GetStringCharsCountFromStringBeforeKeys(
-							AllOperatorKeywords,
-							true,
-							str,
-							charIndex,
-							isIgnoreSpace,
-							stringComparison,
-							out var calculationItem,
-							out var operatorKeywordFound);
+					    = CharExtension.GetStringCharsCountFromStringBeforeKeys(
+					    AllOperatorKeywords,
+					    true,
+					    str,
+					    charIndex,
+					    isIgnoreSpace,
+					    stringComparison,
+					    out var calculationItem,
+					    out var operatorKeywordFound);
 					if (calculationItem?.Length > 0)
 					{
 						if (operatorKeywordFound?.EqualsIgnoreCase(SectionBegin.Keyword)
-							 != true)
+						     != true)
 						{
 							// !!!
 							var variableName = calculationItem;
@@ -393,16 +393,16 @@ namespace BaoXia.Utils.MathTools
 						{
 							var functionName = calculationItem;
 							var functionParamsBeginIndex
-								= charIndex
-								+ operatorMatchedCharsCount
-								+ SectionBegin.Keyword.Length;
+							    = charIndex
+							    + operatorMatchedCharsCount
+							    + SectionBegin.Keyword.Length;
 							var SectionEndKeyword
-								= SectionEnd.Keyword!;
+							    = SectionEnd.Keyword!;
 							var functionParamsEndIndex
-								= str.IndexOf(
-									SectionEndKeyword,
-									functionParamsBeginIndex,
-									stringComparison);
+							    = str.IndexOf(
+							    SectionEndKeyword,
+							    functionParamsBeginIndex,
+							    stringComparison);
 							if (functionParamsEndIndex > functionParamsBeginIndex)
 							{
 								var functionParamsMatchedCharsCount = functionParamsEndIndex - functionParamsBeginIndex;
@@ -411,16 +411,16 @@ namespace BaoXia.Utils.MathTools
 								if (functionParamsString?.Length > 0)
 								{
 									functionParams = functionParamsString.Split(
-										MathExpression.FunctionParamSpliter,
-										StringSplitOptions.RemoveEmptyEntries
-										| StringSplitOptions.TrimEntries);
+									    MathExpression.FunctionParamSpliter,
+									    StringSplitOptions.RemoveEmptyEntries
+									    | StringSplitOptions.TrimEntries);
 								}
 								// !!!
 								operatorMatched = new Operator(functionName, functionParams);
 								operatorMatchedCharsCount
-									+= SectionBegin.Keyword.Length
-									+ functionParamsMatchedCharsCount
-									+ SectionEndKeyword.Length;
+								    += SectionBegin.Keyword.Length
+								    + functionParamsMatchedCharsCount
+								    + SectionEndKeyword.Length;
 								// !!!
 							}
 							else
@@ -452,14 +452,14 @@ namespace BaoXia.Utils.MathTools
 		}
 
 		public static CalculationNumber? CalculateOperators(
-			IList<Operator> operators,
-			Func<string, CalculationNumber?>? toGetVariableValue,
-			Boolean isUnknowVariableAsZero,
-			Func<string, Func<string[]?, CalculationNumber?>?>? toGetFunction,
-			Func<Operator, CalculationNumber?, CalculationNumber?, bool, CalculationNumber?>? toCalculateWith)
+		    IList<Operator> operators,
+		    Func<string, CalculationNumber?>? toGetVariableValue,
+		    Boolean isUnknowVariableAsZero,
+		    Func<string, Func<string[]?, CalculationNumber?>?>? toGetFunction,
+		    Func<Operator, CalculationNumber?, CalculationNumber?, bool, CalculationNumber?>? toCalculateWith)
 		{
 			if (operators == null
-				|| operators.Count < 1)
+			    || operators.Count < 1)
 			{
 				return null;
 			}
@@ -476,8 +476,8 @@ namespace BaoXia.Utils.MathTools
 			var currentCalculationLevel = 0;
 			var operatorsCount = operators.Count;
 			for (var operatorIndex = 0;
-				operatorIndex <= operatorsCount;
-				operatorIndex++)
+			    operatorIndex <= operatorsCount;
+			    operatorIndex++)
 			{
 				var isNeedCalculationToLeftInSameCalaculationDetp = false;
 
@@ -531,9 +531,9 @@ namespace BaoXia.Utils.MathTools
 								if (currentOperator.Id == OperatorId.Variable)
 								{
 									var rightNumberName
-										= currentOperator.VariableName!;
+									    = currentOperator.VariableName!;
 									rightNumber
-										= toGetVariableValue?.Invoke(rightNumberName);
+									    = toGetVariableValue?.Invoke(rightNumberName);
 									if (rightNumber != null)
 									{
 										rightNumber.Name = rightNumberName;
@@ -555,9 +555,9 @@ namespace BaoXia.Utils.MathTools
 										// !!!
 									}
 									else if (MathExpression.CalculateWithFuncation(
-										currentOperator.FunctionName!,
-										currentOperator.FunctionParams,
-										out var rightNumberByDefaultFunction) == true)
+									    currentOperator.FunctionName!,
+									    currentOperator.FunctionParams,
+									    out var rightNumberByDefaultFunction) == true)
 									{
 										// !!!
 										rightNumber = rightNumberByDefaultFunction;
@@ -606,8 +606,8 @@ namespace BaoXia.Utils.MathTools
 								{
 									////////////////////////////////////////////////
 									lastCalculationUnit = new CalculationUnit(
-										currentCalculationLevel,
-										rightNumber!);
+									    currentCalculationLevel,
+									    rightNumber!);
 									{ }
 									calculationUnits.Add(lastCalculationUnit);
 									////////////////////////////////////////////////
@@ -621,17 +621,17 @@ namespace BaoXia.Utils.MathTools
 
 									////////////////////////////////////////////////
 									lastCalculationUnit.LeftNumber
-										= toCalculateWith != null
-										? toCalculateWith(
-											calculationOperator,
-											leftNumber,
-											rightNumber,
-											isUnknowVariableAsZero)
-										: MathExpression.CalculateWithOperator(
-											calculationOperator,
-											leftNumber,
-											rightNumber,
-											isUnknowVariableAsZero);
+									    = toCalculateWith != null
+									    ? toCalculateWith(
+									    calculationOperator,
+									    leftNumber,
+									    rightNumber,
+									    isUnknowVariableAsZero)
+									    : MathExpression.CalculateWithOperator(
+									    calculationOperator,
+									    leftNumber,
+									    rightNumber,
+									    isUnknowVariableAsZero);
 									// !!! ⚠
 									lastCalculationUnit.CalculationOperator = null;
 									// !!! ⚠
@@ -642,7 +642,7 @@ namespace BaoXia.Utils.MathTools
 						case OperatorType.CalculationOperator:
 							{
 								if (lastCalculationUnit == null
-									|| lastCalculationUnit.CalculationOperator != null)
+								    || lastCalculationUnit.CalculationOperator != null)
 								{
 									throw new ArgumentException("计算表达式失败，遇到了错误的表达式。");
 								}
@@ -672,8 +672,8 @@ namespace BaoXia.Utils.MathTools
 					var lastCalculationDepth = lastCalculationUnit.CalculationDepth;
 					var firstCalculationUnit = lastCalculationUnit;
 					for (var prevCalculationUnit = lastCalculationUnit.Prev;
-						prevCalculationUnit != null;
-						prevCalculationUnit = prevCalculationUnit.Prev)
+					    prevCalculationUnit != null;
+					    prevCalculationUnit = prevCalculationUnit.Prev)
 					{
 						if (prevCalculationUnit.CalculationDepth == lastCalculationDepth)
 						{
@@ -689,8 +689,8 @@ namespace BaoXia.Utils.MathTools
 					while (firstCalculationUnit.Next != endCalculationUnit)
 					{
 						for (var calculationUnit = firstCalculationUnit;
-							calculationUnit != null
-							&& calculationUnit.Next != endCalculationUnit;)
+						    calculationUnit != null
+						    && calculationUnit.Next != endCalculationUnit;)
 						{
 							var currentCalculationOperator = calculationUnit.CalculationOperator;
 							if (currentCalculationOperator == null)
@@ -699,12 +699,12 @@ namespace BaoXia.Utils.MathTools
 							}
 
 							var prevCalculationUnit
-								= calculationUnit != firstCalculationUnit
-								? calculationUnit.Prev
-								: null;
+							    = calculationUnit != firstCalculationUnit
+							    ? calculationUnit.Prev
+							    : null;
 							if (prevCalculationUnit != null
-								&& prevCalculationUnit.CalculationOperator != null
-								&& prevCalculationUnit.CalculationOperator.RankLevel == currentCalculationOperator.RankLevel)
+							    && prevCalculationUnit.CalculationOperator != null
+							    && prevCalculationUnit.CalculationOperator.RankLevel == currentCalculationOperator.RankLevel)
 							{
 								// !!!
 								break;
@@ -714,7 +714,7 @@ namespace BaoXia.Utils.MathTools
 							{
 								var nextCalculationUnit = calculationUnit.Next!;
 								if (nextCalculationUnit.CalculationOperator != null
-									&& nextCalculationUnit.CalculationOperator.RankLevel > currentCalculationOperator.RankLevel)
+								    && nextCalculationUnit.CalculationOperator.RankLevel > currentCalculationOperator.RankLevel)
 								{
 									// 右侧表达式优先级较高时，本次不做计算，直接从下一步表达式开始计算。
 									// !!!
@@ -729,17 +729,17 @@ namespace BaoXia.Utils.MathTools
 
 									////////////////////////////////////////////////
 									calculationUnit.LeftNumber
-										= toCalculateWith != null
-										? toCalculateWith(
-											calculationOperator,
-											leftNumber,
-											rightNumber,
-											isUnknowVariableAsZero)
-										: MathExpression.CalculateWithOperator(
-											calculationOperator,
-											leftNumber,
-											rightNumber,
-											isUnknowVariableAsZero);
+									    = toCalculateWith != null
+									    ? toCalculateWith(
+									    calculationOperator,
+									    leftNumber,
+									    rightNumber,
+									    isUnknowVariableAsZero)
+									    : MathExpression.CalculateWithOperator(
+									    calculationOperator,
+									    leftNumber,
+									    rightNumber,
+									    isUnknowVariableAsZero);
 									// !!! ⚠
 									calculationUnit.CalculationOperator = nextCalculationUnit.CalculationOperator;
 									// !!! ⚠
@@ -764,8 +764,8 @@ namespace BaoXia.Utils.MathTools
 			// 3/3，最终一定只剩下“1”个计算单元 ：
 			////////////////////////////////////////////////
 			if (calculationUnits.Count != 1
-				|| lastCalculationUnit != calculationUnits.First
-				|| lastCalculationUnit != calculationUnits.Last)
+			    || lastCalculationUnit != calculationUnits.First
+			    || lastCalculationUnit != calculationUnits.Last)
 			{
 				throw new ArgumentException("计算结果错误，无法求出最终解。");
 			}
@@ -778,20 +778,20 @@ namespace BaoXia.Utils.MathTools
 		}
 
 		protected static CalculationNumber? CalculateWithOperator(
-			Operator calculationOperator,
-			CalculationNumber? leftNumber,
-			CalculationNumber? rightNumber,
-			bool isUnknowVariableAsZero)
+		    Operator calculationOperator,
+		    CalculationNumber? leftNumber,
+		    CalculationNumber? rightNumber,
+		    bool isUnknowVariableAsZero)
 		{
 			double calculationResultValue;
 			var leftNumberValue
-				= leftNumber?.Number != null
-				? leftNumber.Number.Value
-				: 0.0;
+			    = leftNumber?.Number != null
+			    ? leftNumber.Number.Value
+			    : 0.0;
 			var rightNumberValue
-				= rightNumber?.Number != null
-				? rightNumber.Number.Value
-				: 0.0;
+			    = rightNumber?.Number != null
+			    ? rightNumber.Number.Value
+			    : 0.0;
 
 			switch (calculationOperator.Id)
 			{
@@ -811,7 +811,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.Plus:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -828,7 +828,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.Minus:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -842,8 +842,8 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.And:
 					{
 						if ((leftNumber?.Number != null && leftNumber.Number != 0)
-							&&
-							(rightNumber?.Number != null && rightNumber.Number != 0))
+						    &&
+						    (rightNumber?.Number != null && rightNumber.Number != 0))
 						{
 							calculationResultValue = 1.0;
 						}
@@ -856,8 +856,8 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.Or:
 					{
 						if ((leftNumber?.Number != null && leftNumber.Number != 0)
-							||
-							(rightNumber?.Number != null && rightNumber.Number != 0))
+						    ||
+						    (rightNumber?.Number != null && rightNumber.Number != 0))
 						{
 							calculationResultValue = 1.0;
 						}
@@ -870,7 +870,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.Multiply:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -884,7 +884,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.Divide:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -905,7 +905,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.Modulo:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -919,7 +919,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.Power:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -933,7 +933,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.LessThan:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -947,7 +947,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.LessThanOrEqual:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -961,7 +961,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.Equal:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -975,7 +975,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.NotEqual:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -989,7 +989,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.GreaterThanOrEqual:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -1003,7 +1003,7 @@ namespace BaoXia.Utils.MathTools
 				case OperatorId.GreaterThan:
 					{
 						if (leftNumber?.Number == null
-							|| rightNumber?.Number == null)
+						    || rightNumber?.Number == null)
 						{
 							if (isUnknowVariableAsZero == false)
 							{
@@ -1019,9 +1019,9 @@ namespace BaoXia.Utils.MathTools
 		}
 
 		protected static bool CalculateWithFuncation(
-			string funcationName,
-			string[]? functionParams,
-			out CalculationNumber? resultNumber)
+		    string funcationName,
+		    string[]? functionParams,
+		    out CalculationNumber? resultNumber)
 		{
 
 			// !!!
@@ -1029,7 +1029,7 @@ namespace BaoXia.Utils.MathTools
 			// !!!
 
 			if (funcationName == null
-				|| funcationName.Length < 1)
+			    || funcationName.Length < 1)
 			{
 				return false;
 			}
@@ -1065,7 +1065,7 @@ namespace BaoXia.Utils.MathTools
 			else if ("ToNumber".EqualsIgnoreCase(funcationName))
 			{
 				if (functionParams == null
-					|| functionParams.Length < 0)
+				    || functionParams.Length < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1081,7 +1081,7 @@ namespace BaoXia.Utils.MathTools
 			else if ("ToHashCodeInInteger".EqualsIgnoreCase(funcationName))
 			{
 				if (functionParams == null
-					|| functionParams.Length < 0)
+				    || functionParams.Length < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1098,7 +1098,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1114,7 +1114,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1130,15 +1130,15 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
 
 				double number = numbers[0];
 				int decimalsCount = numbers.Count > 1
-					? (int)numbers[1]
-					: 0;
+				    ? (int)numbers[1]
+				    : 0;
 
 				// !!!
 				resultNumber = new CalculationNumber(Math.Round(number, decimalsCount));
@@ -1149,7 +1149,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1168,7 +1168,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1191,7 +1191,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1214,7 +1214,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1234,16 +1234,16 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
 
 				var number = numbers[0];
 				var powValue
-					= numbers.Count > 1
-					? numbers[0]
-					: 2.0F;
+				    = numbers.Count > 1
+				    ? numbers[0]
+				    : 2.0F;
 
 				// !!!
 				resultNumber = new CalculationNumber(Math.Pow(number, powValue));
@@ -1255,7 +1255,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1275,7 +1275,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1292,7 +1292,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1309,7 +1309,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1326,7 +1326,7 @@ namespace BaoXia.Utils.MathTools
 			{
 				var numbers = functionParams?.TryToDoubles();
 				if (numbers == null
-					|| numbers.Count < 0)
+				    || numbers.Count < 0)
 				{
 					throw new ArgumentException("没有足够的计算参数。");
 				}
@@ -1343,32 +1343,32 @@ namespace BaoXia.Utils.MathTools
 		}
 
 		public static CalculationNumber? Parse(
-			string? mathExpression,
-			out int operatorsEndCharIndex,
-			Func<string, CalculationNumber?>? toGetVariableValue,
-			Boolean isUnknowVariableAsZero,
-			Func<string, Func<string[]?, CalculationNumber>>? toGetFunction,
-			int beginCharIndex = 0,
-			bool isIgnoreSpace = true,
-			StringComparison stringComparison = StringComparison.OrdinalIgnoreCase,
-			Func<Operator, CalculationNumber?, CalculationNumber?, bool, CalculationNumber?>? toCalculateWith = null)
+		    string? mathExpression,
+		    out int operatorsEndCharIndex,
+		    Func<string, CalculationNumber?>? toGetVariableValue,
+		    Boolean isUnknowVariableAsZero,
+		    Func<string, Func<string[]?, CalculationNumber>>? toGetFunction,
+		    int beginCharIndex = 0,
+		    bool isIgnoreSpace = true,
+		    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase,
+		    Func<Operator, CalculationNumber?, CalculationNumber?, bool, CalculationNumber?>? toCalculateWith = null)
 		{
 			var operators = MathExpression.GetOperatorsFromString(
-					mathExpression,
-					beginCharIndex,
-					isIgnoreSpace,
-					stringComparison,
-					out operatorsEndCharIndex);
+			    mathExpression,
+			    beginCharIndex,
+			    isIgnoreSpace,
+			    stringComparison,
+			    out operatorsEndCharIndex);
 			CalculationNumber? calculationResult = null;
 			if (operators?.Count > 0)
 			{
 				calculationResult
-					= MathExpression.CalculateOperators(
-						operators,
-						toGetVariableValue,
-						isUnknowVariableAsZero,
-						toGetFunction,
-						toCalculateWith);
+				    = MathExpression.CalculateOperators(
+				    operators,
+				    toGetVariableValue,
+				    isUnknowVariableAsZero,
+				    toGetFunction,
+				    toCalculateWith);
 			}
 			return calculationResult;
 		}
@@ -1412,35 +1412,35 @@ namespace BaoXia.Utils.MathTools
 		#region 自身实现
 
 		public MathExpression(
-			string mathExpression,
-			int beginCharIndex = 0,
-			bool isIgnoreSpace = true,
-			StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+		    string mathExpression,
+		    int beginCharIndex = 0,
+		    bool isIgnoreSpace = true,
+		    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 		{
 			this.Operators = MathExpression.GetOperatorsFromString(
-				mathExpression,
-				beginCharIndex,
-				isIgnoreSpace,
-				stringComparison,
-				out _);
+			    mathExpression,
+			    beginCharIndex,
+			    isIgnoreSpace,
+			    stringComparison,
+			    out _);
 		}
 
 		public CalculationNumber? Calcuate(
-			Func<string, CalculationNumber?>? toGetVariableValue,
-			Boolean isUnknowVariableAsZero,
-			Func<string, Func<string[]?, CalculationNumber?>?>? toGetFunction)
+		    Func<string, CalculationNumber?>? toGetVariableValue,
+		    Boolean isUnknowVariableAsZero,
+		    Func<string, Func<string[]?, CalculationNumber?>?>? toGetFunction)
 		{
 			CalculationNumber? calculateResult = null;
 			var operators = this.Operators;
 			if (operators?.Count > 0)
 			{
 				calculateResult
-					= MathExpression.CalculateOperators(
-						operators,
-						toGetVariableValue,
-						isUnknowVariableAsZero,
-						toGetFunction,
-						this.DidCalculateWithOperator);
+				    = MathExpression.CalculateOperators(
+				    operators,
+				    toGetVariableValue,
+				    isUnknowVariableAsZero,
+				    toGetFunction,
+				    this.DidCalculateWithOperator);
 			}
 			return calculateResult;
 		}
@@ -1455,16 +1455,16 @@ namespace BaoXia.Utils.MathTools
 		#region 事件节点
 
 		protected virtual CalculationNumber? DidCalculateWithOperator(
-			Operator calculationOperator,
-			CalculationNumber? leftNumber,
-			CalculationNumber? rightNumber,
-			bool isUnknowVariableAsZero)
+		    Operator calculationOperator,
+		    CalculationNumber? leftNumber,
+		    CalculationNumber? rightNumber,
+		    bool isUnknowVariableAsZero)
 		{
 			return MathExpression.CalculateWithOperator(
-				calculationOperator,
-				leftNumber,
-				rightNumber,
-				isUnknowVariableAsZero);
+			    calculationOperator,
+			    leftNumber,
+			    rightNumber,
+			    isUnknowVariableAsZero);
 		}
 
 		#endregion

@@ -2,7 +2,7 @@
 
 public enum PrivacyInfoType
 {
-	Unknow = 0,
+	Unknown = 0,
 
 	PhoneNumber = 1,
 
@@ -10,5 +10,9 @@ public enum PrivacyInfoType
 
 	EnglishAccount = 3,
 
-	CNIdCardNumber = 4
+	CNIdCardNumber = 4,
+
+	CNPersonName = 5,
+
+	Url = 10000
 }

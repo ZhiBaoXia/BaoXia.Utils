@@ -14,20 +14,20 @@ public static class UdpClientExtension
 	#region 类方法
 
 	public static IAsyncResult StartReceiveBytesUtil(
-		this UdpClient udpClient,
-		Func<UdpClientListenInfo?, bool>? toWillContinueReceiveBytes,
-		IPEndPoint listenIPEndPoint,
-		Func<UdpClient?, IPEndPoint?, byte[]?, Exception?, bool> toReceiveMessage)
+	    this UdpClient udpClient,
+	    Func<UdpClientListenInfo?, bool>? toWillContinueReceiveBytes,
+	    IPEndPoint listenIPEndPoint,
+	    Func<UdpClient?, IPEndPoint?, byte[]?, Exception?, bool> toReceiveMessage)
 	{
 		var udpClientListenInfo = new UdpClientListenInfo(
-			udpClient,
-			listenIPEndPoint,
-			toReceiveMessage,
-			toWillContinueReceiveBytes);
+		    udpClient,
+		    listenIPEndPoint,
+		    toReceiveMessage,
+		    toWillContinueReceiveBytes);
 
 		var asyncResult = udpClient.BeginReceive(
-			udpClientListenInfo.ToReceiveMessage,
-			udpClientListenInfo);
+		    udpClientListenInfo.ToReceiveMessage,
+		    udpClientListenInfo);
 		{
 		}
 		return asyncResult;

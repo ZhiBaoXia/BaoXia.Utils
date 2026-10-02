@@ -14,11 +14,11 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="httpRequestHeaders">要被填充的Http请求头对象。</param>
 		/// <param name="headers">要填充的Http请求头键值对。</param>
 		public static void AddRange(
-			this WebHeaderCollection webHeaderCollection,
-			Dictionary<string, string> headers)
+		    this WebHeaderCollection webHeaderCollection,
+		    Dictionary<string, string> headers)
 		{
 			if (webHeaderCollection != null
-				&& headers?.Count > 0)
+			    && headers?.Count > 0)
 			{
 				foreach (var header in headers)
 				{

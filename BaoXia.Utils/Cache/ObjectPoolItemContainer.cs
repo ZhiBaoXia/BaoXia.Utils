@@ -28,8 +28,8 @@ namespace BaoXia.Utils.Cache
 		#region 自身实现
 
 		public ObjectPoolItemContainer(
-			ObjectPool<ObjectType> ownerPool,
-			ObjectType item)
+		    ObjectPool<ObjectType> ownerPool,
+		    ObjectType item)
 		{
 			_ownerPool = ownerPool;
 

@@ -3,10 +3,10 @@
 public static class FileExtension
 {
 	public static string? CreateFilePathNotExistedBySameFileNameIndexWithDirectoryPath(
-		string directoryPath,
-		string? fileName,
-		string? fileExtensionName,
-		string spliterBetweenFileNameAndIndex = "_")
+	    string directoryPath,
+	    string? fileName,
+	    string? fileExtensionName,
+	    string spliterBetweenFileNameAndIndex = "_")
 	{
 		if (directoryPath.Length < 1)
 		{
@@ -32,7 +32,7 @@ public static class FileExtension
 			fileExtensionName = "";
 		}
 		else if (fileExtensionName.Length > 0
-			&& !fileExtensionName.StartsWith("."))
+		    && !fileExtensionName.StartsWith("."))
 		{
 			fileExtensionName = "." + fileExtensionName;
 		}
@@ -44,16 +44,16 @@ public static class FileExtension
 			if (fileIndex <= 0)
 			{
 				filePath
-					= directoryPath
-					+ fileName
-					+ fileExtensionName;
+				    = directoryPath
+				    + fileName
+				    + fileExtensionName;
 			}
 			else
 			{
 				filePath
-					= directoryPath
-					+ fileName + spliterBetweenFileNameAndIndex + fileIndex
-					+ fileExtensionName;
+				    = directoryPath
+				    + fileName + spliterBetweenFileNameAndIndex + fileIndex
+				    + fileExtensionName;
 			}
 			fileIndex++;
 		} while (filePath?.Length > 0
@@ -77,8 +77,8 @@ public static class FileExtension
 		var fileExtensionName = filePath.ToFileExtensionName(true);
 
 		return FileExtension.CreateFilePathNotExistedBySameFileNameIndexWithDirectoryPath(
-			dictionaryPath,
-			fileName,
-			fileExtensionName);
+		    dictionaryPath,
+		    fileName,
+		    fileExtensionName);
 	}
 }

@@ -33,8 +33,8 @@ public abstract class TestService(string testModuleTitle)
 	#region 自身实现
 
 	public async Task TestAsync(
-		int testsCount,
-		double testIntervalSeconds)
+	    int testsCount,
+	    double testIntervalSeconds)
 	{
 		// !!!
 		TestsCount = testsCount;
@@ -71,7 +71,7 @@ public abstract class TestService(string testModuleTitle)
 				TestEndTime = DateTime.Now;
 
 				if (TestModule.State == TestUnitState.TestSuccess
-					&& TestModule.TestNumber < TestsCount)
+				    && TestModule.TestNumber < TestsCount)
 				{
 					if (testIntervalSeconds > 0)
 					{
@@ -92,8 +92,8 @@ public abstract class TestService(string testModuleTitle)
 		catch (Exception exception)
 		{
 			TestModule.EndTestUnit(
-				TestUnitState.TestFailed,
-				"当前测试失败，程序异常：\r\n" + exception.ToString());
+			    TestUnitState.TestFailed,
+			    "当前测试失败，程序异常：\r\n" + exception.ToString());
 		}
 		finally
 		{
@@ -111,9 +111,9 @@ public abstract class TestService(string testModuleTitle)
 	#region 事件节点
 
 	protected abstract Task DidTestAsync(
-		string testIdentity,
-		DateTime testBeginTime,
-		TestModule testUnitInfes);
+	    string testIdentity,
+	    DateTime testBeginTime,
+	    TestModule testUnitInfes);
 
 	#endregion
 }

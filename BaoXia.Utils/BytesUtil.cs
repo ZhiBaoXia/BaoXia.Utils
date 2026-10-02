@@ -28,11 +28,11 @@ public class BytesUtil
 	}
 
 	public static string? CreateBase64StringOfBytes(
-		 byte[] bytes,
-		int offset = 0,
-		int? length = null,
-		string? dataType = null,
-		Base64FormattingOptions base64FormattingOptions = Base64FormattingOptions.None)
+	     byte[] bytes,
+	    int offset = 0,
+	    int? length = null,
+	    string? dataType = null,
+	    Base64FormattingOptions base64FormattingOptions = Base64FormattingOptions.None)
 	{
 		if (bytes.Length < 1)
 		{
@@ -56,10 +56,10 @@ public class BytesUtil
 		}
 
 		var base64String = System.Convert.ToBase64String(
-			bytes,
-			offset,
-			length.Value,
-			base64FormattingOptions);
+		    bytes,
+		    offset,
+		    length.Value,
+		    base64FormattingOptions);
 		if (dataType?.Length > 0)
 		{
 			base64String = "data:" + dataType + ";base64,";
@@ -68,8 +68,8 @@ public class BytesUtil
 	}
 
 	public static byte[] CreateBytesFromBase64String(
-		string base64String,
-		bool isAutoIgnoreContentTypeChars = true)
+	    string base64String,
+	    bool isAutoIgnoreContentTypeChars = true)
 	{
 		if (base64String.Length < 1)
 		{

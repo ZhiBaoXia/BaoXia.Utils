@@ -6,10 +6,10 @@ namespace BaoXia.Utils.Extensions;
 public static class StringsExtension
 {
 	public static bool IsContains(
-		this IEnumerable<string> strings,
-		string? key,
-		out int keyIndexInStrings,
-		StringComparison comparisonType)
+	    this IEnumerable<string> strings,
+	    string? key,
+	    out int keyIndexInStrings,
+	    StringComparison comparisonType)
 	{
 		keyIndexInStrings = -1;
 
@@ -32,54 +32,54 @@ public static class StringsExtension
 	}
 
 	public static bool IsNotContains(
-		this IEnumerable<string> strings,
-		string? key,
-		out int keyIndexInStrings,
-		StringComparison comparisonType)
+	    this IEnumerable<string> strings,
+	    string? key,
+	    out int keyIndexInStrings,
+	    StringComparison comparisonType)
 	{
 		return !StringsExtension.IsContains(
-			strings,
-			key,
-			out keyIndexInStrings,
-			comparisonType);
+		    strings,
+		    key,
+		    out keyIndexInStrings,
+		    comparisonType);
 	}
 
 	public static bool IsContains(
-		this IEnumerable<string> strings,
-		string? key,
-		StringComparison comparisonType)
+	    this IEnumerable<string> strings,
+	    string? key,
+	    StringComparison comparisonType)
 	{
 		return StringsExtension.IsContains(
-			strings,
-			key,
-			out _,
-			comparisonType);
+		    strings,
+		    key,
+		    out _,
+		    comparisonType);
 	}
 
 	public static bool IsNotContains(
-		this IEnumerable<string> strings,
-		string? key,
-		StringComparison comparisonType)
+	    this IEnumerable<string> strings,
+	    string? key,
+	    StringComparison comparisonType)
 	{
 		return !StringsExtension.IsContains(
-			strings,
-			key,
-			comparisonType);
+		    strings,
+		    key,
+		    comparisonType);
 	}
 
 	public static bool IsContains(
-		this IEnumerable<string> strings,
-		IEnumerable<string>? keys,
-		StringComparison comparisonType,
-		bool isNullEqualsEmpty = true)
+	    this IEnumerable<string> strings,
+	    IEnumerable<string>? keys,
+	    StringComparison comparisonType,
+	    bool isNullEqualsEmpty = true)
 	{
 		if (keys != null)
 		{
 			foreach (var key in keys)
 			{
 				if (strings.IsContains(
-					key,
-					comparisonType) != true)
+				    key,
+				    comparisonType) != true)
 				{
 					return false;
 				}
@@ -102,24 +102,24 @@ public static class StringsExtension
 	}
 
 	public static bool IsNotContains(
-		this IEnumerable<string> strings,
-		IEnumerable<string>? keys,
-		StringComparison comparisonType,
-		bool isNullEqualsEmpty = true)
+	    this IEnumerable<string> strings,
+	    IEnumerable<string>? keys,
+	    StringComparison comparisonType,
+	    bool isNullEqualsEmpty = true)
 	{
 		return !StringsExtension.IsContains(
-			strings,
-			keys,
-			comparisonType,
-			isNullEqualsEmpty);
+		    strings,
+		    keys,
+		    comparisonType,
+		    isNullEqualsEmpty);
 	}
 
 	public static bool IsEquals(
-		this IEnumerable<string> strings,
-		IEnumerable<string>? keys,
-		StringComparison comparisonType,
-		bool isIgnoreSameItems = false,
-		bool isNullEqualsEmpty = true)
+	    this IEnumerable<string> strings,
+	    IEnumerable<string>? keys,
+	    StringComparison comparisonType,
+	    bool isIgnoreSameItems = false,
+	    bool isNullEqualsEmpty = true)
 	{
 		if (keys != null)
 		{
@@ -130,9 +130,9 @@ public static class StringsExtension
 				foreach (var key in keys)
 				{
 					if (strings.IsContains(
-						key,
-						out var strIndexMatched,
-						comparisonType) != true)
+					    key,
+					    out var strIndexMatched,
+					    comparisonType) != true)
 					{
 						return false;
 					}
@@ -156,8 +156,8 @@ public static class StringsExtension
 							if (strIndexesMatched.Contains(strIndex) != true)
 							{
 								if (keys.IsContains(
-									str,
-									comparisonType) != true)
+								    str,
+								    comparisonType) != true)
 								{
 									return false;
 								}
@@ -177,8 +177,8 @@ public static class StringsExtension
 				foreach (var key in keys)
 				{
 					if (strings.IsContains(
-						key,
-						comparisonType) != true)
+					    key,
+					    comparisonType) != true)
 					{
 						return false;
 					}
@@ -213,35 +213,35 @@ public static class StringsExtension
 	}
 
 	public static bool IsNotEquals(
-		this IEnumerable<string> strings,
-		IEnumerable<string>? keys,
-		StringComparison comparisonType,
-		bool isIgnoreSameItems = false,
-		bool isNullEqualsEmpty = true)
+	    this IEnumerable<string> strings,
+	    IEnumerable<string>? keys,
+	    StringComparison comparisonType,
+	    bool isIgnoreSameItems = false,
+	    bool isNullEqualsEmpty = true)
 	{
 		return !StringsExtension.IsEquals(
-			strings,
-			keys,
-			comparisonType,
-			isIgnoreSameItems,
-			isNullEqualsEmpty);
+		    strings,
+		    keys,
+		    comparisonType,
+		    isIgnoreSameItems,
+		    isNullEqualsEmpty);
 	}
 
 	public static List<int> TryToInts(
-		this IEnumerable<string> strings,
-		int parseStringsCountMax = 0,
-		int intsCountMax = 0)
+	    this IEnumerable<string> strings,
+	    int parseStringsCountMax = 0,
+	    int intsCountMax = 0)
 	{
 		var ints = new List<int>();
 		var parseStringsCount = 0;
 		foreach (var str in strings)
 		{
 			if (str?.Length > 0
-				&& int.TryParse(str, out var intValue) == true)
+			    && int.TryParse(str, out var intValue) == true)
 			{
 				ints.Add(intValue);
 				if (intsCountMax > 0
-					&& ints.Count >= intsCountMax)
+				    && ints.Count >= intsCountMax)
 				{
 					break;
 				}
@@ -249,7 +249,7 @@ public static class StringsExtension
 
 			parseStringsCount++;
 			if (parseStringsCountMax > 0
-				&& parseStringsCount >= parseStringsCountMax)
+			    && parseStringsCount >= parseStringsCountMax)
 			{
 				break;
 			}
@@ -258,20 +258,20 @@ public static class StringsExtension
 	}
 
 	public static List<float> TryToFloats(
-		this IEnumerable<string> strings,
-		int parseStringsCountMax = 0,
-		int floatsCountMax = 0)
+	    this IEnumerable<string> strings,
+	    int parseStringsCountMax = 0,
+	    int floatsCountMax = 0)
 	{
 		var floats = new List<float>();
 		var parseStringsCount = 0;
 		foreach (var str in strings)
 		{
 			if (str?.Length > 0
-				&& float.TryParse(str, out var floatValue) == true)
+			    && float.TryParse(str, out var floatValue) == true)
 			{
 				floats.Add(floatValue);
 				if (floatsCountMax > 0
-					&& floats.Count >= floatsCountMax)
+				    && floats.Count >= floatsCountMax)
 				{
 					break;
 				}
@@ -279,7 +279,7 @@ public static class StringsExtension
 
 			parseStringsCount++;
 			if (parseStringsCountMax > 0
-				&& parseStringsCount >= parseStringsCountMax)
+			    && parseStringsCount >= parseStringsCountMax)
 			{
 				break;
 			}
@@ -288,20 +288,20 @@ public static class StringsExtension
 	}
 
 	public static List<double> TryToDoubles(
-		this IEnumerable<string> strings,
-		int parseStringsCountMax = 0,
-		int doublesCountMax = 0)
+	    this IEnumerable<string> strings,
+	    int parseStringsCountMax = 0,
+	    int doublesCountMax = 0)
 	{
 		var doubles = new List<double>();
 		var parseStringsCount = 0;
 		foreach (var str in strings)
 		{
 			if (str?.Length > 0
-				&& double.TryParse(str, out var doubleValue) == true)
+			    && double.TryParse(str, out var doubleValue) == true)
 			{
 				doubles.Add(doubleValue);
 				if (doublesCountMax > 0
-					&& doubles.Count >= doublesCountMax)
+				    && doubles.Count >= doublesCountMax)
 				{
 					break;
 				}
@@ -309,7 +309,7 @@ public static class StringsExtension
 
 			parseStringsCount++;
 			if (parseStringsCountMax > 0
-				&& parseStringsCount >= parseStringsCountMax)
+			    && parseStringsCount >= parseStringsCountMax)
 			{
 				break;
 			}
@@ -318,12 +318,12 @@ public static class StringsExtension
 	}
 
 	public static string? ToStringWithSeparator(
-		this IEnumerable<string>? strings,
-		string? separator)
+	    this IEnumerable<string>? strings,
+	    string? separator)
 	{
 		return StringUtil.StringWithStrings(
-			strings,
-			separator,
-			true);
+		    strings,
+		    separator,
+		    true);
 	}
 }

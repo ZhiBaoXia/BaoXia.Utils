@@ -28,70 +28,70 @@ public class DelayTask : IDisposable
 	#region 自身实现
 
 	public void RunAfter<TimerParamType>(
-		    TimeSpan delay,
-		    Action<TimerParamType?> toTimerFired,
-		    TimerParamType? timerParam)
-		where TimerParamType : class
+	    TimeSpan delay,
+	    Action<TimerParamType?> toTimerFired,
+	    TimerParamType? timerParam)
+	    where TimerParamType : class
 	{
 		_delayTimer?.Dispose();
 		_timeToRunPlaned = DateTime.Now.Add(delay);
 		_delayTimer = new Timer(
-			(timerParam) =>
-			{
-				toTimerFired(timerParam as TimerParamType);
-			},
-			timerParam,
-			delay,
-			Timeout.InfiniteTimeSpan);
+		    (timerParam) =>
+		    {
+			    toTimerFired(timerParam as TimerParamType);
+		    },
+		    timerParam,
+		    delay,
+		    Timeout.InfiniteTimeSpan);
 	}
 
 	public void RunAfterAsync<TimerParamType>(
-			TimeSpan delay,
-			Func<TimerParamType?, Task> toTimerFiredAsync,
-			TimerParamType? timerParam)
-		where TimerParamType : class
+	    TimeSpan delay,
+	    Func<TimerParamType?, Task> toTimerFiredAsync,
+	    TimerParamType? timerParam)
+	    where TimerParamType : class
 	{
 		_delayTimer?.Dispose();
 		_timeToRunPlaned = DateTime.Now.Add(delay);
 		_delayTimer = new Timer(
-			async (timerParam) =>
-			{
-				await toTimerFiredAsync(timerParam as TimerParamType);
-			},
-			timerParam,
-			delay,
-			Timeout.InfiniteTimeSpan);
+		    async (timerParam) =>
+		    {
+			    await toTimerFiredAsync(timerParam as TimerParamType);
+		    },
+		    timerParam,
+		    delay,
+		    Timeout.InfiniteTimeSpan);
 	}
 
 	public void RunAfter(
-		    TimeSpan delay,
-		    Action toTimerFired)
+	    TimeSpan delay,
+	    Action toTimerFired)
 	{
 		RunAfter<object>(
-			delay,
-			(_) =>
-			{
-				toTimerFired();
-			},
-			null);
+		    delay,
+		    (_) =>
+		    {
+			    toTimerFired();
+		    },
+		    null);
 	}
 
 	public void RunAfterAsync(
-		    TimeSpan delay,
-		    Func<Task> toTimerFiredAsync)
+	    TimeSpan delay,
+	    Func<Task> toTimerFiredAsync)
 	{
 		RunAfterAsync<object>(
-			delay,
-			async (_) =>
-			{
-				await toTimerFiredAsync();
-			},
-			null);
+		    delay,
+		    async (_) =>
+		    {
+			    await toTimerFiredAsync();
+		    },
+		    null);
 	}
 
 	public void RunAfter(
-		    double delaySeconds,
-		    Action toTimerFired)
+	    double delaySeconds,
+	    Action toTimerFired)
 	{
 		RunAfter(
 		       TimeSpan.FromSeconds(delaySeconds),
@@ -99,8 +99,8 @@ public class DelayTask : IDisposable
 	}
 
 	public void RunAfterAsync(
-		    double delaySeconds,
-		    Func<Task> toTimerFiredAsync)
+	    double delaySeconds,
+	    Func<Task> toTimerFiredAsync)
 	{
 		RunAfterAsync(
 		       TimeSpan.FromSeconds(delaySeconds),

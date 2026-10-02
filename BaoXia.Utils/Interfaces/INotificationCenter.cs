@@ -16,109 +16,109 @@ public interface INotificationCenter
 
 	#region 自身实现
 
-	public void PostNotification(
-		string? queueName,
-		string notificationName,
-		IEnumerable<string>? tagNames = null,
-		string? description = null,
-		Dictionary<string, object>? paramDictionary = null,
-		object? paramObject = null,
-		string? senderName = null,
-		double sendDelaySeconds = 0.0,
-		//
-		Action<List<Object>?>? toNotificationSended = null,
-		Func<List<Object>?, Task>? toNotificationSendedAsync = null);
+	public void SendNotification(
+	    string? queueName,
+	    string notificationName,
+	    IEnumerable<string>? tagNames = null,
+	    string? description = null,
+	    Dictionary<string, object>? paramDictionary = null,
+	    object? paramObject = null,
+	    string? senderName = null,
+	    double sendDelaySeconds = 0.0,
+	    //
+	    Action<List<Object>?>? toNotificationSended = null,
+	    Func<List<Object>?, Task>? toNotificationSendedAsync = null);
 
-	public void PostNotification(
-		string notificationName,
-		IEnumerable<string>? tagNames = null,
-		string? description = null,
-		//
-		Dictionary<string, object>? paramDictionary = null,
-		object? paramObject = null,
-		string? senderName = null,
-		double sendDelaySeconds = 0.0,
-		//
-		Action<List<Object>?>? toNotificationSended = null,
-		Func<List<Object>?, Task>? toNotificationSendedAsync = null);
+	public void SendNotification(
+	    string notificationName,
+	    IEnumerable<string>? tagNames = null,
+	    string? description = null,
+	    //
+	    Dictionary<string, object>? paramDictionary = null,
+	    object? paramObject = null,
+	    string? senderName = null,
+	    double sendDelaySeconds = 0.0,
+	    //
+	    Action<List<Object>?>? toNotificationSended = null,
+	    Func<List<Object>?, Task>? toNotificationSendedAsync = null);
 
-	public void Post(
-		INotificationListenParam listenParam,
-		object? paramObject,
-		object sender);
-
-	public NotificationListener ListenNotification(
-		string? queueName,
-		//
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
-		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync);
+	public void Send(
+	    INotificationListenParam listenParam,
+	    object? paramObject,
+	    object sender);
 
 	public NotificationListener ListenNotification(
-		string queueName,
-		//
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, List<Object>?> toDidReceivedNotification);
+	    string? queueName,
+	    //
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
+	    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync);
+
+	public NotificationListener ListenNotification(
+	    string queueName,
+	    //
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, List<Object>?> toDidReceivedNotification);
 
 	public NotificationListener ListenNotificationAsync(
-		string? queueName,
-		//
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, Task<object?>> toDidReceivedNotificationAsync);
+	    string? queueName,
+	    //
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, Task<object?>> toDidReceivedNotificationAsync);
 
 	public NotificationListener ListenNotification(
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
-		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync);
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
+	    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync);
 
 	public NotificationListener ListenNotification(
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, Object?> toDidReceivedNotification);
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, Object?> toDidReceivedNotification);
 
 	public NotificationListener ListenNotificationAsync(
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, Task<object?>> toDidReceivedNotificationAsync);
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, Task<object?>> toDidReceivedNotificationAsync);
 
 	public NotificationListener Listen(
-		INotificationListenParam listenParam,
-		Func<Notification, CancellationToken, object?>? toDidReceivedNotification);
+	    INotificationListenParam listenParam,
+	    Func<Notification, CancellationToken, object?>? toDidReceivedNotification);
 
 	public List<NotificationListener> Listen(
-		IEnumerable<INotificationListenParam> listenParams,
-		Func<Notification, CancellationToken, object?>? toDidReceivedNotification);
+	    IEnumerable<INotificationListenParam> listenParams,
+	    Func<Notification, CancellationToken, object?>? toDidReceivedNotification);
 	public List<NotificationListener> ListenTo(
-		Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
-		params INotificationListenParam[] listenParams);
+	    Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
+	    params INotificationListenParam[] listenParams);
 
 	public NotificationListener ListenAsync(
-		INotificationListenParam listenParam,
-		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync);
+	    INotificationListenParam listenParam,
+	    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync);
 
 	public List<NotificationListener> ListenAsync(
-		IEnumerable<INotificationListenParam> listenParams,
-		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync);
+	    IEnumerable<INotificationListenParam> listenParams,
+	    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync);
 
 	public List<NotificationListener> ListenToAsync(
-		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync,
-		params INotificationListenParam[] listenParams);
+	    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync,
+	    params INotificationListenParam[] listenParams);
 
 	public bool CancelListenWithListener(NotificationListener listener);
 

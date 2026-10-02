@@ -9,21 +9,21 @@ public class TimeConstants
 
 	#region 静态常量，时间单位换算
 
-	public const int FirstMonthOfSession1 = 1;
+	public const int FirstMonthOfQuarter1 = 1;
 
-	public const int LastMonthOfSession1 = 3;
+	public const int LastMonthOfQuarter1 = 3;
 
-	public const int FirstMonthOfSession2 = 4;
+	public const int FirstMonthOfQuarter2 = 4;
 
-	public const int LastMonthOfSession2 = 6;
+	public const int LastMonthOfQuarter2 = 6;
 
-	public const int FirstMonthOfSession3 = 7;
+	public const int FirstMonthOfQuarter3 = 7;
 
-	public const int LastMonthOfSession3 = 9;
+	public const int LastMonthOfQuarter3 = 9;
 
-	public const int FirstMonthOfSession4 = 10;
+	public const int FirstMonthOfQuarter4 = 10;
 
-	public const int LastMonthOfSession4 = 12;
+	public const int LastMonthOfQuarter4 = 12;
 
 
 	#endregion
@@ -155,7 +155,7 @@ public class TimeConstants
 
 	#region 静态常量，月。
 
-	public const int MonthsPerSession = 3;
+	public const int MonthsPerQuarter = 3;
 
 	public const int MonthsPerYearWith365Days = 12;
 

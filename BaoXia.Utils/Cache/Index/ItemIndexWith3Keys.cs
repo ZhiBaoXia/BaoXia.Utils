@@ -6,15 +6,15 @@ using System.Collections.Generic;
 namespace BaoXia.Utils.Cache.Index;
 
 public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKeyType, ThirdaryIndexKeyType>(
-	Func<ItemType, PrimaryIndexKeyType> toGetPrimaryIndexKeyOfItem,
-	Func<ItemType, SecondaryIndexKeyType> toGetSecondaryIndexKeyOfItem,
-	Func<ItemType, ThirdaryIndexKeyType> toGetThirdaryIndexKeyOfItem)
-	//
-	: IItemCacheIndex<ItemType>
-	//
-	where PrimaryIndexKeyType : notnull
-	where SecondaryIndexKeyType : notnull
-	where ThirdaryIndexKeyType : notnull
+    Func<ItemType, PrimaryIndexKeyType> toGetPrimaryIndexKeyOfItem,
+    Func<ItemType, SecondaryIndexKeyType> toGetSecondaryIndexKeyOfItem,
+    Func<ItemType, ThirdaryIndexKeyType> toGetThirdaryIndexKeyOfItem)
+    //
+    : IItemCacheIndex<ItemType>
+    //
+    where PrimaryIndexKeyType : notnull
+    where SecondaryIndexKeyType : notnull
+    where ThirdaryIndexKeyType : notnull
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -23,8 +23,8 @@ public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	#region 自身属性
 
 	public readonly ConcurrentDictionary<PrimaryIndexKeyType,
-		ConcurrentDictionary<SecondaryIndexKeyType,
-			ConcurrentDictionary<ThirdaryIndexKeyType, ItemIndexNode<ItemType>>>> PrimaryIndexes = new();
+	    ConcurrentDictionary<SecondaryIndexKeyType,
+	    ConcurrentDictionary<ThirdaryIndexKeyType, ItemIndexNode<ItemType>>>> PrimaryIndexes = new();
 
 	private string? _name = null;
 	public string? Name { get => _name; set => _name = value; }
@@ -39,7 +39,7 @@ public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	#region 自身实现
 
 	public ConcurrentDictionary<SecondaryIndexKeyType,
-		ConcurrentDictionary<ThirdaryIndexKeyType, ItemIndexNode<ItemType>>>? GetSecondaryIndexes(PrimaryIndexKeyType primaryIndexKey)
+	    ConcurrentDictionary<ThirdaryIndexKeyType, ItemIndexNode<ItemType>>>? GetSecondaryIndexes(PrimaryIndexKeyType primaryIndexKey)
 	{
 		_ = PrimaryIndexes.TryGetValue(primaryIndexKey, out var secondaryIndexes);
 		{ }
@@ -47,8 +47,8 @@ public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	}
 
 	public ConcurrentDictionary<ThirdaryIndexKeyType, ItemIndexNode<ItemType>>? GetThirdaryIndexes(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey)
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey)
 	{
 		var secondaryIndexes = GetSecondaryIndexes(primaryIndexKey);
 		if (secondaryIndexes == null)
@@ -61,34 +61,34 @@ public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	}
 
 	public void UpdateIndexItemsWithPrimaryIndexKey(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey,
-		ThirdaryIndexKeyType thirdaryIndexKey,
-		Func<ItemType?, ItemType?> toUpdateIndexItem)
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey,
+	    ThirdaryIndexKeyType thirdaryIndexKey,
+	    Func<ItemType?, ItemType?> toUpdateIndexItem)
 	{
 		var secondaryIndexes
-			= PrimaryIndexes.GetOrAdd(
-				primaryIndexKey,
-				(_) => []);
+		    = PrimaryIndexes.GetOrAdd(
+		    primaryIndexKey,
+		    (_) => []);
 		var thirdaryIndexes
-			= secondaryIndexes.GetOrAdd(
-				secondaryIndexKey,
-				(_) => []);
+		    = secondaryIndexes.GetOrAdd(
+		    secondaryIndexKey,
+		    (_) => []);
 		var itemIndexInfo
-			= thirdaryIndexes.GetOrAdd(
-				thirdaryIndexKey,
-				(_) => new());
+		    = thirdaryIndexes.GetOrAdd(
+		    thirdaryIndexKey,
+		    (_) => new());
 		lock (itemIndexInfo)
 		{
 			// !!!
 			var newIndexItem
-				= toUpdateIndexItem(itemIndexInfo.FirstItem);
+			    = toUpdateIndexItem(itemIndexInfo.FirstItem);
 			newIndexItem = WillUpdateIndexItemWithPrimaryIndexKey(
-				primaryIndexKey,
-				secondaryIndexKey,
-				thirdaryIndexKey,
-				//
-				newIndexItem);
+			    primaryIndexKey,
+			    secondaryIndexKey,
+			    thirdaryIndexKey,
+			    //
+			    newIndexItem);
 			if (newIndexItem != null)
 			{
 				if (itemIndexInfo.Items.Length == 1)
@@ -114,25 +114,25 @@ public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	}
 
 	public ItemType? GetItem(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey,
-		ThirdaryIndexKeyType thirdaryIndexKey)
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey,
+	    ThirdaryIndexKeyType thirdaryIndexKey)
 	{
 		if (!PrimaryIndexes.TryGetValue(
-			primaryIndexKey,
-			out var secondaryIndexes))
+		    primaryIndexKey,
+		    out var secondaryIndexes))
 		{
 			return default;
 		}
 		if (!secondaryIndexes.TryGetValue(
-			secondaryIndexKey,
-			out var thirdaryIndexes))
+		    secondaryIndexKey,
+		    out var thirdaryIndexes))
 		{
 			return default;
 		}
 		if (thirdaryIndexes.TryGetValue(
-			thirdaryIndexKey,
-			out var enityIndexInfo))
+		    thirdaryIndexKey,
+		    out var enityIndexInfo))
 		{
 			return enityIndexInfo.FirstItem;
 		}
@@ -149,11 +149,11 @@ public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	#region 事件节点
 
 	protected virtual ItemType? WillUpdateIndexItemWithPrimaryIndexKey(
-				PrimaryIndexKeyType primaryIndexKey,
-				SecondaryIndexKeyType secondaryIndexKey,
-				ThirdaryIndexKeyType thirdaryIndexKey,
-				//
-				ItemType? newIndexItem)
+		PrimaryIndexKeyType primaryIndexKey,
+		SecondaryIndexKeyType secondaryIndexKey,
+		ThirdaryIndexKeyType thirdaryIndexKey,
+		//
+		ItemType? newIndexItem)
 	{
 		return newIndexItem;
 	}
@@ -169,8 +169,8 @@ public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	#region 实现”IDbSetMemoryCacheIndex“
 
 	public void UpdateIndexItemsByUpdateItemFrom(
-		ItemType? lastItem,
-		ItemType? currentItem)
+	    ItemType? lastItem,
+	    ItemType? currentItem)
 	{
 		var isLastItemValid = false;
 		PrimaryIndexKeyType lastPrimaryIndexKey = default!;
@@ -200,19 +200,19 @@ public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 		// 1/2，移除旧的索引：
 		////////////////////////////////////////////////
 		if (isLastItemValid
-			&& (!lastPrimaryIndexKey.Equals(currentPrimaryIndexKey)
-			|| !lastSecondaryIndexKey.Equals(currentSecondaryIndexKey)
-			|| !lastThirdaryIndexKey.Equals(currentThirdaryIndexKey)))
+		    && (!lastPrimaryIndexKey.Equals(currentPrimaryIndexKey)
+		    || !lastSecondaryIndexKey.Equals(currentSecondaryIndexKey)
+		    || !lastThirdaryIndexKey.Equals(currentThirdaryIndexKey)))
 		{
 			UpdateIndexItemsWithPrimaryIndexKey(
-				lastPrimaryIndexKey,
-				lastSecondaryIndexKey,
-				lastThirdaryIndexKey,
-				//
-				(_) =>
-				{
-					return default;
-				});
+			    lastPrimaryIndexKey,
+			    lastSecondaryIndexKey,
+			    lastThirdaryIndexKey,
+			    //
+			    (_) =>
+			    {
+				    return default;
+			    });
 		}
 
 		////////////////////////////////////////////////
@@ -223,13 +223,13 @@ public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 		if (isCurrentItemValid)
 		{
 			UpdateIndexItemsWithPrimaryIndexKey(
-				currentPrimaryIndexKey,
-				currentSecondaryIndexKey,
-				currentThirdaryIndexKey,
-				(_) =>
-				{
-					return currentItem;
-				});
+			    currentPrimaryIndexKey,
+			    currentSecondaryIndexKey,
+			    currentThirdaryIndexKey,
+			    (_) =>
+			    {
+				    return currentItem;
+			    });
 		}
 	}
 
@@ -241,9 +241,9 @@ public class ItemIndexWith3Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	public ItemType? GetItem(ItemType item)
 	{
 		return GetItem(
-			toGetPrimaryIndexKeyOfItem(item),
-			toGetSecondaryIndexKeyOfItem(item),
-			toGetThirdaryIndexKeyOfItem(item));
+		    toGetPrimaryIndexKeyOfItem(item),
+		    toGetSecondaryIndexKeyOfItem(item),
+		    toGetThirdaryIndexKeyOfItem(item));
 	}
 
 	public bool IsItemExisted(ItemType item)

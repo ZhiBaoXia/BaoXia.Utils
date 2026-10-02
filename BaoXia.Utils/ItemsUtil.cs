@@ -12,7 +12,7 @@ public static class ItemsUtil
 	#region 类方法
 
 	public static IEnumerable<ItemType>? ItemsOf<ItemType>(
-		params IEnumerable<ItemType>?[] itemSets)
+	    params IEnumerable<ItemType>?[] itemSets)
 	{
 		List<ItemType>? itemList = null;
 		IEnumerable<ItemType>? firstItemSetNotEmpty = null;

@@ -30,11 +30,11 @@ public class AES
 			var keyFullBytes = new byte[KeyBytesCount];
 			// !!!
 			Array.Copy(
-				keyBytes,
-				keyFullBytes,
-				keyBytes.Length > KeyBytesCount
-				? KeyBytesCount
-				: keyBytes.Length);
+			    keyBytes,
+			    keyFullBytes,
+			    keyBytes.Length > KeyBytesCount
+			    ? KeyBytesCount
+			    : keyBytes.Length);
 			// !!!
 			keyBytes = keyFullBytes;
 		}
@@ -47,16 +47,16 @@ public class AES
 	////////////////////////////////////////////////
 
 	public static byte[] EncryptToBytesWithCBC(
-		byte[] plaintextBytes,
-		string key,
-		byte[] ivBytes)
+	    byte[] plaintextBytes,
+	    string key,
+	    byte[] ivBytes)
 	{
 		if (plaintextBytes == null
-			|| plaintextBytes.Length < 1
-			|| key == null
-			|| key.Length < 1
-			|| ivBytes == null
-			|| ivBytes.Length < 1)
+		    || plaintextBytes.Length < 1
+		    || key == null
+		    || key.Length < 1
+		    || ivBytes == null
+		    || ivBytes.Length < 1)
 		{
 			return [];
 		}
@@ -71,22 +71,22 @@ public class AES
 			aes.Mode = CipherMode.CBC;
 			aes.Padding = PaddingMode.PKCS7;
 		}
-		;
+	    ;
 		using var encryptor = aes.CreateEncryptor(
-			keyBytes,
-			ivBytes);
+		    keyBytes,
+		    ivBytes);
 		var encryptedBytes = encryptor.TransformFinalBlock(
-			plaintextBytes,
-			0,
-			plaintextBytes.Length);
+		    plaintextBytes,
+		    0,
+		    plaintextBytes.Length);
 		{ }
 		return encryptedBytes;
 	}
 
 	public static byte[] DecryptToBytesWithCBC(
-		string ciphertext,
-		string key,
-		byte[] ivBytes)
+	    string ciphertext,
+	    string key,
+	    byte[] ivBytes)
 	{
 		if (string.IsNullOrEmpty(ciphertext))
 		{
@@ -96,9 +96,9 @@ public class AES
 		byte[] keyBytes = AES.GetKeyBytesWithKeyString(key);
 
 		if (keyBytes == null
-			|| keyBytes.Length < 1
-			|| ivBytes == null
-			|| ivBytes.Length < 1)
+		    || keyBytes.Length < 1
+		    || ivBytes == null
+		    || ivBytes.Length < 1)
 		{
 			return [];
 		}
@@ -112,15 +112,15 @@ public class AES
 			aes.Mode = CipherMode.CBC;
 			aes.Padding = PaddingMode.PKCS7;
 		}
-		;
+	    ;
 		using var decryptor = aes.CreateDecryptor(
-			keyBytes,
-			ivBytes);
+		    keyBytes,
+		    ivBytes);
 		var inputBytes = Convert.FromBase64String(ciphertext);
 		var encryptedBytes = decryptor.TransformFinalBlock(
-			inputBytes,
-			0,
-			inputBytes.Length);
+		    inputBytes,
+		    0,
+		    inputBytes.Length);
 		{ }
 		return encryptedBytes;
 	}
@@ -132,13 +132,13 @@ public class AES
 
 	[Obsolete("ECB由于相同明文，永远加密出相同的密文，因此可通过重复明文的方式进行破解，推荐使用“EncryptToBytesWithCTR”方法替代。")]
 	public static byte[] EncryptToBytesWithECB(
-		byte[] plaintextBytes,
-		string key)
+	    byte[] plaintextBytes,
+	    string key)
 	{
 		if (plaintextBytes == null
-			|| plaintextBytes.Length < 1
-			|| key == null
-			|| key.Length < 1)
+		    || plaintextBytes.Length < 1
+		    || key == null
+		    || key.Length < 1)
 		{
 			return [];
 		}
@@ -150,25 +150,25 @@ public class AES
 			aes.Mode = CipherMode.ECB;
 			aes.Padding = PaddingMode.PKCS7;
 		}
-		;
+	    ;
 		using var encryptor = aes.CreateEncryptor();
 		var ciphertextBytes = encryptor.TransformFinalBlock(
-			plaintextBytes,
-			0,
-			plaintextBytes.Length);
+		    plaintextBytes,
+		    0,
+		    plaintextBytes.Length);
 		{ }
 		return ciphertextBytes;
 	}
 
 	[Obsolete("由于“Aes/Ecb算法”，存在安全隐患（相同明文、密钥时，密文永远相同，因此可通过重复明文的方式进行破解），推荐使用“DecryptToBytesWithCTR”方法替代。")]
 	public static byte[] DecryptToBytesWithECB(
-		string ciphertext,
-		string key)
+	    string ciphertext,
+	    string key)
 	{
 		if (ciphertext == null
-			|| ciphertext.Length < 1
-			|| key == null
-			|| key.Length < 1)
+		    || ciphertext.Length < 1
+		    || key == null
+		    || key.Length < 1)
 		{
 			return [];
 		}
@@ -185,12 +185,12 @@ public class AES
 			aes.Mode = CipherMode.ECB;
 			aes.Padding = PaddingMode.PKCS7;
 		}
-		;
+	    ;
 		using var decryptor = aes.CreateDecryptor();
 		byte[] plaintextBytes = decryptor.TransformFinalBlock(
-			ciphertextBytes,
-			0,
-			ciphertextBytes.Length);
+		    ciphertextBytes,
+		    0,
+		    ciphertextBytes.Length);
 		{ }
 		return plaintextBytes;
 	}

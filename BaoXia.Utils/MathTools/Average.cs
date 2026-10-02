@@ -6,16 +6,16 @@ namespace BaoXia.Utils.MathTools
 	public static class Average
 	{
 		public static NumberType? OfList<NumberType>(
-			Func<NumberType?, NumberType?, NumberType?> toGetSumOfItems,
-			Func<int, NumberType?, NumberType?> toGetAverageOfItems,
-			IEnumerable<NumberType> items)
+		    Func<NumberType?, NumberType?, NumberType?> toGetSumOfItems,
+		    Func<int, NumberType?, NumberType?> toGetAverageOfItems,
+		    IEnumerable<NumberType> items)
 		{
 			NumberType? itemsSum = default;
 			NumberType? itemsAverage = default;
 			int itemsCount = 0;
 			if (toGetSumOfItems != null
-				&& toGetAverageOfItems != null
-				&& items != null)
+			    && toGetAverageOfItems != null
+			    && items != null)
 			{
 				foreach (var item in items)
 				{
@@ -23,21 +23,21 @@ namespace BaoXia.Utils.MathTools
 					itemsCount++;
 				}
 				itemsAverage
-					= itemsCount > 0
-					? toGetAverageOfItems(itemsCount, itemsSum)
-					: default;
+				    = itemsCount > 0
+				    ? toGetAverageOfItems(itemsCount, itemsSum)
+				    : default;
 			}
 			return itemsAverage;
 		}
 		public static NumberType? Of<NumberType>(
-			Func<NumberType?, NumberType?, NumberType?> toGetSumOfItems,
-			Func<int, NumberType?, NumberType?> toGetAverageOfItems,
-			params NumberType[] items)
+		    Func<NumberType?, NumberType?, NumberType?> toGetSumOfItems,
+		    Func<int, NumberType?, NumberType?> toGetAverageOfItems,
+		    params NumberType[] items)
 		{
 			return Average.OfList(
-				toGetSumOfItems,
-				toGetAverageOfItems,
-				items);
+			    toGetSumOfItems,
+			    toGetAverageOfItems,
+			    items);
 		}
 
 		////////////////////////////////////////////////

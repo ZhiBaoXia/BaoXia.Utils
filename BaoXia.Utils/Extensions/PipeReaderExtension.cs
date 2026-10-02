@@ -13,8 +13,8 @@ public static class PipeReaderExtension
 	#region 类方法
 
 	public static async Task<string?> ReadStringAsync(
-		this PipeReader pipeReader,
-		System.Text.Encoding? textEncoding = null)
+	    this PipeReader pipeReader,
+	    System.Text.Encoding? textEncoding = null)
 	{
 		var originalContent = await pipeReader.ReadAsync();
 

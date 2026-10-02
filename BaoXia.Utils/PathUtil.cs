@@ -23,8 +23,8 @@ public class PathUtil
 		}
 
 		var rootPath = System.IO.Path.Combine(
-			AppDomain.CurrentDomain.BaseDirectory,
-			anyPath);
+		    AppDomain.CurrentDomain.BaseDirectory,
+		    anyPath);
 		{ }
 		return rootPath;
 	}

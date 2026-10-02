@@ -9,15 +9,15 @@ public static class CharUtil
 	#region 类方法
 
 	public static bool IsAlphabetChar(
-		char character)
+	    char character)
 	{
 		if (character >= 'a'
-			&& character <= 'z')
+		    && character <= 'z')
 		{
 			return true;
 		}
 		if (character >= 'A'
-			&& character <= 'Z')
+		    && character <= 'Z')
 		{
 			return true;
 		}
@@ -25,12 +25,12 @@ public static class CharUtil
 	}
 
 	public static bool IsNumberChar(
-		char character,
-		bool isDotValid = false,
-		bool isSymbolValid = false)
+	    char character,
+	    bool isDotValid = false,
+	    bool isSymbolValid = false)
 	{
 		if (character >= '0'
-			&& character <= '9')
+		    && character <= '9')
 		{
 			return true;
 		}
@@ -41,10 +41,10 @@ public static class CharUtil
 		if (isSymbolValid)
 		{
 			if (character == '-'
-				|| character == '+'
-				|| character == '*'
-				|| character == '/'
-				|| character == '^')
+			    || character == '+'
+			    || character == '*'
+			    || character == '/'
+			    || character == '^')
 			{
 				return true;
 			}
@@ -53,15 +53,15 @@ public static class CharUtil
 	}
 
 	public static bool IsInvisibleChar(
-		char character,
-		bool isBlankInvisible = true)
+	    char character,
+	    bool isBlankInvisible = true)
 	{
 		if (char.IsControl(character))
 		{
 			return true;
 		}
 		if (character == ' '
-			&& isBlankInvisible)
+		    && isBlankInvisible)
 		{
 			return true;
 		}
@@ -69,19 +69,19 @@ public static class CharUtil
 	}
 
 	public static bool IsVisibleChar(
-		char character,
-		bool isBlankInvisible = true)
+	    char character,
+	    bool isBlankInvisible = true)
 	{
 		return !IsInvisibleChar(
-			character,
-			isBlankInvisible);
+		    character,
+		    isBlankInvisible);
 	}
 
 	public static bool IsPhoneNumberChar(char chacter)
 	{
 		if (CharUtil.IsNumberChar(chacter)
-			|| chacter == '-'
-			|| chacter == '+')
+		    || chacter == '-'
+		    || chacter == '+')
 		{
 			return true;
 		}
@@ -91,10 +91,10 @@ public static class CharUtil
 	public static bool IsEMailChar(char chacter)
 	{
 		if (IsNumberChar(chacter)
-			|| IsAlphabetChar(chacter)
-			|| chacter == '.'
-			|| chacter == '-'
-			|| chacter == '_')
+		    || IsAlphabetChar(chacter)
+		    || chacter == '.'
+		    || chacter == '-'
+		    || chacter == '_')
 		{
 			return true;
 		}
@@ -102,8 +102,8 @@ public static class CharUtil
 	}
 
 	public static bool IsEnglishAccount(
-		char chacter,
-		bool isFirstChar = false)
+	    char chacter,
+	    bool isFirstChar = false)
 	{
 		if (IsAlphabetChar(chacter))
 		{
@@ -114,8 +114,8 @@ public static class CharUtil
 			return false;
 		}
 		if (IsNumberChar(chacter)
-			|| chacter == '_'
-			|| chacter == '-')
+		    || chacter == '_'
+		    || chacter == '-')
 		{
 			return true;
 		}
@@ -123,9 +123,9 @@ public static class CharUtil
 	}
 
 	public static bool IsEquals(
-		char currentChar,
-		char anotherChar,
-		bool isIgnoreCase = false)
+	    char currentChar,
+	    char anotherChar,
+	    bool isIgnoreCase = false)
 	{
 		if (currentChar == anotherChar)
 		{
@@ -136,19 +136,19 @@ public static class CharUtil
 			return false;
 		}
 		else if (currentChar >= 'a'
-			&& currentChar <= 'z')
+		    && currentChar <= 'z')
 		{
 			if (anotherChar >= 'A'
-				&& anotherChar <= 'Z')
+			    && anotherChar <= 'Z')
 			{
 				return true;
 			}
 		}
 		else if (currentChar >= 'A'
-			&& currentChar <= 'Z')
+		    && currentChar <= 'Z')
 		{
 			if (anotherChar >= 'a'
-				&& anotherChar <= 'z')
+			    && anotherChar <= 'z')
 			{
 				return true;
 			}

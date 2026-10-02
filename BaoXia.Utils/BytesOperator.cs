@@ -25,8 +25,8 @@ namespace BaoXia.Utils
 			{
 				byte[] bytes;
 				if (value.Offset == 0
-					&& value.Array != null
-					&& value.Count == value.Array.Length)
+				    && value.Array != null
+				    && value.Count == value.Array.Length)
 				{
 					bytes = value.Array;
 				}
@@ -67,25 +67,25 @@ namespace BaoXia.Utils
 		#region 自身实现
 
 		public BytesOperator(
-			int bufferCapacity = BytesBuffer.BytesBufferCapacityDefault)
+		    int bufferCapacity = BytesBuffer.BytesBufferCapacityDefault)
 		{
 			BytesBuffer = new BytesBuffer(bufferCapacity);
 		}
 
 		public BytesOperator(
-			BytesBuffer? bytesBuffer,
-			int bufferCapacity = BytesBuffer.BytesBufferCapacityDefault)
+		    BytesBuffer? bytesBuffer,
+		    int bufferCapacity = BytesBuffer.BytesBufferCapacityDefault)
 		{
 			BytesBuffer = bytesBuffer ?? new BytesBuffer(bufferCapacity);
 		}
 
 		public BytesOperator(
-			byte[]? bytes,
-			int bufferCapacity = BytesBuffer.BytesBufferCapacityDefault)
+		    byte[]? bytes,
+		    int bufferCapacity = BytesBuffer.BytesBufferCapacityDefault)
 		{
 			BytesBuffer = new BytesBuffer(
-				bytes,
-				bufferCapacity);
+			    bytes,
+			    bufferCapacity);
 			if (bytes != null)
 			{
 				this.Count = bytes.Length;
@@ -104,12 +104,12 @@ namespace BaoXia.Utils
 		}
 
 		public int Write(
-			byte[]? sourceBytes,
-			int sourceBytesBeginIndex = 0,
-			int sourceBytesWriteCount = -1)
+		    byte[]? sourceBytes,
+		    int sourceBytesBeginIndex = 0,
+		    int sourceBytesWriteCount = -1)
 		{
 			if (sourceBytes == null
-				|| sourceBytes.Length < 1)
+			    || sourceBytes.Length < 1)
 			{
 				return 0;
 			}
@@ -142,13 +142,13 @@ namespace BaoXia.Utils
 			var bytesBuffer = BytesBuffer.GetBufferWithBufferLength(cursorPosition + sourceBytesWriteCount);
 			{
 				Array.Copy(
-					sourceBytes,
-					sourceBytesBeginIndex,
-					//
-					bytesBuffer,
-					//
-					cursorPosition,
-					sourceBytesWriteCount);
+				    sourceBytes,
+				    sourceBytesBeginIndex,
+				    //
+				    bytesBuffer,
+				    //
+				    cursorPosition,
+				    sourceBytesWriteCount);
 				cursorPosition += sourceBytesWriteCount;
 				if (BytesBuffer.BytesCount < cursorPosition)
 				{
@@ -164,9 +164,9 @@ namespace BaoXia.Utils
 		public int Write(ArraySegment<byte> bytesSegment)
 		{
 			return Write(
-				bytesSegment.Array,
-				bytesSegment.Offset,
-				bytesSegment.Count);
+			    bytesSegment.Array,
+			    bytesSegment.Offset,
+			    bytesSegment.Count);
 		}
 
 		public int Write(Span<byte> byteSpan)
@@ -220,8 +220,8 @@ namespace BaoXia.Utils
 		}
 
 		public int Write(
-			string? textValue,
-			System.Text.Encoding? textEncoding = null)
+		    string? textValue,
+		    System.Text.Encoding? textEncoding = null)
 		{
 			int textValueBytesCount = 0;
 			byte[]? textValueBytes = null;
@@ -241,23 +241,23 @@ namespace BaoXia.Utils
 		}
 
 		public int Write(
-			DateTime dateTime)
+		    DateTime dateTime)
 		{
 			return this.Write(dateTime.MillisecondsFrom1970(
-				Constants.TimeZoneNumber.Utc0,
-				true));
+			    Constants.TimeZoneNumber.Utc0,
+			    true));
 		}
 
 		public int Write(
-			DateTimeOffset dateTimeOffset)
+		    DateTimeOffset dateTimeOffset)
 		{
 			return this.Write(dateTimeOffset.MillisecondsFrom1970(
-				Constants.TimeZoneNumber.Utc0,
-				true));
+			    Constants.TimeZoneNumber.Utc0,
+			    true));
 		}
 
 		public Span<byte> ReadBytes(
-			int readBytesCount)
+		    int readBytesCount)
 		{
 			var cursorPosition = CursorPosition;
 			if (cursorPosition < 0)
@@ -271,9 +271,9 @@ namespace BaoXia.Utils
 
 			var bytesBuffer = BytesBuffer.Buffer;
 			var bytes = new Span<byte>(
-				bytesBuffer,
-				cursorPosition,
-				readBytesCount);
+			    bytesBuffer,
+			    cursorPosition,
+			    readBytesCount);
 			{
 				// !!!
 				CursorPosition = cursorPosition + readBytesCount;
@@ -347,7 +347,7 @@ namespace BaoXia.Utils
 		}
 
 		public string? ReadString(
-			System.Text.Encoding? textEncoding = null)
+		    System.Text.Encoding? textEncoding = null)
 		{
 			var stringBytesCount = ReadInt();
 			if (stringBytesCount < 0)
@@ -383,8 +383,8 @@ namespace BaoXia.Utils
 		}
 
 		public bool TryToReadBytes(
-			int readBytesCount,
-			out Span<byte> bytes)
+		    int readBytesCount,
+		    out Span<byte> bytes)
 		{
 			bytes = default;
 
@@ -400,9 +400,9 @@ namespace BaoXia.Utils
 
 			var bytesBuffer = BytesBuffer.Buffer;
 			bytes = new Span<byte>(
-				bytesBuffer,
-				cursorPosition,
-				readBytesCount);
+			    bytesBuffer,
+			    cursorPosition,
+			    readBytesCount);
 			{
 				// !!!
 				CursorPosition = cursorPosition + readBytesCount;
@@ -524,8 +524,8 @@ namespace BaoXia.Utils
 		}
 
 		public bool TryToReadString(
-			out string? textValue,
-			System.Text.Encoding? textEncoding = null)
+		    out string? textValue,
+		    System.Text.Encoding? textEncoding = null)
 		{
 			textValue = null;
 

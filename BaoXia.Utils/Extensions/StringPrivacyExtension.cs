@@ -9,11 +9,11 @@ namespace BaoXia.Utils.Extensions;
 public static class StringPrivacyExtension
 {
 	public static List<PrivacyInfo>? GetPrivacyInfes(
-		this string originalString,
-		bool isIgnoreInvisibleChars = true,
-		int phoneNumberLengthMin = 8,
-		int englishAccountLengthMin = 6,
-		int cnIdCardNumberLengthMin = 15)
+	    this string originalString,
+	    bool isIgnoreInvisibleChars = true,
+	    int phoneNumberLengthMin = 8,
+	    int englishAccountLengthMin = 6,
+	    int cnIdCardNumberLengthMin = 15)
 	{
 		List<PrivacyInfo>? privacyInfes = null;
 		var privacyContentBuffer = new StringBuilder();
@@ -21,8 +21,8 @@ public static class StringPrivacyExtension
 		var chars = originalString;
 		var charsCount = chars.Length;
 		for (int charIndex = 0;
-			charIndex < charsCount;
-			charIndex++)
+		    charIndex < charsCount;
+		    charIndex++)
 		{
 			var character = chars[charIndex];
 			////////////////////////////////////////////////
@@ -41,8 +41,8 @@ public static class StringPrivacyExtension
 				// 1/2，获取隐私信息的起始、结束字符索引值。
 				////////////////////////////////////////////////
 				for (int nextCharIndex = charIndex + 1;
-					nextCharIndex < charsCount;
-					nextCharIndex++)
+				    nextCharIndex < charsCount;
+				    nextCharIndex++)
 				{
 					var nextChar = chars[nextCharIndex];
 					if (CharUtil.IsPhoneNumberChar(nextChar))
@@ -53,7 +53,7 @@ public static class StringPrivacyExtension
 						// !!!
 					}
 					else if (CharUtil.IsVisibleChar(nextChar)
-						|| isIgnoreInvisibleChars != true)
+					    || isIgnoreInvisibleChars != true)
 					{
 						// !!!
 						break;
@@ -67,10 +67,10 @@ public static class StringPrivacyExtension
 				if (privacyContentBuffer.Length >= cnIdCardNumberLengthMin)
 				{
 					var privacyInfo = new PrivacyInfo(
-						PrivacyInfoType.CNIdCardNumber,
-						privacyContentBeginCharIndex,
-						privacyContentEndCharIndex,
-						privacyContentBuffer.ToString());
+					    PrivacyInfoType.CNIdCardNumber,
+					    privacyContentBeginCharIndex,
+					    privacyContentEndCharIndex,
+					    privacyContentBuffer.ToString());
 					// !!!
 					privacyInfes ??= [];
 					privacyInfes.Add(privacyInfo);
@@ -82,10 +82,10 @@ public static class StringPrivacyExtension
 				else if (privacyContentBuffer.Length >= phoneNumberLengthMin)
 				{
 					var privacyInfo = new PrivacyInfo(
-						PrivacyInfoType.PhoneNumber,
-						privacyContentBeginCharIndex,
-						privacyContentEndCharIndex,
-						privacyContentBuffer.ToString());
+					    PrivacyInfoType.PhoneNumber,
+					    privacyContentBeginCharIndex,
+					    privacyContentEndCharIndex,
+					    privacyContentBuffer.ToString());
 					// !!!
 					privacyInfes ??= [];
 					privacyInfes.Add(privacyInfo);
@@ -120,8 +120,8 @@ public static class StringPrivacyExtension
 				////////////////////////////////////////////////
 				var emailNameLength = 0;
 				for (int prevCharIndex = charIndex - 1;
-					prevCharIndex >= 0;
-					prevCharIndex--)
+				    prevCharIndex >= 0;
+				    prevCharIndex--)
 				{
 					var prevChar = chars[prevCharIndex];
 					if (CharUtil.IsEMailChar(prevChar))
@@ -148,8 +148,8 @@ public static class StringPrivacyExtension
 				var dotsCountInEMailDomain = 0;
 				var emailLastDomainLength = 0;
 				for (int nextCharIndex = charIndex + 1;
-					nextCharIndex < charsCount;
-					nextCharIndex++)
+				    nextCharIndex < charsCount;
+				    nextCharIndex++)
 				{
 					var nextChar = chars[nextCharIndex];
 					if (CharUtil.IsEMailChar(nextChar))
@@ -170,7 +170,7 @@ public static class StringPrivacyExtension
 						// !!!
 					}
 					else if (CharUtil.IsVisibleChar(nextChar)
-						|| isIgnoreInvisibleChars != true)
+					    || isIgnoreInvisibleChars != true)
 					{
 						// !!!
 						break;
@@ -183,14 +183,14 @@ public static class StringPrivacyExtension
 				// 3/3，获取隐私信息：电子邮箱。
 				////////////////////////////////////////////////
 				if (emailNameLength > 0
-					&& dotsCountInEMailDomain > 0
-					&& emailLastDomainLength > 0)
+				    && dotsCountInEMailDomain > 0
+				    && emailLastDomainLength > 0)
 				{
 					var privacyInfo = new PrivacyInfo(
-						PrivacyInfoType.EMail,
-						privacyContentBeginCharIndex,
-						privacyContentEndCharIndex,
-						privacyContentBuffer.ToString());
+					    PrivacyInfoType.EMail,
+					    privacyContentBeginCharIndex,
+					    privacyContentEndCharIndex,
+					    privacyContentBuffer.ToString());
 					// !!!
 					privacyInfes ??= [];
 					privacyInfes.Add(privacyInfo);
@@ -223,8 +223,8 @@ public static class StringPrivacyExtension
 				// 1/2，获取隐私信息的起始、结束字符索引值。
 				////////////////////////////////////////////////
 				for (int nextCharIndex = charIndex + 1;
-					nextCharIndex < charsCount;
-					nextCharIndex++)
+				    nextCharIndex < charsCount;
+				    nextCharIndex++)
 				{
 					var nextChar = chars[nextCharIndex];
 					if (CharUtil.IsEnglishAccount(nextChar))
@@ -235,7 +235,7 @@ public static class StringPrivacyExtension
 						// !!!
 					}
 					else if (CharUtil.IsVisibleChar(nextChar)
-						|| isIgnoreInvisibleChars != true)
+					    || isIgnoreInvisibleChars != true)
 					{
 						// !!!
 						break;
@@ -250,10 +250,10 @@ public static class StringPrivacyExtension
 				if (privacyContentBuffer.Length >= englishAccountLengthMin)
 				{
 					var privacyInfo = new PrivacyInfo(
-						PrivacyInfoType.EnglishAccount,
-						privacyContentBeginCharIndex,
-						privacyContentEndCharIndex,
-						privacyContentBuffer.ToString());
+					    PrivacyInfoType.EnglishAccount,
+					    privacyContentBeginCharIndex,
+					    privacyContentEndCharIndex,
+					    privacyContentBuffer.ToString());
 					// !!!
 					privacyInfes ??= [];
 					privacyInfes.Add(privacyInfo);
@@ -285,8 +285,8 @@ public static class StringPrivacyExtension
 				// 1/2，获取隐私信息的起始、结束字符索引值。
 				////////////////////////////////////////////////
 				for (int nextCharIndex = charIndex + 1;
-					nextCharIndex < charsCount;
-					nextCharIndex++)
+				    nextCharIndex < charsCount;
+				    nextCharIndex++)
 				{
 					var nextChar = chars[nextCharIndex];
 					// 注意这里兼容了手机号
@@ -298,7 +298,7 @@ public static class StringPrivacyExtension
 						// !!!
 					}
 					else if (CharUtil.IsVisibleChar(nextChar)
-						|| isIgnoreInvisibleChars != true)
+					    || isIgnoreInvisibleChars != true)
 					{
 						// !!!
 						break;
@@ -313,10 +313,10 @@ public static class StringPrivacyExtension
 				if (privacyContentBuffer.Length >= cnIdCardNumberLengthMin)
 				{
 					var privacyInfo = new PrivacyInfo(
-						PrivacyInfoType.CNIdCardNumber,
-						privacyContentBeginCharIndex,
-						privacyContentEndCharIndex,
-						privacyContentBuffer.ToString());
+					    PrivacyInfoType.CNIdCardNumber,
+					    privacyContentBeginCharIndex,
+					    privacyContentEndCharIndex,
+					    privacyContentBuffer.ToString());
 					// !!!
 					privacyInfes ??= [];
 					privacyInfes.Add(privacyInfo);
@@ -328,10 +328,10 @@ public static class StringPrivacyExtension
 				else if (privacyContentBuffer.Length >= phoneNumberLengthMin)
 				{
 					var privacyInfo = new PrivacyInfo(
-						PrivacyInfoType.PhoneNumber,
-						privacyContentBeginCharIndex,
-						privacyContentEndCharIndex,
-						privacyContentBuffer.ToString());
+					    PrivacyInfoType.PhoneNumber,
+					    privacyContentBeginCharIndex,
+					    privacyContentEndCharIndex,
+					    privacyContentBuffer.ToString());
 					// !!!
 					privacyInfes ??= [];
 					privacyInfes.Add(privacyInfo);
@@ -355,8 +355,8 @@ public static class StringPrivacyExtension
 		if (privacyInfes != null)
 		{
 			for (var privacyInfoIndex = privacyInfes.Count - 1;
-				privacyInfoIndex > 0;
-				privacyInfoIndex--)
+			    privacyInfoIndex > 0;
+			    privacyInfoIndex--)
 			{
 				var privacyInfo = privacyInfes[privacyInfoIndex];
 				if (privacyInfo.Type == PrivacyInfoType.EMail)
@@ -364,12 +364,12 @@ public static class StringPrivacyExtension
 					var emailPrivacyContentBeginCharIndex = privacyInfo.BeginIndex;
 					var emailPrivacyContentEndCharIndex = privacyInfo.EndIndex;
 					for (var prevPrivacyInfoIndex = privacyInfoIndex - 1;
-						prevPrivacyInfoIndex >= 0;
-						prevPrivacyInfoIndex--)
+					    prevPrivacyInfoIndex >= 0;
+					    prevPrivacyInfoIndex--)
 					{
 						var prevPrivacyInfo = privacyInfes[prevPrivacyInfoIndex];
 						if (prevPrivacyInfo.EndIndex > emailPrivacyContentBeginCharIndex
-							&& prevPrivacyInfo.BeginIndex < emailPrivacyContentEndCharIndex)
+						    && prevPrivacyInfo.BeginIndex < emailPrivacyContentEndCharIndex)
 						{
 							// !!!
 							privacyInfes.RemoveAt(privacyInfoIndex);
@@ -383,12 +383,12 @@ public static class StringPrivacyExtension
 	}
 
 	public static string ToStringByErasePrivacyContent(
-		this string originalString,
-		Func<string, PrivacyInfo, string?>? toErasePrivacyContent = null)
+	    this string originalString,
+	    Func<string, PrivacyInfo, string?>? toErasePrivacyContent = null)
 	{
 		var privacyInfes = originalString.GetPrivacyInfes();
 		if (privacyInfes == null
-			|| privacyInfes.Count < 1)
+		    || privacyInfes.Count < 1)
 		{
 			return originalString;
 		}
@@ -412,7 +412,7 @@ public static class StringPrivacyExtension
 			if (toErasePrivacyContent != null)
 			{
 				privacyContentErased
-					= toErasePrivacyContent(privacyInfo.PrivacyContent, privacyInfo);
+				    = toErasePrivacyContent(privacyInfo.PrivacyContent, privacyInfo);
 			}
 			else
 			{

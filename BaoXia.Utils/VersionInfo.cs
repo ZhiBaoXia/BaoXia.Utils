@@ -58,12 +58,12 @@ public class VersionInfo
 		var isVersionInfoA_Null = versionInfoA is null;
 		var isVersionInfoB_Null = versionInfoB is null;
 		if (isVersionInfoA_Null
-			&& isVersionInfoB_Null)
+		    && isVersionInfoB_Null)
 		{
 			return true;
 		}
 		else if (isVersionInfoA_Null
-			|| isVersionInfoB_Null)
+		    || isVersionInfoB_Null)
 		{
 			return false;
 		}
@@ -75,12 +75,12 @@ public class VersionInfo
 		var isVersionInfoA_Null = versionInfoA is null;
 		var isVersionInfoB_Null = versionInfoB is null;
 		if (isVersionInfoA_Null
-			&& isVersionInfoB_Null)
+		    && isVersionInfoB_Null)
 		{
 			return false;
 		}
 		else if (isVersionInfoA_Null
-			|| isVersionInfoB_Null)
+		    || isVersionInfoB_Null)
 		{
 			return true;
 		}
@@ -92,7 +92,7 @@ public class VersionInfo
 		var isVersionInfoA_Null = versionInfoA is null;
 		var isVersionInfoB_Null = versionInfoB is null;
 		if (isVersionInfoA_Null
-			&& isVersionInfoB_Null)
+		    && isVersionInfoB_Null)
 		{
 			return false;
 		}
@@ -109,7 +109,7 @@ public class VersionInfo
 		var isVersionInfoA_Null = versionInfoA is null;
 		var isVersionInfoB_Null = versionInfoB is null;
 		if (isVersionInfoA_Null
-			&& isVersionInfoB_Null)
+		    && isVersionInfoB_Null)
 		{
 			return false;
 		}
@@ -125,7 +125,7 @@ public class VersionInfo
 		var isVersionInfoA_Null = versionInfoA is null;
 		var isVersionInfoB_Null = versionInfoB is null;
 		if (isVersionInfoA_Null
-			&& isVersionInfoB_Null)
+		    && isVersionInfoB_Null)
 		{
 			return true;
 		}
@@ -141,7 +141,7 @@ public class VersionInfo
 		var isVersionInfoA_Null = versionInfoA is null;
 		var isVersionInfoB_Null = versionInfoB is null;
 		if (isVersionInfoA_Null
-			&& isVersionInfoB_Null)
+		    && isVersionInfoB_Null)
 		{
 			return true;
 		}

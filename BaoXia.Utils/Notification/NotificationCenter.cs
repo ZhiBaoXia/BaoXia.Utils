@@ -36,11 +36,11 @@ public class NotificationCenter : INotificationCenter
 	public string? Name { get; set; }
 
 	public double NotificationQueuePeekNotificationIntervalSecondsMax { get; set; }
-		= NotificationQueue_PeekNotificationIntervalSecondsMaxDefault;
+	    = NotificationQueue_PeekNotificationIntervalSecondsMaxDefault;
 	public int NotificationQueueSendNotificationConcurrentCountMax { get; set; }
-		= NotificationQueue_SendNotificationConcurrentCountMaxDefault;
+	    = NotificationQueue_SendNotificationConcurrentCountMaxDefault;
 	public double NotificationQueueSendNotificationTimeoutSecondsMax { get; set; }
-		= NotificationQueue_SendNotificationTimeoutSecondsMaxDefault;
+	    = NotificationQueue_SendNotificationTimeoutSecondsMaxDefault;
 
 	public Func<String?, NotificationQueue>? ToCreateNotificationQueue { get; set; }
 
@@ -60,9 +60,7 @@ public class NotificationCenter : INotificationCenter
 	public NotificationCenter()
 	{ }
 
-	public NotificationCenter(
-		string name,
-		Func<String?, NotificationQueue>? toCreateNotificationQueue)
+	public NotificationCenter(string name, Func<String?, NotificationQueue>? toCreateNotificationQueue)
 	{
 		this.Name = name;
 		this.ToCreateNotificationQueue = toCreateNotificationQueue;
@@ -87,11 +85,11 @@ public class NotificationCenter : INotificationCenter
 		if (queueName?.Length > 0)
 		{
 			notificationQueue = _notificationQueues.GetOrAdd(
-				queueName,
-				(string queueNameInQueues) =>
-				{
-					return this.CreateNotificationQueue(queueNameInQueues);
-				});
+			    queueName,
+			    queueNameInQueues =>
+			    {
+				    return this.CreateNotificationQueue(queueNameInQueues);
+			    });
 		}
 		////////////////////////////////////////////////
 		// 2/2，未指定队列的消息处理方式：
@@ -123,40 +121,40 @@ public class NotificationCenter : INotificationCenter
 
 	#region 自身实现
 
-	public void PostNotification(
-		string? queueName,
-		string notificationName,
-		IEnumerable<string>? tagNames = null,
-		string? description = null,
-		Dictionary<string, object>? paramDictionary = null,
-		object? paramObject = null,
-		string? senderName = null,
-		double sendDelaySeconds = 0.0,
-		//
-		Action<List<Object>?>? toNotificationSended = null,
-		Func<List<Object>?, Task>? toNotificationSendedAsync = null)
+	public void SendNotification(
+	    string? queueName,
+	    string notificationName,
+	    IEnumerable<string>? tagNames = null,
+	    string? description = null,
+	    Dictionary<string, object>? paramDictionary = null,
+	    object? paramObject = null,
+	    string? senderName = null,
+	    double sendDelaySeconds = 0.0,
+	    //
+	    Action<List<Object>?>? toNotificationSended = null,
+	    Func<List<Object>?, Task>? toNotificationSendedAsync = null)
 	{
 		var notification = new Notification(
-			queueName,
-			notificationName,
-			tagNames,
-			//
-			description,
-			paramDictionary,
-			paramObject,
-			//
-			senderName,
-			DateTime.Now,
-			sendDelaySeconds,
-			//
-			toNotificationSended,
-			toNotificationSendedAsync);
+		    queueName,
+		    notificationName,
+		    tagNames,
+		    //
+		    description,
+		    paramDictionary,
+		    paramObject,
+		    //
+		    senderName,
+		    DateTime.Now,
+		    sendDelaySeconds,
+		    //
+		    toNotificationSended,
+		    toNotificationSendedAsync);
 
 		////////////////////////////////////////////////
 		// 获取指定的消息队列：
 		////////////////////////////////////////////////
 		var notificationQueue
-			= this.GetOrCreateNotificationQueue(queueName);
+		    = this.GetOrCreateNotificationQueue(queueName);
 
 		// !!!
 		notificationQueue.Enqueue(notification);
@@ -164,195 +162,192 @@ public class NotificationCenter : INotificationCenter
 		// !!!
 	}
 
-	public void PostNotification(
-		string notificationName,
-		IEnumerable<string>? tagNames = null,
-		string? description = null,
-		//
-		Dictionary<string, object>? paramDictionary = null,
-		object? paramObject = null,
-		string? senderName = null,
-		double sendDelaySeconds = 0.0,
-		//
-		Action<List<Object>?>? toNotificationSended = null,
-		Func<List<Object>?, Task>? toNotificationSendedAsync = null)
+	public void SendNotification(
+	    string notificationName,
+	    IEnumerable<string>? tagNames = null,
+	    string? description = null,
+	    //
+	    Dictionary<string, object>? paramDictionary = null,
+	    object? paramObject = null,
+	    string? senderName = null,
+	    double sendDelaySeconds = 0.0,
+	    //
+	    Action<List<Object>?>? toNotificationSended = null,
+	    Func<List<Object>?, Task>? toNotificationSendedAsync = null)
 	{
-		this.PostNotification(
+		this.SendNotification(
 		       null,
 		       notificationName,
-			tagNames,
-			description,
-			paramDictionary,
-			paramObject,
-			senderName,
-			sendDelaySeconds,
-			//
-			toNotificationSended,
-			toNotificationSendedAsync);
+		    tagNames,
+		    description,
+		    paramDictionary,
+		    paramObject,
+		    senderName,
+		    sendDelaySeconds,
+		    //
+		    toNotificationSended,
+		    toNotificationSendedAsync);
 	}
 
-	public void Post(
-		INotificationListenParam listenParam,
-		object? paramObject,
-		object sender)
+	public void Send(INotificationListenParam listenParam, object? paramObject, object sender)
 	{
 		if (sender is not string senderName)
 		{
 			senderName = sender?.GetType().FullName ?? string.Empty;
 		}
-		PostNotification(
-			listenParam.QueueName,
-			listenParam.NotificationName,
-			null,
-			null,
-			null,
-			paramObject,
-			senderName);
+		SendNotification(
+		    listenParam.QueueName,
+		    listenParam.NotificationName,
+		    null,
+		    null,
+		    null,
+		    paramObject,
+		    senderName);
 	}
 
 	public NotificationListener ListenNotification(
-		string? queueName,
-		//
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
-		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
+	    string? queueName,
+	    //
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
+	    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
 	{
 		////////////////////////////////////////////////
 		// 获取指定的消息队列：
 		////////////////////////////////////////////////
 		var notificationQueue
-			= this.GetOrCreateNotificationQueue(queueName);
+		    = this.GetOrCreateNotificationQueue(queueName);
 		var listener = notificationQueue.RegisterListenerToListenNotificationName(
-				notificationName,
-				//
-				tagNamesWithIntersection,
-				tagNamesWithUnion,
-			       //
-			       toDidReceivedNotification,
-			       toDidReceivedNotificationAsync);
+		    notificationName,
+		    //
+		    tagNamesWithIntersection,
+		    tagNamesWithUnion,
+		       //
+		       toDidReceivedNotification,
+		       toDidReceivedNotificationAsync);
 		{ }
 		return listener;
 	}
 
 	public NotificationListener ListenNotification(
-		string queueName,
-		//
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, List<Object>?> toDidReceivedNotification)
+	    string queueName,
+	    //
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, List<Object>?> toDidReceivedNotification)
 	{
 		return this.ListenNotification(
-			queueName,
-			//
-			notificationName,
-			tagNamesWithIntersection,
-			tagNamesWithUnion,
-			//
-			toDidReceivedNotification,
-			null);
+		    queueName,
+		    //
+		    notificationName,
+		    tagNamesWithIntersection,
+		    tagNamesWithUnion,
+		    //
+		    toDidReceivedNotification,
+		    null);
 	}
 
 	public NotificationListener ListenNotificationAsync(
-		string? queueName,
-		//
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, Task<object?>> toDidReceivedNotificationAsync)
+	    string? queueName,
+	    //
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, Task<object?>> toDidReceivedNotificationAsync)
 	{
 		return this.ListenNotification(
-			queueName,
-			//
-			notificationName,
-			tagNamesWithIntersection,
-			tagNamesWithUnion,
-			//
-			null,
-			toDidReceivedNotificationAsync);
+		    queueName,
+		    //
+		    notificationName,
+		    tagNamesWithIntersection,
+		    tagNamesWithUnion,
+		    //
+		    null,
+		    toDidReceivedNotificationAsync);
 	}
 
 	public NotificationListener ListenNotification(
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
-		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
+	    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
 	{
 		return this.ListenNotification(
-			null,
-			//
-			notificationName,
-			tagNamesWithIntersection,
-			tagNamesWithUnion,
-			//
-			toDidReceivedNotification,
-			toDidReceivedNotificationAsync);
+		    null,
+		    //
+		    notificationName,
+		    tagNamesWithIntersection,
+		    tagNamesWithUnion,
+		    //
+		    toDidReceivedNotification,
+		    toDidReceivedNotificationAsync);
 	}
 
 	public NotificationListener ListenNotification(
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, Object?> toDidReceivedNotification)
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, Object?> toDidReceivedNotification)
 	{
 		return this.ListenNotification(
-			notificationName,
-			tagNamesWithIntersection,
-			tagNamesWithUnion,
-			//
-			toDidReceivedNotification,
-			null);
+		    notificationName,
+		    tagNamesWithIntersection,
+		    tagNamesWithUnion,
+		    //
+		    toDidReceivedNotification,
+		    null);
 	}
 
 	public NotificationListener ListenNotificationAsync(
-		string notificationName,
-		IEnumerable<string>? tagNamesWithIntersection,
-		IEnumerable<string>? tagNamesWithUnion,
-		//
-		Func<Notification, CancellationToken, Task<object?>> toDidReceivedNotificationAsync)
+	    string notificationName,
+	    IEnumerable<string>? tagNamesWithIntersection,
+	    IEnumerable<string>? tagNamesWithUnion,
+	    //
+	    Func<Notification, CancellationToken, Task<object?>> toDidReceivedNotificationAsync)
 	{
 		return this.ListenNotification(
-			notificationName,
-			tagNamesWithIntersection,
-			tagNamesWithUnion,
-			//
-			null,
-			toDidReceivedNotificationAsync);
+		    notificationName,
+		    tagNamesWithIntersection,
+		    tagNamesWithUnion,
+		    //
+		    null,
+		    toDidReceivedNotificationAsync);
 	}
 
 
 	public NotificationListener Listen(
-		INotificationListenParam listenParam,
-		Func<Notification, CancellationToken, object?>? toDidReceivedNotification)
+	    INotificationListenParam listenParam,
+	    Func<Notification, CancellationToken, object?>? toDidReceivedNotification)
 	{
 		return ListenNotification(
-			listenParam.QueueName,
-			listenParam.NotificationName,
-			listenParam.TagNamesWithIntersection,
-			listenParam.TagNamesWithUnion,
-			toDidReceivedNotification,
-			null);
+		    listenParam.QueueName,
+		    listenParam.NotificationName,
+		    listenParam.TagNamesWithIntersection,
+		    listenParam.TagNamesWithUnion,
+		    toDidReceivedNotification,
+		    null);
 	}
 
 	public List<NotificationListener> Listen(
-		IEnumerable<INotificationListenParam> listenParams,
-		Func<Notification, CancellationToken, object?>? toDidReceivedNotification)
+	    IEnumerable<INotificationListenParam> listenParams,
+	    Func<Notification, CancellationToken, object?>? toDidReceivedNotification)
 	{
 		var notificationListeners = new List<NotificationListener>();
 		foreach (var listenParam in listenParams)
 		{
 			var notificationListener
-				= Listen(
-					listenParam,
-					toDidReceivedNotification);
+			    = Listen(
+			    listenParam,
+			    toDidReceivedNotification);
 			// !!!
 			notificationListeners.Add(notificationListener);
 			// !!!
@@ -361,16 +356,16 @@ public class NotificationCenter : INotificationCenter
 	}
 
 	public List<NotificationListener> ListenTo(
-		Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
-		params INotificationListenParam[] listenParams)
+	    Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
+	    params INotificationListenParam[] listenParams)
 	{
 		var notificationListeners = new List<NotificationListener>();
 		foreach (var listenParam in listenParams)
 		{
 			var notificationListener
-				= Listen(
-					listenParam,
-					toDidReceivedNotification);
+			    = Listen(
+			    listenParam,
+			    toDidReceivedNotification);
 			// !!!
 			notificationListeners.Add(notificationListener);
 			// !!!
@@ -379,29 +374,29 @@ public class NotificationCenter : INotificationCenter
 	}
 
 	public NotificationListener ListenAsync(
-		INotificationListenParam listenParam,
-		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
+	    INotificationListenParam listenParam,
+	    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
 	{
 		return ListenNotification(
-			listenParam.QueueName,
-			listenParam.NotificationName,
-			listenParam.TagNamesWithIntersection,
-			listenParam.TagNamesWithUnion,
-			null,
-			toDidReceivedNotificationAsync);
+		    listenParam.QueueName,
+		    listenParam.NotificationName,
+		    listenParam.TagNamesWithIntersection,
+		    listenParam.TagNamesWithUnion,
+		    null,
+		    toDidReceivedNotificationAsync);
 	}
 
 	public List<NotificationListener> ListenAsync(
-		IEnumerable<INotificationListenParam> listenParams,
-		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
+	    IEnumerable<INotificationListenParam> listenParams,
+	    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
 	{
 		var notificationListeners = new List<NotificationListener>();
 		foreach (var listenParam in listenParams)
 		{
 			var notificationListener
-				= ListenAsync(
-					listenParam,
-					toDidReceivedNotificationAsync);
+			    = ListenAsync(
+			    listenParam,
+			    toDidReceivedNotificationAsync);
 			// !!!
 			notificationListeners.Add(notificationListener);
 			// !!!
@@ -410,16 +405,16 @@ public class NotificationCenter : INotificationCenter
 	}
 
 	public List<NotificationListener> ListenToAsync(
-		Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync,
-		params INotificationListenParam[] listenParams)
+	    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync,
+	    params INotificationListenParam[] listenParams)
 	{
 		var notificationListeners = new List<NotificationListener>();
 		foreach (var listenParam in listenParams)
 		{
 			var notificationListener
-				= Listen(
-					listenParam,
-					toDidReceivedNotificationAsync);
+			    = Listen(
+			    listenParam,
+			    toDidReceivedNotificationAsync);
 			// !!!
 			notificationListeners.Add(notificationListener);
 			// !!!
@@ -438,10 +433,10 @@ public class NotificationCenter : INotificationCenter
 			}
 		}
 		else if (notificationQueue?.Name?.Length > 0
-			&& _notificationQueues.TryGetValue(notificationQueue.Name, out var notificationQueueExisted))
+		    && _notificationQueues.TryGetValue(notificationQueue.Name, out var notificationQueueExisted))
 		{
 			if (notificationQueueExisted != null
-				&& notificationQueueExisted == notificationQueue)
+			    && notificationQueueExisted == notificationQueue)
 			{
 				if (listener?.CancelListen() == true)
 				{
@@ -464,43 +459,43 @@ public class NotificationCenter : INotificationCenter
 	protected virtual NotificationQueue DidCreateNotificationQueue(string? notificationQueueName)
 	{
 		var isUnorderedQueue
-			= notificationQueueName == null
-			|| notificationQueueName.Length <= 0;
+		    = notificationQueueName == null
+		    || notificationQueueName.Length <= 0;
 		var peekNotificationIntervalSecondsMaxDefault
-			= this.NotificationQueuePeekNotificationIntervalSecondsMax;
+		    = this.NotificationQueuePeekNotificationIntervalSecondsMax;
 		var sendNotificationConcurrentCountMaxDefault
-			= this.NotificationQueueSendNotificationConcurrentCountMax;
+		    = this.NotificationQueueSendNotificationConcurrentCountMax;
 		var sendNotificationTimeoutSecondsMaxDefault
-			= this.NotificationQueueSendNotificationTimeoutSecondsMax;
+		    = this.NotificationQueueSendNotificationTimeoutSecondsMax;
 
 		var notificationQueue = new NotificationQueue(
-				notificationQueueName,
-			       isUnorderedQueue,
-			       //
-			       null,
-			       peekNotificationIntervalSecondsMaxDefault,
-			       //
-			       null,
-			       sendNotificationConcurrentCountMaxDefault,
-			       //
-			       null,
-			       sendNotificationTimeoutSecondsMaxDefault,
-			       //
-			       (notificationQueue, notification, exception) =>
-			       {
-				       this.DidReceiveExceptionThrewBySendNotificationInQueue(
-					       notificationQueue,
-					       notification,
-					       exception);
-			       });
+		    notificationQueueName,
+		       isUnorderedQueue,
+		       //
+		       null,
+		       peekNotificationIntervalSecondsMaxDefault,
+		       //
+		       null,
+		       sendNotificationConcurrentCountMaxDefault,
+		       //
+		       null,
+		       sendNotificationTimeoutSecondsMaxDefault,
+		       //
+		       (notificationQueue, notification, exception) =>
+		       {
+			       this.DidReceiveExceptionThrewBySendNotificationInQueue(
+		       notificationQueue,
+		       notification,
+		       exception);
+		       });
 		{ }
 		return notificationQueue;
 	}
 
 	protected virtual void DidReceiveExceptionThrewBySendNotificationInQueue(
-		NotificationQueue notificationQueue,
-		Notification notification,
-		Exception exception)
+	    NotificationQueue notificationQueue,
+	    Notification notification,
+	    Exception exception)
 	{ }
 
 	#endregion

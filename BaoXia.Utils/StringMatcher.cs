@@ -50,7 +50,7 @@ namespace BaoXia.Utils
 				_matchRules = [];
 
 				if (_expressionString == null
-					|| _expressionString.Length < 1)
+				    || _expressionString.Length < 1)
 				{
 					return;
 				}
@@ -72,7 +72,7 @@ namespace BaoXia.Utils
 				int lastRuleBeginIndex = 0;
 				// int lastRuleEndIndex = 0;
 				for (var expressionCharIndex = 0;
-					expressionCharIndex < _expressionString.Length;)
+				    expressionCharIndex < _expressionString.Length;)
 				{
 					// !!!🎉 【表达式】【默认】匹配成功，如果下方识别了更准确的表达式，则会覆盖当前信息。 🎉!!!
 					StringMatchRuleType expressionType = StringMatchRuleType.Default_SameChars;
@@ -80,11 +80,11 @@ namespace BaoXia.Utils
 					int expressionEndIndex = expressionBeginIndex + 1;
 
 					if (CharExtension.IsCharsOfStringEqualsKey(
-						fuzzyMatchingKey,
-						_expressionString,
-						expressionBeginIndex,
-						out _,
-						StringComparison.OrdinalIgnoreCase) == true)
+					    fuzzyMatchingKey,
+					    _expressionString,
+					    expressionBeginIndex,
+					    out _,
+					    StringComparison.OrdinalIgnoreCase) == true)
 					{
 						// !!!🎉 【通配符】匹配成功 🎉!!!
 						expressionType = StringMatchRuleType.AnyChars;
@@ -92,24 +92,24 @@ namespace BaoXia.Utils
 						// !!!
 					}
 					else if (CharExtension.IsCharsOfStringEqualsKey(
-						expressionRuleBeginSign,
-						_expressionString,
-						expressionBeginIndex,
-						out _,
-						StringComparison.OrdinalIgnoreCase) == true)
+					    expressionRuleBeginSign,
+					    _expressionString,
+					    expressionBeginIndex,
+					    out _,
+					    StringComparison.OrdinalIgnoreCase) == true)
 					{
 						// !!!
 						expressionType = StringMatchRuleType.Expression;
 						// !!!
 						var matchExpressionEndSignIndex = -1;
 						if ((expressionBeginIndex + 1 + expressionRuleEndSign.Length)
-							<= _expressionString.Length)
+						    <= _expressionString.Length)
 						{
 							matchExpressionEndSignIndex
-								= _expressionString.IndexOf(
-									expressionRuleEndSign,
-									expressionBeginIndex + 1,
-									System.StringComparison.OrdinalIgnoreCase);
+							    = _expressionString.IndexOf(
+							    expressionRuleEndSign,
+							    expressionBeginIndex + 1,
+							    System.StringComparison.OrdinalIgnoreCase);
 						}
 						if (matchExpressionEndSignIndex > expressionBeginIndex)
 						{
@@ -131,21 +131,21 @@ namespace BaoXia.Utils
 						// 或到达了表达式字符串结束处时，
 						// 结束当前【默认】表达式，并加入表达式列表：
 						if (expressionType != StringMatchRuleType.Default_SameChars
-							|| expressionEndIndex == _expressionString.Length)
+						    || expressionEndIndex == _expressionString.Length)
 						{
 							var lastRuleEndIndex
-								= expressionType != StringMatchRuleType.Default_SameChars
-								? expressionBeginIndex
-								: _expressionString.Length;
+							    = expressionType != StringMatchRuleType.Default_SameChars
+							    ? expressionBeginIndex
+							    : _expressionString.Length;
 							if (lastRuleEndIndex > lastRuleBeginIndex)
 							{
 								var ruleChars = _expressionString[lastRuleBeginIndex..lastRuleEndIndex];
 								var rule = new StringMatchRule(
-									lastRuleType,
-									ruleChars,
-									null,
-									_matchRules.Count < 1,
-									lastRuleEndIndex == _expressionString.Length);
+								    lastRuleType,
+								    ruleChars,
+								    null,
+								    _matchRules.Count < 1,
+								    lastRuleEndIndex == _expressionString.Length);
 								{ }
 								_matchRules.Add(rule);
 							}
@@ -174,17 +174,17 @@ namespace BaoXia.Utils
 						if (expressionType == StringMatchRuleType.Expression)
 						{
 							ruleExpression = ruleChars.Substring(
-								expressionRuleBeginSign.Length,
-								ruleChars.Length
-								- (expressionRuleBeginSign.Length
-								+ expressionRuleEndSign.Length));
+							    expressionRuleBeginSign.Length,
+							    ruleChars.Length
+							    - (expressionRuleBeginSign.Length
+							    + expressionRuleEndSign.Length));
 						}
 						var rule = new StringMatchRule(
-							expressionType,
-							ruleChars,
-							ruleExpression,
-							_matchRules.Count < 1,
-							expressionEndIndex == _expressionString.Length);
+						    expressionType,
+						    ruleChars,
+						    ruleExpression,
+						    _matchRules.Count < 1,
+						    expressionEndIndex == _expressionString.Length);
 						{ }
 						// !!!
 						_matchRules.Add(rule);
@@ -218,9 +218,9 @@ namespace BaoXia.Utils
 		}
 
 		protected static StringMatchRule? FindNextRuleFromRules(
-			List<StringMatchRule> expressions,
-			int beginExpressionIndex,
-			StringMatchRuleType objectExpressionType)
+		    List<StringMatchRule> expressions,
+		    int beginExpressionIndex,
+		    StringMatchRuleType objectExpressionType)
 		{
 			if (expressions == null)
 			{
@@ -228,8 +228,8 @@ namespace BaoXia.Utils
 			}
 
 			for (var ruleIndex = beginExpressionIndex;
-				ruleIndex < expressions.Count;
-				ruleIndex++)
+			    ruleIndex < expressions.Count;
+			    ruleIndex++)
 			{
 				var rule = expressions[ruleIndex];
 				if (rule.Type == objectExpressionType)
@@ -241,10 +241,10 @@ namespace BaoXia.Utils
 		}
 
 		public bool IsMatched(
-			string? stringNeedMatched,
-			StringComparison stringComparison = StringComparison.OrdinalIgnoreCase,
-			bool isUnknowVariableAsZero = true,
-			string keyword_SubstringNeedMatched = Keyword_SubstringNeedMatched)
+		    string? stringNeedMatched,
+		    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase,
+		    bool isUnknowVariableAsZero = true,
+		    string keyword_SubstringNeedMatched = Keyword_SubstringNeedMatched)
 		{
 			if (stringNeedMatched == null)
 			{
@@ -256,7 +256,7 @@ namespace BaoXia.Utils
 			}
 
 			if (_matchRules == null
-				|| _matchRules.Count < 1)
+			    || _matchRules.Count < 1)
 			{
 				return false;
 			}
@@ -267,8 +267,8 @@ namespace BaoXia.Utils
 			var isInFuzzyMatching = false;
 			var lastRuleIndex = _matchRules.Count - 1;
 			for (var ruleIndex = 0;
-				ruleIndex < _matchRules.Count;
-				ruleIndex++)
+			    ruleIndex < _matchRules.Count;
+			    ruleIndex++)
 			{
 				var rule = _matchRules[ruleIndex];
 				switch (rule.Type)
@@ -284,28 +284,28 @@ namespace BaoXia.Utils
 							if (ruleChars?.Length > 0)
 							{
 								var lastUrlPathMatchCharsBeginIndex
-									= urlPathMatchCharsBeginIndex;
+								    = urlPathMatchCharsBeginIndex;
 								if (rule.IsLastRule)
 								{
 									urlPathMatchCharsBeginIndex
-										= stringNeedMatched.Length
-										- ruleChars.Length;
+									    = stringNeedMatched.Length
+									    - ruleChars.Length;
 								}
 
 								var charsCountMatched
-									= this.DidGetCharsCountInStringMatchedWithRule_Default_SameChars(
-										rule,
-										stringNeedMatched,
-										urlPathMatchCharsBeginIndex,
-										stringNeedMatched.Length,
-										stringComparison);
+								    = this.DidGetCharsCountInStringMatchedWithRule_Default_SameChars(
+								    rule,
+								    stringNeedMatched,
+								    urlPathMatchCharsBeginIndex,
+								    stringNeedMatched.Length,
+								    stringComparison);
 
 								// 字符匹配成功：
 								if (charsCountMatched > 0)
 								{
 									if ((urlPathMatchCharsBeginIndex
-										- lastUrlPathMatchCharsBeginIndex) <= 0
-										|| isInFuzzyMatching == true)
+									    - lastUrlPathMatchCharsBeginIndex) <= 0
+									    || isInFuzzyMatching == true)
 									{
 										// !!!🎉 匹配成功 🎉!!!
 										isInFuzzyMatching = false;
@@ -344,10 +344,10 @@ namespace BaoXia.Utils
 					case StringMatchRuleType.Expression:
 						{
 							var nextDefaultExpression
-								= StringMatcher.FindNextRuleFromRules(
-									_matchRules,
-									ruleIndex + 1,
-									StringMatchRuleType.Default_SameChars);
+							    = StringMatcher.FindNextRuleFromRules(
+							    _matchRules,
+							    ruleIndex + 1,
+							    StringMatchRuleType.Default_SameChars);
 							// !!!
 							var urlPathMatchCharsEndIndex = stringNeedMatched.Length;
 							// !!!
@@ -358,13 +358,13 @@ namespace BaoXia.Utils
 									// !!! 最后一个“默认_相同字符串”规则的特殊处理 !!!
 									var nextDefaultExpressionChars = nextDefaultExpression.Chars;
 									if (nextDefaultExpressionChars != null
-										&& stringNeedMatched.EndsWith(
-										nextDefaultExpressionChars,
-										stringComparison))
+									    && stringNeedMatched.EndsWith(
+									    nextDefaultExpressionChars,
+									    stringComparison))
 									{
 										urlPathMatchCharsEndIndex
-											= stringNeedMatched.Length
-											- nextDefaultExpressionChars.Length;
+										    = stringNeedMatched.Length
+										    - nextDefaultExpressionChars.Length;
 									}
 									else
 									{
@@ -374,10 +374,10 @@ namespace BaoXia.Utils
 								else if (nextDefaultExpression.Chars != null)
 								{
 									urlPathMatchCharsEndIndex
-										= stringNeedMatched.IndexOf(
-										nextDefaultExpression.Chars,
-										urlPathMatchCharsBeginIndex,
-										stringComparison);
+									    = stringNeedMatched.IndexOf(
+									    nextDefaultExpression.Chars,
+									    urlPathMatchCharsBeginIndex,
+									    stringComparison);
 								}
 
 								// !!! 没有找到后续默认表达式的对应字符，则直接返回匹配失败 !!!
@@ -391,14 +391,14 @@ namespace BaoXia.Utils
 							if (isMatched)
 							{
 								var charsCountMatched
-									= this.DidGetCharsCountInStringMatchedWithRule_Expression(
-										rule,
-										stringNeedMatched,
-										urlPathMatchCharsBeginIndex,
-										urlPathMatchCharsEndIndex,
-										stringComparison,
-										isUnknowVariableAsZero,
-										keyword_SubstringNeedMatched);
+								    = this.DidGetCharsCountInStringMatchedWithRule_Expression(
+								    rule,
+								    stringNeedMatched,
+								    urlPathMatchCharsBeginIndex,
+								    urlPathMatchCharsEndIndex,
+								    stringComparison,
+								    isUnknowVariableAsZero,
+								    keyword_SubstringNeedMatched);
 								// 字符匹配成功：
 								if (charsCountMatched > 0)
 								{
@@ -429,8 +429,8 @@ namespace BaoXia.Utils
 				if (isMatched != true)
 				{
 					if (rule.Type != StringMatchRuleType.AnyChars
-						&& rule.IsLastRule != true
-						&& isInFuzzyMatching == true)
+					    && rule.IsLastRule != true
+					    && isInFuzzyMatching == true)
 					{
 						// !!!🎉 匹配成功 🎉!!!
 						isMatched = true;
@@ -450,16 +450,16 @@ namespace BaoXia.Utils
 		}
 
 		public bool IsNotMatched(
-			string stringNeedMatched,
-			StringComparison stringComparison = StringComparison.OrdinalIgnoreCase,
-			bool isUnknowVariableAsZero = true,
-			string keyword_SubstringNeedMatched = Keyword_SubstringNeedMatched)
+		    string stringNeedMatched,
+		    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase,
+		    bool isUnknowVariableAsZero = true,
+		    string keyword_SubstringNeedMatched = Keyword_SubstringNeedMatched)
 		{
 			return !this.IsMatched(
-				stringNeedMatched,
-				stringComparison,
-				isUnknowVariableAsZero,
-				keyword_SubstringNeedMatched);
+			    stringNeedMatched,
+			    stringComparison,
+			    isUnknowVariableAsZero,
+			    keyword_SubstringNeedMatched);
 		}
 
 		#endregion
@@ -472,11 +472,11 @@ namespace BaoXia.Utils
 		#region 事件节点
 
 		protected virtual int DidGetCharsCountInStringMatchedWithRule_Default_SameChars(
-			StringMatchRule rule,
-			string objectString,
-			int objectCharsBeginIndex,
-			int objectCharsEndIndex,
-			StringComparison stringComparison)
+		    StringMatchRule rule,
+		    string objectString,
+		    int objectCharsBeginIndex,
+		    int objectCharsEndIndex,
+		    StringComparison stringComparison)
 		{
 			if (rule == null)
 			{
@@ -485,17 +485,17 @@ namespace BaoXia.Utils
 
 			var ruleChars = rule.Chars;
 			if (ruleChars == null
-				|| ruleChars.Length < 1)
+			    || ruleChars.Length < 1)
 			{
 				throw new AggregateException("无法匹配没有内容的“默认_相同字符串”规则。");
 			}
 
 			if (CharExtension.IsCharsOfStringEqualsKey(
-				 ruleChars,
-				 objectString,
-				 objectCharsBeginIndex,
-				 out _,
-				 stringComparison))
+			     ruleChars,
+			     objectString,
+			     objectCharsBeginIndex,
+			     out _,
+			     stringComparison))
 			{
 
 				return ruleChars.Length;
@@ -504,13 +504,13 @@ namespace BaoXia.Utils
 		}
 
 		protected virtual int DidGetCharsCountInStringMatchedWithRule_Expression(
-				StringMatchRule rule,
-				string objectString,
-				int objectCharsBeginIndex,
-				int objectCharsEndIndex,
-				StringComparison stringComparison,
-				bool isUnknowVariableAsZero,
-				string keyword_SubstringNeedMatched)
+		    StringMatchRule rule,
+		    string objectString,
+		    int objectCharsBeginIndex,
+		    int objectCharsEndIndex,
+		    StringComparison stringComparison,
+		    bool isUnknowVariableAsZero,
+		    string keyword_SubstringNeedMatched)
 		{
 			if (rule == null)
 			{
@@ -518,7 +518,7 @@ namespace BaoXia.Utils
 			}
 			var ruleExpression = rule.Expression;
 			if (ruleExpression == null
-				|| ruleExpression.IsValid != true)
+			    || ruleExpression.IsValid != true)
 			{
 				//
 
@@ -526,7 +526,7 @@ namespace BaoXia.Utils
 				//
 			}
 			if (objectString == null
-				|| objectString.Length < 1)
+			    || objectString.Length < 1)
 			{
 				return 0;
 			}
@@ -544,30 +544,30 @@ namespace BaoXia.Utils
 			}
 
 			var expressionCalcuateResult
-				= ruleExpression.Calcuate(
-					(variableName) =>
-					{
-						return this.DidGetExpressionVariableValueWithVariableName(
-							variableName,
-							objectString,
-							objectCharsBeginIndex,
-							objectCharsEndIndex,
-							stringComparison,
-							keyword_SubstringNeedMatched);
-					},
-					isUnknowVariableAsZero,
-					(functionName) =>
-					{
-						return this.DidGetExpressionFunctionWithFunctionName(
-							functionName,
-							objectString,
-							objectCharsBeginIndex,
-							objectCharsEndIndex);
-					});
+			    = ruleExpression.Calcuate(
+			    (variableName) =>
+			    {
+				    return this.DidGetExpressionVariableValueWithVariableName(
+		    variableName,
+		    objectString,
+		    objectCharsBeginIndex,
+		    objectCharsEndIndex,
+		    stringComparison,
+		    keyword_SubstringNeedMatched);
+			    },
+			    isUnknowVariableAsZero,
+			    (functionName) =>
+			    {
+				    return this.DidGetExpressionFunctionWithFunctionName(
+		    functionName,
+		    objectString,
+		    objectCharsBeginIndex,
+		    objectCharsEndIndex);
+			    });
 			if (expressionCalcuateResult != null)
 			{
 				if (expressionCalcuateResult.Number != null
-					&& expressionCalcuateResult.Number != 0)
+				    && expressionCalcuateResult.Number != 0)
 				{
 					return (objectCharsEndIndex - objectCharsBeginIndex);
 				}
@@ -576,15 +576,15 @@ namespace BaoXia.Utils
 		}
 
 		protected virtual CalculationNumber? DidGetExpressionVariableValueWithVariableName(
-			string variableName,
-			string objectString,
-			int objectCharsBeginIndex,
-			int objectCharsEndIndex,
-			StringComparison stringComparison,
-			string keyword_SubstringNeedMatched)
+		    string variableName,
+		    string objectString,
+		    int objectCharsBeginIndex,
+		    int objectCharsEndIndex,
+		    StringComparison stringComparison,
+		    string keyword_SubstringNeedMatched)
 		{
 			if (variableName == null
-				|| variableName.Length < 1)
+			    || variableName.Length < 1)
 			{
 				return null;
 			}
@@ -615,10 +615,10 @@ namespace BaoXia.Utils
 		}
 
 		protected virtual Func<string[]?, CalculationNumber?>? DidGetExpressionFunctionWithFunctionName(
-			string functionName,
-			string objectString,
-			int objectCharsBeginIndex,
-			int objectCharsEndIndex)
+		    string functionName,
+		    string objectString,
+		    int objectCharsBeginIndex,
+		    int objectCharsEndIndex)
 		{
 			return null;
 		}

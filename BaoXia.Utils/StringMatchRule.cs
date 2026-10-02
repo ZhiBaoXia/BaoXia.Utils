@@ -26,19 +26,19 @@ namespace BaoXia.Utils
 		public bool IsLastRule { get; set; }
 
 		public StringMatchRule(
-			StringMatchRuleType type,
-			string? chars,
-			string? expression,
-			bool isFirstRule,
-			bool isLastRule)
+		    StringMatchRuleType type,
+		    string? chars,
+		    string? expression,
+		    bool isFirstRule,
+		    bool isLastRule)
 		{
 			this.Type = type;
 			this.Chars = chars;
 
 			this.Expression
-				= expression != null
-				? new MathExpression(expression)
-				: null;
+			    = expression != null
+			    ? new MathExpression(expression)
+			    : null;
 
 			this.IsFirstRule = isFirstRule;
 			this.IsLastRule = isLastRule;

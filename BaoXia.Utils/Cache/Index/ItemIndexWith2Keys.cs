@@ -6,13 +6,13 @@ using System.Collections.Generic;
 namespace BaoXia.Utils.Cache.Index;
 
 public class ItemIndexWith2Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKeyType>(
-	Func<ItemType, PrimaryIndexKeyType> toGetPrimaryIndexKeyOfItem,
-	Func<ItemType, SecondaryIndexKeyType> toGetSecondaryIndexKeyOfItem)
-	//
-	: IItemCacheIndex<ItemType>
-	//
-	where PrimaryIndexKeyType : notnull
-	where SecondaryIndexKeyType : notnull
+    Func<ItemType, PrimaryIndexKeyType> toGetPrimaryIndexKeyOfItem,
+    Func<ItemType, SecondaryIndexKeyType> toGetSecondaryIndexKeyOfItem)
+    //
+    : IItemCacheIndex<ItemType>
+    //
+    where PrimaryIndexKeyType : notnull
+    where SecondaryIndexKeyType : notnull
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -21,7 +21,7 @@ public class ItemIndexWith2Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	#region 自身属性
 
 	public readonly ConcurrentDictionary<PrimaryIndexKeyType,
-		ConcurrentDictionary<SecondaryIndexKeyType, ItemIndexNode<ItemType>>> PrimaryIndexes = new();
+	    ConcurrentDictionary<SecondaryIndexKeyType, ItemIndexNode<ItemType>>> PrimaryIndexes = new();
 
 	public string? Name { get; set; }
 
@@ -42,28 +42,28 @@ public class ItemIndexWith2Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	}
 
 	public void UpdateIndexItemsWithPrimaryIndexKey(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey,
-		Func<ItemType?, ItemType?> toUpdateIndexItem)
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey,
+	    Func<ItemType?, ItemType?> toUpdateIndexItem)
 	{
 		var secondaryIndexes
-			= PrimaryIndexes.GetOrAdd(
-				primaryIndexKey,
-				(_) => []);
+		    = PrimaryIndexes.GetOrAdd(
+		    primaryIndexKey,
+		    (_) => []);
 		var itemIndexInfo
-			= secondaryIndexes.GetOrAdd(
-				secondaryIndexKey,
-				(_) => new());
+		    = secondaryIndexes.GetOrAdd(
+		    secondaryIndexKey,
+		    (_) => new());
 		lock (itemIndexInfo)
 		{
 			// !!!
 			var newIndexItem
-				= toUpdateIndexItem(itemIndexInfo.FirstItem);
+			    = toUpdateIndexItem(itemIndexInfo.FirstItem);
 			newIndexItem = WillUpdateIndexItemWithPrimaryIndexKey(
-				primaryIndexKey,
-				secondaryIndexKey,
-				//
-				newIndexItem);
+			    primaryIndexKey,
+			    secondaryIndexKey,
+			    //
+			    newIndexItem);
 			if (newIndexItem != null)
 			{
 				if (itemIndexInfo.Items.Length == 1)
@@ -89,18 +89,18 @@ public class ItemIndexWith2Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	}
 
 	public ItemType? GetItem(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey)
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey)
 	{
 		if (!PrimaryIndexes.TryGetValue(
-			primaryIndexKey,
-			out var secondaryIndexes))
+		    primaryIndexKey,
+		    out var secondaryIndexes))
 		{
 			return default;
 		}
 		if (secondaryIndexes.TryGetValue(
-			secondaryIndexKey,
-			out var enityIndexInfo))
+		    secondaryIndexKey,
+		    out var enityIndexInfo))
 		{
 			return enityIndexInfo.FirstItem;
 		}
@@ -117,10 +117,10 @@ public class ItemIndexWith2Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	#region 事件节点
 
 	protected virtual ItemType? WillUpdateIndexItemWithPrimaryIndexKey(
-				PrimaryIndexKeyType primaryIndexKey,
-				SecondaryIndexKeyType secondaryIndexKey,
-				//
-				ItemType? newIndexItem)
+		PrimaryIndexKeyType primaryIndexKey,
+		SecondaryIndexKeyType secondaryIndexKey,
+		//
+		ItemType? newIndexItem)
 	{
 		return newIndexItem;
 	}
@@ -136,8 +136,8 @@ public class ItemIndexWith2Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	#region 实现”IDbSetMemoryCacheIndex“
 
 	public void UpdateIndexItemsByUpdateItemFrom(
-		ItemType? lastItem,
-		ItemType? currentItem)
+	    ItemType? lastItem,
+	    ItemType? currentItem)
 	{
 		var isLastItemValid = false;
 		PrimaryIndexKeyType lastPrimaryIndexKey = default!;
@@ -163,17 +163,17 @@ public class ItemIndexWith2Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 		// 1/2，移除旧的索引：
 		////////////////////////////////////////////////
 		if (isLastItemValid
-			&& (!lastPrimaryIndexKey.Equals(currentPrimaryIndexKey)
-			|| !lastSecondaryIndexKey.Equals(currentSecondaryIndexKey)))
+		    && (!lastPrimaryIndexKey.Equals(currentPrimaryIndexKey)
+		    || !lastSecondaryIndexKey.Equals(currentSecondaryIndexKey)))
 		{
 			UpdateIndexItemsWithPrimaryIndexKey(
-				lastPrimaryIndexKey,
-				lastSecondaryIndexKey,
-				//
-				(_) =>
-				{
-					return default;
-				});
+			    lastPrimaryIndexKey,
+			    lastSecondaryIndexKey,
+			    //
+			    (_) =>
+			    {
+				    return default;
+			    });
 		}
 
 		////////////////////////////////////////////////
@@ -184,12 +184,12 @@ public class ItemIndexWith2Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 		if (isCurrentItemValid)
 		{
 			UpdateIndexItemsWithPrimaryIndexKey(
-				currentPrimaryIndexKey,
-				currentSecondaryIndexKey,
-				(_) =>
-				{
-					return currentItem;
-				});
+			    currentPrimaryIndexKey,
+			    currentSecondaryIndexKey,
+			    (_) =>
+			    {
+				    return currentItem;
+			    });
 		}
 	}
 
@@ -201,8 +201,8 @@ public class ItemIndexWith2Keys<ItemType, PrimaryIndexKeyType, SecondaryIndexKey
 	public ItemType? GetItem(ItemType item)
 	{
 		return GetItem(
-			toGetPrimaryIndexKeyOfItem(item),
-			toGetSecondaryIndexKeyOfItem(item));
+		    toGetPrimaryIndexKeyOfItem(item),
+		    toGetSecondaryIndexKeyOfItem(item));
 	}
 
 	public bool IsItemExisted(ItemType item)

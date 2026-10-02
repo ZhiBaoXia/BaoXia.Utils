@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BaoXia.Utils.ConcurrentTools;
 
-public class AsyncLocker
+public class AsyncLock : SemaphoreSlim
 {
 	////////////////////////////////////////////////
 	// @类方法
@@ -13,10 +13,10 @@ public class AsyncLocker
 	#region 类方法
 
 	public static async Task<ResultType> LockAsync<SemaphoreSlimType, ResultType>(
-		SemaphoreSlimType? lockerGot,
-		Func<SemaphoreSlimType?>? toGetLocker,
-		Func<SemaphoreSlimType?, Task<ResultType>> toExecuteAsync)
-		where SemaphoreSlimType : SemaphoreSlim
+	    SemaphoreSlimType? lockerGot,
+	    Func<SemaphoreSlimType?>? toGetLocker,
+	    Func<SemaphoreSlimType?, Task<ResultType>> toExecuteAsync)
+	    where SemaphoreSlimType : SemaphoreSlim
 	{
 		var isLockerNeedRelease = false;
 		if (lockerGot == null)
@@ -50,19 +50,19 @@ public class AsyncLocker
 	}
 
 	public static async Task LockAsync<SemaphoreSlimType>(
-		SemaphoreSlimType? lockerGot,
-		Func<SemaphoreSlimType?>? toGetLocker,
-		Func<SemaphoreSlimType?, Task> toExecuteAsync)
-		where SemaphoreSlimType : SemaphoreSlim
+	    SemaphoreSlimType? lockerGotFromFunctionParams,
+	    Func<SemaphoreSlimType?>? toGetLocker,
+	    Func<SemaphoreSlimType?, Task> toExecuteAsync)
+	    where SemaphoreSlimType : SemaphoreSlim
 	{
 		var isLockerNeedRelease = false;
-		if (lockerGot == null)
+		if (lockerGotFromFunctionParams == null)
 		{
 			// !!!
-			lockerGot = toGetLocker?.Invoke();
-			if (lockerGot != null)
+			lockerGotFromFunctionParams = toGetLocker?.Invoke();
+			if (lockerGotFromFunctionParams != null)
 			{
-				await lockerGot.WaitAsync();
+				await lockerGotFromFunctionParams.WaitAsync();
 				isLockerNeedRelease = true;
 				// !!!
 			}
@@ -70,20 +70,35 @@ public class AsyncLocker
 		}
 		try
 		{
-			await toExecuteAsync(lockerGot);
+			await toExecuteAsync(lockerGotFromFunctionParams);
 		}
 		finally
 		{
 			if (isLockerNeedRelease)
 			{
 				// !!!
-				lockerGot?.Release();
+				lockerGotFromFunctionParams?.Release();
 				//lockerGot = null;
 				//isLockerNeedRelease = false;
 				// !!!
 			}
 		}
 	}
+
+	#endregion
+
+
+	////////////////////////////////////////////////
+	// @自身实现
+	////////////////////////////////////////////////
+
+	#region 自身实现
+
+	public AsyncLock(int initialCount = 1) : base(initialCount)
+	{ }
+
+	public AsyncLock(int initialCount, int maxCount) : base(initialCount, maxCount)
+	{ }
 
 	#endregion
 }

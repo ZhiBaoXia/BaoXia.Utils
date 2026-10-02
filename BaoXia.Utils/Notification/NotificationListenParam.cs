@@ -3,15 +3,10 @@ using System;
 
 namespace BaoXia.Utils.Notification;
 
-public class NotificationListenParam
-	<NotificationParamObjectClass>(
-	string? queueName,
-	string notificationName,
-	string[]? tagNamesWithIntersection,
-	string[]? tagNamesWithUnion,
-	string? description = null)
-	: INotificationListenParam
-	where NotificationParamObjectClass : class
+public class NotificationListenParam<TNotificationParamObject>(
+    string? queueName, string notificationName, string[]? tagNamesWithIntersection, string[]? tagNamesWithUnion, string? description = null)
+    : INotificationListenParam
+    where TNotificationParamObject : class
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -19,7 +14,7 @@ public class NotificationListenParam
 
 	#region 自身属性
 
-	public Type ParamObjectType => typeof(NotificationParamObjectClass);
+	public Type ParamObjectType => typeof(TNotificationParamObject);
 
 	#endregion
 
@@ -31,29 +26,29 @@ public class NotificationListenParam
 	#region 自身实现
 
 	public NotificationListenParam(
-		string? queueName,
-		string notificationName)
-		: this(queueName,
-			  notificationName,
-			  null,
-			  null,
-			  null)
+	    string? queueName,
+	    string notificationName)
+	    : this(queueName,
+	      notificationName,
+	      null,
+	      null,
+	      null)
 	{ }
 
 	public NotificationListenParam(
-		string? queueName,
-		string notificationName,
-		string? description)
-		: this(queueName,
-			  notificationName,
-			  null,
-			  null,
-			  description)
+	    string? queueName,
+	    string notificationName,
+	    string? description)
+	    : this(queueName,
+	      notificationName,
+	      null,
+	      null,
+	      description)
 	{ }
 
-	public NotificationParamObjectClass? GetParamObjectFrom(object? paramObject)
+	public TNotificationParamObject? GetParamObjectFrom(object? paramObject)
 	{
-		return paramObject as NotificationParamObjectClass;
+		return paramObject as TNotificationParamObject;
 	}
 
 	#endregion

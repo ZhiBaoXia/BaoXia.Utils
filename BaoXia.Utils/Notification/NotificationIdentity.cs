@@ -26,9 +26,9 @@ namespace BaoXia.Utils.Notification
 		#region 自身实现
 
 		public NotificationIdentity(
-			string? queueName,
-			string name,
-			IEnumerable<string>? tagNames)
+		    string? queueName,
+		    string name,
+		    IEnumerable<string>? tagNames)
 		{
 			this.QueueName = queueName;
 			this.Name = name;
@@ -36,7 +36,7 @@ namespace BaoXia.Utils.Notification
 		}
 
 		public NotificationIdentity(
-			NotificationIdentity notificationIdentity)
+		    NotificationIdentity notificationIdentity)
 		{
 			this.QueueName = notificationIdentity.QueueName;
 			this.Name = notificationIdentity.Name;

@@ -78,7 +78,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue != 0)
+			    && numberValue != 0)
 			{
 				return numberValue.Value;
 			}
@@ -91,7 +91,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue != 0)
+			    && numberValue != 0)
 			{
 				return numberValue.Value;
 			}
@@ -104,7 +104,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue != 0)
+			    && numberValue != 0)
 			{
 				return numberValue.Value;
 			}
@@ -117,7 +117,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue != 0)
+			    && numberValue != 0)
 			{
 				return numberValue.Value;
 			}
@@ -130,7 +130,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue != 0)
+			    && numberValue != 0)
 			{
 				return numberValue.Value;
 			}
@@ -143,7 +143,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue != 0)
+			    && numberValue != 0)
 			{
 				return numberValue.Value;
 			}
@@ -156,7 +156,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue != 0)
+			    && numberValue != 0)
 			{
 				return numberValue.Value;
 			}
@@ -170,7 +170,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue > 0)
+			    && numberValue > 0)
 			{
 				return numberValue.Value;
 			}
@@ -183,7 +183,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue > 0)
+			    && numberValue > 0)
 			{
 				return numberValue.Value;
 			}
@@ -196,7 +196,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue > 0)
+			    && numberValue > 0)
 			{
 				return numberValue.Value;
 			}
@@ -209,7 +209,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue > 0)
+			    && numberValue > 0)
 			{
 				return numberValue.Value;
 			}
@@ -222,7 +222,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue > 0)
+			    && numberValue > 0)
 			{
 				return numberValue.Value;
 			}
@@ -235,7 +235,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue > 0)
+			    && numberValue > 0)
 			{
 				return numberValue.Value;
 			}
@@ -248,7 +248,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue > 0)
+			    && numberValue > 0)
 			{
 				return numberValue.Value;
 			}
@@ -262,7 +262,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue < 0)
+			    && numberValue < 0)
 			{
 				return numberValue.Value;
 			}
@@ -275,7 +275,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue < 0)
+			    && numberValue < 0)
 			{
 				return numberValue.Value;
 			}
@@ -288,7 +288,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue < 0)
+			    && numberValue < 0)
 			{
 				return numberValue.Value;
 			}
@@ -301,7 +301,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue < 0)
+			    && numberValue < 0)
 			{
 				return numberValue.Value;
 			}
@@ -314,7 +314,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue < 0)
+			    && numberValue < 0)
 			{
 				return numberValue.Value;
 			}
@@ -327,7 +327,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue < 0)
+			    && numberValue < 0)
 			{
 				return numberValue.Value;
 			}
@@ -340,7 +340,7 @@ public class NumberUtil
 		foreach (var numberValue in numbers)
 		{
 			if (numberValue != null
-				&& numberValue < 0)
+			    && numberValue < 0)
 			{
 				return numberValue.Value;
 			}
@@ -349,8 +349,8 @@ public class NumberUtil
 	}
 
 	public static uint UIntFromHexString(
-		string? hexString,
-		uint defaultValue = 0x0)
+	    string? hexString,
+	    uint defaultValue = 0x0)
 	{
 		if (string.IsNullOrWhiteSpace(hexString))
 		{
@@ -368,9 +368,9 @@ public class NumberUtil
 		}
 
 		if (uint.TryParse(hexString,
-			System.Globalization.NumberStyles.HexNumber,
-			null,
-			out uint hexNumber))
+		    System.Globalization.NumberStyles.HexNumber,
+		    null,
+		    out uint hexNumber))
 		{
 			return hexNumber;
 		}
@@ -380,7 +380,7 @@ public class NumberUtil
 	public static uint? MaxOf(params uint[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -399,7 +399,7 @@ public class NumberUtil
 	public static int? MaxOf(params int[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -418,7 +418,7 @@ public class NumberUtil
 	public static ulong? MaxOf(params ulong[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -437,7 +437,7 @@ public class NumberUtil
 	public static long? MaxOf(params long[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -456,7 +456,7 @@ public class NumberUtil
 	public static float? MaxOf(params float[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -475,7 +475,7 @@ public class NumberUtil
 	public static double? MaxOf(params double[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -494,7 +494,7 @@ public class NumberUtil
 	public static decimal? MaxOf(params decimal[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -514,7 +514,7 @@ public class NumberUtil
 	public static uint? MinOf(params uint[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -533,7 +533,7 @@ public class NumberUtil
 	public static int? MinOf(params int[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -552,7 +552,7 @@ public class NumberUtil
 	public static ulong? MinOf(params ulong[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -571,7 +571,7 @@ public class NumberUtil
 	public static long? MinOf(params long[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -590,7 +590,7 @@ public class NumberUtil
 	public static float? MinOf(params float[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -609,7 +609,7 @@ public class NumberUtil
 	public static double? MinOf(params double[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}
@@ -628,7 +628,7 @@ public class NumberUtil
 	public static decimal? MinOf(params decimal[]? numbers)
 	{
 		if (numbers == null
-			|| numbers.Length < 1)
+		    || numbers.Length < 1)
 		{
 			return null;
 		}

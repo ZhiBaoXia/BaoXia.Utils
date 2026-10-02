@@ -13,11 +13,11 @@ public static class SHA
 	/// <param name="textEncoding">字符串字节信息的编码方式，默认为：UTF8。</param>
 	/// <returns>使用指定的编码方式编码后生成的字符串字节数组。</returns>
 	public static byte[] CreateBytesFromString(
-		string sourceString,
-		System.Text.Encoding? textEncoding = null)
+	    string sourceString,
+	    System.Text.Encoding? textEncoding = null)
 	{
 		if (sourceString == null
-			|| sourceString.Length < 1)
+		    || sourceString.Length < 1)
 		{
 			return [];
 		}
@@ -38,16 +38,13 @@ public static class SHA
 	/// <param name="offset">指定的字节数组偏移量。</param>
 	/// <param name="count">指定的字节数组长度。</param>
 	/// <returns>字节数组对应的16进制字符串。</returns>
-	public static string CreateHexStringFromBytes(
-		byte[] sourceBytes,
-		int offset,
-		int count)
+	public static string CreateHexStringFromBytes(byte[] sourceBytes, int offset, int count)
 	{
 		if (sourceBytes == null
-			|| sourceBytes.Length < 1
-			|| offset < 0
-			|| offset >= sourceBytes.Length
-			|| count <= 0)
+		    || sourceBytes.Length < 1
+		    || offset < 0
+		    || offset >= sourceBytes.Length
+		    || count <= 0)
 		{
 			return string.Empty;
 		}
@@ -58,8 +55,8 @@ public static class SHA
 
 		StringBuilder finalStringBuilder = new();
 		for (int charIndex = offset;
-			charIndex < count;
-			charIndex++)
+		    charIndex < count;
+		    charIndex++)
 		{
 			finalStringBuilder.Append(sourceBytes[charIndex].ToString("X2"));
 		}
@@ -74,12 +71,12 @@ public static class SHA
 	/// <param name="sourceBytes">指定的字节数组。</param>
 	/// <returns>字节数组对应的16进制字符串。</returns>
 	public static string CreateHexStringFromBytes(
-		byte[] sourceBytes)
+	    byte[] sourceBytes)
 	{
 		return SHA.CreateHexStringFromBytes(
-			sourceBytes,
-			0,
-			sourceBytes.Length);
+		    sourceBytes,
+		    0,
+		    sourceBytes.Length);
 	}
 
 	#endregion
@@ -99,10 +96,10 @@ public static class SHA
 	int count)
 	{
 		if (plaintextBytes == null
-			|| plaintextBytes.Length < 1
-			|| offset < 0
-			|| offset >= plaintextBytes.Length
-			|| count <= 0)
+		    || plaintextBytes.Length < 1
+		    || offset < 0
+		    || offset >= plaintextBytes.Length
+		    || count <= 0)
 		{
 			return string.Empty;
 		}
@@ -135,9 +132,9 @@ public static class SHA
 	byte[] plaintextBytes)
 	{
 		return SHA.CreateMD532String(
-			plaintextBytes,
-			0,
-			plaintextBytes.Length);
+		    plaintextBytes,
+		    0,
+		    plaintextBytes.Length);
 	}
 
 	/// <summary>
@@ -147,8 +144,8 @@ public static class SHA
 	/// <param name="textEncoding">指定的字符编码方式。</param>
 	/// <returns>字符串对应的哈希值。</returns>
 	public static string CreateMD532String(
-		string plaintext,
-		System.Text.Encoding? textEncoding = null)
+	    string plaintext,
+	    System.Text.Encoding? textEncoding = null)
 	{
 		var plaintextBytes = SHA.CreateBytesFromString(plaintext, textEncoding);
 		// !!!
@@ -170,9 +167,9 @@ public static class SHA
 	/// <param name="count">指定的字节数组长度。</param>
 	/// <returns>字符串对应的哈希值。</returns>
 	public static string CreateMD516String(
-		byte[] plaintextBytes,
-		int offset,
-		int count)
+	    byte[] plaintextBytes,
+	    int offset,
+	    int count)
 	{
 		var sourceTextMd532String = SHA.CreateMD532String(plaintextBytes, offset, count);
 		var sourceTextMd516String = sourceTextMd532String.Substring(8, 16);
@@ -186,12 +183,12 @@ public static class SHA
 	/// <param name="plaintextBytes">指定的字节数组。</param>
 	/// <returns>字符串对应的哈希值。</returns>
 	public static string CreateMD516String(
-		byte[] plaintextBytes)
+	    byte[] plaintextBytes)
 	{
 		return SHA.CreateMD516String(
-			plaintextBytes,
-			0,
-			plaintextBytes.Length);
+		    plaintextBytes,
+		    0,
+		    plaintextBytes.Length);
 	}
 
 	/// <summary>
@@ -201,8 +198,8 @@ public static class SHA
 	/// <param name="textEncoding">指定的字符编码方式。</param>
 	/// <returns>字符串对应的哈希值。</returns>
 	public static string CreateMD516String(
-		string plaintext,
-		System.Text.Encoding? textEncoding = null)
+	    string plaintext,
+	    System.Text.Encoding? textEncoding = null)
 	{
 		var plaintextBytes = SHA.CreateBytesFromString(plaintext, textEncoding);
 		// !!!
@@ -224,15 +221,15 @@ public static class SHA
 	/// <param name="count">指定的字节数组长度。</param>
 	/// <returns>字符串对应的哈希值。</returns>
 	public static string CreateSHA256String(
-		byte[] plaintextBytes,
-		int offset,
-		int count)
+	    byte[] plaintextBytes,
+	    int offset,
+	    int count)
 	{
 		if (plaintextBytes == null
-			|| plaintextBytes.Length < 1
-			|| offset < 0
-			|| offset >= plaintextBytes.Length
-			|| count <= 0)
+		    || plaintextBytes.Length < 1
+		    || offset < 0
+		    || offset >= plaintextBytes.Length
+		    || count <= 0)
 		{
 			return string.Empty;
 		}
@@ -256,12 +253,12 @@ public static class SHA
 	/// <param name="plaintextBytes">指定的字节数组。</param>
 	/// <returns>字符串对应的哈希值。</returns>
 	public static string CreateSHA256String(
-		byte[] plaintextBytes)
+	    byte[] plaintextBytes)
 	{
 		return SHA.CreateSHA256String(
-			plaintextBytes,
-			0,
-			plaintextBytes.Length);
+		    plaintextBytes,
+		    0,
+		    plaintextBytes.Length);
 	}
 
 	/// <summary>
@@ -271,8 +268,8 @@ public static class SHA
 	/// <param name="textEncoding">指定的字符编码方式。</param>
 	/// <returns>字符串对应的哈希值。</returns>
 	public static string CreateSHA256String(
-		string plaintext,
-		System.Text.Encoding? textEncoding = null)
+	    string plaintext,
+	    System.Text.Encoding? textEncoding = null)
 	{
 		var plaintextBytes = SHA.CreateBytesFromString(plaintext, textEncoding);
 		// !!!
@@ -294,15 +291,15 @@ public static class SHA
 	/// <param name="count">指定的字节数组长度。</param>
 	/// <returns>字符串对应的哈希值。</returns>
 	public static string CreateSHA512String(
-		byte[] plaintextBytes,
-		int offset,
-		int count)
+	    byte[] plaintextBytes,
+	    int offset,
+	    int count)
 	{
 		if (plaintextBytes == null
-			|| plaintextBytes.Length < 1
-			|| offset < 0
-			|| offset >= plaintextBytes.Length
-			|| count <= 0)
+		    || plaintextBytes.Length < 1
+		    || offset < 0
+		    || offset >= plaintextBytes.Length
+		    || count <= 0)
 		{
 			return string.Empty;
 		}
@@ -327,12 +324,12 @@ public static class SHA
 	/// <param name="plaintextBytes">指定的字节数组。</param>
 	/// <returns>字符串对应的哈希值。</returns>
 	public static string CreateSHA512String(
-		byte[] plaintextBytes)
+	    byte[] plaintextBytes)
 	{
 		return SHA.CreateSHA512String(
-			plaintextBytes,
-			0,
-			plaintextBytes.Length);
+		    plaintextBytes,
+		    0,
+		    plaintextBytes.Length);
 	}
 
 	/// <summary>
@@ -342,8 +339,8 @@ public static class SHA
 	/// <param name="textEncoding">指定的字符编码方式。</param>
 	/// <returns>字符串对应的哈希值。</returns>
 	public static string CreateSHA512String(
-		string plaintext,
-		System.Text.Encoding? textEncoding)
+	    string plaintext,
+	    System.Text.Encoding? textEncoding)
 	{
 		var plaintextBytes = SHA.CreateBytesFromString(plaintext, textEncoding);
 		// !!!

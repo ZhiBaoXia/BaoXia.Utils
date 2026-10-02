@@ -8,18 +8,18 @@ namespace BaoXia.Utils.Cache
 	/// 实体元素缓存。
 	/// </summary>
 	public class DbSetItemsCacheAsync<ItemGroupKeyType, ItemKeyType, ItemType>(
-		    Func<ItemGroupKeyType, DbSet<ItemType>?, Task<ItemType[]?>> didCreateItemListCache,
-		    Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, DbSet<ItemType>?, Task<ItemType[]?>> didWillUpdateItemListAsync,
-		    Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, DbSet<ItemType>?, Task> didItemListUpdatedAsync,
-		    Func<double>? toDidGetIntervalSecondsToCleanItemListCache,
-		    Func<double> didGetNoneReadSecondsToRemoveItemListCache,
-		    //
-		    Func<ItemKeyType, DbSet<ItemType>?, Task<ItemType?>> didCreateItemCache,
-		    Func<double>? toDidGetIntervalSecondsToCleanItemCache,
-		    Func<double> toDidGetNoneReadSecondsToRemoveItemCache)
-		where ItemGroupKeyType : notnull
-		where ItemKeyType : notnull
-		where ItemType : class
+	    Func<ItemGroupKeyType, DbSet<ItemType>?, Task<ItemType[]?>> didCreateItemListCache,
+	    Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, DbSet<ItemType>?, Task<ItemType[]?>> didWillUpdateItemListAsync,
+	    Func<ItemGroupKeyType, ItemType[]?, ItemType[]?, DbSet<ItemType>?, Task> didItemListUpdatedAsync,
+	    Func<double>? toDidGetIntervalSecondsToCleanItemListCache,
+	    Func<double> didGetNoneReadSecondsToRemoveItemListCache,
+	    //
+	    Func<ItemKeyType, DbSet<ItemType>?, Task<ItemType?>> didCreateItemCache,
+	    Func<double>? toDidGetIntervalSecondsToCleanItemCache,
+	    Func<double> toDidGetNoneReadSecondsToRemoveItemCache)
+	    where ItemGroupKeyType : notnull
+	    where ItemKeyType : notnull
+	    where ItemType : class
 	{
 		////////////////////////////////////////////////
 		// @自身属性
@@ -28,18 +28,18 @@ namespace BaoXia.Utils.Cache
 		#region 自身属性
 
 		private readonly ListsCachAsync<ItemGroupKeyType, ItemType, DbSet<ItemType>> _itemListsCache = new(
-			    didCreateItemListCache,
-			    didWillUpdateItemListAsync,
-			    didItemListUpdatedAsync,
-			    toDidGetIntervalSecondsToCleanItemListCache,
-			    didGetNoneReadSecondsToRemoveItemListCache);
+		    didCreateItemListCache,
+		    didWillUpdateItemListAsync,
+		    didItemListUpdatedAsync,
+		    toDidGetIntervalSecondsToCleanItemListCache,
+		    didGetNoneReadSecondsToRemoveItemListCache);
 
 		private readonly ItemsCacheAsync<ItemKeyType, ItemType, DbSet<ItemType>> _itemsCache = new(
-			    didCreateItemCache,
-			    null,
-			    null,
-			    toDidGetIntervalSecondsToCleanItemCache,
-			    toDidGetNoneReadSecondsToRemoveItemCache);
+		    didCreateItemCache,
+		    null,
+		    null,
+		    toDidGetIntervalSecondsToCleanItemCache,
+		    toDidGetNoneReadSecondsToRemoveItemCache);
 
 		#endregion
 
@@ -60,15 +60,15 @@ namespace BaoXia.Utils.Cache
 		    //
 		    Func<double>? toDidGetIntervalSecondsToCleanItemCache,
 		    Func<double> didGetNoneReadSecondsToRemoveItemCache) : this(
-			didCreateItemListCache,
-			didWillUpdateItemListAsync,
-			didItemListUpdatedAsync,
-			toDidGetIntervalSecondsToCleanItemListCache,
-			didGetNoneReadSecondsToRemoveItemCache,
-			//
-			didCreateItemCache,
-			toDidGetIntervalSecondsToCleanItemCache,
-			didGetNoneReadSecondsToRemoveItemCache)
+		    didCreateItemListCache,
+		    didWillUpdateItemListAsync,
+		    didItemListUpdatedAsync,
+		    toDidGetIntervalSecondsToCleanItemListCache,
+		    didGetNoneReadSecondsToRemoveItemCache,
+		    //
+		    didCreateItemCache,
+		    toDidGetIntervalSecondsToCleanItemCache,
+		    didGetNoneReadSecondsToRemoveItemCache)
 		{ }
 
 		public async Task<ItemType[]?> GetList(
@@ -116,8 +116,8 @@ namespace BaoXia.Utils.Cache
 			    newItem);
 			{
 				await _itemsCache.AddAsync(
-					newItemKey,
-					newItem);
+				    newItemKey,
+				    newItem);
 			}
 			return items;
 		}
@@ -144,6 +144,6 @@ namespace BaoXia.Utils.Cache
 		}
 	}
 
-	#endregion
+		#endregion
 
 }

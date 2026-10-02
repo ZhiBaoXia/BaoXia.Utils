@@ -6,23 +6,23 @@ using System.Collections.Generic;
 namespace BaoXia.Utils.Cache.Index;
 
 public class ItemIndexWith6Keys<ItemType,
-	PrimaryIndexKeyType, SecondaryIndexKeyType, ThirdaryIndexKeyType,
-	FourthIndexKeyType, FifthIndexKeyType, SixthIndexKeyType>(
-	Func<ItemType, PrimaryIndexKeyType> toGetPrimaryIndexKeyOfItem,
-	Func<ItemType, SecondaryIndexKeyType> toGetSecondaryIndexKeyOfItem,
-	Func<ItemType, ThirdaryIndexKeyType> toGetThirdaryIndexKeyOfItem,
-	Func<ItemType, FourthIndexKeyType> toGetFourthIndexKeyOfItem,
-	Func<ItemType, FifthIndexKeyType> toGetFifthIndexKeyOfItem,
-	Func<ItemType, SixthIndexKeyType> toGetSixthIndexKeyOfItem)
-	//
-	: IItemCacheIndex<ItemType>
-	//
-	where PrimaryIndexKeyType : notnull
-	where SecondaryIndexKeyType : notnull
-	where ThirdaryIndexKeyType : notnull
-	where FourthIndexKeyType : notnull
-	where FifthIndexKeyType : notnull
-	where SixthIndexKeyType : notnull
+    PrimaryIndexKeyType, SecondaryIndexKeyType, ThirdaryIndexKeyType,
+    FourthIndexKeyType, FifthIndexKeyType, SixthIndexKeyType>(
+    Func<ItemType, PrimaryIndexKeyType> toGetPrimaryIndexKeyOfItem,
+    Func<ItemType, SecondaryIndexKeyType> toGetSecondaryIndexKeyOfItem,
+    Func<ItemType, ThirdaryIndexKeyType> toGetThirdaryIndexKeyOfItem,
+    Func<ItemType, FourthIndexKeyType> toGetFourthIndexKeyOfItem,
+    Func<ItemType, FifthIndexKeyType> toGetFifthIndexKeyOfItem,
+    Func<ItemType, SixthIndexKeyType> toGetSixthIndexKeyOfItem)
+    //
+    : IItemCacheIndex<ItemType>
+    //
+    where PrimaryIndexKeyType : notnull
+    where SecondaryIndexKeyType : notnull
+    where ThirdaryIndexKeyType : notnull
+    where FourthIndexKeyType : notnull
+    where FifthIndexKeyType : notnull
+    where SixthIndexKeyType : notnull
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -31,11 +31,11 @@ public class ItemIndexWith6Keys<ItemType,
 	#region 自身属性
 
 	public readonly ConcurrentDictionary<PrimaryIndexKeyType,
-		ConcurrentDictionary<SecondaryIndexKeyType,
-			ConcurrentDictionary<ThirdaryIndexKeyType,
-				ConcurrentDictionary<FourthIndexKeyType,
-					ConcurrentDictionary<FifthIndexKeyType,
-						ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>>>>>> PrimaryIndexes = new();
+	    ConcurrentDictionary<SecondaryIndexKeyType,
+	    ConcurrentDictionary<ThirdaryIndexKeyType,
+		ConcurrentDictionary<FourthIndexKeyType,
+		ConcurrentDictionary<FifthIndexKeyType,
+		    ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>>>>>> PrimaryIndexes = new();
 
 	private string? _name = null;
 	public string? Name { get => _name; set => _name = value; }
@@ -50,10 +50,10 @@ public class ItemIndexWith6Keys<ItemType,
 	#region 自身实现
 
 	public ConcurrentDictionary<SecondaryIndexKeyType,
-		ConcurrentDictionary<ThirdaryIndexKeyType,
-			ConcurrentDictionary<FourthIndexKeyType,
-				ConcurrentDictionary<FifthIndexKeyType,
-					ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>>>>>? GetSecondaryIndexes(PrimaryIndexKeyType primaryIndexKey)
+	    ConcurrentDictionary<ThirdaryIndexKeyType,
+	    ConcurrentDictionary<FourthIndexKeyType,
+		ConcurrentDictionary<FifthIndexKeyType,
+		ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>>>>>? GetSecondaryIndexes(PrimaryIndexKeyType primaryIndexKey)
 	{
 		_ = PrimaryIndexes.TryGetValue(primaryIndexKey, out var secondaryIndexes);
 		{ }
@@ -61,11 +61,11 @@ public class ItemIndexWith6Keys<ItemType,
 	}
 
 	public ConcurrentDictionary<ThirdaryIndexKeyType,
-			ConcurrentDictionary<FourthIndexKeyType,
-				ConcurrentDictionary<FifthIndexKeyType,
-					ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>>>>? GetThirdaryIndexes(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey)
+	    ConcurrentDictionary<FourthIndexKeyType,
+		ConcurrentDictionary<FifthIndexKeyType,
+		ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>>>>? GetThirdaryIndexes(
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey)
 	{
 		var secondaryIndexes = GetSecondaryIndexes(primaryIndexKey);
 		if (secondaryIndexes == null)
@@ -78,15 +78,15 @@ public class ItemIndexWith6Keys<ItemType,
 	}
 
 	public ConcurrentDictionary<FourthIndexKeyType,
-				ConcurrentDictionary<FifthIndexKeyType,
-					ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>>>? GetFourthIndexes(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey,
-		ThirdaryIndexKeyType thirdaryIndexKey)
+		ConcurrentDictionary<FifthIndexKeyType,
+		ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>>>? GetFourthIndexes(
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey,
+	    ThirdaryIndexKeyType thirdaryIndexKey)
 	{
 		var thirdaryIndexes = GetThirdaryIndexes(
-			primaryIndexKey,
-			secondaryIndexKey);
+		    primaryIndexKey,
+		    secondaryIndexKey);
 		if (thirdaryIndexes == null)
 		{
 			return null;
@@ -97,16 +97,16 @@ public class ItemIndexWith6Keys<ItemType,
 	}
 
 	public ConcurrentDictionary<FifthIndexKeyType,
-					ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>>? GetFifthIndexes(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey,
-		ThirdaryIndexKeyType thirdaryIndexKey,
-		FourthIndexKeyType fourthIndexKey)
+		ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>>? GetFifthIndexes(
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey,
+	    ThirdaryIndexKeyType thirdaryIndexKey,
+	    FourthIndexKeyType fourthIndexKey)
 	{
 		var fourthIndexes = GetFourthIndexes(
-			primaryIndexKey,
-			secondaryIndexKey,
-			thirdaryIndexKey);
+		    primaryIndexKey,
+		    secondaryIndexKey,
+		    thirdaryIndexKey);
 		if (fourthIndexes == null)
 		{
 			return null;
@@ -117,17 +117,17 @@ public class ItemIndexWith6Keys<ItemType,
 	}
 
 	public ConcurrentDictionary<SixthIndexKeyType, ItemIndexNode<ItemType>>? GetSixthIndexes(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey,
-		ThirdaryIndexKeyType thirdaryIndexKey,
-		FourthIndexKeyType fourthIndexKey,
-		FifthIndexKeyType fifthIndexKey)
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey,
+	    ThirdaryIndexKeyType thirdaryIndexKey,
+	    FourthIndexKeyType fourthIndexKey,
+	    FifthIndexKeyType fifthIndexKey)
 	{
 		var fifthIndexes = GetFifthIndexes(
-			primaryIndexKey,
-			secondaryIndexKey,
-			thirdaryIndexKey,
-			fourthIndexKey);
+		    primaryIndexKey,
+		    secondaryIndexKey,
+		    thirdaryIndexKey,
+		    fourthIndexKey);
 		if (fifthIndexes == null)
 		{
 			return null;
@@ -138,51 +138,51 @@ public class ItemIndexWith6Keys<ItemType,
 	}
 
 	public void UpdateIndexItemsWithPrimaryIndexKey(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey,
-		ThirdaryIndexKeyType thirdaryIndexKey,
-		FourthIndexKeyType fourthIndexKey,
-		FifthIndexKeyType fifthIndexKey,
-		SixthIndexKeyType sixthIndexKey,
-		Func<ItemType?, ItemType?> toUpdateIndexItem)
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey,
+	    ThirdaryIndexKeyType thirdaryIndexKey,
+	    FourthIndexKeyType fourthIndexKey,
+	    FifthIndexKeyType fifthIndexKey,
+	    SixthIndexKeyType sixthIndexKey,
+	    Func<ItemType?, ItemType?> toUpdateIndexItem)
 	{
 		var secondaryIndexes
-			= PrimaryIndexes.GetOrAdd(
-				primaryIndexKey,
-				(_) => []);
+		    = PrimaryIndexes.GetOrAdd(
+		    primaryIndexKey,
+		    (_) => []);
 		var thirdaryIndexes
-			= secondaryIndexes.GetOrAdd(
-				secondaryIndexKey,
-				(_) => []);
+		    = secondaryIndexes.GetOrAdd(
+		    secondaryIndexKey,
+		    (_) => []);
 		var fourthIndexes
-			= thirdaryIndexes.GetOrAdd(
-				thirdaryIndexKey,
-				(_) => []);
+		    = thirdaryIndexes.GetOrAdd(
+		    thirdaryIndexKey,
+		    (_) => []);
 		var fifthIndexes
-			= fourthIndexes.GetOrAdd(
-				fourthIndexKey,
-				(_) => []);
+		    = fourthIndexes.GetOrAdd(
+		    fourthIndexKey,
+		    (_) => []);
 		var sixthIndexes
-			= fifthIndexes.GetOrAdd(
-				fifthIndexKey,
-				(_) => []);
+		    = fifthIndexes.GetOrAdd(
+		    fifthIndexKey,
+		    (_) => []);
 		var itemIndexInfo = sixthIndexes.GetOrAdd(
-			sixthIndexKey,
-			(_) => new());
+		    sixthIndexKey,
+		    (_) => new());
 		lock (itemIndexInfo)
 		{
 			// !!!
 			var newIndexItem
-				= toUpdateIndexItem(itemIndexInfo.FirstItem);
+			    = toUpdateIndexItem(itemIndexInfo.FirstItem);
 			newIndexItem = WillUpdateIndexItemWithPrimaryIndexKey(
-				primaryIndexKey,
-				secondaryIndexKey,
-				thirdaryIndexKey,
-				fourthIndexKey,
-				fifthIndexKey,
-				sixthIndexKey,
-				//
-				newIndexItem);
+			    primaryIndexKey,
+			    secondaryIndexKey,
+			    thirdaryIndexKey,
+			    fourthIndexKey,
+			    fifthIndexKey,
+			    sixthIndexKey,
+			    //
+			    newIndexItem);
 			if (newIndexItem != null)
 			{
 				if (itemIndexInfo.Items.Length == 1)
@@ -208,46 +208,46 @@ public class ItemIndexWith6Keys<ItemType,
 	}
 
 	public ItemType? GetItem(
-		PrimaryIndexKeyType primaryIndexKey,
-		SecondaryIndexKeyType secondaryIndexKey,
-		ThirdaryIndexKeyType thirdaryIndexKey,
-		FourthIndexKeyType fourthIndexKey,
-		FifthIndexKeyType fifthIndexKey,
-		SixthIndexKeyType sixthIndexKey)
+	    PrimaryIndexKeyType primaryIndexKey,
+	    SecondaryIndexKeyType secondaryIndexKey,
+	    ThirdaryIndexKeyType thirdaryIndexKey,
+	    FourthIndexKeyType fourthIndexKey,
+	    FifthIndexKeyType fifthIndexKey,
+	    SixthIndexKeyType sixthIndexKey)
 	{
 		if (!PrimaryIndexes.TryGetValue(
-			primaryIndexKey,
-			out var secondaryIndexes))
+		    primaryIndexKey,
+		    out var secondaryIndexes))
 		{
 			return default;
 		}
 		if (!secondaryIndexes.TryGetValue(
-			secondaryIndexKey,
-			out var thirdaryIndexes))
+		    secondaryIndexKey,
+		    out var thirdaryIndexes))
 		{
 			return default;
 		}
 		if (!thirdaryIndexes.TryGetValue(
-			thirdaryIndexKey,
-			out var fourthIndexes))
+		    thirdaryIndexKey,
+		    out var fourthIndexes))
 		{
 			return default;
 		}
 		if (!fourthIndexes.TryGetValue(
-			fourthIndexKey,
-			out var fifthIndexes))
+		    fourthIndexKey,
+		    out var fifthIndexes))
 		{
 			return default;
 		}
 		if (!fifthIndexes.TryGetValue(
-			fifthIndexKey,
-			out var sixthIndexes))
+		    fifthIndexKey,
+		    out var sixthIndexes))
 		{
 			return default;
 		}
 		if (sixthIndexes.TryGetValue(
-			sixthIndexKey,
-			out var enityIndexInfo))
+		    sixthIndexKey,
+		    out var enityIndexInfo))
 		{
 			return enityIndexInfo.FirstItem;
 		}
@@ -264,14 +264,14 @@ public class ItemIndexWith6Keys<ItemType,
 	#region 事件节点
 
 	protected virtual ItemType? WillUpdateIndexItemWithPrimaryIndexKey(
-				PrimaryIndexKeyType primaryIndexKey,
-				SecondaryIndexKeyType secondaryIndexKey,
-				ThirdaryIndexKeyType thirdaryIndexKey,
-				FourthIndexKeyType fourthIndexKey,
-				FifthIndexKeyType fifthIndexKey,
-				SixthIndexKeyType sixthIndexKey,
-				//
-				ItemType? newIndexItem)
+		PrimaryIndexKeyType primaryIndexKey,
+		SecondaryIndexKeyType secondaryIndexKey,
+		ThirdaryIndexKeyType thirdaryIndexKey,
+		FourthIndexKeyType fourthIndexKey,
+		FifthIndexKeyType fifthIndexKey,
+		SixthIndexKeyType sixthIndexKey,
+		//
+		ItemType? newIndexItem)
 	{
 		return newIndexItem;
 	}
@@ -287,8 +287,8 @@ public class ItemIndexWith6Keys<ItemType,
 	#region 实现”IDbSetMemoryCacheIndex“
 
 	public void UpdateIndexItemsByUpdateItemFrom(
-		ItemType? lastItem,
-		ItemType? currentItem)
+	    ItemType? lastItem,
+	    ItemType? currentItem)
 	{
 		var isLastItemValid = false;
 		PrimaryIndexKeyType lastPrimaryIndexKey = default!;
@@ -330,25 +330,25 @@ public class ItemIndexWith6Keys<ItemType,
 		// 1/2，移除旧的索引：
 		////////////////////////////////////////////////
 		if (isLastItemValid
-			&& (!lastPrimaryIndexKey.Equals(currentPrimaryIndexKey)
-			|| !lastSecondaryIndexKey.Equals(currentSecondaryIndexKey)
-			|| !lastThirdaryIndexKey.Equals(currentThirdaryIndexKey)
-			|| !lastFourthIndexKey.Equals(currentFourthIndexKey)
-			|| !lastFifthIndexKey.Equals(currentFifthIndexKey)
-			|| !lastSixthIndexKey.Equals(currentSixthIndexKey)))
+		    && (!lastPrimaryIndexKey.Equals(currentPrimaryIndexKey)
+		    || !lastSecondaryIndexKey.Equals(currentSecondaryIndexKey)
+		    || !lastThirdaryIndexKey.Equals(currentThirdaryIndexKey)
+		    || !lastFourthIndexKey.Equals(currentFourthIndexKey)
+		    || !lastFifthIndexKey.Equals(currentFifthIndexKey)
+		    || !lastSixthIndexKey.Equals(currentSixthIndexKey)))
 		{
 			UpdateIndexItemsWithPrimaryIndexKey(
-				lastPrimaryIndexKey,
-				lastSecondaryIndexKey,
-				lastThirdaryIndexKey,
-				lastFourthIndexKey,
-				lastFifthIndexKey,
-				lastSixthIndexKey,
-				//
-				(_) =>
-				{
-					return default;
-				});
+			    lastPrimaryIndexKey,
+			    lastSecondaryIndexKey,
+			    lastThirdaryIndexKey,
+			    lastFourthIndexKey,
+			    lastFifthIndexKey,
+			    lastSixthIndexKey,
+			    //
+			    (_) =>
+			    {
+				    return default;
+			    });
 		}
 
 		////////////////////////////////////////////////
@@ -359,16 +359,16 @@ public class ItemIndexWith6Keys<ItemType,
 		if (isCurrentItemValid)
 		{
 			UpdateIndexItemsWithPrimaryIndexKey(
-				currentPrimaryIndexKey,
-				currentSecondaryIndexKey,
-				currentThirdaryIndexKey,
-				currentFourthIndexKey,
-				currentFifthIndexKey,
-				currentSixthIndexKey,
-				(_) =>
-				{
-					return currentItem;
-				});
+			    currentPrimaryIndexKey,
+			    currentSecondaryIndexKey,
+			    currentThirdaryIndexKey,
+			    currentFourthIndexKey,
+			    currentFifthIndexKey,
+			    currentSixthIndexKey,
+			    (_) =>
+			    {
+				    return currentItem;
+			    });
 		}
 	}
 
@@ -380,12 +380,12 @@ public class ItemIndexWith6Keys<ItemType,
 	public ItemType? GetItem(ItemType item)
 	{
 		return GetItem(
-			toGetPrimaryIndexKeyOfItem(item),
-			toGetSecondaryIndexKeyOfItem(item),
-			toGetThirdaryIndexKeyOfItem(item),
-			toGetFourthIndexKeyOfItem(item),
-			toGetFifthIndexKeyOfItem(item),
-			toGetSixthIndexKeyOfItem(item));
+		    toGetPrimaryIndexKeyOfItem(item),
+		    toGetSecondaryIndexKeyOfItem(item),
+		    toGetThirdaryIndexKeyOfItem(item),
+		    toGetFourthIndexKeyOfItem(item),
+		    toGetFifthIndexKeyOfItem(item),
+		    toGetSixthIndexKeyOfItem(item));
 	}
 
 	public bool IsItemExisted(ItemType item)

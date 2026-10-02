@@ -29,9 +29,9 @@ namespace BaoXia.Utils
 		#region 自身实现
 
 		public Middleware(
-			ILogFile? logFile,
-			ILogFile? exceptionLogFile,
-			ILogFile? warningLogFile)
+		    ILogFile? logFile,
+		    ILogFile? exceptionLogFile,
+		    ILogFile? warningLogFile)
 		{
 			LogFile = logFile;
 			ExceptionLogFile = exceptionLogFile;

@@ -1,6 +1,7 @@
 ﻿using BaoXia.Utils.Constants;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils.Extensions;
 
@@ -10,13 +11,13 @@ namespace BaoXia.Utils.Extensions;
 public static class IListExtension
 {
 	public static bool AddUnique<ItemType>(
-		this IList<ItemType> list,
-		ItemType item,
-		Func<ItemType, ItemType, bool>? toIsSameItems = null,
-		bool isAddNullItem = false)
+	    this IList<ItemType> list,
+	    ItemType item,
+	    Func<ItemType, ItemType, bool>? toIsSameItems = null,
+	    bool isAddNullItem = false)
 	{
 		if (item == null
-			&& isAddNullItem == false)
+		    && isAddNullItem == false)
 		{
 			return false;
 		}
@@ -43,9 +44,9 @@ public static class IListExtension
 	}
 
 	public static int AddItemsFrom<ItemType>(
-		this IList<ItemType>? list,
-		IEnumerable<ItemType>? sourceItems,
-		Func<ItemType, bool> toIsItemNeedAdd)
+	    this IList<ItemType>? list,
+	    IEnumerable<ItemType>? sourceItems,
+	    Func<ItemType, bool> toIsItemNeedAdd)
 	{
 		if (list == null)
 		{
@@ -69,16 +70,8 @@ public static class IListExtension
 		return itemsCountJustAdd;
 	}
 
-	public static void InsertWithOrder<ItemType>(
-		this IList<ItemType> list,
-		ItemType? newItem,
-		Func<ItemType, ItemType, int> toCompareItem)
+	public static void InsertWithOrder<ItemType>(this IList<ItemType> list, ItemType newItem, Func<ItemType, ItemType, int> toCompareItem)
 	{
-		if (newItem == null)
-		{
-			return;
-		}
-
 		if (list.Count < 1)
 		{
 			// !!!
@@ -87,39 +80,29 @@ public static class IListExtension
 			// !!!
 		}
 
-		for (var itemIndex = 0;
-			itemIndex < list.Count;
-			itemIndex++)
+		var objectInsertIndex = list.FindItemIndexWithDichotomy(true, (item, itemIndex) =>
 		{
-			var item = list[itemIndex];
-			var compareResult = toCompareItem(newItem, item);
-			if (compareResult < 0)
+			return toCompareItem(item, newItem);
+		}, DichotomyClosestItemType.LessThanTargetItemMax, out var objectInsertIndexPrev, out _);
+		if (objectInsertIndex < 0)
+		{
+			if (objectInsertIndexPrev != null)
 			{
-				// !!!
-				list.Insert(itemIndex, newItem);
-				return;
-				// !!!
+				objectInsertIndex = objectInsertIndexPrev.Value + 1;
 			}
-			if (itemIndex == (list.Count - 1))
+			else
 			{
-				// !!!
-				list.Insert(itemIndex + 1, newItem);
-				return;
-				// !!!
+				objectInsertIndex = 0;
 			}
 		}
+		// !!!
+		list.Insert(objectInsertIndex, newItem);
+		// !!!
 	}
 
 	public static void InsertWithOrderDescending<ItemType>(
-		this IList<ItemType> list,
-		ItemType? newItem,
-		Func<ItemType, ItemType, int> toCompareItem)
+		this IList<ItemType> list, ItemType newItem, Func<ItemType, ItemType, int> toCompareItem)
 	{
-		if (newItem == null)
-		{
-			return;
-		}
-
 		if (list.Count < 1)
 		{
 			// !!!
@@ -128,27 +111,24 @@ public static class IListExtension
 			// !!!
 		}
 
-		for (var itemIndex = 0;
-			itemIndex < list.Count;
-			itemIndex++)
+		var objectInsertIndex = list.FindItemIndexWithDichotomy(false, (item, itemIndex) =>
 		{
-			var item = list[itemIndex];
-			var compareResult = toCompareItem(newItem, item);
-			if (compareResult > 0)
+			return toCompareItem(item, newItem);
+		}, DichotomyClosestItemType.GreaterThanTargetItemMin, out var objectInsertIndexPrev, out _);
+		if (objectInsertIndex < 0)
+		{
+			if (objectInsertIndexPrev != null)
 			{
-				// !!!
-				list.Insert(itemIndex, newItem);
-				return;
-				// !!!
+				objectInsertIndex = objectInsertIndexPrev.Value + 1;
 			}
-			if (itemIndex == (list.Count - 1))
+			else
 			{
-				// !!!
-				list.Insert(itemIndex + 1, newItem);
-				return;
-				// !!!
+				objectInsertIndex = 0;
 			}
 		}
+		// !!!
+		list.Insert(objectInsertIndex, newItem);
+		// !!!
 	}
 
 	/// <summary>
@@ -159,12 +139,12 @@ public static class IListExtension
 	/// <param name="firstItemIndexNeedRemoved">第一个需要被移除的元素索引值。</param>
 	/// <param name="lastItemIndexNeedRemoved">最后一个需要被移除的元素索引值。</param>
 	public static int RemoveFrom<ItemType>(
-		this List<ItemType> itemList,
-		int firstItemIndexNeedRemoved,
-		int lastItemIndexNeedRemoved = -1)
+	    this List<ItemType> itemList,
+	    int firstItemIndexNeedRemoved,
+	    int lastItemIndexNeedRemoved = -1)
 	{
 		if (itemList == null
-			|| itemList.Count < 1)
+		    || itemList.Count < 1)
 		{
 			return 0;
 		}
@@ -177,7 +157,7 @@ public static class IListExtension
 		else if (firstItemIndexNeedRemoved > lastItemIndexNeedRemoved)
 		{
 			(lastItemIndexNeedRemoved, firstItemIndexNeedRemoved)
-				= (firstItemIndexNeedRemoved, lastItemIndexNeedRemoved);
+			    = (firstItemIndexNeedRemoved, lastItemIndexNeedRemoved);
 		}
 
 		if (firstItemIndexNeedRemoved < 0)
@@ -195,14 +175,14 @@ public static class IListExtension
 		}
 
 		var itemsCountNeedRemoved
-			= lastItemIndexNeedRemoved
-			- firstItemIndexNeedRemoved
-			+ 1;
+		    = lastItemIndexNeedRemoved
+		    - firstItemIndexNeedRemoved
+		    + 1;
 		{
 			// !!!
 			itemList.RemoveRange(
-				firstItemIndexNeedRemoved,
-				itemsCountNeedRemoved);
+			    firstItemIndexNeedRemoved,
+			    itemsCountNeedRemoved);
 			// !!!
 		}
 		return itemsCountNeedRemoved;
@@ -215,12 +195,12 @@ public static class IListExtension
 	/// <param name="list">要删除元素的列表对象。</param>
 	/// <param name="toIsItemNotNeedRemoved">判断元素是否需要被保留的回调方法，返回“true”时，对应的元素会被保留，否则被删除。</param>
 	public static List<ItemType> NotRemoveIf<ItemType>(
-		this List<ItemType> list,
-		Func<ItemType, bool> toIsItemNotNeedRemoved)
+	    this List<ItemType> list,
+	    Func<ItemType, bool> toIsItemNotNeedRemoved)
 	{
 		for (var itemIndex = list.Count - 1;
-			itemIndex >= 0;
-			itemIndex--)
+		    itemIndex >= 0;
+		    itemIndex--)
 		{
 			var item = list[itemIndex];
 			if (toIsItemNotNeedRemoved(item) == false)
@@ -238,12 +218,12 @@ public static class IListExtension
 	/// <param name="list">要删除元素的列表对象。</param>
 	/// <param name="toIsItemNeedRemoved">判断元素是否需要被删除的回调方法，返回“true”时，对应的元素会被删除，否则被保留。</param>
 	public static List<ItemType> RemoveIf<ItemType>(
-		this List<ItemType> list,
-		Func<ItemType, bool> toIsItemNeedRemoved)
+	    this List<ItemType> list,
+	    Func<ItemType, bool> toIsItemNeedRemoved)
 	{
 		for (var itemIndex = list.Count - 1;
-			itemIndex >= 0;
-			itemIndex--)
+		    itemIndex >= 0;
+		    itemIndex--)
 		{
 			var item = list[itemIndex];
 			if (toIsItemNeedRemoved(item) == true)
@@ -261,9 +241,9 @@ public static class IListExtension
 	/// <param name="items">当前列表。</param>
 	/// <returns>移除重复元素后新建的数组对象，即使新数组的长度为0，仍会返回有效的数组对象。</returns>
 	public static List<ItemType> RemoveSameItems<ItemType>(
-		this List<ItemType> itemList,
-		Func<ItemType, ItemType, bool>? toIsSameItems = null,
-		bool isClearNull = true)
+	    this List<ItemType> itemList,
+	    Func<ItemType, ItemType, bool>? toIsSameItems = null,
+	    bool isClearNull = true)
 	{
 		if (itemList.Count < 1)
 		{
@@ -273,13 +253,13 @@ public static class IListExtension
 		if (toIsSameItems != null)
 		{
 			for (var itemIndex = 0;
-				itemIndex < itemList.Count;
-				itemIndex++)
+			    itemIndex < itemList.Count;
+			    itemIndex++)
 			{
 				var item = itemList[itemIndex];
 				for (var anotherItemIndex = itemList.Count - 1;
-					anotherItemIndex > itemIndex;
-					anotherItemIndex--)
+				    anotherItemIndex > itemIndex;
+				    anotherItemIndex--)
 				{
 					var anotherItem = itemList[anotherItemIndex];
 					if (toIsSameItems(anotherItem, item))
@@ -288,7 +268,7 @@ public static class IListExtension
 					}
 				}
 				if (item == null
-					&& isClearNull)
+				    && isClearNull)
 				{
 					itemList.RemoveAt(itemIndex);
 					itemIndex--;
@@ -298,23 +278,23 @@ public static class IListExtension
 		else
 		{
 			for (var itemIndex = 0;
-				itemIndex < itemList.Count;
-				itemIndex++)
+			    itemIndex < itemList.Count;
+			    itemIndex++)
 			{
 				var item = itemList[itemIndex];
 				for (var anotherItemIndex = itemList.Count - 1;
-					anotherItemIndex > itemIndex;
-					anotherItemIndex--)
+				    anotherItemIndex > itemIndex;
+				    anotherItemIndex--)
 				{
 					var anotherItem = itemList[anotherItemIndex];
 					if ((item == null && anotherItem == null)
-						|| (item != null && item.Equals(anotherItem)))
+					    || (item != null && item.Equals(anotherItem)))
 					{
 						itemList.RemoveAt(anotherItemIndex);
 					}
 				}
 				if (item == null
-					&& isClearNull)
+				    && isClearNull)
 				{
 					itemList.RemoveAt(itemIndex);
 					itemIndex--;
@@ -340,14 +320,14 @@ public static class IListExtension
 	/// <param name="closestItem">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomyInRange<ItemType>(
-		this IList<ItemType>? itemsSorted,
-		bool isItemsSortedWithAscending,
-		int searchRangeBeginIndex,
-		int searchRangeLength,
-		Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted,
-		DichotomyClosestItemType closestItemType,
-		out int? closestItemIndex,
-		out ItemType? closestItem)
+	    this IList<ItemType>? itemsSorted,
+	    bool isItemsSortedWithAscending,
+	    int searchRangeBeginIndex,
+	    int searchRangeLength,
+	    Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted,
+	    DichotomyClosestItemType closestItemType,
+	    out int? closestItemIndex,
+	    out ItemType? closestItem)
 	{
 		//
 		closestItemIndex = null;
@@ -355,7 +335,7 @@ public static class IListExtension
 		//
 
 		if (itemsSorted == null
-			|| itemsSorted.Count < 1)
+		    || itemsSorted.Count < 1)
 		{
 			return -1;
 		}
@@ -367,11 +347,11 @@ public static class IListExtension
 			searchRangeBeginIndex = 0;
 		}
 		var searchRangeEndIndex
-			= searchRangeLength < 0
-			? itemsCount
-			: (searchRangeBeginIndex + searchRangeLength);
+		    = searchRangeLength < 0
+		    ? itemsCount
+		    : (searchRangeBeginIndex + searchRangeLength);
 		if (searchRangeEndIndex < 0
-			|| searchRangeEndIndex > itemsCount)
+		    || searchRangeEndIndex > itemsCount)
 		{
 			searchRangeEndIndex = itemsCount;
 		}
@@ -381,23 +361,23 @@ public static class IListExtension
 		}
 
 		var compareNumberDirection
-			= isItemsSortedWithAscending
-			? 1
-			: -1;
+		    = isItemsSortedWithAscending
+		    ? 1
+		    : -1;
 
 		var objectItemIndexMatched = -1;
 		while (searchRangeEndIndex > searchRangeBeginIndex)
 		{
 			searchRangeLength
-				= searchRangeEndIndex - searchRangeBeginIndex;
+			    = searchRangeEndIndex - searchRangeBeginIndex;
 			var searchShotIndex
-				= searchRangeBeginIndex
-				+ searchRangeLength / 2;
+			    = searchRangeBeginIndex
+			    + searchRangeLength / 2;
 
 			var item = items[searchShotIndex];
 			var resultOfComparerItemToObjectItem
-				= toGetCompareResultByCompareToObjectItemWithItemExisted(item, searchShotIndex)
-				* compareNumberDirection;
+			    = toGetCompareResultByCompareToObjectItemWithItemExisted(item, searchShotIndex)
+			    * compareNumberDirection;
 			if (resultOfComparerItemToObjectItem == 0)
 			{
 				// !!!
@@ -435,7 +415,7 @@ public static class IListExtension
 		switch (closestItemType)
 		{
 			default:
-			case DichotomyClosestItemType.LessThanObjectMax:
+			case DichotomyClosestItemType.LessThanTargetItemMax:
 				{
 					if (isItemsSortedWithAscending)
 					{
@@ -447,7 +427,7 @@ public static class IListExtension
 					}
 				}
 				break;
-			case DichotomyClosestItemType.GreaterThanObjectMin:
+			case DichotomyClosestItemType.GreaterThanTargetItemMin:
 				{
 					if (isItemsSortedWithAscending)
 					{
@@ -475,10 +455,10 @@ public static class IListExtension
 				}
 			}
 			else if (
-				closestItem != null
-				&& closestItemIndex != null
-				&& (toGetCompareResultByCompareToObjectItemWithItemExisted(closestItem, closestItemIndex.Value)
-				* compareNumberDirection) > 0)
+			    closestItem != null
+			    && closestItemIndex != null
+			    && (toGetCompareResultByCompareToObjectItemWithItemExisted(closestItem, closestItemIndex.Value)
+			    * compareNumberDirection) > 0)
 			{
 				closestItemIndex--;
 				if (closestItemIndex >= 0)
@@ -506,10 +486,10 @@ public static class IListExtension
 				}
 			}
 			else if (
-				closestItem != null
-				&& closestItemIndex != null
-				&& (toGetCompareResultByCompareToObjectItemWithItemExisted(closestItem, closestItemIndex.Value)
-				* compareNumberDirection) < 0)
+			    closestItem != null
+			    && closestItemIndex != null
+			    && (toGetCompareResultByCompareToObjectItemWithItemExisted(closestItem, closestItemIndex.Value)
+			    * compareNumberDirection) < 0)
 			{
 				closestItemIndex++;
 				if (closestItemIndex < itemsCount)
@@ -536,22 +516,22 @@ public static class IListExtension
 	/// <param name="closestItem">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素在列表中的索引值，否则返回：-1 。</returns>
 	public static int FindItemIndexWithDichotomy<ItemType>(
-		this IList<ItemType>? itemsSorted,
-		bool isItemsSortedWithAscending,
-		Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted,
-		DichotomyClosestItemType closestItemType,
-		out int? closestItemIndex,
-		out ItemType? closestItem)
+	    this IList<ItemType>? itemsSorted,
+	    bool isItemsSortedWithAscending,
+	    Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted,
+	    DichotomyClosestItemType closestItemType,
+	    out int? closestItemIndex,
+	    out ItemType? closestItem)
 	{
 		return IListExtension.FindItemIndexWithDichotomyInRange<ItemType>(
-			itemsSorted,
-			isItemsSortedWithAscending,
-			-1,
-			-1,
-			toGetCompareResultByCompareToObjectItemWithItemExisted,
-			closestItemType,
-			out closestItemIndex,
-			out closestItem);
+		    itemsSorted,
+		    isItemsSortedWithAscending,
+		    -1,
+		    -1,
+		    toGetCompareResultByCompareToObjectItemWithItemExisted,
+		    closestItemType,
+		    out closestItemIndex,
+		    out closestItem);
 	}
 
 	/// <summary>
@@ -567,26 +547,26 @@ public static class IListExtension
 	/// <param name="closestItem">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
 	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
-		this IList<ItemType>? itemsSorted,
-		bool isItemsSortedWithAscending,
-		int searchRangeBeginIndex,
-		int searchRangeEndIndex,
-		Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted,
-		DichotomyClosestItemType closestItemType,
-		out int? closestItemIndex,
-		out ItemType? closestItem)
+	    this IList<ItemType>? itemsSorted,
+	    bool isItemsSortedWithAscending,
+	    int searchRangeBeginIndex,
+	    int searchRangeEndIndex,
+	    Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted,
+	    DichotomyClosestItemType closestItemType,
+	    out int? closestItemIndex,
+	    out ItemType? closestItem)
 	{
 		var itemIndex = IListExtension.FindItemIndexWithDichotomyInRange(
-			itemsSorted,
-			isItemsSortedWithAscending,
-			searchRangeBeginIndex,
-			searchRangeEndIndex,
-			toGetCompareResultByCompareToObjectItemWithItemExisted,
-			closestItemType,
-			out closestItemIndex,
-			out closestItem);
+		    itemsSorted,
+		    isItemsSortedWithAscending,
+		    searchRangeBeginIndex,
+		    searchRangeEndIndex,
+		    toGetCompareResultByCompareToObjectItemWithItemExisted,
+		    closestItemType,
+		    out closestItemIndex,
+		    out closestItem);
 		if (itemsSorted != null
-			&& itemIndex >= 0
+		    && itemIndex >= 0
 		       && itemIndex < itemsSorted.Count)
 		{
 			return itemsSorted[itemIndex];
@@ -605,91 +585,91 @@ public static class IListExtension
 	/// <param name="closestItem">最接近目标的左侧对象。</param>
 	/// <returns>查找到目标元素后，返回目标元素，否则返回：default 。</returns>
 	public static ItemType? FindItemWithDichotomy<ItemType>(
-		this IList<ItemType>? itemsSorted,
-		bool isItemsSortedWithAscending,
-		Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted,
-		DichotomyClosestItemType closestItemType,
-		out int? closestItemIndex,
-		out ItemType? closestItem)
+	    this IList<ItemType>? itemsSorted,
+	    bool isItemsSortedWithAscending,
+	    Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted,
+	    DichotomyClosestItemType closestItemType,
+	    out int? closestItemIndex,
+	    out ItemType? closestItem)
 	{
 		return IListExtension.FindItemWithDichotomyInRange<ItemType>(
-			itemsSorted,
-			isItemsSortedWithAscending,
-			-1,
-			-1,
-			toGetCompareResultByCompareToObjectItemWithItemExisted,
-			closestItemType,
-			out closestItemIndex,
-			out closestItem);
+		    itemsSorted,
+		    isItemsSortedWithAscending,
+		    -1,
+		    -1,
+		    toGetCompareResultByCompareToObjectItemWithItemExisted,
+		    closestItemType,
+		    out closestItemIndex,
+		    out closestItem);
 	}
 
 
 	public static int FindItemIndexWithDichotomyInRange<ItemType>(
-		this IList<ItemType>? itemsSorted,
-		bool isItemsSortedWithAscending,
-		int searchRangeBeginIndex,
-		int searchRangeLength,
-		Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted)
+	    this IList<ItemType>? itemsSorted,
+	    bool isItemsSortedWithAscending,
+	    int searchRangeBeginIndex,
+	    int searchRangeLength,
+	    Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted)
 	{
 		return FindItemIndexWithDichotomyInRange(
-			itemsSorted,
-			isItemsSortedWithAscending,
-			searchRangeBeginIndex,
-			searchRangeLength,
-			toGetCompareResultByCompareToObjectItemWithItemExisted,
-			//
-			DichotomyClosestItemType.LessThanObjectMax,
-			out _,
-			out _);
+		    itemsSorted,
+		    isItemsSortedWithAscending,
+		    searchRangeBeginIndex,
+		    searchRangeLength,
+		    toGetCompareResultByCompareToObjectItemWithItemExisted,
+		    //
+		    DichotomyClosestItemType.LessThanTargetItemMax,
+		    out _,
+		    out _);
 	}
 
 	public static int FindItemIndexWithDichotomy<ItemType>(
-		this IList<ItemType>? itemsSorted,
-		bool isItemsSortedWithAscending,
-		Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted)
+	    this IList<ItemType>? itemsSorted,
+	    bool isItemsSortedWithAscending,
+	    Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted)
 	{
 		return FindItemIndexWithDichotomy(
-			itemsSorted,
-			isItemsSortedWithAscending,
-			toGetCompareResultByCompareToObjectItemWithItemExisted,
-			//
-			DichotomyClosestItemType.LessThanObjectMax,
-			out _,
-			out _);
+		    itemsSorted,
+		    isItemsSortedWithAscending,
+		    toGetCompareResultByCompareToObjectItemWithItemExisted,
+		    //
+		    DichotomyClosestItemType.LessThanTargetItemMax,
+		    out _,
+		    out _);
 	}
 
 	public static ItemType? FindItemWithDichotomyInRange<ItemType>(
-		this IList<ItemType>? itemsSorted,
-		bool isItemsSortedWithAscending,
-		int searchRangeBeginIndex,
-		int searchRangeEndIndex,
-		Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted)
+	    this IList<ItemType>? itemsSorted,
+	    bool isItemsSortedWithAscending,
+	    int searchRangeBeginIndex,
+	    int searchRangeEndIndex,
+	    Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted)
 	{
 		return FindItemWithDichotomyInRange(
-			itemsSorted,
-			isItemsSortedWithAscending,
-			searchRangeBeginIndex,
-			searchRangeEndIndex,
-			toGetCompareResultByCompareToObjectItemWithItemExisted,
-			//
-			DichotomyClosestItemType.LessThanObjectMax,
-			out _,
-			out _);
+		    itemsSorted,
+		    isItemsSortedWithAscending,
+		    searchRangeBeginIndex,
+		    searchRangeEndIndex,
+		    toGetCompareResultByCompareToObjectItemWithItemExisted,
+		    //
+		    DichotomyClosestItemType.LessThanTargetItemMax,
+		    out _,
+		    out _);
 	}
 
 	public static ItemType? FindItemWithDichotomy<ItemType>(
-		this IList<ItemType>? itemsSorted,
-		bool isItemsSortedWithAscending,
-		Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted)
+	    this IList<ItemType>? itemsSorted,
+	    bool isItemsSortedWithAscending,
+	    Func<ItemType, int, int> toGetCompareResultByCompareToObjectItemWithItemExisted)
 	{
 		return FindItemWithDichotomy(
-			itemsSorted,
-			isItemsSortedWithAscending,
-			toGetCompareResultByCompareToObjectItemWithItemExisted,
-			//
-			DichotomyClosestItemType.LessThanObjectMax,
-			out _,
-			out _);
+		    itemsSorted,
+		    isItemsSortedWithAscending,
+		    toGetCompareResultByCompareToObjectItemWithItemExisted,
+		    //
+		    DichotomyClosestItemType.LessThanTargetItemMax,
+		    out _,
+		    out _);
 	}
 
 	public static ItemType? FirstItemOrDefault<ItemType>(this IList<ItemType> items)
@@ -790,5 +770,32 @@ public static class IListExtension
 			// !!!
 		}
 		return pageItems;
+	}
+
+	public static async Task SortAsync<EnumerableItemType>(this IList<EnumerableItemType> list,
+		Func<EnumerableItemType, EnumerableItemType, Task<int>> toCompareItems)
+	{
+		if (list.Count <= 1)
+		{
+			return;
+		}
+
+		// 直接对List进行冒泡排序
+		bool isNeedSwapped;
+		do
+		{
+			isNeedSwapped = false;
+			var lastListItemIndex = list.Count - 1;
+			for (int listItemIndex = 0; listItemIndex < lastListItemIndex; listItemIndex++)
+			{
+				int compareResult = await toCompareItems(list[listItemIndex], list[listItemIndex + 1]);
+				if (compareResult > 0)
+				{
+					// 交换元素
+					(list[listItemIndex], list[listItemIndex + 1]) = (list[listItemIndex + 1], list[listItemIndex]);
+					isNeedSwapped = true;
+				}
+			}
+		} while (isNeedSwapped);
 	}
 }

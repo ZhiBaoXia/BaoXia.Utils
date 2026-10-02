@@ -1,7 +1,7 @@
 ﻿namespace BaoXia.Utils.Dictionaries;
 
 public class DictionaryValueContainer
-	<ItemType, ItemOperateLockerType>
+    <ItemType, ItemOperateLockerType>
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -49,7 +49,7 @@ public class DictionaryValueContainer
 	#region 自身实现
 
 	public DictionaryValueContainer(
-		ItemOperateLockerType itemOperateLocker)
+	    ItemOperateLockerType itemOperateLocker)
 	{
 		ItemOperateLocker = itemOperateLocker;
 
@@ -57,8 +57,8 @@ public class DictionaryValueContainer
 	}
 
 	public DictionaryValueContainer(
-		ItemOperateLockerType itemOperateLocker,
-		ItemType[] items)
+	    ItemOperateLockerType itemOperateLocker,
+	    ItemType[] items)
 	{
 		ItemOperateLocker = itemOperateLocker;
 

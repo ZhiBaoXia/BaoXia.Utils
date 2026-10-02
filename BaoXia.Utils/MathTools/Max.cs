@@ -6,12 +6,12 @@ namespace BaoXia.Utils.MathTools
 	public static class Max
 	{
 		public static NumberType? OfList<NumberType>(
-			Func<NumberType?, NumberType?, NumberType?> toGetMaxItem,
-			IEnumerable<NumberType>? items)
+		    Func<NumberType?, NumberType?, NumberType?> toGetMaxItem,
+		    IEnumerable<NumberType>? items)
 		{
 			NumberType? maxItem = default;
 			if (toGetMaxItem != null
-				&& items != null)
+			    && items != null)
 			{
 				foreach (var item in items)
 				{
@@ -22,12 +22,12 @@ namespace BaoXia.Utils.MathTools
 		}
 
 		public static NumberType? Of<NumberType>(
-			Func<NumberType?, NumberType?, NumberType?> toGetMaxItem,
-			params NumberType[] items)
+		    Func<NumberType?, NumberType?, NumberType?> toGetMaxItem,
+		    params NumberType[] items)
 		{
 			return Max.OfList(
-				toGetMaxItem,
-				items);
+			    toGetMaxItem,
+			    items);
 		}
 
 		////////////////////////////////////////////////

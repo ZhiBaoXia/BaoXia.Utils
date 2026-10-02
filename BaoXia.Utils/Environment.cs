@@ -25,7 +25,10 @@ public class Environment
 
 		ReadCommentHandling = JsonCommentHandling.Skip,
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-		PropertyNameCaseInsensitive = true
+		PropertyNameCaseInsensitive = true,
+
+		// 关键：遇到 JSON 有、实体没有的字段，直接忽略，不抛异常
+		//UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip
 	};
 #else
 	public static readonly JsonSerializerOptions JsonSerializerOptionsDefault = new()
@@ -102,14 +105,14 @@ public class Environment
 			//
 			var configFilesDirectoryPath = value;
 			if (configFilesDirectoryPath?.Length > 0
-				&& Environment.ApplicationDirectoryPath is string applicationDirectoryPath)
+			    && Environment.ApplicationDirectoryPath is string applicationDirectoryPath)
 			{
 				configFilesDirectoryPath
-					= configFilesDirectoryPath.ToAbsoluteFilePathInRootPath(
-						applicationDirectoryPath);
+				    = configFilesDirectoryPath.ToAbsoluteFilePathInRootPath(
+				    applicationDirectoryPath);
 			}
 			ConfigFile.InitializeWithConfigFilesDirectoryPath(
-				configFilesDirectoryPath);
+			    configFilesDirectoryPath);
 			//
 		}
 	}
@@ -131,19 +134,19 @@ public class Environment
 			//
 			var logFilesDirectoryPath = value;
 			if (logFilesDirectoryPath?.Length > 0
-				&& Environment.ApplicationDirectoryPath is string applicationDirectoryPath)
+			    && Environment.ApplicationDirectoryPath is string applicationDirectoryPath)
 			{
 				logFilesDirectoryPath
-					= logFilesDirectoryPath.ToAbsoluteFilePathInRootPath(
-						applicationDirectoryPath);
+				    = logFilesDirectoryPath.ToAbsoluteFilePathInRootPath(
+				    applicationDirectoryPath);
 			}
 			LogFile.InitializeWithLogFilesDirectoryPath(
-				logFilesDirectoryPath,
-				LogFile.ToGetAutoFlushLogBufferIntervalSeconds,
-				LogFile.ToGetMaxBytesCountPerLogFile,
-				LogFile.ToGetLogRecordsCountPerFileWrite,
-				LogFile.ToGetTimeoutSecondsToStorageLogRecords,
-				LogFile.ToStorageLogRecords);
+			    logFilesDirectoryPath,
+			    LogFile.ToGetAutoFlushLogBufferIntervalSeconds,
+			    LogFile.ToGetMaxBytesCountPerLogFile,
+			    LogFile.ToGetLogRecordsCountPerFileWrite,
+			    LogFile.ToGetTimeoutSecondsToStorageLogRecords,
+			    LogFile.ToStorageLogRecords);
 			//
 		}
 	}
@@ -160,10 +163,10 @@ public class Environment
 	/// 当前应用程序默认的AES加密密钥。
 	/// </summary>
 	public static string AESKeyDeafult { get; set; }
-		= "f62c315e3eb34b7db9f3d55b1bfd4488"
-		+ "e28565fa9a8445b585cba0febc638d88"
-		+ "f5bd0e80c5064ee49575c4e37531ee80"
-		+ "058bf2804b774a2c8d6bbedf9fffee68";
+	    = "f62c315e3eb34b7db9f3d55b1bfd4488"
+	    + "e28565fa9a8445b585cba0febc638d88"
+	    + "f5bd0e80c5064ee49575c4e37531ee80"
+	    + "058bf2804b774a2c8d6bbedf9fffee68";
 
 	private static System.Text.Json.JsonSerializerOptions? _jsonSerializerOptions = null;
 
@@ -191,6 +194,12 @@ public class Environment
 
 	#region 类方法
 
+	//static Environment()
+	//{
+	//	JsonSerializerOptionsDefault.Converters.Add(new BxDateTimeJsonConverter());
+	//	JsonSerializerOptionsDefault.Converters.Add(new BxDateTimeOffsetJsonConverter());
+	//}
+
 	/// <summary>
 	/// 在当前应用程序中初始化环境信息。
 	/// </summary>
@@ -205,20 +214,20 @@ public class Environment
 	/// <param name="logFilesDirectoryPath">日志文件所在文件夹路径。</param>
 	/// <param name="environmentInitializeParam">环境初始化的参数，详情可参见“EnvironmentInitializeParam”的定义。</param>
 	public static void InitializeWithServerName(
-			string? serverName,
-			string? enviromentName,
-			//
-			Assembly? currentExecutingAssembly,
-			IApplicationBuilder? applicationBuilder,
-			IHostEnvironment? hostEnvironment,
-			//
-			string? webRootDirectoryPath,
-			//
-			string aesKeyDeafult,
-			string configFilesDirectoryPath,
-			string logFilesDirectoryPath,
-			//
-			EnvironmentInitializeParam? environmentInitializeParam = null)
+	    string? serverName,
+	    string? enviromentName,
+	    //
+	    Assembly? currentExecutingAssembly,
+	    IApplicationBuilder? applicationBuilder,
+	    IHostEnvironment? hostEnvironment,
+	    //
+	    string? webRootDirectoryPath,
+	    //
+	    string aesKeyDeafult,
+	    string configFilesDirectoryPath,
+	    string logFilesDirectoryPath,
+	    //
+	    EnvironmentInitializeParam? environmentInitializeParam = null)
 	{
 		Environment.ServerName = serverName;
 		Environment.EnviromentName = enviromentName;
@@ -234,9 +243,9 @@ public class Environment
 			Environment.ApplicationFullName = executingAssembly.GetName().ToString() ?? string.Empty;
 		}
 		Environment.ApplicationDirectoryPath
-			= AppContext.BaseDirectory.ToFileSystemDirectoryPath();
+		    = AppContext.BaseDirectory.ToFileSystemDirectoryPath();
 		Environment.WebRootDirectoryPath
-			= webRootDirectoryPath?.ToFileSystemDirectoryPath();
+		    = webRootDirectoryPath?.ToFileSystemDirectoryPath();
 
 		Environment.ApplicationBuilder = applicationBuilder;
 		Environment.HostEnvironment = hostEnvironment;
@@ -260,12 +269,12 @@ public class Environment
 		Environment.ConfigFilesDirectoryPath = configFilesDirectoryPath;
 
 		LogFile.InitializeWithLogFilesDirectoryPath(
-			logFilesDirectoryPath,
-			environmentInitializeParam.ToGetAutoFlushLogBufferIntervalSeconds,
-			environmentInitializeParam.ToGetMaxBytesCountPerLogFile,
-			environmentInitializeParam.ToGetLogRecordsCountPerFileWrite,
-			environmentInitializeParam.ToGetTimeoutSecondsToStorageLogRecords,
-			environmentInitializeParam.ToStorageLogRecords);
+		    logFilesDirectoryPath,
+		    environmentInitializeParam.ToGetAutoFlushLogBufferIntervalSeconds,
+		    environmentInitializeParam.ToGetMaxBytesCountPerLogFile,
+		    environmentInitializeParam.ToGetLogRecordsCountPerFileWrite,
+		    environmentInitializeParam.ToGetTimeoutSecondsToStorageLogRecords,
+		    environmentInitializeParam.ToStorageLogRecords);
 		// !!!
 		Environment.LogFilesDirectoryPath = logFilesDirectoryPath;
 		// !!!
@@ -284,28 +293,28 @@ public class Environment
 	/// <param name="logFilesDirectoryPath">日志文件的文件夹路径。</param>
 	/// <param name="environmentInitializeParam">环境初始化的参数，详情可参见“EnvironmentInitializeParam”的定义。</param>
 	public static void InitializeWithServerNameAtProgramRun(
-		string? serverName,
-		string? enviromentName,
-		Assembly? currentExecutingAssembly,
-		string aesKeyDeafult,
-		string configFilesDirectoryPath,
-		string logFilesDirectoryPath,
-		//
-		EnvironmentInitializeParam? environmentInitializeParam = null)
+	    string? serverName,
+	    string? enviromentName,
+	    Assembly? currentExecutingAssembly,
+	    string aesKeyDeafult,
+	    string configFilesDirectoryPath,
+	    string logFilesDirectoryPath,
+	    //
+	    EnvironmentInitializeParam? environmentInitializeParam = null)
 	{
 		Environment.InitializeWithServerName(
-			   serverName,
-			   enviromentName,
-			   //
-			   currentExecutingAssembly,
-			   null,
-			   null,
-			   //
-			   null,
-			   aesKeyDeafult,
-			   configFilesDirectoryPath,
-			   logFilesDirectoryPath,
-			   environmentInitializeParam);
+		       serverName,
+		       enviromentName,
+		       //
+		       currentExecutingAssembly,
+		       null,
+		       null,
+		       //
+		       null,
+		       aesKeyDeafult,
+		       configFilesDirectoryPath,
+		       logFilesDirectoryPath,
+		       environmentInitializeParam);
 	}
 
 	/// <summary>
@@ -322,34 +331,34 @@ public class Environment
 	/// <param name="logFilesDirectoryPath"></param>
 	/// <param name="environmentInitializeParam">环境初始化的参数，详情可参见“EnvironmentInitializeParam”的定义。</param>
 	public static void InitializeWithServerNameAtStartup(
-		string? serverName,
-		string? enviromentName,
-		Assembly? currentExecutingAssembly,
-		//
-		IApplicationBuilder applicationBuilder,
-		IHostEnvironment? hostEnvironment,
-		//
-		string webRootDirectoryPath,
-		string aesKeyDeafult,
-		string configFilesDirectoryPath,
-		string logFilesDirectoryPath,
-		//
-		EnvironmentInitializeParam? environmentInitializeParam = null)
+	    string? serverName,
+	    string? enviromentName,
+	    Assembly? currentExecutingAssembly,
+	    //
+	    IApplicationBuilder applicationBuilder,
+	    IHostEnvironment? hostEnvironment,
+	    //
+	    string webRootDirectoryPath,
+	    string aesKeyDeafult,
+	    string configFilesDirectoryPath,
+	    string logFilesDirectoryPath,
+	    //
+	    EnvironmentInitializeParam? environmentInitializeParam = null)
 	{
 		Environment.InitializeWithServerName(
-			   serverName,
-			   enviromentName,
-			   //
-			   currentExecutingAssembly,
-			   applicationBuilder,
-			   hostEnvironment,
-			   //
-			   webRootDirectoryPath,
-			   aesKeyDeafult,
-			   configFilesDirectoryPath,
-			   logFilesDirectoryPath,
-			   //
-			   environmentInitializeParam);
+		       serverName,
+		       enviromentName,
+		       //
+		       currentExecutingAssembly,
+		       applicationBuilder,
+		       hostEnvironment,
+		       //
+		       webRootDirectoryPath,
+		       aesKeyDeafult,
+		       configFilesDirectoryPath,
+		       logFilesDirectoryPath,
+		       //
+		       environmentInitializeParam);
 	}
 
 
@@ -363,30 +372,30 @@ public class Environment
 	/// <param name="logFilesDirectoryPath">日志文件的文件夹路径。</param>
 	/// <param name="environmentInitializeParam">环境初始化的参数，详情可参见“EnvironmentInitializeParam”的定义。</param>
 	public static void InitializeBeforeConfigureServicesWithServerName(
-		string? serverName,
-		string? enviromentName,
-		//
-		Assembly? currentExecutingAssembly,
-		//
-		string aesKeyDeafult,
-		//
-		string configFilesDirectoryPath,
-		string logFilesDirectoryPath,
-		//
-		EnvironmentInitializeParam? environmentInitializeParam = null)
+	    string? serverName,
+	    string? enviromentName,
+	    //
+	    Assembly? currentExecutingAssembly,
+	    //
+	    string aesKeyDeafult,
+	    //
+	    string configFilesDirectoryPath,
+	    string logFilesDirectoryPath,
+	    //
+	    EnvironmentInitializeParam? environmentInitializeParam = null)
 	{
 		Environment.InitializeWithServerName(
-			   serverName,
-			   enviromentName,
-			   currentExecutingAssembly,
-			   null,
-			   null,
-			   null,
-			   aesKeyDeafult,
-			   configFilesDirectoryPath,
-			   logFilesDirectoryPath,
-			   //
-			   environmentInitializeParam);
+		       serverName,
+		       enviromentName,
+		       currentExecutingAssembly,
+		       null,
+		       null,
+		       null,
+		       aesKeyDeafult,
+		       configFilesDirectoryPath,
+		       logFilesDirectoryPath,
+		       //
+		       environmentInitializeParam);
 	}
 
 	/// <summary>
@@ -396,28 +405,28 @@ public class Environment
 	/// <param name="hostEnvironment">当前主机环境信息。</param>
 	/// <param name="webRootDirectoryPath"></param>
 	public static void InitializeAfterConfigureServices(
-		IApplicationBuilder applicationBuilder,
-		IHostEnvironment? hostEnvironment,
-		string webRootDirectoryPath)
+	    IApplicationBuilder applicationBuilder,
+	    IHostEnvironment? hostEnvironment,
+	    string webRootDirectoryPath)
 	{
 		Environment.InitializeWithServerName(
-			   Environment.ServerName,
-			   Environment.EnviromentName,
-			   Environment.CurrentApplicationAssembly,
-			   applicationBuilder,
-			   hostEnvironment,
-			   webRootDirectoryPath,
-			   Environment.AESKeyDeafult,
-			   Environment.ConfigFilesDirectoryPath!,
-			   Environment.LogFilesDirectoryPath!,
-			   //
-			   new EnvironmentInitializeParam(
-				   LogFile.ToGetAutoFlushLogBufferIntervalSeconds,
-				   LogFile.ToGetMaxBytesCountPerLogFile,
-				   LogFile.ToGetLogRecordsCountPerFileWrite,
-				   LogFile.ToGetTimeoutSecondsToStorageLogRecords,
-				   LogFile.ToStorageLogRecords,
-				   Environment.JsonSerializerOptions));
+		       Environment.ServerName,
+		       Environment.EnviromentName,
+		       Environment.CurrentApplicationAssembly,
+		       applicationBuilder,
+		       hostEnvironment,
+		       webRootDirectoryPath,
+		       Environment.AESKeyDeafult,
+		       Environment.ConfigFilesDirectoryPath!,
+		       Environment.LogFilesDirectoryPath!,
+		       //
+		       new EnvironmentInitializeParam(
+		       LogFile.ToGetAutoFlushLogBufferIntervalSeconds,
+		       LogFile.ToGetMaxBytesCountPerLogFile,
+		       LogFile.ToGetLogRecordsCountPerFileWrite,
+		       LogFile.ToGetTimeoutSecondsToStorageLogRecords,
+		       LogFile.ToStorageLogRecords,
+		       Environment.JsonSerializerOptions));
 	}
 
 
@@ -432,30 +441,30 @@ public class Environment
 	/// <param name="logFilesDirectoryPath">日志文件的文件夹路径。</param>
 	/// <param name="environmentInitializeParam">环境初始化的参数，详情可参见“EnvironmentInitializeParam”的定义。</param>
 	public static void InitializeBeforeBuildApplication(
-		string? serverName,
-		string? enviromentName,
-		//
-		Assembly? currentExecutingAssembly,
-		//
-		string aesKeyDeafult,
-		//
-		string configFilesDirectoryPath,
-		string logFilesDirectoryPath,
-		//
-		EnvironmentInitializeParam? environmentInitializeParam = null)
+	    string? serverName,
+	    string? enviromentName,
+	    //
+	    Assembly? currentExecutingAssembly,
+	    //
+	    string aesKeyDeafult,
+	    //
+	    string configFilesDirectoryPath,
+	    string logFilesDirectoryPath,
+	    //
+	    EnvironmentInitializeParam? environmentInitializeParam = null)
 	{
 		InitializeBeforeConfigureServicesWithServerName(
-			serverName,
-			enviromentName,
-			//
-			currentExecutingAssembly,
-			//
-			aesKeyDeafult,
-			//
-			configFilesDirectoryPath,
-			logFilesDirectoryPath,
-			//
-			environmentInitializeParam);
+		    serverName,
+		    enviromentName,
+		    //
+		    currentExecutingAssembly,
+		    //
+		    aesKeyDeafult,
+		    //
+		    configFilesDirectoryPath,
+		    logFilesDirectoryPath,
+		    //
+		    environmentInitializeParam);
 	}
 
 	/// <summary>
@@ -465,12 +474,12 @@ public class Environment
 	/// <param name="hostEnvironment">当前主机环境信息。</param>
 	/// <param name="webRootDirectoryPath"></param>
 	public static void InitializeAfterBuildApplication(
-		WebApplication application)
+	    WebApplication application)
 	{
 		InitializeAfterConfigureServices(
-			application,
-			application.Environment,
-			application.Environment.WebRootPath);
+		    application,
+		    application.Environment,
+		    application.Environment.WebRootPath);
 	}
 
 	/// <summary>
@@ -482,25 +491,25 @@ public class Environment
 	/// <param name="logFilesDirectoryPath">日志文件的文件夹路径。</param>
 	/// <param name="environmentInitializeParam">环境初始化的参数，详情可参见“EnvironmentInitializeParam”的定义。</param>
 	public static void InitializeWithEnviromentName(
-		string? enviromentName,
-		//
-		Assembly? currentExecutingAssembly,
-		//
-		string aesKeyDeafult,
-		//
-		string configFilesDirectoryPath,
-		string logFilesDirectoryPath,
-		//
-		EnvironmentInitializeParam? environmentInitializeParam = null)
+	    string? enviromentName,
+	    //
+	    Assembly? currentExecutingAssembly,
+	    //
+	    string aesKeyDeafult,
+	    //
+	    string configFilesDirectoryPath,
+	    string logFilesDirectoryPath,
+	    //
+	    EnvironmentInitializeParam? environmentInitializeParam = null)
 	{
 		Environment.InitializeBeforeConfigureServicesWithServerName(
-			null,
-			enviromentName,
-			currentExecutingAssembly,
-			aesKeyDeafult,
-			configFilesDirectoryPath,
-			logFilesDirectoryPath,
-			environmentInitializeParam);
+		    null,
+		    enviromentName,
+		    currentExecutingAssembly,
+		    aesKeyDeafult,
+		    configFilesDirectoryPath,
+		    logFilesDirectoryPath,
+		    environmentInitializeParam);
 	}
 
 
@@ -511,8 +520,8 @@ public class Environment
 	public static string? GetEnvironmentNameWith_ASPNETCORE_ENVIRONMENT()
 	{
 		var aspNetCoreEnvironment = System.Environment.GetEnvironmentVariable(
-			"ASPNETCORE_ENVIRONMENT",
-			EnvironmentVariableTarget.Process);
+		    "ASPNETCORE_ENVIRONMENT",
+		    EnvironmentVariableTarget.Process);
 		if ("Development".EqualsIgnoreCase(aspNetCoreEnvironment))
 		{
 			return EnvironmentNameDefault.Development;
@@ -579,7 +588,7 @@ public class Environment
 	/// <typeparam name="ServiceType">指定的服务类型。</typeparam>
 	/// <returns>指定服务类型的服务实例对象。</returns>
 	public static ServiceType GetRequiredService<ServiceType>()
-		where ServiceType : notnull
+	    where ServiceType : notnull
 	{
 		if (ApplicationBuilder is not IApplicationBuilder app)
 		{
@@ -615,8 +624,8 @@ public class Environment
 	/// <param name="service">指定服务类型的实例对象。</param>
 	/// <returns>返回服务范围容器，外部应当使用“using”指令即时的释放容器。</returns>
 	public static IServiceScope CreateSopeToGetServiceRequired<ServiceType>(
-		out ServiceType service)
-		where ServiceType : notnull
+	    out ServiceType service)
+	    where ServiceType : notnull
 	{
 		var scope = CreateServiceScope();
 		{

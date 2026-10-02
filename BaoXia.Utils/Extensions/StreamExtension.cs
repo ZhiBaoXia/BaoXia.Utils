@@ -8,21 +8,21 @@ namespace BaoXia.Utils.Extensions;
 public static class StreamExtension
 {
 	public static async Task<byte[]?> ReadBytesAsync(
-		this Stream stream,
-		string? bytesContentType,
-		long? bytesContentCount,
-		Action<string?, long, float, byte[]?>? toReceiveDownloadProgress,
-		CancellationToken cancellationToken = default)
+	    this Stream stream,
+	    string? bytesContentType,
+	    long? bytesContentCount,
+	    Action<string?, long, float, byte[]?>? toReceiveDownloadProgress,
+	    CancellationToken cancellationToken = default)
 	{
 		if (stream == null
-			|| stream.Length < 1)
+		    || stream.Length < 1)
 		{
 			toReceiveDownloadProgress?.Invoke(null, 0, 1.0F, null);
 			return null;
 		}
 
 		if (bytesContentCount == null
-			|| bytesContentCount < 1)
+		    || bytesContentCount < 1)
 		{
 			toReceiveDownloadProgress?.Invoke(null, 0, 1.0F, null);
 			return null;
@@ -32,22 +32,22 @@ public static class StreamExtension
 		while (true)
 		{
 			var bytesCountRead = await stream.ReadAsync(
-				responseBufferBytes.GetEmptyBufferMemory(),
-				cancellationToken);
+			    responseBufferBytes.GetEmptyBufferMemory(),
+			    cancellationToken);
 			var downloadProgress
-				= 1.0F
-				* responseBufferBytes.BytesCount
-				/ bytesContentCount.Value;
+			    = 1.0F
+			    * responseBufferBytes.BytesCount
+			    / bytesContentCount.Value;
 
 			if (bytesCountRead < 1)
 			{
 				var responseBytes = responseBufferBytes.ToBytes();
 				{
 					toReceiveDownloadProgress?.Invoke(
-						bytesContentType,
-						bytesContentCount.Value,
-						downloadProgress,
-						responseBytes);
+					    bytesContentType,
+					    bytesContentCount.Value,
+					    downloadProgress,
+					    responseBytes);
 				}
 				// !!!
 				return responseBytes;
@@ -56,10 +56,10 @@ public static class StreamExtension
 			else
 			{
 				toReceiveDownloadProgress?.Invoke(
-					bytesContentType,
-					bytesContentCount.Value,
-					downloadProgress,
-					null);
+				    bytesContentType,
+				    bytesContentCount.Value,
+				    downloadProgress,
+				    null);
 			}
 		}
 	}

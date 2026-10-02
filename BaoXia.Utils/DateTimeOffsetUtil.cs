@@ -23,29 +23,29 @@ public class DateTimeOffsetUtil
 	#region 类方法
 
 	public static TimeSpan GetTimeSpanFromLocalToObjectTimeZone(
-		TimeZoneNumber objectTimeZoneNumber)
+	    TimeZoneNumber objectTimeZoneNumber)
 	{
 		var timeSpan
-			= new TimeSpan((int)objectTimeZoneNumber, 0, 0)
-			- TimeZoneInfo.Local.BaseUtcOffset;
+		    = new TimeSpan((int)objectTimeZoneNumber, 0, 0)
+		    - TimeZoneInfo.Local.BaseUtcOffset;
 		{ }
 		return timeSpan;
 	}
 
 	public static long GetMillisecondsFrom1970OfDateTimeOffset(
-		DateTimeOffset dateTimeOffset,
-		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0,
-		bool isMillisecondsMinValueZero = true)
+	    DateTimeOffset dateTimeOffset,
+	    TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0,
+	    bool isMillisecondsMinValueZero = true)
 	{
 		var ticks
-			= dateTimeOffset.Ticks
-			- dateTimeOffset.Offset.Ticks
-			- DateTimeOffsetAtUTCZero.Ticks
-			+ TimeSpan.TicksPerHour * (int)millisecondsZoneNumber;
+		    = dateTimeOffset.Ticks
+		    - dateTimeOffset.Offset.Ticks
+		    - DateTimeOffsetAtUTCZero.Ticks
+		    + TimeSpan.TicksPerHour * (int)millisecondsZoneNumber;
 		var milliseconds
-			= ticks / TimeSpan.TicksPerMillisecond;
+		    = ticks / TimeSpan.TicksPerMillisecond;
 		if (milliseconds < 0
-			&& isMillisecondsMinValueZero)
+		    && isMillisecondsMinValueZero)
 		{
 			milliseconds = 0;
 		}
@@ -53,27 +53,27 @@ public class DateTimeOffsetUtil
 	}
 
 	public static long GetSecondsFrom1970OfDateTimeOffset(
-		DateTimeOffset dateTimeOffset,
-		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0,
-		bool isSecondsMinValueZero = true)
+	    DateTimeOffset dateTimeOffset,
+	    TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0,
+	    bool isSecondsMinValueZero = true)
 	{
 		return GetMillisecondsFrom1970OfDateTimeOffset(
-			dateTimeOffset,
-			secondsZoneNumber,
-			isSecondsMinValueZero)
-			/ 1000;
+		    dateTimeOffset,
+		    secondsZoneNumber,
+		    isSecondsMinValueZero)
+		    / 1000;
 	}
 
 	public static DateTimeOffset DateTimeOffsetWithMillisecondsAfter1970(
-		long milliseconds,
-		TimeZoneNumber millisecondsTimeZoneNumber = TimeZoneNumber.Utc0)
+	    long milliseconds,
+	    TimeZoneNumber millisecondsTimeZoneNumber = TimeZoneNumber.Utc0)
 	{
 		var ticks
-			= DateTimeOffsetAtUTCZero.Ticks
-			+ TimeSpan.TicksPerMillisecond * milliseconds
-			- TimeSpan.TicksPerHour * (int)millisecondsTimeZoneNumber;
+		    = DateTimeOffsetAtUTCZero.Ticks
+		    + TimeSpan.TicksPerMillisecond * milliseconds
+		    - TimeSpan.TicksPerHour * (int)millisecondsTimeZoneNumber;
 		var localTimeZoneBaseUtcOffset
-			= TimeZoneInfo.Local.BaseUtcOffset;
+		    = TimeZoneInfo.Local.BaseUtcOffset;
 		ticks += localTimeZoneBaseUtcOffset.Ticks;
 		var dateTimeOffset = new DateTimeOffset(ticks, localTimeZoneBaseUtcOffset);
 		{ }
@@ -81,21 +81,21 @@ public class DateTimeOffsetUtil
 	}
 
 	public static DateTimeOffset DateTimeOffsetWithSecondsAfter1970(
-		long seconds,
-		TimeZoneNumber secondsTimeZoneNumber = TimeZoneNumber.Utc0)
+	    long seconds,
+	    TimeZoneNumber secondsTimeZoneNumber = TimeZoneNumber.Utc0)
 	{
 		return DateTimeOffsetWithMillisecondsAfter1970(
-			seconds * 1000,
-			secondsTimeZoneNumber);
+		    seconds * 1000,
+		    secondsTimeZoneNumber);
 	}
 
 	public static DateTimeOffset DateTimeOffsetByConvertToTimeZone(
-		DateTimeOffset dateTimeOffset,
-		TimeZoneNumber timeZoneNumber)
+	    DateTimeOffset dateTimeOffset,
+	    TimeZoneNumber timeZoneNumber)
 	{
 		DateTimeOffset objectDateTime = new(
-			dateTimeOffset.DateTime,
-			new TimeSpan((int)timeZoneNumber, 0, 0));
+		    dateTimeOffset.DateTime,
+		    new TimeSpan((int)timeZoneNumber, 0, 0));
 		{
 			double objectTimeZoneOffsetHours = (double)timeZoneNumber;
 			var hoursNeedOffset = objectTimeZoneOffsetHours - dateTimeOffset.Offset.TotalHours;
@@ -124,8 +124,8 @@ public class DateTimeOffsetUtil
 	/// <param name="defaultValue">解析失败时返回的默认值，未指定日期时间默认值时，默认返回”DateTimeOffset.MinValue“。</param>
 	/// <returns>返回解析字符串生成的DateTimeOffset对象。</returns>
 	public static DateTimeOffset DateTimeOffsetFromStringInRFC3339(
-		string? dateTimeStringInRFC3339,
-		DateTimeOffset? defaultValue = null)
+	    string? dateTimeStringInRFC3339,
+	    DateTimeOffset? defaultValue = null)
 	{
 		defaultValue ??= DateTimeOffset.MinValue;
 		if (string.IsNullOrEmpty(dateTimeStringInRFC3339))
@@ -135,9 +135,9 @@ public class DateTimeOffsetUtil
 
 		var indexOf_T = dateTimeStringInRFC3339.IndexOf('T', StringComparison.OrdinalIgnoreCase);
 		string[] dateTimeStringInRFC3339Sections
-			= indexOf_T < 0
-			? [dateTimeStringInRFC3339]
-			: [dateTimeStringInRFC3339[..indexOf_T], dateTimeStringInRFC3339[(indexOf_T + 1)..]];
+		    = indexOf_T < 0
+		    ? [dateTimeStringInRFC3339]
+		    : [dateTimeStringInRFC3339[..indexOf_T], dateTimeStringInRFC3339[(indexOf_T + 1)..]];
 		if (dateTimeStringInRFC3339Sections.Length < 1)
 		{
 			return defaultValue.Value;
@@ -151,12 +151,12 @@ public class DateTimeOffsetUtil
 		}
 
 		var dateStringSections = dateString.SplitWithOptionalSeparatorsIgnoreCase(
-			'-',
-			'/',
-			'\\',
-			' ');
+		    '-',
+		    '/',
+		    '\\',
+		    ' ');
 		if (dateStringSections == null
-			|| dateStringSections.Count < 3)
+		    || dateStringSections.Count < 3)
 		{
 			return defaultValue.Value;
 		}
@@ -228,24 +228,24 @@ public class DateTimeOffsetUtil
 				////////////////////////////////////////////////
 				// !!!
 				timeZoneOffset = new TimeSpan(
-					0,
-					timeOffsetHour,
-					timeOffsetMinute,
-					timeOffsetSecond,
-					 timeOffsetMillisecond);
+				    0,
+				    timeOffsetHour,
+				    timeOffsetMinute,
+				    timeOffsetSecond,
+				     timeOffsetMillisecond);
 				// !!!
 				////////////////////////////////////////////////
 			}
 		}
 
 		var dateTimeOffset = new DateTimeOffset(
-			year,
-			month,
-			day,
-			hour,
-			minute,
-			second,
-			timeZoneOffset);
+		    year,
+		    month,
+		    day,
+		    hour,
+		    minute,
+		    second,
+		    timeZoneOffset);
 		{ }
 		return dateTimeOffset;
 	}

@@ -6,11 +6,11 @@ using System.Collections.Generic;
 namespace BaoXia.Utils.Cache.Index;
 
 public class ItemIndexWith1Key<ItemType, PrimaryIndexKeyType>(
-	Func<ItemType, PrimaryIndexKeyType> toGetPrimaryIndexKeyOfItem)
-	//
-	: IItemCacheIndex<ItemType>
-	//
-	where PrimaryIndexKeyType : notnull
+    Func<ItemType, PrimaryIndexKeyType> toGetPrimaryIndexKeyOfItem)
+    //
+    : IItemCacheIndex<ItemType>
+    //
+    where PrimaryIndexKeyType : notnull
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -33,22 +33,22 @@ public class ItemIndexWith1Key<ItemType, PrimaryIndexKeyType>(
 	#region 自身实现
 
 	public void UpdateIndexItemsWithPrimaryIndexKey(
-		PrimaryIndexKeyType primaryIndexKey,
-		Func<ItemType?, ItemType?> toUpdateIndexItem)
+	    PrimaryIndexKeyType primaryIndexKey,
+	    Func<ItemType?, ItemType?> toUpdateIndexItem)
 	{
 		var itemIndexInfo
-			= PrimaryIndexes.GetOrAdd(
-				primaryIndexKey,
-				(_) => new());
+		    = PrimaryIndexes.GetOrAdd(
+		    primaryIndexKey,
+		    (_) => new());
 		lock (itemIndexInfo)
 		{
 			// !!!
 			var newIndexItem
-				= toUpdateIndexItem(itemIndexInfo.FirstItem);
+			    = toUpdateIndexItem(itemIndexInfo.FirstItem);
 			newIndexItem = WillUpdateIndexItemWithPrimaryIndexKey(
-				primaryIndexKey,
-				//
-				newIndexItem);
+			    primaryIndexKey,
+			    //
+			    newIndexItem);
 			if (newIndexItem != null)
 			{
 				if (itemIndexInfo.Items.Length == 1)
@@ -76,8 +76,8 @@ public class ItemIndexWith1Key<ItemType, PrimaryIndexKeyType>(
 	public ItemType? GetItem(PrimaryIndexKeyType primaryIndexKey)
 	{
 		if (PrimaryIndexes.TryGetValue(
-			primaryIndexKey,
-			out var enityIndexInfo))
+		    primaryIndexKey,
+		    out var enityIndexInfo))
 		{
 			return enityIndexInfo.FirstItem;
 		}
@@ -94,9 +94,9 @@ public class ItemIndexWith1Key<ItemType, PrimaryIndexKeyType>(
 	#region 事件节点
 
 	protected virtual ItemType? WillUpdateIndexItemWithPrimaryIndexKey(
-		PrimaryIndexKeyType primaryIndexKey,
-		//
-		ItemType? newIndexItem)
+	    PrimaryIndexKeyType primaryIndexKey,
+	    //
+	    ItemType? newIndexItem)
 	{
 		return newIndexItem;
 	}
@@ -111,8 +111,8 @@ public class ItemIndexWith1Key<ItemType, PrimaryIndexKeyType>(
 	#region 实现”IDbSetMemoryCacheIndex“
 
 	public void UpdateIndexItemsByUpdateItemFrom(
-		ItemType? lastItem,
-		ItemType? currentItem)
+	    ItemType? lastItem,
+	    ItemType? currentItem)
 	{
 		var isLastItemValid = false;
 		PrimaryIndexKeyType lastPrimaryIndexKey = default!;
@@ -135,15 +135,15 @@ public class ItemIndexWith1Key<ItemType, PrimaryIndexKeyType>(
 		// 1/2，移除旧的索引：
 		////////////////////////////////////////////////
 		if (isLastItemValid
-			&& !lastPrimaryIndexKey.Equals(currentPrimaryIndexKey))
+		    && !lastPrimaryIndexKey.Equals(currentPrimaryIndexKey))
 		{
 			UpdateIndexItemsWithPrimaryIndexKey(
-				lastPrimaryIndexKey,
-				//
-				(_) =>
-				{
-					return default;
-				});
+			    lastPrimaryIndexKey,
+			    //
+			    (_) =>
+			    {
+				    return default;
+			    });
 		}
 
 
@@ -155,11 +155,11 @@ public class ItemIndexWith1Key<ItemType, PrimaryIndexKeyType>(
 		if (isCurrentItemValid)
 		{
 			UpdateIndexItemsWithPrimaryIndexKey(
-				currentPrimaryIndexKey,
-				(_) =>
-				{
-					return currentItem;
-				});
+			    currentPrimaryIndexKey,
+			    (_) =>
+			    {
+				    return currentItem;
+			    });
 		}
 	}
 

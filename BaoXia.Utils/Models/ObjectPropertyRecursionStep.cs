@@ -24,7 +24,7 @@ public class ObjectPropertyRecursionStep : RecursionStep<ObjectPropertyInfo>
 	#region 自身实现
 
 	public ObjectPropertyRecursionStep()
-		: base(null, [], 0)
+	    : base(null, [], 0)
 	{ }
 
 	public ObjectPropertyRecursionStep(

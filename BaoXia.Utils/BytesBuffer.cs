@@ -77,9 +77,9 @@ public class BytesBuffer
 		get
 		{
 			return new ArraySegment<byte>(
-				this.GetBufferWithBufferLength(_bytesCount),
-				0,
-				_bytesCount);
+			    this.GetBufferWithBufferLength(_bytesCount),
+			    0,
+			    _bytesCount);
 		}
 	}
 
@@ -88,7 +88,7 @@ public class BytesBuffer
 		get
 		{
 			if (index < 0
-				|| index > _bytesBuffer?.Length)
+			    || index > _bytesBuffer?.Length)
 			{
 				throw new ArgumentOutOfRangeException("index");
 			}
@@ -97,7 +97,7 @@ public class BytesBuffer
 		set
 		{
 			if (index < 0
-				|| index > _bytesBuffer?.Length)
+			    || index > _bytesBuffer?.Length)
 			{
 				throw new ArgumentOutOfRangeException("index");
 			}
@@ -128,8 +128,8 @@ public class BytesBuffer
 	}
 
 	public BytesBuffer(
-		byte[]? bytesBuffer,
-		int bufferCapacity = BytesBuffer.BytesBufferCapacityDefault)
+	    byte[]? bytesBuffer,
+	    int bufferCapacity = BytesBuffer.BytesBufferCapacityDefault)
 	{
 		if (bufferCapacity <= 0)
 		{
@@ -157,9 +157,9 @@ public class BytesBuffer
 			var newBytesBuffer = new byte[bytesBufferLength];
 			{
 				Array.Copy(
-					_bytesBuffer,
-					newBytesBuffer,
-					_bytesBuffer.Length);
+				    _bytesBuffer,
+				    newBytesBuffer,
+				    _bytesBuffer.Length);
 			}
 			_bytesBuffer = newBytesBuffer;
 		}
@@ -176,9 +176,9 @@ public class BytesBuffer
 		var bytesBuffer = this.GetBufferWithBufferLength(_bytesCount + emptyBufferLength);
 		// !!!
 		return new ArraySegment<byte>(
-			bytesBuffer,
-			_bytesCount,
-			bytesBuffer.Length - _bytesCount);
+		    bytesBuffer,
+		    _bytesCount,
+		    bytesBuffer.Length - _bytesCount);
 	}
 
 	public Span<byte> GetEmptyBufferSpan(int emptyBufferLength = 0)
@@ -191,9 +191,9 @@ public class BytesBuffer
 		var bytesBuffer = this.GetBufferWithBufferLength(_bytesCount + emptyBufferLength);
 		// !!!
 		return new Span<byte>(
-			bytesBuffer,
-			_bytesCount,
-			bytesBuffer.Length - _bytesCount);
+		    bytesBuffer,
+		    _bytesCount,
+		    bytesBuffer.Length - _bytesCount);
 	}
 
 	public Memory<byte> GetEmptyBufferMemory(int emptyBufferLength = 0)
@@ -206,15 +206,15 @@ public class BytesBuffer
 		var bytesBuffer = this.GetBufferWithBufferLength(_bytesCount + emptyBufferLength);
 		// !!!
 		return new Memory<byte>(
-			bytesBuffer,
-			_bytesCount,
-			bytesBuffer.Length - _bytesCount);
+		    bytesBuffer,
+		    _bytesCount,
+		    bytesBuffer.Length - _bytesCount);
 	}
 
 
 	public void SetBuffer(
-		byte[] buffer,
-		int bytesCount)
+	    byte[] buffer,
+	    int bytesCount)
 	{
 		_bytesBuffer = buffer;
 		_bytesCount = bytesCount;
@@ -228,10 +228,10 @@ public class BytesBuffer
 	{
 		var bytesBuffer = this.GetEmptyBufferSegment(bytesCount);
 		Array.Copy(
-			bytes, 0,
-			bytesBuffer.Array!,
-			bytesBuffer.Offset,
-			bytesCount);
+		    bytes, 0,
+		    bytesBuffer.Array!,
+		    bytesBuffer.Offset,
+		    bytesCount);
 		// !!!
 		_bytesCount += bytesCount;
 		// !!!

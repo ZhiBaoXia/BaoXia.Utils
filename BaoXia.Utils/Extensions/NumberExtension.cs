@@ -9,12 +9,12 @@ public static class NumberExtension
 	#region 类方法
 
 	public static int IfNullOrLessThanReturn(
-		this int? number,
-		int defaultValue,
-		int compareValue = 0)
+	    this int? number,
+	    int defaultValue,
+	    int compareValue = 0)
 	{
 		if (number == null
-			|| number < compareValue)
+		    || number < compareValue)
 		{
 			return defaultValue;
 		}
@@ -22,12 +22,12 @@ public static class NumberExtension
 	}
 
 	public static float IfNullOrLessThanReturn(
-		this float? number,
-		float defaultValue,
-		float compareValue = 0.0F)
+	    this float? number,
+	    float defaultValue,
+	    float compareValue = 0.0F)
 	{
 		if (number == null
-			|| number < compareValue)
+		    || number < compareValue)
 		{
 			return defaultValue;
 		}
@@ -35,12 +35,12 @@ public static class NumberExtension
 	}
 
 	public static double IfNullOrLessThanReturn(
-		this double? number,
-		double defaultValue,
-		double compareValue = 0.0)
+	    this double? number,
+	    double defaultValue,
+	    double compareValue = 0.0)
 	{
 		if (number == null
-			|| number < compareValue)
+		    || number < compareValue)
 		{
 			return defaultValue;
 		}
@@ -48,12 +48,12 @@ public static class NumberExtension
 	}
 
 	public static int IfNullOrLessEqualThanReturn(
-		this int? number,
-		int defaultValue,
-		int compareValue = 0)
+	    this int? number,
+	    int defaultValue,
+	    int compareValue = 0)
 	{
 		if (number == null
-			|| number <= compareValue)
+		    || number <= compareValue)
 		{
 			return defaultValue;
 		}
@@ -61,12 +61,12 @@ public static class NumberExtension
 	}
 
 	public static float IfNullOrLessEqualThanReturn(
-		this float? number,
-		float defaultValue,
-		float compareValue = 0.0F)
+	    this float? number,
+	    float defaultValue,
+	    float compareValue = 0.0F)
 	{
 		if (number == null
-			|| number <= compareValue)
+		    || number <= compareValue)
 		{
 			return defaultValue;
 		}
@@ -74,12 +74,12 @@ public static class NumberExtension
 	}
 
 	public static double IfNullOrLessEqualThanReturn(
-		this double? number,
-		double defaultValue,
-		double compareValue = 0.0)
+	    this double? number,
+	    double defaultValue,
+	    double compareValue = 0.0)
 	{
 		if (number == null
-			|| number <= compareValue)
+		    || number <= compareValue)
 		{
 			return defaultValue;
 		}
@@ -87,12 +87,12 @@ public static class NumberExtension
 	}
 
 	public static int IfNullOrGreaterThanReturn(
-		this int? number,
-		int defaultValue,
-		int compareValue = 0)
+	    this int? number,
+	    int defaultValue,
+	    int compareValue = 0)
 	{
 		if (number == null
-			|| number > compareValue)
+		    || number > compareValue)
 		{
 			return defaultValue;
 		}
@@ -100,12 +100,12 @@ public static class NumberExtension
 	}
 
 	public static float IfNullOrGreaterThanReturn(
-		this float? number,
-		float defaultValue,
-		float compareValue = 0.0F)
+	    this float? number,
+	    float defaultValue,
+	    float compareValue = 0.0F)
 	{
 		if (number == null
-			|| number > compareValue)
+		    || number > compareValue)
 		{
 			return defaultValue;
 		}
@@ -113,12 +113,12 @@ public static class NumberExtension
 	}
 
 	public static double IfNullOrGreaterThanReturn(
-		this double? number,
-		double defaultValue,
-		double compareValue = 0.0)
+	    this double? number,
+	    double defaultValue,
+	    double compareValue = 0.0)
 	{
 		if (number == null
-			|| number > compareValue)
+		    || number > compareValue)
 		{
 			return defaultValue;
 		}
@@ -126,12 +126,12 @@ public static class NumberExtension
 	}
 
 	public static int IfNullOrGreaterEqualThanReturn(
-		this int? number,
-		int defaultValue,
-		int compareValue = 0)
+	    this int? number,
+	    int defaultValue,
+	    int compareValue = 0)
 	{
 		if (number == null
-			|| number >= compareValue)
+		    || number >= compareValue)
 		{
 			return defaultValue;
 		}
@@ -139,12 +139,12 @@ public static class NumberExtension
 	}
 
 	public static float IfNullOrGreaterEqualThanReturn(
-		this float? number,
-		float defaultValue,
-		float compareValue = 0.0F)
+	    this float? number,
+	    float defaultValue,
+	    float compareValue = 0.0F)
 	{
 		if (number == null
-			|| number >= compareValue)
+		    || number >= compareValue)
 		{
 			return defaultValue;
 		}
@@ -152,12 +152,12 @@ public static class NumberExtension
 	}
 
 	public static double IfNullOrGreaterEqualThanReturn(
-		this double? number,
-		double defaultValue,
-		double compareValue = 0.0)
+	    this double? number,
+	    double defaultValue,
+	    double compareValue = 0.0)
 	{
 		if (number == null
-			|| number >= compareValue)
+		    || number >= compareValue)
 		{
 			return defaultValue;
 		}
@@ -166,8 +166,8 @@ public static class NumberExtension
 
 
 	public static uint GreaterZeroOr(
-		this uint? currentValue,
-		uint defaultValue)
+	    this uint? currentValue,
+	    uint defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -177,8 +177,8 @@ public static class NumberExtension
 	}
 
 	public static uint GreaterZeroOr(
-		this uint currentValue,
-		uint defaultValue)
+	    this uint currentValue,
+	    uint defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -188,8 +188,8 @@ public static class NumberExtension
 	}
 
 	public static int GreaterZeroOr(
-		this int? currentValue,
-		int defaultValue)
+	    this int? currentValue,
+	    int defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -199,8 +199,8 @@ public static class NumberExtension
 	}
 
 	public static int GreaterZeroOr(
-		this int currentValue,
-		int defaultValue)
+	    this int currentValue,
+	    int defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -210,8 +210,8 @@ public static class NumberExtension
 	}
 
 	public static ulong GreaterZeroOr(
-		this ulong? currentValue,
-		ulong defaultValue)
+	    this ulong? currentValue,
+	    ulong defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -221,8 +221,8 @@ public static class NumberExtension
 	}
 
 	public static ulong GreaterZeroOr(
-		this ulong currentValue,
-		ulong defaultValue)
+	    this ulong currentValue,
+	    ulong defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -232,8 +232,8 @@ public static class NumberExtension
 	}
 
 	public static long GreaterZeroOr(
-		this long? currentValue,
-		long defaultValue)
+	    this long? currentValue,
+	    long defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -243,8 +243,8 @@ public static class NumberExtension
 	}
 
 	public static long GreaterZeroOr(
-		this long currentValue,
-		long defaultValue)
+	    this long currentValue,
+	    long defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -254,8 +254,8 @@ public static class NumberExtension
 	}
 
 	public static float GreaterZeroOr(
-		this float? currentValue,
-		float defaultValue)
+	    this float? currentValue,
+	    float defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -265,8 +265,8 @@ public static class NumberExtension
 	}
 
 	public static float GreaterZeroOr(
-		this float currentValue,
-		float defaultValue)
+	    this float currentValue,
+	    float defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -276,8 +276,8 @@ public static class NumberExtension
 	}
 
 	public static double GreaterZeroOr(
-		this double? currentValue,
-		double defaultValue)
+	    this double? currentValue,
+	    double defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -287,8 +287,8 @@ public static class NumberExtension
 	}
 
 	public static double GreaterZeroOr(
-		this double currentValue,
-		double defaultValue)
+	    this double currentValue,
+	    double defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -298,8 +298,8 @@ public static class NumberExtension
 	}
 
 	public static decimal GreaterZeroOr(
-		this decimal? currentValue,
-		decimal defaultValue)
+	    this decimal? currentValue,
+	    decimal defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -309,8 +309,8 @@ public static class NumberExtension
 	}
 
 	public static decimal GreaterZeroOr(
-		this decimal currentValue,
-		decimal defaultValue)
+	    this decimal currentValue,
+	    decimal defaultValue)
 	{
 		if (currentValue > 0)
 		{
@@ -323,8 +323,8 @@ public static class NumberExtension
 
 
 	public static uint GreaterEqualZeroOr(
-		this uint? currentValue,
-		uint defaultValue)
+	    this uint? currentValue,
+	    uint defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -345,8 +345,8 @@ public static class NumberExtension
 	//}
 
 	public static int GreaterEqualZeroOr(
-		this int? currentValue,
-		int defaultValue)
+	    this int? currentValue,
+	    int defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -356,8 +356,8 @@ public static class NumberExtension
 	}
 
 	public static int GreaterEqualZeroOr(
-		this int currentValue,
-		int defaultValue)
+	    this int currentValue,
+	    int defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -367,8 +367,8 @@ public static class NumberExtension
 	}
 
 	public static ulong GreaterEqualZeroOr(
-		this ulong? currentValue,
-		ulong defaultValue)
+	    this ulong? currentValue,
+	    ulong defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -389,8 +389,8 @@ public static class NumberExtension
 	//}
 
 	public static long GreaterEqualZeroOr(
-		this long? currentValue,
-		long defaultValue)
+	    this long? currentValue,
+	    long defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -400,8 +400,8 @@ public static class NumberExtension
 	}
 
 	public static long GreaterEqualZeroOr(
-		this long currentValue,
-		long defaultValue)
+	    this long currentValue,
+	    long defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -411,8 +411,8 @@ public static class NumberExtension
 	}
 
 	public static float GreaterEqualZeroOr(
-		this float? currentValue,
-		float defaultValue)
+	    this float? currentValue,
+	    float defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -422,8 +422,8 @@ public static class NumberExtension
 	}
 
 	public static float GreaterEqualZeroOr(
-		this float currentValue,
-		float defaultValue)
+	    this float currentValue,
+	    float defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -433,8 +433,8 @@ public static class NumberExtension
 	}
 
 	public static double GreaterEqualZeroOr(
-		this double? currentValue,
-		double defaultValue)
+	    this double? currentValue,
+	    double defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -444,8 +444,8 @@ public static class NumberExtension
 	}
 
 	public static double GreaterEqualZeroOr(
-		this double currentValue,
-		double defaultValue)
+	    this double currentValue,
+	    double defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -455,8 +455,8 @@ public static class NumberExtension
 	}
 
 	public static decimal GreaterEqualZeroOr(
-		this decimal? currentValue,
-		decimal defaultValue)
+	    this decimal? currentValue,
+	    decimal defaultValue)
 	{
 		if (currentValue >= 0)
 		{
@@ -466,8 +466,8 @@ public static class NumberExtension
 	}
 
 	public static decimal GreaterEqualZeroOr(
-		this decimal currentValue,
-		decimal defaultValue)
+	    this decimal currentValue,
+	    decimal defaultValue)
 	{
 		if (currentValue >= 0)
 		{

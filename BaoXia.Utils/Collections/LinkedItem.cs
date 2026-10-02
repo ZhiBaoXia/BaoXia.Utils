@@ -1,7 +1,7 @@
 ﻿namespace BaoXia.Utils.Collections
 {
 	public class LinkedItem<ListItemType>
-			where ListItemType : LinkedItem<ListItemType>
+	    where ListItemType : LinkedItem<ListItemType>
 	{
 		////////////////////////////////////////////////
 		// @自身属性

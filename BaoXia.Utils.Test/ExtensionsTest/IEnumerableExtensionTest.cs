@@ -667,7 +667,7 @@ public class IEnumerableExtensionTest
 		var itemGroups = items.ToGroupsBy((item) => item.GroupId);
 		var itemsCount = 0;
 		{
-			Assert.IsTrue(itemGroups!.Length > 0);
+			Assert.IsGreaterThan(0, itemGroups!.Length);
 			foreach (var itemGroup in itemGroups)
 			{
 				itemsCount += itemGroup.Count;
@@ -787,7 +787,7 @@ public class IEnumerableExtensionTest
 			null,
 			0,
 			20);
-		Assert.IsTrue(searchPage!.ItemsCountSearchMatched > 0);
+		Assert.IsGreaterThan(0, searchPage!.ItemsCountSearchMatched);
 		var itemPage = searchPage?.ItemsInPage!;
 		var firstItemInPage = itemPage[0].Value;
 		Assert.AreEqual("9999", firstItemInPage);
@@ -836,7 +836,7 @@ public class IEnumerableExtensionTest
 			null,
 			1,
 			20);
-		Assert.IsTrue(searchPage!.ItemsCountSearchMatched > 0);
+		Assert.IsGreaterThan(0, searchPage!.ItemsCountSearchMatched);
 		itemPage = searchPage?.ItemsInPage!;
 		firstItemInPage = itemPage[0].Value;
 		Assert.AreEqual("9998", firstItemInPage);
@@ -853,10 +853,83 @@ public class IEnumerableExtensionTest
 		};
 		var itemHashSet = items.ToItemHashSet();
 		{
-			Assert.AreEqual(3, itemHashSet!.Count);
-			Assert.IsTrue(itemHashSet!.Contains("a"));
-			Assert.IsTrue(itemHashSet!.Contains("b"));
-			Assert.IsTrue(itemHashSet!.Contains("c"));
+			Assert.HasCount(3, itemHashSet);
+			Assert.Contains("a", itemHashSet);
+			Assert.Contains("b", itemHashSet);
+			Assert.Contains("c", itemHashSet);
+		}
+	}
+
+	[TestMethod]
+	public async Task SortAsyncTest()
+	{
+		////////////////////////////////////////////////
+		// 排序测试，01：
+		////////////////////////////////////////////////
+		var itemsSet = new HashSet<int>();
+		{
+			itemsSet.Add(5);
+			itemsSet.Add(4);
+			itemsSet.Add(3);
+			itemsSet.Add(2);
+			itemsSet.Add(1);
+			itemsSet.Add(0);
+		}
+		var testList = await itemsSet.SortToListAsync(async (a, b) =>
+		{
+			await Task.CompletedTask;
+
+			return a.CompareTo(b);
+		});
+		for (var listItemIndex = 0; listItemIndex < testList.Count; listItemIndex++)
+		{
+			Assert.AreEqual(listItemIndex, testList[listItemIndex]);
+		}
+
+		////////////////////////////////////////////////
+		// 排序测试，02：
+		////////////////////////////////////////////////
+		var itemsBag = new ConcurrentBag<int>();
+		{
+			itemsBag.Add(0);
+			itemsBag.Add(5);
+			itemsBag.Add(1);
+			itemsBag.Add(4);
+			itemsBag.Add(3);
+			itemsBag.Add(2);
+		}
+		testList = await itemsBag.SortToListAsync(async (a, b) =>
+		{
+			await Task.CompletedTask;
+
+			return a.CompareTo(b);
+		});
+		for (var listItemIndex = 0; listItemIndex < testList.Count; listItemIndex++)
+		{
+			Assert.AreEqual(listItemIndex, testList[listItemIndex]);
+		}
+
+		////////////////////////////////////////////////
+		// 排序测试，03：
+		////////////////////////////////////////////////
+		var itemDictionary = new Dictionary<string, int>();
+		{
+			itemDictionary.Add("a", 0);
+			itemDictionary.Add("b", 5);
+			itemDictionary.Add("c", 1);
+			itemDictionary.Add("d", 4);
+			itemDictionary.Add("e", 3);
+			itemDictionary.Add("f", 2);
+		}
+		testList = await itemDictionary.Values.SortToListAsync(async (a, b) =>
+		{
+			await Task.CompletedTask;
+
+			return a.CompareTo(b);
+		});
+		for (var listItemIndex = 0; listItemIndex < testList.Count; listItemIndex++)
+		{
+			Assert.AreEqual(listItemIndex, testList[listItemIndex]);
 		}
 	}
 }

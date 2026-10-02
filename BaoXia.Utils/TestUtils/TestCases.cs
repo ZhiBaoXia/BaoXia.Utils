@@ -25,11 +25,11 @@ namespace BaoXia.Utils.TestUtils
 		#region 类方法
 
 		public static async Task Start(
-			string testsCatalogName,
-			string testsName,
-			double delaySeconds = 3.0,
-			Action<string>? toOutput = null,
-			Func<string?>? toInput = null)
+		    string testsCatalogName,
+		    string testsName,
+		    double delaySeconds = 3.0,
+		    Action<string>? toOutput = null,
+		    Func<string?>? toInput = null)
 		{
 			const string Intent_1 = "   ";
 
@@ -40,13 +40,13 @@ namespace BaoXia.Utils.TestUtils
 			Console.WriteLine();
 
 			for (;
-				delaySeconds > 0.0;
-				delaySeconds -= 1.0)
+			    delaySeconds > 0.0;
+			    delaySeconds -= 1.0)
 			{
 				var dotString = string.Empty;
 				for (var dotIndex = 0.0;
-					dotIndex < delaySeconds;
-					dotIndex++)
+				    dotIndex < delaySeconds;
+				    dotIndex++)
 				{
 					dotString += "。";
 				}
@@ -73,15 +73,15 @@ namespace BaoXia.Utils.TestUtils
 			}
 
 			var testResult
-				= "\r\n"
-				+ "\r\n"
-				+ "////////////////////////////////////////////////\r\n"
-				+ $"// 全部测试结束，\r\n"
-				+ $"// 共 {allTestCases.Count} 个测试用例，\r\n"
-				+ $"// 测试通过率 {(100.0 * testCasesTestSuccessful.Count / allTestCases.Count):F0}%。\r\n"
-				+ "////////////////////////////////////////////////\r\n"
-				+ "\r\n"
-				+ $"测试通过 {testCasesTestSuccessful.Count} 个：\r\n";
+			    = "\r\n"
+			    + "\r\n"
+			    + "////////////////////////////////////////////////\r\n"
+			    + $"// 全部测试结束，\r\n"
+			    + $"// 共 {allTestCases.Count} 个测试用例，\r\n"
+			    + $"// 测试通过率 {(100.0 * testCasesTestSuccessful.Count / allTestCases.Count):F0}%。\r\n"
+			    + "////////////////////////////////////////////////\r\n"
+			    + "\r\n"
+			    + $"测试通过 {testCasesTestSuccessful.Count} 个：\r\n";
 			foreach (var testCase in testCasesTestSuccessful)
 			{
 				testResult += Intent_1 + "√ " + testCase.Name + "\r\n";

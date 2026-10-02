@@ -5,10 +5,10 @@ using System.Net.Sockets;
 namespace BaoXia.Utils.Models;
 
 public class UdpClientListenInfo(
-	UdpClient udpClient,
-	IPEndPoint listenIPEndPoint,
-	Func<UdpClient?, IPEndPoint?, byte[]?, Exception?, bool> toReceiveMessage,
-	Func<UdpClientListenInfo?, bool>? toWillContinueReceiveBytes)
+    UdpClient udpClient,
+    IPEndPoint listenIPEndPoint,
+    Func<UdpClient?, IPEndPoint?, byte[]?, Exception?, bool> toReceiveMessage,
+    Func<UdpClientListenInfo?, bool>? toWillContinueReceiveBytes)
 {
 	////////////////////////////////////////////////
 	// @自身属性
@@ -49,8 +49,8 @@ public class UdpClientListenInfo(
 			{
 				remoteEndPoint = currentUdpClientListenInfo.ListenIPEndPoint;
 				bytesReceived = currentUdpClientListenInfo.UdpClient.EndReceive(
-					receiveResult,
-					ref remoteEndPoint);
+			    receiveResult,
+			    ref remoteEndPoint);
 			}
 		}
 		catch (Exception exception)
@@ -68,10 +68,10 @@ public class UdpClientListenInfo(
 				////////////////////////////////////////////////
 				// !!!
 				isBeginReceiveAgain = toReceiveMessage(
-					null,
-					null,
-					null,
-					exceptionOfGetCurrentUdpClientListenInfo);
+			    null,
+			    null,
+			    null,
+			    exceptionOfGetCurrentUdpClientListenInfo);
 				// !!!
 				////////////////////////////////////////////////
 			}
@@ -80,10 +80,10 @@ public class UdpClientListenInfo(
 				////////////////////////////////////////////////
 				// !!!
 				isBeginReceiveAgain = toReceiveMessage(
-					currentUdpClientListenInfo.UdpClient,
-					remoteEndPoint,
-					bytesReceived,
-					exceptionOfReceiveBytes);
+			    currentUdpClientListenInfo.UdpClient,
+			    remoteEndPoint,
+			    bytesReceived,
+			    exceptionOfReceiveBytes);
 				// !!!
 				////////////////////////////////////////////////
 			}
@@ -92,11 +92,11 @@ public class UdpClientListenInfo(
 				////////////////////////////////////////////////
 				// !!!
 				isBeginReceiveAgain = toReceiveMessage(
-					null,
-					remoteEndPoint,
-					bytesReceived,
-					exceptionOfReceiveBytes
-					?? exceptionOfGetCurrentUdpClientListenInfo);
+			    null,
+			    remoteEndPoint,
+			    bytesReceived,
+			    exceptionOfReceiveBytes
+			    ?? exceptionOfGetCurrentUdpClientListenInfo);
 				// !!!
 				////////////////////////////////////////////////
 			}
@@ -117,11 +117,11 @@ public class UdpClientListenInfo(
 
 		var toWillContinueReceiveBytes = currentUdpClientListenInfo.ToWillContinueReceiveBytes;
 		if (toWillContinueReceiveBytes == null
-		|| toWillContinueReceiveBytes(currentUdpClientListenInfo))
+	    || toWillContinueReceiveBytes(currentUdpClientListenInfo))
 		{
 			currentUdpClientListenInfo.UdpClient.BeginReceive(
-				currentUdpClientListenInfo.ToReceiveMessage,
-				currentUdpClientListenInfo);
+		    currentUdpClientListenInfo.ToReceiveMessage,
+		    currentUdpClientListenInfo);
 		}
 	});
 

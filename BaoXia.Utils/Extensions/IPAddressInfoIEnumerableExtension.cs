@@ -13,11 +13,11 @@ namespace BaoXia.Utils.Extensions
 		#region 类方法
 
 		public static bool IsContains(
-			this IEnumerable<IPAddressInfo> ipAddressInfes,
-			string objectIPAddressString)
+		    this IEnumerable<IPAddressInfo> ipAddressInfes,
+		    string objectIPAddressString)
 		{
 			if (objectIPAddressString == null
-				|| objectIPAddressString.Length < 1)
+			    || objectIPAddressString.Length < 1)
 			{
 				return false;
 			}

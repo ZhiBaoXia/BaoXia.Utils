@@ -4,13 +4,13 @@ using System.Reflection;
 namespace BaoXia.Utils.Models;
 
 public class ItemPropertyGetInfo<ItemType>
-	(int recursiveLayerIndex,
-	ItemPropertyRelation propertyRelation,
-	ItemType hostItem,
-	PropertyInfo? propertyInfo,
-	object? objectProperty,
-	int objectProperty_Index,
-	object? objectProperty_Key)
+    (int recursiveLayerIndex,
+    ItemPropertyRelation propertyRelation,
+    ItemType hostItem,
+    PropertyInfo? propertyInfo,
+    object? objectProperty,
+    int objectProperty_Index,
+    object? objectProperty_Key)
 {
 	////////////////////////////////////////////////
 	// @自身属性

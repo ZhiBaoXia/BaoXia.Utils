@@ -8,9 +8,15 @@ public class ClientIpInfo
 
 	#region 自身属性
 
-	public string? IpAddressChain { get; set; }
+	/// <summary>
+	/// 连接的Ip终结点集合字符串，含端口号。
+	/// </summary>
+	public string? ConnectionIpEndPointsString { get; set; }
 
-	public int IpPortLast { get; set; }
+	/// <summary>
+	/// 关键Ip地址，不含端口号。
+	/// </summary>
+	public string? KeyIpAddress { get; set; }
 
 	#endregion
 
@@ -35,12 +41,10 @@ public class ClientIpInfo
 	public ClientIpInfo()
 	{
 	}
-	public ClientIpInfo(
-		string? ipAddressChain,
-		int ipPort)
+	public ClientIpInfo(string? connectionIpEndPointsString, string? keyIpAddress)
 	{
-		IpAddressChain = ipAddressChain;
-		IpPortLast = ipPort;
+		ConnectionIpEndPointsString = connectionIpEndPointsString;
+		KeyIpAddress = keyIpAddress;
 	}
 
 	#endregion

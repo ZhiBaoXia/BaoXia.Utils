@@ -95,8 +95,8 @@ public class AesCtr
 	private static void IncrementCounter(byte[] counter)
 	{
 		for (int counterByteIndex = counter.Length - 1;
-			counterByteIndex >= 0;
-			counterByteIndex--)
+		    counterByteIndex >= 0;
+		    counterByteIndex--)
 		{
 			// 递增当前字节，处理进位
 			if (++counter[counterByteIndex] != 0)
@@ -108,10 +108,10 @@ public class AesCtr
 	}
 
 	public static byte[] EncryptBytes(
-		ArraySegment<byte> plaintextBytes,
-		byte[] keyBytes,
-		byte[]? nonceBytes,
-		out byte[] finalNonceBytes)
+	    ArraySegment<byte> plaintextBytes,
+	    byte[] keyBytes,
+	    byte[]? nonceBytes,
+	    out byte[] finalNonceBytes)
 	{
 		if (plaintextBytes.Count < 1)
 		{
@@ -157,8 +157,8 @@ public class AesCtr
 		int blockSize = aes.BlockSize / 8;
 
 		for (int plaiantextBlockByteIndex = 0;
-			plaiantextBlockByteIndex < plaintextBytes.Count;
-			plaiantextBlockByteIndex += blockSize)
+		    plaiantextBlockByteIndex < plaintextBytes.Count;
+		    plaiantextBlockByteIndex += blockSize)
 		{
 			////////////////////////////////////////////////
 			// 1/4. 生成当前计数器块（16字节）。
@@ -176,11 +176,11 @@ public class AesCtr
 			////////////////////////////////////////////////
 			int bytesToProcess = Math.Min(blockSize, plaintextBytes.Count - plaiantextBlockByteIndex);
 			for (int byteIndexToProcess = 0;
-				byteIndexToProcess < bytesToProcess;
-				byteIndexToProcess++)
+			    byteIndexToProcess < bytesToProcess;
+			    byteIndexToProcess++)
 			{
 				encryptedBytes[plaiantextBlockByteIndex + byteIndexToProcess]
-					= (byte)(plaintextBytes[plaiantextBlockByteIndex + byteIndexToProcess] ^ keystream[byteIndexToProcess]);
+				    = (byte)(plaintextBytes[plaiantextBlockByteIndex + byteIndexToProcess] ^ keystream[byteIndexToProcess]);
 			}
 
 			////////////////////////////////////////////////
@@ -194,9 +194,9 @@ public class AesCtr
 	}
 
 	public static byte[] DecryptBytes(
-		ArraySegment<byte> ciphertextBytes,
-		byte[] keyBytes,
-		byte[] nonceBytes)
+	    ArraySegment<byte> ciphertextBytes,
+	    byte[] keyBytes,
+	    byte[] nonceBytes)
 	{
 		if (ciphertextBytes.Count < 1)
 		{
@@ -226,8 +226,8 @@ public class AesCtr
 		int blockSize = aes.BlockSize / 8; // 16 字节
 
 		for (int ciphertextBlockByteIndex = 0;
-			ciphertextBlockByteIndex < ciphertextBytes.Count;
-			ciphertextBlockByteIndex += blockSize)
+		    ciphertextBlockByteIndex < ciphertextBytes.Count;
+		    ciphertextBlockByteIndex += blockSize)
 		{
 			// 1. 生成当前计数器块（与加密时一致）
 			byte[] counterBlock = new byte[blockSize];
@@ -239,11 +239,11 @@ public class AesCtr
 			// 3. 密文与密钥流异或生成明文（异或自逆）
 			int bytesToProcess = Math.Min(blockSize, ciphertextBytes.Count - ciphertextBlockByteIndex);
 			for (int byteIndexToProcess = 0;
-				byteIndexToProcess < bytesToProcess;
-				byteIndexToProcess++)
+			    byteIndexToProcess < bytesToProcess;
+			    byteIndexToProcess++)
 			{
 				decryptedBytes[ciphertextBlockByteIndex + byteIndexToProcess]
-					= (byte)(ciphertextBytes[ciphertextBlockByteIndex + byteIndexToProcess] ^ keystream[byteIndexToProcess]);
+				    = (byte)(ciphertextBytes[ciphertextBlockByteIndex + byteIndexToProcess] ^ keystream[byteIndexToProcess]);
 			}
 
 			// 4. 递增计数器（与加密时完全一致）
@@ -254,20 +254,20 @@ public class AesCtr
 	}
 
 	public static string EncryptString(
-		string plaintext,
-		string key,
-		string? nonceInBase64,
-		out string finalNonceInBase64)
+	    string plaintext,
+	    string key,
+	    string? nonceInBase64,
+	    out string finalNonceInBase64)
 	{
 		var plaintextBytes = Encoding.UTF8.GetBytes(plaintext);
 		var keyBytes = Encoding.UTF8.GetBytes(key);
 		var nonceBytes = nonceInBase64 != null ? Convert.FromBase64String(nonceInBase64) : null;
 		{ }
 		var ciphertextBytes = EncryptBytes(
-			plaintextBytes,
-			keyBytes,
-			nonceBytes,
-			out var finalNonceBytes);
+		    plaintextBytes,
+		    keyBytes,
+		    nonceBytes,
+		    out var finalNonceBytes);
 		var ciphertext = Convert.ToBase64String(ciphertextBytes) ?? string.Empty;
 		{
 			finalNonceInBase64 = Convert.ToBase64String(finalNonceBytes);
@@ -276,18 +276,18 @@ public class AesCtr
 	}
 
 	public static string DecryptString(
-		string ciphertextInBase64,
-		string key,
-		string nonceInBase64)
+	    string ciphertextInBase64,
+	    string key,
+	    string nonceInBase64)
 	{
 		byte[] ciphertextBytes = Convert.FromBase64String(ciphertextInBase64);
 		byte[] keyBytes = Encoding.UTF8.GetBytes(key);
 		byte[] nonceBytes = Convert.FromBase64String(nonceInBase64);
 
 		var plaintextBytes = DecryptBytes(
-			ciphertextBytes,
-			keyBytes,
-			nonceBytes);
+		    ciphertextBytes,
+		    keyBytes,
+		    nonceBytes);
 		var plaintext = Encoding.UTF8.GetString(plaintextBytes) ?? string.Empty;
 		{ }
 		return plaintext;

@@ -13,8 +13,8 @@ namespace BaoXia.Utils.Attributes
 		public string? Description { get; set; }
 
 		public DescriptionAttribute(
-			string name,
-			string? description = null)
+		    string name,
+		    string? description = null)
 		{
 			this.Name = name;
 

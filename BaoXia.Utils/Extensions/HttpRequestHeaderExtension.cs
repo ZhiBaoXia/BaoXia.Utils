@@ -12,7 +12,7 @@ public static class HttpRequestHeaderExtension
 	#region 静态变量
 
 	public static string? ToHttpHeaderParamName(
-		this HttpRequestHeader httpRequestHeader)
+	    this HttpRequestHeader httpRequestHeader)
 	{
 		return httpRequestHeader switch
 		{

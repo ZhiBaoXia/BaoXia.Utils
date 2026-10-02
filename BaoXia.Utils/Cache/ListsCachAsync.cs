@@ -10,22 +10,22 @@ namespace BaoXia.Utils.Cache;
 /// 列表缓存。
 /// </summary>
 public class ListsCachAsync<ListKeyType, ListItemType, CreateListCacheParamType>(
-	Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
-	Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task<ListItemType[]?>>? toWillUpdateListUpdatedAsync,
-	Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task>? didListUpdatedAsync,
-	Func<double>? toDidGetIntervalSecondsToCleanItemCache,
-	Func<double>? toDidGetNoneReadSecondsToRemoveListCache,
-	Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache,
-	Func<int>? toDidGetThreadsCountToCreateItemAsync)
-	: ItemsCacheAsync<ListKeyType, ListItemType[], CreateListCacheParamType>(
-		didCreateListAsync,
-		toWillUpdateListUpdatedAsync,
-		didListUpdatedAsync,
-		toDidGetIntervalSecondsToCleanItemCache,
-		toDidGetNoneReadSecondsToRemoveListCache,
-		toDidGetNoneUpdateSecondsToUpdateItemCache,
+    Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
+    Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task<ListItemType[]?>>? toWillUpdateListUpdatedAsync,
+    Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task>? didListUpdatedAsync,
+    Func<double>? toDidGetIntervalSecondsToCleanItemCache,
+    Func<double>? toDidGetNoneReadSecondsToRemoveListCache,
+    Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache,
+    Func<int>? toDidGetThreadsCountToCreateItemAsync)
+    : ItemsCacheAsync<ListKeyType, ListItemType[], CreateListCacheParamType>(
+    didCreateListAsync,
+    toWillUpdateListUpdatedAsync,
+    didListUpdatedAsync,
+    toDidGetIntervalSecondsToCleanItemCache,
+    toDidGetNoneReadSecondsToRemoveListCache,
+    toDidGetNoneUpdateSecondsToUpdateItemCache,
 toDidGetThreadsCountToCreateItemAsync)
-	    where ListKeyType : notnull
+    where ListKeyType : notnull
 {
 	////////////////////////////////////////////////
 	// @静态常量
@@ -61,19 +61,19 @@ toDidGetThreadsCountToCreateItemAsync)
 	#region 自身实现
 
 	public ListsCachAsync(
-		Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
-		Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task<ListItemType[]?>>? toWillUpdateListUpdatedAsync,
-		Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task>? didListUpdatedAsync,
-		Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
-		Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
-		Func<int>? toDidGetThreadsCountToCreateItemAs = null)
-		: this(didCreateListAsync,
-			  toWillUpdateListUpdatedAsync,
-			  didListUpdatedAsync,
-			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
-			  toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
-			  toDidGetNoneUpdateSecondsToUpdateItemCache,
-			  toDidGetThreadsCountToCreateItemAs)
+	    Func<ListKeyType, CreateListCacheParamType?, Task<ListItemType[]?>> didCreateListAsync,
+	    Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task<ListItemType[]?>>? toWillUpdateListUpdatedAsync,
+	    Func<ListKeyType, ListItemType[]?, ListItemType[]?, CreateListCacheParamType?, Task>? didListUpdatedAsync,
+	    Func<double>? toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
+	    Func<double>? toDidGetNoneUpdateSecondsToUpdateItemCache = null,
+	    Func<int>? toDidGetThreadsCountToCreateItemAs = null)
+	    : this(didCreateListAsync,
+	      toWillUpdateListUpdatedAsync,
+	      didListUpdatedAsync,
+	      toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
+	      toDidGetIntervalAndNoneReadSecondsToRemoveItemCache,
+	      toDidGetNoneUpdateSecondsToUpdateItemCache,
+	      toDidGetThreadsCountToCreateItemAs)
 	{ }
 
 	protected ListItemType[] RecreateListWithItemOperation(
@@ -159,8 +159,8 @@ toDidGetThreadsCountToCreateItemAsync)
 
 		ListItemType[]? currentList;
 		var listSemaphoreSlim = _listSemaphoreSlims.GetOrAdd(
-			listKey,
-			new SemaphoreSlim(1));
+		    listKey,
+		    new SemaphoreSlim(1));
 		// !!!
 		// !!! ⚠ 同一个线程只能获得一次信号量，                     ⚠
 		// !!! ⚠ 因此，不能在同一个线程中“Wait”多次，           ⚠
@@ -176,7 +176,7 @@ toDidGetThreadsCountToCreateItemAsync)
 				currentList ??= [];
 			}
 			currentList
-				= this.RecreateListWithItemOperation(
+			    = this.RecreateListWithItemOperation(
 			    currentList,
 			    item,
 			    ItemOperation.InsertOrUpdate);
@@ -188,30 +188,30 @@ toDidGetThreadsCountToCreateItemAsync)
 			////////////////////////////////////////////////
 			// !!!
 			currentList = await DidWillUpdateItemCacheAsync(
-				listKey,
-				lastList,
-				currentList,
-				createListParam);
+			    listKey,
+			    lastList,
+			    currentList,
+			    createListParam);
 			// !!!
 			////////////////////////////////////////////////
 
 			if (currentList != null
-				|| IsNullValueValidToCache)
+			    || IsNullValueValidToCache)
 			{
 				// !!!
 				listContainerNeedAddItem.SetItem(
-					currentList,
-					createListParam,
-					isNeedUpdateItemLastReadTime);
+				    currentList,
+				    createListParam,
+				    isNeedUpdateItemLastReadTime);
 				// !!!
 
 				////////////////////////////////////////////////
 				// !!!
 				await DidItemCacheUpdatedAsync(
-					listKey,
-					lastList,
-					currentList,
-					createListParam);
+				    listKey,
+				    lastList,
+				    currentList,
+				    createListParam);
 				// !!!
 				////////////////////////////////////////////////
 			}
@@ -258,8 +258,8 @@ toDidGetThreadsCountToCreateItemAsync)
 		// 2/4，排队更新列表对象（容器）。
 		////////////////////////////////////////////////
 		var listSemaphoreSlim = _listSemaphoreSlims.GetOrAdd(
-			listKey,
-			new SemaphoreSlim(1));
+		    listKey,
+		    new SemaphoreSlim(1));
 		// !!!
 		// !!! ⚠ 同一个线程只能获得一次信号量，                     ⚠
 		// !!! ⚠ 因此，不能在同一个线程中“Wait”多次，           ⚠
@@ -282,10 +282,10 @@ toDidGetThreadsCountToCreateItemAsync)
 				////////////////////////////////////////////////
 				// !!!
 				await UpdateAsync(
-					listKey,
-					currentList,
-					createListParam,
-					isNeedUpdateItemLastReadTime);
+				    listKey,
+				    currentList,
+				    createListParam,
+				    isNeedUpdateItemLastReadTime);
 				// !!!
 			}
 			return currentList;

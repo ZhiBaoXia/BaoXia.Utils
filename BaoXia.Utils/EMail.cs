@@ -18,19 +18,19 @@ namespace BaoXia.Utils
 		/// <param name="body">邮件正文。</param>
 		/// <param name="attachmentFilePaths">附件文件的文件路径集合。</param>
 		public static bool SendMailTo(
-			string smtpServerAddress,
-			int smtpServerPort,
-			bool isSmtpServerSSLEnable,
-			//
-			ICollection<string> objectEMailAddresses,
-			ICollection<string>? copyObjectEMailAddresses,
-			string subject,
-			string body,
-			ICollection<string>? attachmentFilePaths,
-			//
-			string? authorName,
-			string authorEMailAccount,
-			string authorEMailPassword)
+		    string smtpServerAddress,
+		    int smtpServerPort,
+		    bool isSmtpServerSSLEnable,
+		    //
+		    ICollection<string> objectEMailAddresses,
+		    ICollection<string>? copyObjectEMailAddresses,
+		    string subject,
+		    string body,
+		    ICollection<string>? attachmentFilePaths,
+		    //
+		    string? authorName,
+		    string authorEMailAccount,
+		    string authorEMailPassword)
 		{
 			if (objectEMailAddresses.Count < 1)
 			{
@@ -45,12 +45,12 @@ namespace BaoXia.Utils
 				return false;
 			}
 			if (authorEMailAccount == null
-				|| authorEMailAccount.Length < 1)
+			    || authorEMailAccount.Length < 1)
 			{
 				return false; ;
 			}
 			if (authorEMailPassword == null
-				|| authorEMailPassword.Length < 1)
+			    || authorEMailPassword.Length < 1)
 			{
 				return false; ;
 			}
@@ -66,8 +66,8 @@ namespace BaoXia.Utils
 
 				//发件人地址
 				From = new MailAddress(
-					authorEMailAccount,
-					authorName)
+			    authorEMailAccount,
+			    authorName)
 			};
 
 			//向收件人地址集合添加邮件地址
@@ -105,8 +105,8 @@ namespace BaoXia.Utils
 			if (attachmentFilePaths?.Count > 0)
 			{
 				foreach (string attachmentFilePath
-					in
-					attachmentFilePaths)
+				    in
+				    attachmentFilePaths)
 				{
 					var attachFile = new Attachment(attachmentFilePath);
 					{
@@ -126,8 +126,8 @@ namespace BaoXia.Utils
 
 				// 主机账号和密码：
 				Credentials = new System.Net.NetworkCredential(
-					authorEMailAccount,
-					authorEMailPassword)
+			    authorEMailAccount,
+			    authorEMailPassword)
 			};
 
 			// 将邮件发送到SMTP邮件服务器

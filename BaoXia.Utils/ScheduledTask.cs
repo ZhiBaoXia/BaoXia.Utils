@@ -45,7 +45,7 @@ public class ScheduledTask
 		{
 			var now = DateTime.Now;
 			if (now >= LastScheduledTaskBeginTime
-				&& now < LastScheduledTaskEndTime)
+			    && now < LastScheduledTaskEndTime)
 			{
 				return true;
 			}
@@ -63,41 +63,41 @@ public class ScheduledTask
 	#region 自身实现
 
 	public ScheduledTask(
-			Func<CancellationToken, bool> toProcessTask,
-			Func<ScheduledTaskConfig?> toGetScheduledTaskConfig,
-			bool isAutoRun = true,
-			bool isRunImmediately = false,
-		       double timerAccuracySeconds = TimerAccuracySecondsDefault)
+	    Func<CancellationToken, bool> toProcessTask,
+	    Func<ScheduledTaskConfig?> toGetScheduledTaskConfig,
+	    bool isAutoRun = true,
+	    bool isRunImmediately = false,
+	       double timerAccuracySeconds = TimerAccuracySecondsDefault)
 	{
 		ToProcessTask = toProcessTask;
 
 		ToGetScheduledTaskConfig = toGetScheduledTaskConfig;
 
 		_taskToCheckTimeToStartOrStopTask
-			= new(
-				DidCheckTimeToStartTask,
-				timerAccuracySeconds,
-				isAutoRun,
-				isRunImmediately);
+		    = new(
+		    DidCheckTimeToStartTask,
+		    timerAccuracySeconds,
+		    isAutoRun,
+		    isRunImmediately);
 	}
 
 	public ScheduledTask(
-			Func<CancellationToken, Task<bool>> toProcessTaskAsync,
-			Func<ScheduledTaskConfig?> toGetScheduledTaskConfig,
-			bool isAutoRun = true,
-			bool isRunImmediately = false,
-		       double timerAccuracySeconds = TimerAccuracySecondsDefault)
+	    Func<CancellationToken, Task<bool>> toProcessTaskAsync,
+	    Func<ScheduledTaskConfig?> toGetScheduledTaskConfig,
+	    bool isAutoRun = true,
+	    bool isRunImmediately = false,
+	       double timerAccuracySeconds = TimerAccuracySecondsDefault)
 	{
 		ToProcessTaskAsync = toProcessTaskAsync;
 
 		ToGetScheduledTaskConfig = toGetScheduledTaskConfig;
 
 		_taskToCheckTimeToStartOrStopTask
-			= new(
-				DidCheckTimeToStartTaskAsync,
-				timerAccuracySeconds,
-				isAutoRun,
-				isRunImmediately);
+		    = new(
+		    DidCheckTimeToStartTaskAsync,
+		    timerAccuracySeconds,
+		    isAutoRun,
+		    isRunImmediately);
 	}
 
 	#endregion
@@ -110,7 +110,7 @@ public class ScheduledTask
 	#region 事件节点，同步任务
 
 	protected bool DidCheckTimeToStartTask(
-		CancellationToken cancellationToken)
+	    CancellationToken cancellationToken)
 	{
 		if (ToProcessTask is not Func<CancellationToken, bool> toProcessTask)
 		{
@@ -123,24 +123,24 @@ public class ScheduledTask
 		}
 		var now = DateTime.Now;
 		if (scheduledTaskConfig.TimeSection != null
-			&& !scheduledTaskConfig.TimeSection.IsTimeInSection(now))
+		    && !scheduledTaskConfig.TimeSection.IsTimeInSection(now))
 		{
 			return true;
 		}
 
 		LastScheduledTaskCancellationTokenSource
-			??= CancellationTokenSource
-			.CreateLinkedTokenSource(cancellationToken);
+		    ??= CancellationTokenSource
+		    .CreateLinkedTokenSource(cancellationToken);
 		switch (scheduledTaskConfig.ScheduledType)
 		{
 			case ScheduledType.FixedTaskStartIntervalSeconds:
 				{
 					if ((now - LastScheduledTaskBeginTime).TotalSeconds
-						>= scheduledTaskConfig.TaskIntervalSeconds)
+					    >= scheduledTaskConfig.TaskIntervalSeconds)
 					{
 						DidProcessTaskInFixedTaskStartIntervalSeconds(
-							toProcessTask,
-							cancellationToken);
+						    toProcessTask,
+						    cancellationToken);
 					}
 				}
 				break;
@@ -148,19 +148,19 @@ public class ScheduledTask
 			case ScheduledType.FixedTaskIntervalSeconds:
 				{
 					if ((now - LastScheduledTaskEndTime).TotalSeconds
-						>= scheduledTaskConfig.TaskIntervalSeconds)
+					    >= scheduledTaskConfig.TaskIntervalSeconds)
 					{
 						DidProcessTaskInFixedTaskIntervalSeconds(
-							toProcessTask,
-							cancellationToken);
+						    toProcessTask,
+						    cancellationToken);
 					}
 				}
 				break;
 			case ScheduledType.FixedTimeSection:
 				{
 					DidProcessTaskInFixedTimeSection(
-							toProcessTask,
-							cancellationToken);
+					    toProcessTask,
+					    cancellationToken);
 				}
 				break;
 		}
@@ -168,8 +168,8 @@ public class ScheduledTask
 	}
 
 	protected void DidProcessTaskInFixedTaskStartIntervalSeconds(
-		Func<CancellationToken, bool> toProcessTask,
-		CancellationToken cancellationToken)
+	    Func<CancellationToken, bool> toProcessTask,
+	    CancellationToken cancellationToken)
 	{
 		// !!!
 		LastScheduledTaskBeginTime = DateTime.Now;
@@ -193,8 +193,8 @@ public class ScheduledTask
 	}
 
 	protected void DidProcessTaskInFixedTaskIntervalSeconds(
-		Func<CancellationToken, bool> toProcessTask,
-		CancellationToken cancellationToken)
+	    Func<CancellationToken, bool> toProcessTask,
+	    CancellationToken cancellationToken)
 	{
 		// !!!
 		LastScheduledTaskBeginTime = DateTime.Now;
@@ -214,8 +214,8 @@ public class ScheduledTask
 	}
 
 	protected void DidProcessTaskInFixedTimeSection(
-		Func<CancellationToken, bool> toProcessTask,
-		CancellationToken cancellationToken)
+	    Func<CancellationToken, bool> toProcessTask,
+	    CancellationToken cancellationToken)
 	{
 		// !!!
 		LastScheduledTaskBeginTime = DateTime.Now;
@@ -244,10 +244,10 @@ public class ScheduledTask
 	#region 事件节点，异步任务
 
 	protected async Task<bool> DidCheckTimeToStartTaskAsync(
-		CancellationToken cancellationToken)
+	    CancellationToken cancellationToken)
 	{
 		if (ToProcessTaskAsync
-			is not Func<CancellationToken, Task<bool>> toProcessTaskAsync)
+		    is not Func<CancellationToken, Task<bool>> toProcessTaskAsync)
 		{
 			return true;
 		}
@@ -258,24 +258,24 @@ public class ScheduledTask
 		}
 		var now = DateTime.Now;
 		if (scheduledTaskConfig.TimeSection != null
-			&& !scheduledTaskConfig.TimeSection.IsTimeInSection(now))
+		    && !scheduledTaskConfig.TimeSection.IsTimeInSection(now))
 		{
 			return true;
 		}
 
 		LastScheduledTaskCancellationTokenSource
-			??= CancellationTokenSource
-			.CreateLinkedTokenSource(cancellationToken);
+		    ??= CancellationTokenSource
+		    .CreateLinkedTokenSource(cancellationToken);
 		switch (scheduledTaskConfig.ScheduledType)
 		{
 			case ScheduledType.FixedTaskStartIntervalSeconds:
 				{
 					if ((now - LastScheduledTaskBeginTime).TotalSeconds
-						>= scheduledTaskConfig.TaskIntervalSeconds)
+					    >= scheduledTaskConfig.TaskIntervalSeconds)
 					{
 						DidProcessTaskInFixedTaskStartIntervalSecondsAsync(
-							toProcessTaskAsync,
-							cancellationToken);
+						    toProcessTaskAsync,
+						    cancellationToken);
 					}
 				}
 				break;
@@ -283,19 +283,19 @@ public class ScheduledTask
 			case ScheduledType.FixedTaskIntervalSeconds:
 				{
 					if ((now - LastScheduledTaskEndTime).TotalSeconds
-						>= scheduledTaskConfig.TaskIntervalSeconds)
+					    >= scheduledTaskConfig.TaskIntervalSeconds)
 					{
 						await DidProcessTaskInFixedTaskIntervalSecondsAsync(
-							toProcessTaskAsync,
-							cancellationToken);
+						    toProcessTaskAsync,
+						    cancellationToken);
 					}
 				}
 				break;
 			case ScheduledType.FixedTimeSection:
 				{
 					await DidProcessTaskInFixedTimeSectionAsync(
-							toProcessTaskAsync,
-							cancellationToken);
+					    toProcessTaskAsync,
+					    cancellationToken);
 				}
 				break;
 		}
@@ -303,8 +303,8 @@ public class ScheduledTask
 	}
 
 	protected void DidProcessTaskInFixedTaskStartIntervalSecondsAsync(
-		Func<CancellationToken, Task<bool>> toProcessTaskAsync,
-		CancellationToken cancellationToken)
+	    Func<CancellationToken, Task<bool>> toProcessTaskAsync,
+	    CancellationToken cancellationToken)
 	{
 		// !!!
 		LastScheduledTaskBeginTime = DateTime.Now;
@@ -328,8 +328,8 @@ public class ScheduledTask
 	}
 
 	protected async Task DidProcessTaskInFixedTaskIntervalSecondsAsync(
-		Func<CancellationToken, Task<bool>> toProcessTaskAsync,
-		CancellationToken cancellationToken)
+	    Func<CancellationToken, Task<bool>> toProcessTaskAsync,
+	    CancellationToken cancellationToken)
 	{
 		// !!!
 		LastScheduledTaskBeginTime = DateTime.Now;
@@ -349,8 +349,8 @@ public class ScheduledTask
 	}
 
 	protected async Task DidProcessTaskInFixedTimeSectionAsync(
-		Func<CancellationToken, Task<bool>> toProcessTaskAsync,
-		CancellationToken cancellationToken)
+	    Func<CancellationToken, Task<bool>> toProcessTaskAsync,
+	    CancellationToken cancellationToken)
 	{
 		// !!!
 		LastScheduledTaskBeginTime = DateTime.Now;

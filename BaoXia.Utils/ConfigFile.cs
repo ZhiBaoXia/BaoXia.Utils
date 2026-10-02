@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BaoXia.Utils
@@ -18,6 +19,7 @@ namespace BaoXia.Utils
 
 		public const int TryLoadsCountAtConfigFileContentChanged = 3;
 
+		[JsonIgnore]
 		public string? ConfigFileSecondFileExtensionNameSpecifed { get; set; }
 
 
@@ -25,7 +27,7 @@ namespace BaoXia.Utils
 
 		static readonly List<ConfigFile> _configFiles = [];
 
-		static readonly object _configFileConstructLocker = new();
+		static readonly Lock _configFileConstructLocker = new();
 		static bool _isConfigFileConstructWithAutoLoadEnable = true;
 		protected class ConfigFileConstructWithAutoLoadDisabler : IDisposable
 		{
@@ -59,16 +61,16 @@ namespace BaoXia.Utils
 		/// 初始化配置文件系统。
 		/// </summary>
 		public static bool InitializeWithConfigFilesDirectoryPath(
-			string? configFilesDirectoryPath)
+		    string? configFilesDirectoryPath)
 		{
 			if (configFilesDirectoryPath == null
-				|| configFilesDirectoryPath.Length < 1)
+			    || configFilesDirectoryPath.Length < 1)
 			{
 				return false;
 			}
 
 			_configFilesDirectoryPath
-				= configFilesDirectoryPath.ToFileSystemDirectoryPath();
+			    = configFilesDirectoryPath.ToFileSystemDirectoryPath();
 			if (!System.IO.Directory.Exists(_configFilesDirectoryPath))
 			{
 				System.IO.Directory.CreateDirectory(_configFilesDirectoryPath);
@@ -80,13 +82,13 @@ namespace BaoXia.Utils
 				{
 					var configFilePath = configFile.FilePath;
 					if (configFilePath == null
-						|| configFilePath.Length < 1)
+					    || configFilePath.Length < 1)
 					{
 						configFilePath
-							= _configFilesDirectoryPath
-							+ configFile.GetType().Name
-							+ "."
-							+ ConfigFileExtensionName;
+						    = _configFilesDirectoryPath
+						    + configFile.GetType().Name
+						    + "."
+						    + ConfigFileExtensionName;
 						// !!!
 						configFile.FilePath = configFilePath;
 						// !!!
@@ -121,18 +123,15 @@ namespace BaoXia.Utils
 				var filePath = value?.Trim();
 
 				if (StringUtil.EqualsStrings(
-					_filePath,
-					filePath,
-					StringComparison.CurrentCultureIgnoreCase))
+				    _filePath,
+				    filePath,
+				    StringComparison.CurrentCultureIgnoreCase))
 				{
 					return;
 				}
 
-				if (_fileWatcher != null)
-				{
-					_fileWatcher.Dispose();
-					_fileWatcher = null;
-				}
+				_fileWatcher?.Dispose();
+				_fileWatcher = null;
 
 				_filePath = value;
 
@@ -168,6 +167,7 @@ namespace BaoXia.Utils
 		/// <summary>
 		/// 实际读写的文件绝对路径。
 		/// </summary>
+		[JsonIgnore]
 		public string? FinalFilePath
 		{
 			get
@@ -179,7 +179,7 @@ namespace BaoXia.Utils
 		/// <summary>
 		/// 配置文件发生变化时的要进行通知的事件链。
 		/// </summary>
-		protected List<Action<ConfigFile>>? _configFileChangedEvents;
+		protected List<Func<ConfigFile, Task>>? _configFileChangedEventsAsync;
 
 		////////////////////////////////////////////////
 		// @自身实现
@@ -204,10 +204,10 @@ namespace BaoXia.Utils
 					if (_configFilesDirectoryPath?.Length > 0)
 					{
 						var configFilePath
-							= _configFilesDirectoryPath
-							+ this.GetType().Name
-							+ "."
-							+ ConfigFileExtensionName;
+						    = _configFilesDirectoryPath
+						    + this.GetType().Name
+						    + "."
+						    + ConfigFileExtensionName;
 						// !!!
 						this.FilePath = configFilePath;
 						// !!!
@@ -221,11 +221,8 @@ namespace BaoXia.Utils
 		/// </summary>
 		~ConfigFile()
 		{
-			if (_fileWatcher != null)
-			{
-				_fileWatcher.Dispose();
-				_fileWatcher = null;
-			}
+			_fileWatcher?.Dispose();
+			_fileWatcher = null;
 			lock (_configFiles)
 			{
 				_configFiles.Remove(this);
@@ -237,31 +234,30 @@ namespace BaoXia.Utils
 			var originalConfigFilePath = _filePath;
 			string? configFileSecondFileExtensionNameSpecifed = null;
 			if (string.IsNullOrEmpty(originalConfigFilePath)
-				== false)
+			    == false)
 			{
 				configFileSecondFileExtensionNameSpecifed
-					= ConfigFileSecondFileExtensionNameSpecifed;
+				    = ConfigFileSecondFileExtensionNameSpecifed;
 				if (string.IsNullOrEmpty(configFileSecondFileExtensionNameSpecifed))
 				{
 					var enviromentName = Environment.EnviromentName;
 					if (string.IsNullOrEmpty(enviromentName)
-						== false)
+					    == false)
 					{
 						configFileSecondFileExtensionNameSpecifed
-							= enviromentName;
+						    = enviromentName;
 					}
 				}
 			}
 			return this.DidGetFinalConfigFilePath(
-				originalConfigFilePath,
-				configFileSecondFileExtensionNameSpecifed);
+			    originalConfigFilePath,
+			    configFileSecondFileExtensionNameSpecifed);
 		}
 
 		public bool Load()
 		{
 			var finalConfigFilePath = this.FinalFilePath;
-			if (!string.IsNullOrEmpty(finalConfigFilePath)
-				&& System.IO.File.Exists(finalConfigFilePath))
+			if (!string.IsNullOrEmpty(finalConfigFilePath) && System.IO.File.Exists(finalConfigFilePath))
 			{
 				var newConfigJson = System.IO.File.ReadAllText(finalConfigFilePath);
 				if (newConfigJson?.Length > 0)
@@ -269,20 +265,15 @@ namespace BaoXia.Utils
 					lock (_configFileConstructLocker)
 					{
 						using var autoLoadDisabler = new ConfigFileConstructWithAutoLoadDisabler();
-						using var newConfigFile
-							= (ConfigFile?)newConfigJson.ToObjectByJsonDeserialize(this.GetType());
+						using var newConfigFile = (ConfigFile?)newConfigJson.ToObjectByJsonDeserialize(this.GetType());
 						if (newConfigFile != null)
 						{
-							this.SetPropertiesWithSameNameFrom(
-								newConfigFile,
-								"FilePath");
+							this.SetPropertiesWithSameNameFrom(newConfigFile, nameof(FilePath));
 							// !!! 异步通知配置文件发生变化，避免在静态类初始化时触发相关事件， !!!
 							// !!! 从而逻辑递归 !!!
-							Task.Run(() =>
+							Task.Run(async () =>
 							{
-								this.DidLoadConfigFileCompletedFromFilePath(
-									 finalConfigFilePath,
-									 this);
+								await this.DidLoadConfigFileCompletedFromFilePathAsync(finalConfigFilePath, this);
 							});
 							//
 							return true;
@@ -293,9 +284,7 @@ namespace BaoXia.Utils
 			return false;
 		}
 
-		public bool Save(
-			bool isBackupLastFile,
-			out string? configBackupFilePath)
+		public bool Save(bool isBackupLastFile, out string? configBackupFilePath)
 		{
 			//
 			configBackupFilePath = null;
@@ -308,8 +297,7 @@ namespace BaoXia.Utils
 			}
 
 			// 1/2，备份旧的配置信息：
-			if (isBackupLastFile
-				&& System.IO.File.Exists(finalConfigFilePath))
+			if (isBackupLastFile && System.IO.File.Exists(finalConfigFilePath))
 			{
 				var configDictionaryPath = finalConfigFilePath.ToFileSystemDirectoryPath(true);
 
@@ -326,20 +314,20 @@ namespace BaoXia.Utils
 
 				// !!!⚠
 				configBackupFilePath
-					= FileExtension.CreateFilePathNotExistedBySameFileNameIndexWithDirectoryPath(
-						configDictionaryPath,
-						configFileName,
-						configFileExtensionName);
+				    = FileExtension.CreateFilePathNotExistedBySameFileNameIndexWithDirectoryPath(
+				    configDictionaryPath,
+				    configFileName,
+				    configFileExtensionName);
 				// !!!⚠
 
 				// !!!
 				if (configBackupFilePath != null)
 				{
 					var configJson
-						= System.IO.File.ReadAllText(finalConfigFilePath);
+					    = System.IO.File.ReadAllText(finalConfigFilePath);
 					System.IO.File.WriteAllText(
-						configBackupFilePath,
-						configJson);
+					    configBackupFilePath,
+					    configJson);
 				}
 				// !!!
 			}
@@ -347,16 +335,16 @@ namespace BaoXia.Utils
 			// 2/2，写入新的配置信息：
 			{
 				var newConfigJson
-					= StringUtil.StringByJsonSerializeObject(this);
+				    = StringUtil.StringByJsonSerializeObject(this);
 				System.IO.File.WriteAllText(
-					finalConfigFilePath,
-					newConfigJson,
-					Encoding.UTF8);
+				    finalConfigFilePath,
+				    newConfigJson,
+				    Encoding.UTF8);
 
 				// !!!
 				this.DidSaveConfigFileCompletedToFilePath(
-					finalConfigFilePath,
-					this);
+				    finalConfigFilePath,
+				    this);
 				// !!!
 			}
 			return true;
@@ -367,21 +355,21 @@ namespace BaoXia.Utils
 			return this.Save(false, out _);
 		}
 
-		public void AddConfigFileChangedEvent(Action<ConfigFile> configFileChangedEvent)
+		public void AddConfigFileChangedEvent(Func<ConfigFile, Task> configFileChangedEvent)
 		{
 			lock (this)
 			{
-				_configFileChangedEvents ??= [];
-				if (!_configFileChangedEvents.Contains(configFileChangedEvent))
+				_configFileChangedEventsAsync ??= [];
+				if (!_configFileChangedEventsAsync.Contains(configFileChangedEvent))
 				{
-					_configFileChangedEvents.Add(configFileChangedEvent);
+					_configFileChangedEventsAsync.Add(configFileChangedEvent);
 				}
 			}
 		}
 
-		public void RemoveConfigFileChangedEvent(Action<ConfigFile> configFileChangedEvent)
+		public void RemoveConfigFileChangedEvent(Func<ConfigFile, Task> configFileChangedEvent)
 		{
-			_configFileChangedEvents?.Remove(configFileChangedEvent);
+			_configFileChangedEventsAsync?.Remove(configFileChangedEvent);
 		}
 
 		////////////////////////////////////////////////
@@ -389,23 +377,23 @@ namespace BaoXia.Utils
 		////////////////////////////////////////////////
 
 		protected virtual string? DidGetFinalConfigFilePath(
-			string? originalConfigFilePath,
-			string? configFileSecondFileExtensionNameSpecifed)
+		    string? originalConfigFilePath,
+		    string? configFileSecondFileExtensionNameSpecifed)
 		{
 			var finalConfigFilePath = originalConfigFilePath;
 			if (string.IsNullOrEmpty(finalConfigFilePath)
-				== false
-				&& string.IsNullOrEmpty(configFileSecondFileExtensionNameSpecifed)
-				== false)
+			    == false
+			    && string.IsNullOrEmpty(configFileSecondFileExtensionNameSpecifed)
+			    == false)
 			{
 				var fileDirectoryPath = finalConfigFilePath.ToFileSystemDirectoryPath(true);
 				var fileName = finalConfigFilePath.ToFileName(false);
 				var fileExtensionName = finalConfigFilePath.ToFileExtensionName();
 				var filePathWithSecondFileExtensionNameSpecifed
-					= fileDirectoryPath
-					+ fileName
-					+ "." + configFileSecondFileExtensionNameSpecifed
-					+ "." + fileExtensionName;
+				    = fileDirectoryPath
+				    + fileName
+				    + "." + configFileSecondFileExtensionNameSpecifed
+				    + "." + fileExtensionName;
 				if (System.IO.File.Exists(filePathWithSecondFileExtensionNameSpecifed))
 				{
 					// !!!
@@ -421,18 +409,14 @@ namespace BaoXia.Utils
 		/// </summary>
 		/// <param name="sender">事件发送者。</param>
 		/// <param name="configFile">文件系统事件参数。</param>
-		protected virtual void DidConfigFileChanged(
-			object sender,
-			FileSystemEventArgs fileSystemEventArgs)
+		protected virtual void DidConfigFileChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
 		{
 #if DEBUG
 			var myType = this.GetType();
 			var myName = myType.Namespace + "." + myType.Name;
 			System.Diagnostics.Trace.WriteLine(myName + "，检测到配置文件内容发生变化：" + _filePath);
 #endif
-			for (var tryLoadIndex = 0;
-				tryLoadIndex < ConfigFile.TryLoadsCountAtConfigFileContentChanged;
-				tryLoadIndex++)
+			for (var tryLoadIndex = 0; tryLoadIndex < ConfigFile.TryLoadsCountAtConfigFileContentChanged; tryLoadIndex++)
 			{
 				try
 				{
@@ -451,22 +435,23 @@ namespace BaoXia.Utils
 		/// </summary>
 		/// <param name="filePath">加载配置文件所在的文件路径。</param>
 		/// <param name="configFile">成功加载生成的配置文件对象。</param>
-		protected virtual void DidLoadConfigFileCompletedFromFilePath(
-			string filePath,
-			ConfigFile configFile)
+		protected virtual async Task DidLoadConfigFileCompletedFromFilePathAsync(string filePath, ConfigFile configFile)
 		{
-			Action<ConfigFile>[]? configFileChangedEvents;
+			Func<ConfigFile, Task>[]? configFileChangedEvents;
 			lock (this)
 			{
-				configFileChangedEvents = _configFileChangedEvents?.ToArray();
+				configFileChangedEvents = _configFileChangedEventsAsync?.ToArray();
 			}
 			if (configFileChangedEvents?.Length > 0)
 			{
-				foreach (var configFileChangedEvent in configFileChangedEvents)
+				foreach (var configFileChangedEventAsync in configFileChangedEvents)
 				{
 					try
 					{
-						configFileChangedEvent?.Invoke(this);
+						if (configFileChangedEventAsync != null)
+						{
+							await configFileChangedEventAsync.Invoke(this);
+						}
 					}
 					catch
 					{ }
@@ -480,8 +465,8 @@ namespace BaoXia.Utils
 		/// <param name="filePath">保存配置文件所在的文件路径。</param>
 		/// <param name="configFile">当前保存的配置文件对象。</param>
 		protected virtual void DidSaveConfigFileCompletedToFilePath(
-			string filePath,
-			ConfigFile configFile)
+		    string filePath,
+		    ConfigFile configFile)
 		{ }
 
 		////////////////////////////////////////////////
@@ -490,11 +475,8 @@ namespace BaoXia.Utils
 
 		public void Dispose()
 		{
-			if (_fileWatcher != null)
-			{
-				_fileWatcher.Dispose();
-				_fileWatcher = null;
-			}
+			_fileWatcher?.Dispose();
+			_fileWatcher = null;
 			lock (_configFiles)
 			{
 				_configFiles.Remove(this);

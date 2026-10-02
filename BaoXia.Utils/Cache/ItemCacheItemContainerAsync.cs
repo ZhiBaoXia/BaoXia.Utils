@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 namespace BaoXia.Utils.Cache
 {
 	public class ItemCacheItemContainerAsync<ItemKeyType, ItemType, ItemCacheCreateParamType>
-		: ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>
-			where ItemKeyType : notnull
+	    : ItemCacheItemContainer<ItemKeyType, ItemType?, ItemCacheCreateParamType?>
+	    where ItemKeyType : notnull
 	{
 
 		////////////////////////////////////////////////
@@ -27,19 +27,19 @@ namespace BaoXia.Utils.Cache
 
 
 		public ItemCacheItemContainerAsync(
-			ItemKeyType key,
-			ItemType? item,
-			Boolean isItemValid,
-			ItemCacheCreateParamType? itemCreateParam,
-			DateTime lastReadTime,
-			DateTime lastUpdateTime,
-			Task<Task<ItemType?>>? itemCacheCreateTask)
-			: base(key,
-			  item,
-			  isItemValid,
-			  itemCreateParam,
-			  lastReadTime,
-			  lastUpdateTime)
+		    ItemKeyType key,
+		    ItemType? item,
+		    Boolean isItemValid,
+		    ItemCacheCreateParamType? itemCreateParam,
+		    DateTime lastReadTime,
+		    DateTime lastUpdateTime,
+		    Task<Task<ItemType?>>? itemCacheCreateTask)
+		    : base(key,
+		      item,
+		      isItemValid,
+		      itemCreateParam,
+		      lastReadTime,
+		      lastUpdateTime)
 		{
 			this.ItemCacheCreateTask = itemCacheCreateTask;
 		}
@@ -54,8 +54,8 @@ namespace BaoXia.Utils.Cache
 		#region 事件节点
 
 		protected override void DidSetItem(
-			ItemType? item,
-			ItemCacheCreateParamType? itemCreateParam)
+		    ItemType? item,
+		    ItemCacheCreateParamType? itemCreateParam)
 		{
 			base.DidSetItem(item, itemCreateParam);
 

@@ -3,10 +3,10 @@
 namespace BaoXia.Utils.Models;
 
 public class PrivacyInfo(
-	PrivacyInfoType type,
-	int beginIndex,
-	int endIndex,
-	string privacyContent)
+    PrivacyInfoType type,
+    int beginIndex,
+    int endIndex,
+    string privacyContent)
 {
 	////////////////////////////////////////////////
 	// @自身属性

@@ -98,18 +98,18 @@ public abstract class TestCase
 
 		var testCaseType = this.GetType();
 		var nameAttributes
-			= testCaseType.GetCustomAttributes(
-				typeof(NameAttribute),
-				false);
+		    = testCaseType.GetCustomAttributes(
+		    typeof(NameAttribute),
+		    false);
 		if (nameAttributes?.Length > 0)
 		{
 			for (var nameAttributeIndex = nameAttributes.Length - 1;
-				nameAttributeIndex >= 0;
-				nameAttributeIndex--)
+			    nameAttributeIndex >= 0;
+			    nameAttributeIndex--)
 			{
 				var nameAttributeObject = nameAttributes[nameAttributeIndex];
 				if (nameAttributeObject is NameAttribute nameAttribute
-					&& !string.IsNullOrEmpty(nameAttribute.Name))
+				    && !string.IsNullOrEmpty(nameAttribute.Name))
 				{
 					// !!!
 					_name = nameAttribute.Name;
@@ -127,8 +127,8 @@ public abstract class TestCase
 	}
 
 	public void Output(
-		string? testInfo,
-		bool isWriteNewLine = true)
+	    string? testInfo,
+	    bool isWriteNewLine = true)
 	{
 		if (testInfo?.Length > 0)
 		{
@@ -198,11 +198,11 @@ public abstract class TestCase
 
 		Output("------------------------------------------------");
 		var testResult
-			= (IsHadAssertFailed
-			? $"× 测试【失败】，"
-			: $"√ 测试通过，")
-			+ Name
-			+ $"，耗时：{TestElapsedSeconds} 秒。";
+		    = (IsHadAssertFailed
+		    ? $"× 测试【失败】，"
+		    : $"√ 测试通过，")
+		    + Name
+		    + $"，耗时：{TestElapsedSeconds} 秒。";
 		{ }
 		Output(testResult);
 		TestResult = testResult;

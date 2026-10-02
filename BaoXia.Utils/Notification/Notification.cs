@@ -5,22 +5,22 @@ using System.Threading.Tasks;
 namespace BaoXia.Utils.Notification;
 
 public class Notification(
-	string? queueName,
-	string name,
-	IEnumerable<string>? tagNames,
-	//
-	string? description,
-	//
-	Dictionary<string, object>? paramDictionary,
-	object? paramObject,
-	string? senderName,
-	DateTime createTime,
-	double sendDelaySeconds,
-	//
-	Action<List<Object>>? toNotificationSended,
-	Func<List<Object>, Task>? toNotificationSendedAsync) : NotificationIdentity(queueName,
-			  name,
-			  tagNames)
+    string? queueName,
+    string name,
+    IEnumerable<string>? tagNames,
+    //
+    string? description,
+    //
+    Dictionary<string, object>? paramDictionary,
+    object? paramObject,
+    string? senderName,
+    DateTime createTime,
+    double sendDelaySeconds,
+    //
+    Action<List<Object>>? toNotificationSended,
+    Func<List<Object>, Task>? toNotificationSendedAsync) : NotificationIdentity(queueName,
+	  name,
+	  tagNames)
 {
 	////////////////////////////////////////////////
 	// @自身属性，业务相关

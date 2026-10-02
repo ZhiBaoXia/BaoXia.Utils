@@ -33,10 +33,10 @@ public class TempTokenInfo
 	{ }
 
 	public TempTokenInfo(
-		string tokenValue,
-		ClientIpInfo clientIpInfo,
-		double? liveSecondsMaxSpecified,
-		DateTimeOffset createTime)
+	    string tokenValue,
+	    ClientIpInfo clientIpInfo,
+	    double? liveSecondsMaxSpecified,
+	    DateTimeOffset createTime)
 	{
 		TokenValue = tokenValue;
 		ClientIpInfo = clientIpInfo;

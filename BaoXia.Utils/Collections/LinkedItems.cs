@@ -5,8 +5,8 @@ using System.Collections.Generic;
 namespace BaoXia.Utils.Collections
 {
 	public class LinkedItems<ListItemType>
-			: IEnumerable<ListItemType>, IDisposable
-			where ListItemType : LinkedItem<ListItemType>
+	    : IEnumerable<ListItemType>, IDisposable
+	    where ListItemType : LinkedItem<ListItemType>
 	{
 
 		////////////////////////////////////////////////
@@ -172,11 +172,11 @@ namespace BaoXia.Utils.Collections
 		}
 
 		public ListItemType InsertBefore(
-			ListItemType? nextListItem,
-			ListItemType listItem)
+		    ListItemType? nextListItem,
+		    ListItemType listItem)
 		{
 			if (nextListItem != null
-				&& nextListItem.OwnerList != this)
+			    && nextListItem.OwnerList != this)
 			{
 				throw new ArgumentException("nextListItem 不是当前链表的元素。");
 			}
@@ -224,15 +224,15 @@ namespace BaoXia.Utils.Collections
 		}
 
 		public int InsertRangeBefore(
-			ListItemType? nextListItem,
-			ICollection<ListItemType> listItems)
+		    ListItemType? nextListItem,
+		    ICollection<ListItemType> listItems)
 		{
 			var listItemsCountInserted = 0;
 			foreach (var listItem in listItems)
 			{
 				if (this.InsertBefore(
-					nextListItem,
-					listItem) != null)
+				    nextListItem,
+				    listItem) != null)
 				{
 					listItemsCountInserted++;
 				}
@@ -241,11 +241,11 @@ namespace BaoXia.Utils.Collections
 		}
 
 		public ListItemType InsertAfter(
-			ListItemType? prevListItem,
-			ListItemType listItem)
+		    ListItemType? prevListItem,
+		    ListItemType listItem)
 		{
 			if (prevListItem != null
-				&& prevListItem.OwnerList != this)
+			    && prevListItem.OwnerList != this)
 			{
 				throw new ArgumentException("prevListItem 不是当前链表的元素。");
 			}
@@ -293,15 +293,15 @@ namespace BaoXia.Utils.Collections
 		}
 
 		public int InsertRangeAfter(
-			ListItemType? prevListItem,
-			ICollection<ListItemType> listItems)
+		    ListItemType? prevListItem,
+		    ICollection<ListItemType> listItems)
 		{
 			var listItemsCountInserted = 0;
 			foreach (var listItem in listItems)
 			{
 				if (this.InsertAfter(
-					prevListItem,
-					listItem) != null)
+				    prevListItem,
+				    listItem) != null)
 				{
 					listItemsCountInserted++;
 				}
@@ -368,14 +368,14 @@ namespace BaoXia.Utils.Collections
 		public int IndexOf(ListItemType listItem)
 		{
 			if (listItem == null
-				|| listItem.OwnerList != this)
+			    || listItem.OwnerList != this)
 			{
 				return -1;
 			}
 			int indexOfListItem = 0;
 			for (var listItemExisted = _first;
-				listItemExisted != null;
-				listItemExisted = listItem.Next)
+			    listItemExisted != null;
+			    listItemExisted = listItem.Next)
 			{
 				if (listItemExisted == listItem)
 				{
@@ -391,7 +391,7 @@ namespace BaoXia.Utils.Collections
 			get
 			{
 				if (index < 0
-					|| index >= this.Count)
+				    || index >= this.Count)
 				{
 					throw new IndexOutOfRangeException();
 				}
@@ -401,8 +401,8 @@ namespace BaoXia.Utils.Collections
 				{
 					var itemIndex = 0;
 					for (var item = _first;
-						item != null;
-						item = item.Next)
+					    item != null;
+					    item = item.Next)
 					{
 						if (itemIndex == index)
 						{
@@ -415,8 +415,8 @@ namespace BaoXia.Utils.Collections
 				{
 					var itemIndex = this.Count - 1;
 					for (var item = _last;
-						item != null;
-						item = item.Prev)
+					    item != null;
+					    item = item.Prev)
 					{
 						if (itemIndex == index)
 						{

@@ -17,30 +17,30 @@ public static class DateTimeOffsetExtension
 	/// <param name="dateTimeOffset">当前时间对象。</param>
 	/// <returns>返回当前时间的UTC时间距离1970年1月1日零时的毫秒数。</returns>
 	public static long MillisecondsFrom1970(
-		this DateTimeOffset dateTimeOffset,
-		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0,
-		bool isMillisecondsMinValueZero = true)
+	    this DateTimeOffset dateTimeOffset,
+	    TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0,
+	    bool isMillisecondsMinValueZero = true)
 	{
 		return DateTimeOffsetUtil.GetMillisecondsFrom1970OfDateTimeOffset(
-			dateTimeOffset,
-			millisecondsZoneNumber,
-			isMillisecondsMinValueZero);
+		    dateTimeOffset,
+		    millisecondsZoneNumber,
+		    isMillisecondsMinValueZero);
 	}
 
 	public static long SecondsFrom1970(
-		this DateTimeOffset dateTimeOffset,
-		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0,
-		bool isSecondsMinValueZero = true)
+	    this DateTimeOffset dateTimeOffset,
+	    TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0,
+	    bool isSecondsMinValueZero = true)
 	{
 		return DateTimeOffsetUtil.GetSecondsFrom1970OfDateTimeOffset(
-			dateTimeOffset,
-			secondsZoneNumber,
-			isSecondsMinValueZero);
+		    dateTimeOffset,
+		    secondsZoneNumber,
+		    isSecondsMinValueZero);
 	}
 
 	public static DateTimeOffset ZeroOf(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeField dateTimeField)
+	    this DateTimeOffset dateTimeOffset,
+	    DateTimeField dateTimeField)
 	{
 		switch (dateTimeField)
 		{
@@ -101,13 +101,13 @@ public static class DateTimeOffsetExtension
 	public static DateTimeOffset ZeroOfThisDay(this DateTimeOffset dateTimeOffset)
 	{
 		return new DateTimeOffset(
-			dateTimeOffset.Year,
-			dateTimeOffset.Month,
-			dateTimeOffset.Day,
-			0,
-			0,
-			0,
-			dateTimeOffset.Offset);
+		    dateTimeOffset.Year,
+		    dateTimeOffset.Month,
+		    dateTimeOffset.Day,
+		    0,
+		    0,
+		    0,
+		    dateTimeOffset.Offset);
 	}
 
 	/// <summary>
@@ -120,13 +120,13 @@ public static class DateTimeOffsetExtension
 		var prevDay = dateTimeOffset.AddDays(-1);
 		{ }
 		return new DateTimeOffset(
-			prevDay.Year,
-			prevDay.Month,
-			prevDay.Day,
-			0,
-			0,
-			0,
-			prevDay.Offset);
+		    prevDay.Year,
+		    prevDay.Month,
+		    prevDay.Day,
+		    0,
+		    0,
+		    0,
+		    prevDay.Offset);
 	}
 
 	/// <summary>
@@ -139,57 +139,57 @@ public static class DateTimeOffsetExtension
 		var nextDay = dateTimeOffset.AddDays(1);
 		{ }
 		return new DateTimeOffset(
-			nextDay.Year,
-			nextDay.Month,
-			nextDay.Day,
-			0,
-			0,
-			0,
-			nextDay.Offset);
+		    nextDay.Year,
+		    nextDay.Month,
+		    nextDay.Day,
+		    0,
+		    0,
+		    0,
+		    nextDay.Offset);
 	}
 
 
 	public static DateTimeOffset ZeroOfThisHour(this DateTimeOffset dateTimeOffset)
 	{
 		return new DateTimeOffset(
-			dateTimeOffset.Year,
-			dateTimeOffset.Month,
-			dateTimeOffset.Day,
-			dateTimeOffset.Hour,
-			0,
-			0,
-			dateTimeOffset.Offset);
+		    dateTimeOffset.Year,
+		    dateTimeOffset.Month,
+		    dateTimeOffset.Day,
+		    dateTimeOffset.Hour,
+		    0,
+		    0,
+		    dateTimeOffset.Offset);
 	}
 
 	public static DateTimeOffset ZeroOfPrevHour(this DateTimeOffset dateTimeOffset)
 	{
 		dateTimeOffset = dateTimeOffset.AddHours(-1.0);
 		return new DateTimeOffset(dateTimeOffset.Year,
-dateTimeOffset.Month,
-dateTimeOffset.Day,
- dateTimeOffset.Hour, 0, 0,
- dateTimeOffset.Offset);
+	    dateTimeOffset.Month,
+	    dateTimeOffset.Day,
+	     dateTimeOffset.Hour, 0, 0,
+	     dateTimeOffset.Offset);
 	}
 
 	public static DateTimeOffset ZeroOfNextHour(this DateTimeOffset dateTimeOffset)
 	{
 		dateTimeOffset = dateTimeOffset.AddHours(1.0);
 		return new DateTimeOffset(dateTimeOffset.Year,
-dateTimeOffset.Month,
-dateTimeOffset.Day,
- dateTimeOffset.Hour, 0, 0,
- dateTimeOffset.Offset);
+	    dateTimeOffset.Month,
+	    dateTimeOffset.Day,
+	     dateTimeOffset.Hour, 0, 0,
+	     dateTimeOffset.Offset);
 	}
 
 
 	public static DateTimeOffset ZeroOfThisMinute(this DateTimeOffset dateTimeOffset)
 	{
 		return new DateTimeOffset(dateTimeOffset.Year,
-dateTimeOffset.Month,
-dateTimeOffset.Day,
- dateTimeOffset.Hour,
- dateTimeOffset.Minute, 0,
- dateTimeOffset.Offset);
+	    dateTimeOffset.Month,
+	    dateTimeOffset.Day,
+	     dateTimeOffset.Hour,
+	     dateTimeOffset.Minute, 0,
+	     dateTimeOffset.Offset);
 	}
 
 	public static DateTimeOffset ZeroOfPrevMinute(this DateTimeOffset dateTimeOffset)
@@ -205,12 +205,12 @@ dateTimeOffset.Day,
 	public static DateTimeOffset ZeroOfThisSecond(this DateTimeOffset dateTimeOffset)
 	{
 		return new DateTimeOffset(dateTimeOffset.Year,
-dateTimeOffset.Month,
-dateTimeOffset.Day,
- dateTimeOffset.Hour,
- dateTimeOffset.Minute,
- dateTimeOffset.Second,
- dateTimeOffset.Offset);
+	    dateTimeOffset.Month,
+	    dateTimeOffset.Day,
+	     dateTimeOffset.Hour,
+	     dateTimeOffset.Minute,
+	     dateTimeOffset.Second,
+	     dateTimeOffset.Offset);
 	}
 
 	public static DateTimeOffset ZeroOfPrevSecond(this DateTimeOffset dateTimeOffset)
@@ -235,13 +235,13 @@ dateTimeOffset.Day,
 		var firstDayOfThisWeek = dateTimeOffset.AddDays(0 - (int)dayOfWeek);
 		{
 			firstDayOfThisWeek = new DateTimeOffset(
-				firstDayOfThisWeek.Year,
-				firstDayOfThisWeek.Month,
-				firstDayOfThisWeek.Day,
-				0,
-				0,
-				0,
-				dateTimeOffset.Offset);
+			    firstDayOfThisWeek.Year,
+			    firstDayOfThisWeek.Month,
+			    firstDayOfThisWeek.Day,
+			    0,
+			    0,
+			    0,
+			    dateTimeOffset.Offset);
 		}
 		return firstDayOfThisWeek;
 	}
@@ -284,13 +284,13 @@ dateTimeOffset.Day,
 		var firstDayOfThisWeek = dateTimeOffset.AddDays(0 - (int)dayOfWeek + 1);
 		{
 			firstDayOfThisWeek = new DateTimeOffset(
-				firstDayOfThisWeek.Year,
-				firstDayOfThisWeek.Month,
-				firstDayOfThisWeek.Day,
-				0,
-				0,
-				0,
-				dateTimeOffset.Offset);
+			    firstDayOfThisWeek.Year,
+			    firstDayOfThisWeek.Month,
+			    firstDayOfThisWeek.Day,
+			    0,
+			    0,
+			    0,
+			    dateTimeOffset.Offset);
 		}
 		return firstDayOfThisWeek;
 	}
@@ -329,13 +329,13 @@ dateTimeOffset.Day,
 	public static DateTimeOffset FirstDayOfThisMonth(this DateTimeOffset dateTimeOffset)
 	{
 		return new DateTimeOffset(
-			dateTimeOffset.Year,
-			dateTimeOffset.Month,
-			1,
-			0,
-			0,
-			0,
-			dateTimeOffset.Offset);
+		    dateTimeOffset.Year,
+		    dateTimeOffset.Month,
+		    1,
+		    0,
+		    0,
+		    0,
+		    dateTimeOffset.Offset);
 	}
 
 	/// <summary>
@@ -363,36 +363,36 @@ dateTimeOffset.Day,
 	/// </summary>
 	/// <param name="dateTimeOffset">当前时间对象。</param>
 	/// <returns>当前时间所属季度的第一天（零点）的时间对象。</returns>
-	public static DateTimeOffset FirstDayOfThisSession(this DateTimeOffset dateTimeOffset)
+	public static DateTimeOffset FirstDayOfThisQuarter(this DateTimeOffset dateTimeOffset)
 	{
 		var thisMonth = dateTimeOffset.Month;
-		var firstMonthOfThisSession = thisMonth;
-		if (thisMonth >= TimeConstants.FirstMonthOfSession1 && thisMonth <= TimeConstants.LastMonthOfSession1)
+		var firstMonthOfThisQuarter = thisMonth;
+		if (thisMonth >= TimeConstants.FirstMonthOfQuarter1 && thisMonth <= TimeConstants.LastMonthOfQuarter1)
 		{
-			firstMonthOfThisSession = 1;
+			firstMonthOfThisQuarter = 1;
 		}
-		else if (thisMonth >= TimeConstants.FirstMonthOfSession2 && thisMonth <= TimeConstants.LastMonthOfSession2)
+		else if (thisMonth >= TimeConstants.FirstMonthOfQuarter2 && thisMonth <= TimeConstants.LastMonthOfQuarter2)
 		{
-			firstMonthOfThisSession = 4;
+			firstMonthOfThisQuarter = 4;
 		}
-		else if (thisMonth >= TimeConstants.FirstMonthOfSession3 && thisMonth <= TimeConstants.LastMonthOfSession3)
+		else if (thisMonth >= TimeConstants.FirstMonthOfQuarter3 && thisMonth <= TimeConstants.LastMonthOfQuarter3)
 		{
-			firstMonthOfThisSession = 7;
+			firstMonthOfThisQuarter = 7;
 		}
-		else if (thisMonth >= TimeConstants.FirstMonthOfSession4 && thisMonth <= TimeConstants.LastMonthOfSession4)
+		else if (thisMonth >= TimeConstants.FirstMonthOfQuarter4 && thisMonth <= TimeConstants.LastMonthOfQuarter4)
 		{
-			firstMonthOfThisSession = 10;
+			firstMonthOfThisQuarter = 10;
 		}
-		var firstDayOfThisSession = new DateTimeOffset(
-			dateTimeOffset.Year,
-			firstMonthOfThisSession,
-			1,
-			0,
-			0,
-			0,
-			dateTimeOffset.Offset);
+		var firstDayOfThisQuarter = new DateTimeOffset(
+		    dateTimeOffset.Year,
+		    firstMonthOfThisQuarter,
+		    1,
+		    0,
+		    0,
+		    0,
+		    dateTimeOffset.Offset);
 		{ }
-		return firstDayOfThisSession;
+		return firstDayOfThisQuarter;
 	}
 
 	/// <summary>
@@ -400,11 +400,11 @@ dateTimeOffset.Day,
 	/// </summary>
 	/// <param name="dateTimeOffset">当前时间对象。</param>
 	/// <returns>当前时间上一个季度的第一天（零点）的时间对象。</returns>
-	public static DateTimeOffset FirstDayOfPrevSession(this DateTimeOffset dateTimeOffset)
+	public static DateTimeOffset FirstDayOfPrevQuarter(this DateTimeOffset dateTimeOffset)
 	{
 		return dateTimeOffset
-			.AddMonths(-TimeConstants.MonthsPerSession)
-			.FirstDayOfThisSession();
+		    .AddMonths(-TimeConstants.MonthsPerQuarter)
+		    .FirstDayOfThisQuarter();
 	}
 
 	/// <summary>
@@ -412,11 +412,11 @@ dateTimeOffset.Day,
 	/// </summary>
 	/// <param name="dateTimeOffset">当前时间对象。</param>
 	/// <returns>当前时间下一个季度的第一天（零点）的时间对象。</returns>
-	public static DateTimeOffset FirstDayOfNextSession(this DateTimeOffset dateTimeOffset)
+	public static DateTimeOffset FirstDayOfNextQuarter(this DateTimeOffset dateTimeOffset)
 	{
 		return dateTimeOffset
-			.AddMonths(+TimeConstants.MonthsPerSession)
-			.FirstDayOfThisSession();
+		    .AddMonths(+TimeConstants.MonthsPerQuarter)
+		    .FirstDayOfThisQuarter();
 	}
 
 
@@ -428,13 +428,13 @@ dateTimeOffset.Day,
 	public static DateTimeOffset FirstDayOfThisYear(this DateTimeOffset dateTimeOffset)
 	{
 		return new DateTimeOffset(
-			dateTimeOffset.Year,
-			1,
-			1,
-			0,
-			0,
-			0,
-			dateTimeOffset.Offset);
+		    dateTimeOffset.Year,
+		    1,
+		    1,
+		    0,
+		    0,
+		    0,
+		    dateTimeOffset.Offset);
 	}
 
 	/// <summary>
@@ -445,13 +445,13 @@ dateTimeOffset.Day,
 	public static DateTimeOffset FirstDayOfPrevYear(this DateTimeOffset dateTimeOffset)
 	{
 		return new DateTimeOffset(
-			dateTimeOffset.Year - 1,
-			1,
-			1,
-			0,
-			0,
-			0,
-			dateTimeOffset.Offset);
+		    dateTimeOffset.Year - 1,
+		    1,
+		    1,
+		    0,
+		    0,
+		    0,
+		    dateTimeOffset.Offset);
 	}
 
 	/// <summary>
@@ -462,13 +462,13 @@ dateTimeOffset.Day,
 	public static DateTimeOffset FirstDayOfNextYear(this DateTimeOffset dateTimeOffset)
 	{
 		return new DateTimeOffset(
-			dateTimeOffset.Year + 1,
-			1,
-			1,
-			0,
-			0,
-			0,
-			dateTimeOffset.Offset);
+		    dateTimeOffset.Year + 1,
+		    1,
+		    1,
+		    0,
+		    0,
+		    0,
+		    dateTimeOffset.Offset);
 	}
 
 	/// <summary>
@@ -479,9 +479,9 @@ dateTimeOffset.Day,
 	/// <param name="compareFieldMin">指定的时间精度，类型为：DateTimeField。</param>
 	/// <returns>“dateTimeOffset”小于“anotherDateTime”时，返回“-1”；“dateTimeOffset”等于“anotherDateTime”时，返回“0”；“dateTimeOffset”大于“anotherDateTime”时，返回“1”。</returns>
 	public static int CompareTo(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeOffset anotherDateTime,
-		DateTimeField compareFieldMin = DateTimeField.Millisecond)
+	    this DateTimeOffset dateTimeOffset,
+	    DateTimeOffset anotherDateTime,
+	    DateTimeField compareFieldMin = DateTimeField.Millisecond)
 	{
 		if (compareFieldMin >= DateTimeField.Year)
 		{
@@ -572,19 +572,17 @@ dateTimeOffset.Day,
 	/// <param name="compareCycle"></param>
 	/// <returns></returns>
 	public static int CompareTo(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeOffset anotherDateTime,
-		DateTimeCycle compareCycle)
+		this DateTimeOffset dateTimeOffset, DateTimeOffset anotherDateTime, DateTimeComparisonCycle compareCycle)
 	{
 		switch (compareCycle)
 		{
 			default:
-			case DateTimeCycle.All:
-			case DateTimeCycle.Century:
+			case DateTimeComparisonCycle.None:
+			case DateTimeComparisonCycle.Century:
 				{
 					return dateTimeOffset.CompareTo(anotherDateTime);
 				}
-			case DateTimeCycle.Year:
+			case DateTimeComparisonCycle.Year:
 				{
 					if (dateTimeOffset.Month < anotherDateTime.Month)
 					{
@@ -636,7 +634,7 @@ dateTimeOffset.Day,
 					}
 				}
 				break;
-			case DateTimeCycle.Month:
+			case DateTimeComparisonCycle.Month:
 				{
 					if (dateTimeOffset.Day < anotherDateTime.Day)
 					{
@@ -680,7 +678,7 @@ dateTimeOffset.Day,
 					}
 				}
 				break;
-			case DateTimeCycle.Week:
+			case DateTimeComparisonCycle.Week:
 				{
 					if (dateTimeOffset.DayOfWeek < anotherDateTime.DayOfWeek)
 					{
@@ -724,7 +722,7 @@ dateTimeOffset.Day,
 					}
 				}
 				break;
-			case DateTimeCycle.Day:
+			case DateTimeComparisonCycle.Day:
 				{
 					if (dateTimeOffset.Hour < anotherDateTime.Hour)
 					{
@@ -760,7 +758,7 @@ dateTimeOffset.Day,
 					}
 				}
 				break;
-			case DateTimeCycle.Hour:
+			case DateTimeComparisonCycle.Hour:
 				{
 					if (dateTimeOffset.Minute < anotherDateTime.Minute)
 					{
@@ -788,7 +786,7 @@ dateTimeOffset.Day,
 					}
 				}
 				break;
-			case DateTimeCycle.Minute:
+			case DateTimeComparisonCycle.Minute:
 				{
 					if (dateTimeOffset.Second < anotherDateTime.Second)
 					{
@@ -808,7 +806,7 @@ dateTimeOffset.Day,
 					}
 				}
 				break;
-			case DateTimeCycle.Second:
+			case DateTimeComparisonCycle.Second:
 				{
 					if (dateTimeOffset.Millisecond < anotherDateTime.Millisecond)
 					{
@@ -820,7 +818,7 @@ dateTimeOffset.Day,
 					}
 				}
 				break;
-			case DateTimeCycle.Millisecond:
+			case DateTimeComparisonCycle.Millisecond:
 				{
 					// !!!⚠ 毫秒以下不进行比较，永远相等。 ⚠!!!
 				}
@@ -834,19 +832,19 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Year)
-			< 0;
+		    anotherDateTime,
+		    DateTimeField.Year)
+		    < 0;
 	}
 
 	public static bool EqualsInYear(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeOffset anotherDateTime)
+	    this DateTimeOffset dateTimeOffset,
+	    DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Year)
-			== 0;
+		    anotherDateTime,
+		    DateTimeField.Year)
+		    == 0;
 	}
 
 	public static bool IsLaterInYear(
@@ -854,9 +852,9 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Year)
-			> 0;
+		    anotherDateTime,
+		    DateTimeField.Year)
+		    > 0;
 	}
 
 	public static bool IsEarlierInMonth(
@@ -864,19 +862,19 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Month)
-			< 0;
+		    anotherDateTime,
+		    DateTimeField.Month)
+		    < 0;
 	}
 
 	public static bool EqualsInMonth(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeOffset anotherDateTime)
+	    this DateTimeOffset dateTimeOffset,
+	    DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Month)
-			== 0;
+		    anotherDateTime,
+		    DateTimeField.Month)
+		    == 0;
 	}
 
 	public static bool IsLaterInMonth(
@@ -884,13 +882,13 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Month)
-			> 0;
+		    anotherDateTime,
+		    DateTimeField.Month)
+		    > 0;
 	}
 
 	public static bool IsLastMonthOf(
-		this DateTimeOffset dateTimeOffset,
+	    this DateTimeOffset dateTimeOffset,
 	       DateTimeOffset currentMonth)
 	{
 		var dateTimeBeforeMonth = currentMonth.AddMonths(-1);
@@ -902,7 +900,7 @@ dateTimeOffset.Day,
 	}
 
 	public static bool IsNextMonthOf(
-		this DateTimeOffset dateTimeOffset,
+	    this DateTimeOffset dateTimeOffset,
 	       DateTimeOffset currentMonth)
 	{
 		var dateTimeAfterMonth = currentMonth.AddMonths(1);
@@ -914,15 +912,15 @@ dateTimeOffset.Day,
 	}
 
 	public static bool IsLastWeekInStartsWithMondayOf(
-		this DateTimeOffset dateTimeOffset,
+	    this DateTimeOffset dateTimeOffset,
 	       DateTimeOffset currentWeek)
 	{
 		var currentWeekBeginTime
-			= currentWeek.FirstDayOfThisWeekStartsWithMonday();
+		    = currentWeek.FirstDayOfThisWeekStartsWithMonday();
 		var lastWeekBeginTime
-			= currentWeek.AddDays(-1 * TimeConstants.DaysPerWeek);
+		    = currentWeek.AddDays(-1 * TimeConstants.DaysPerWeek);
 		if (dateTimeOffset >= lastWeekBeginTime
-			&& dateTimeOffset < currentWeekBeginTime)
+		    && dateTimeOffset < currentWeekBeginTime)
 		{
 			return true;
 		}
@@ -930,15 +928,15 @@ dateTimeOffset.Day,
 	}
 
 	public static bool IsNextWeekInStartsWithMondayOf(
-		this DateTimeOffset dateTimeOffset,
+	    this DateTimeOffset dateTimeOffset,
 	       DateTimeOffset currentWeek)
 	{
 		var nextWeekBeginTime
-			= currentWeek.FirstDayOfNextWeekStartsWithMonday();
+		    = currentWeek.FirstDayOfNextWeekStartsWithMonday();
 		var nextWeekEndTime
-			= nextWeekBeginTime.AddDays(TimeConstants.DaysPerWeek);
+		    = nextWeekBeginTime.AddDays(TimeConstants.DaysPerWeek);
 		if (dateTimeOffset >= nextWeekBeginTime
-			&& dateTimeOffset < nextWeekEndTime)
+		    && dateTimeOffset < nextWeekEndTime)
 		{
 			return true;
 		}
@@ -950,19 +948,19 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Day)
-			< 0;
+		    anotherDateTime,
+		    DateTimeField.Day)
+		    < 0;
 	}
 
 	public static bool EqualsInDay(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeOffset anotherDateTime)
+	    this DateTimeOffset dateTimeOffset,
+	    DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Day)
-			== 0;
+		    anotherDateTime,
+		    DateTimeField.Day)
+		    == 0;
 	}
 
 	public static bool IsLaterInDay(
@@ -970,9 +968,9 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Day)
-			> 0;
+		    anotherDateTime,
+		    DateTimeField.Day)
+		    > 0;
 	}
 
 	public static bool IsPrevDayOf(this DateTimeOffset dateTimeOffset, DateTimeOffset today)
@@ -995,14 +993,14 @@ dateTimeOffset.Day,
 	}
 
 	public static bool IsYesterdayOf(
-		this DateTimeOffset dateTimeOffset,
+	    this DateTimeOffset dateTimeOffset,
 	       DateTimeOffset today)
 	{
 		return dateTimeOffset.IsPrevDayOf(today);
 	}
 
 	public static bool IsTomorrowOf(
-		this DateTimeOffset dateTimeOffset,
+	    this DateTimeOffset dateTimeOffset,
 	       DateTimeOffset today)
 	{
 		return dateTimeOffset.IsNextDayOf(today);
@@ -1013,19 +1011,19 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Hour)
-			< 0;
+		    anotherDateTime,
+		    DateTimeField.Hour)
+		    < 0;
 	}
 
 	public static bool EqualsInHour(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeOffset anotherDateTime)
+	    this DateTimeOffset dateTimeOffset,
+	    DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Hour)
-			== 0;
+		    anotherDateTime,
+		    DateTimeField.Hour)
+		    == 0;
 	}
 
 	public static bool IsLaterInHour(
@@ -1033,9 +1031,9 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Hour)
-			> 0;
+		    anotherDateTime,
+		    DateTimeField.Hour)
+		    > 0;
 	}
 
 	public static bool IsLastHourOf(this DateTimeOffset dateTimeOffset, DateTimeOffset currentDateTime)
@@ -1062,19 +1060,19 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Minute)
-			< 0;
+		    anotherDateTime,
+		    DateTimeField.Minute)
+		    < 0;
 	}
 
 	public static bool EqualsInMinute(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeOffset anotherDateTime)
+	    this DateTimeOffset dateTimeOffset,
+	    DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Minute)
-			== 0;
+		    anotherDateTime,
+		    DateTimeField.Minute)
+		    == 0;
 	}
 
 	public static bool IsLaterInMinute(
@@ -1082,9 +1080,9 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Minute)
-			> 0;
+		    anotherDateTime,
+		    DateTimeField.Minute)
+		    > 0;
 	}
 
 	public static bool IsLastMinuteOf(this DateTimeOffset dateTimeOffset, DateTimeOffset currentDateTime)
@@ -1110,19 +1108,19 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Second)
-			< 0;
+		    anotherDateTime,
+		    DateTimeField.Second)
+		    < 0;
 	}
 
 	public static bool EqualsInSecond(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeOffset anotherDateTime)
+	    this DateTimeOffset dateTimeOffset,
+	    DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Second)
-			== 0;
+		    anotherDateTime,
+		    DateTimeField.Second)
+		    == 0;
 	}
 
 	public static bool IsLaterInSecond(
@@ -1130,9 +1128,9 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Second)
-			> 0;
+		    anotherDateTime,
+		    DateTimeField.Second)
+		    > 0;
 	}
 
 	public static bool IsLastSecondOf(this DateTimeOffset dateTimeOffset, DateTimeOffset currentDateTime)
@@ -1158,19 +1156,19 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Millisecond)
-			< 0;
+		    anotherDateTime,
+		    DateTimeField.Millisecond)
+		    < 0;
 	}
 
 	public static bool EqualsInMillisecond(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeOffset anotherDateTime)
+	    this DateTimeOffset dateTimeOffset,
+	    DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Millisecond)
-			== 0;
+		    anotherDateTime,
+		    DateTimeField.Millisecond)
+		    == 0;
 	}
 
 	public static bool IsLaterInMillisecond(
@@ -1178,9 +1176,9 @@ dateTimeOffset.Day,
 	       DateTimeOffset anotherDateTime)
 	{
 		return dateTimeOffset.CompareTo(
-			anotherDateTime,
-			DateTimeField.Millisecond)
-			> 0;
+		    anotherDateTime,
+		    DateTimeField.Millisecond)
+		    > 0;
 	}
 	public static bool IsLastMillisecondOf(this DateTimeOffset dateTimeOffset, DateTimeOffset currentDateTime)
 	{
@@ -1201,16 +1199,16 @@ dateTimeOffset.Day,
 	}
 
 	public static bool IsBetween(
-		this DateTimeOffset dateTimeOffset,
-		DateTimeOffset? beginTime,
-		DateTimeOffset? endTime,
-		DateTimeField compareFieldMin)
+	    this DateTimeOffset dateTimeOffset,
+	    DateTimeOffset? beginTime,
+	    DateTimeOffset? endTime,
+	    DateTimeField compareFieldMin)
 	{
 		if (beginTime != null
-			&& endTime != null)
+		    && endTime != null)
 		{
 			if (dateTimeOffset.CompareTo(beginTime.Value, compareFieldMin) >= 0
-				&& dateTimeOffset.CompareTo(endTime.Value, compareFieldMin) < 0)
+			    && dateTimeOffset.CompareTo(endTime.Value, compareFieldMin) < 0)
 			{
 				return true;
 			}
@@ -1233,10 +1231,10 @@ dateTimeOffset.Day,
 	}
 
 	public static bool IsContinuousAfter(
-		this DateTimeOffset currentDateTime,
-		DateTimeOffset lastDateTime,
-		DateTimeField continuousAccuracy,
-		bool isEqualsToContinuous = true)
+	    this DateTimeOffset currentDateTime,
+	    DateTimeOffset lastDateTime,
+	    DateTimeField continuousAccuracy,
+	    bool isEqualsToContinuous = true)
 	{
 		switch (continuousAccuracy)
 		{
@@ -1353,24 +1351,24 @@ dateTimeOffset.Day,
 		return false;
 	}
 
-
 	public static bool IsContinuousBefore(
-		this DateTimeOffset currentDateTime,
-		DateTimeOffset nextDateTime,
-		DateTimeField continuousAccuracy,
-		bool isEqualsToContinuous = true)
+	    this DateTimeOffset currentDateTime,
+	    DateTimeOffset nextDateTime,
+	    DateTimeField continuousAccuracy,
+	    bool isEqualsToContinuous = true)
 	{
 		return nextDateTime.IsContinuousAfter(
-			currentDateTime,
-			continuousAccuracy,
-			isEqualsToContinuous);
+		    currentDateTime,
+		    continuousAccuracy,
+		    isEqualsToContinuous);
 	}
 
-	public static string CaptionOfListElementDefault(
-		this DateTimeOffset dateTimeOffset,
-		bool isNeedSecondsField = false)
+	public static string TitleOfListElementDefault(
+	    this DateTimeOffset dateTimeOffset,
+	    bool isNeedSecondsField = false)
 	{
 		string caption;
+
 		var now = DateTimeOffset.Now;
 		if (dateTimeOffset.EqualsInDay(now))
 		{
@@ -1416,9 +1414,7 @@ dateTimeOffset.Day,
 		return caption;
 	}
 
-	public static string CaptionOfDetailPageDefault(
-		this DateTimeOffset dateTimeOffset,
-		bool isNeedSecondsField = false)
+	public static string TitleOfDetailPageDefault(this DateTimeOffset dateTimeOffset, bool isNeedSecondsField = false)
 	{
 		string caption;
 		var now = DateTimeOffset.Now;
@@ -1480,31 +1476,253 @@ dateTimeOffset.Day,
 		return caption;
 	}
 
+	public static string TitleOfQuarter(this DateTimeOffset dateTime, bool isYearTitleEnable = false, bool isTitleForFileName = true)
+	{
+		string quarterTitle;
+		var month = dateTime.Month;
+		if (month >= 1 && month <= 3)
+		{
+			quarterTitle = "一季度";
+		}
+		else if (month >= 4 && month <= 6)
+		{
+			quarterTitle = "二季度";
+		}
+		else if (month >= 7 && month <= 9)
+		{
+			quarterTitle = "三季度";
+		}
+		else if (month >= 10 && month <= 12)
+		{
+			quarterTitle = "四季度";
+		}
+		else
+		{
+			quarterTitle = "未知季度";
+		}
+		if (isYearTitleEnable)
+		{
+			if (isTitleForFileName)
+			{
+				quarterTitle = dateTime.ToString("yyyy") + "年_" + quarterTitle;
+			}
+			else
+			{
+				quarterTitle = dateTime.ToString("yyyy") + "年 " + quarterTitle;
+			}
+		}
+		return quarterTitle;
+	}
+
+	public static string TitleOfMonthInChineseNumber(this DateTimeOffset dateTime)
+	{
+		switch (dateTime.Month)
+		{
+			default:
+				{
+					return "未知";
+				}
+			case 1:
+				{
+					return "一月";
+				}
+			case 2:
+				{
+					return "二月";
+				}
+			case 3:
+				{
+					return "三月";
+				}
+			case 4:
+				{
+					return "四月";
+				}
+			case 5:
+				{
+					return "五月";
+				}
+			case 6:
+				{
+					return "六月";
+				}
+			case 7:
+				{
+					return "七月";
+				}
+			case 8:
+				{
+					return "八月";
+				}
+			case 9:
+				{
+					return "九月";
+				}
+			case 10:
+				{
+					return "十月";
+				}
+			case 11:
+				{
+					return "十一月";
+				}
+			case 12:
+				{
+					return "十二月";
+				}
+		}
+	}
+
+	public static string TitleOfWeek(
+		this DateTimeOffset dateTime, bool isMonthTitleEnable = false, bool isMonthChineseTitleEnable = true,
+		bool isYearTitleEnable = false, bool isTitleForFileName = true)
+	{
+		// 月份内，每隔7天为一周：
+		//var weekNumberInMonth = (dateTime.Day - 1) / TimeConstants.DaysPerWeek + 1;
+
+		// 月份内，每到周日为一周：
+		//var firstDayOfMonth = dateTime.FirstDayOfThisMonth();
+		//var daysCountBeforeFirstDayOfMonthInWeek
+		//	= ((int)firstDayOfMonth.DayOfWeek + TimeConstants.DaysPerWeek - 1)
+		//	% TimeConstants.DaysPerWeek;
+		//var weekNumberInMonth
+		//	= (dateTime.Day + daysCountBeforeFirstDayOfMonthInWeek - 1)
+		//	/ TimeConstants.DaysPerWeek
+		//	+ 1;
+
+		//  每月1号，所在的周，哪个月拥有的周天数多，则算作哪个月的第一周：
+		// 一周从周一开始，周四所在的月份即为当前周拥有天数较多的月份：
+		var dayOfWeekIndex = dateTime.DayOfWeek == DayOfWeek.Sunday
+			? TimeConstants.DaysPerWeek - 1
+			: (int)dateTime.DayOfWeek - 1;
+		var mondayOfWeek = dateTime.ZeroOfThisDay().AddDays(-dayOfWeekIndex);
+		var thursdayOfWeek = mondayOfWeek.AddDays((int)DayOfWeek.Thursday - (int)DayOfWeek.Monday);
+		// 当前周是归属月份中第几个包含周四的周，即为该月第几周：
+		var weekNumberInMonth = (thursdayOfWeek.Day - 1) / TimeConstants.DaysPerWeek + 1;
+
+		var weekTitle = weekNumberInMonth switch
+		{
+			1 => "第一周",
+			2 => "第二周",
+			3 => "第三周",
+			4 => "第四周",
+			5 => "第五周",
+			_ => "未知周"
+		};
+		if (isYearTitleEnable)
+		{
+			if (isTitleForFileName)
+			{
+				return thursdayOfWeek.ToString("yyyy年MM月_") + weekTitle;
+			}
+			else
+			{
+				return thursdayOfWeek.ToString("yyyy年MM月 ") + weekTitle;
+			}
+		}
+		if (isMonthTitleEnable)
+		{
+			if (isTitleForFileName)
+			{
+				if (isMonthChineseTitleEnable)
+				{
+					return thursdayOfWeek.TitleOfMonthInChineseNumber() + "_" + weekTitle;
+				}
+				return thursdayOfWeek.ToString("MM月_") + weekTitle;
+			}
+			else
+			{
+				if (isMonthChineseTitleEnable)
+				{
+					return thursdayOfWeek.TitleOfMonthInChineseNumber() + " " + weekTitle;
+				}
+				return thursdayOfWeek.ToString("MM月 ") + weekTitle;
+			}
+		}
+		return weekTitle;
+	}
+
+	public static string TitleOfWeekDay(this DateTimeOffset dateTime, bool isWeekStartsWithMonday = true)
+	{
+		var weekDayNumber = (int)dateTime.DayOfWeek;
+		if (isWeekStartsWithMonday)
+		{
+			if (weekDayNumber == 0)
+			{
+				weekDayNumber = TimeConstants.DaysPerWeek;
+			}
+		}
+		else
+		{
+			weekDayNumber++;
+		}
+		return weekDayNumber switch
+		{
+			1 => "周一",
+			2 => "周二",
+			3 => "周三",
+			4 => "周四",
+			5 => "周五",
+			6 => "周六",
+			7 => "周日",
+			_ => string.Empty
+		};
+	}
+
+	public static string TitleOfDateTimeWithAdaptivePrecision(this DateTimeOffset dateTime, bool isMillsecondsPrecisionEnable = false)
+	{
+		if (isMillsecondsPrecisionEnable)
+		{
+			if (dateTime.Hour == 0 && dateTime.Minute == 0 && dateTime.Second == 0 && dateTime.Millisecond == 0)
+			{
+				return dateTime.ToString("yyyy年MM月dd日");
+			}
+			else if (dateTime.Second == 0 && dateTime.Millisecond == 0)
+			{
+				return dateTime.ToString("yyyy年MM月dd日 HH:mm");
+			}
+			else if (dateTime.Millisecond == 0)
+			{
+				return dateTime.ToString("yyyy年MM月dd日 HH:mm:ss");
+			}
+			return dateTime.ToString("yyyy年MM月dd日 HH:mm:ss:fff");
+		}
+		if (dateTime.Hour == 0 && dateTime.Minute == 0 && dateTime.Second == 0)
+		{
+			return dateTime.ToString("yyyy年MM月dd日");
+		}
+		else if (dateTime.Second == 0)
+		{
+			return dateTime.ToString("yyyy年MM月dd日 HH:mm");
+		}
+		return dateTime.ToString("yyyy年MM月dd日 HH:mm:ss");
+	}
+
 	public static DateTimeOffset ToDateTimeOffsetBySetTimeZoneValue(
-		this DateTimeOffset dateTimeOffset,
-		TimeSpan timeZoneValue)
+	    this DateTimeOffset dateTimeOffset,
+	    TimeSpan timeZoneValue)
 	{
 		return new DateTimeOffset(
-			dateTimeOffset.DateTime,
-			timeZoneValue);
+		    dateTimeOffset.DateTime,
+		    timeZoneValue);
 	}
 
 	public static DateTimeOffset ToDateTimeOffsetBySetTimeZoneNumber(
-		this DateTimeOffset dateTimeOffset,
-		TimeZoneNumber timeZoneNumber)
+	    this DateTimeOffset dateTimeOffset,
+	    TimeZoneNumber timeZoneNumber)
 	{
 		return ToDateTimeOffsetBySetTimeZoneValue(
-			dateTimeOffset,
-			new TimeSpan((int)timeZoneNumber, 0, 0));
+		    dateTimeOffset,
+		    new TimeSpan((int)timeZoneNumber, 0, 0));
 	}
 
 	public static DateTimeOffset ToDateTimeOffsetByConvertToTimeZone(
-			this DateTimeOffset dateTimeOffset,
-			TimeZoneNumber timeZoneNumber)
+	    this DateTimeOffset dateTimeOffset,
+	    TimeZoneNumber timeZoneNumber)
 	{
 		return DateTimeOffsetUtil.DateTimeOffsetByConvertToTimeZone(
-			dateTimeOffset,
-			timeZoneNumber);
+		    dateTimeOffset,
+		    timeZoneNumber);
 	}
 
 	/// <summary>
@@ -1547,8 +1765,8 @@ dateTimeOffset.Day,
 	/// <param name="dateTimeDefault">当前“DateTimeOffset”对象为“null”时，返回的默认“DateTime”值，默认为“null”，返回“DateTime.MinValue”。</param>
 	/// <returns>当前“DateTimeOffset”对象对应的本地时间的“DateTime“。</returns>
 	public static DateTime ToLocalDateTime(
-		this DateTimeOffset? dateTimeOffset,
-		DateTime? dateTimeDefault = null)
+	    this DateTimeOffset? dateTimeOffset,
+	    DateTime? dateTimeDefault = null)
 	{
 		var dateTime = dateTimeDefault ?? DateTime.MinValue;
 		if (dateTimeOffset != null)

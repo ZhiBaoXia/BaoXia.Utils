@@ -32,16 +32,16 @@ public static class IEnumerableExtension
 	}
 
 	public static void ForEachAtLeastOnce<ItemType>(
-		this IEnumerable<ItemType>? items,
-		Func<ItemType?, bool> toReceiveItem)
+	    this IEnumerable<ItemType>? items,
+	    Func<ItemType?, bool> toReceiveItem)
 	{
 		var itemsEnumerator = items?.GetEnumerator();
 		for (var item
-			= (itemsEnumerator?.MoveNext() == true
-			? itemsEnumerator.Current
-			: default)
-			;
-			;)
+		    = (itemsEnumerator?.MoveNext() == true
+		    ? itemsEnumerator.Current
+		    : default)
+		    ;
+		    ;)
 		{
 			////////////////////////////////////////////////
 			if (toReceiveItem(item) != true)
@@ -59,16 +59,16 @@ public static class IEnumerableExtension
 	}
 
 	public static async Task ForEachAtLeastOnceAsync<ItemType>(
-		this IEnumerable<ItemType>? items,
-		Func<ItemType?, Task<bool>> toReceiveItemAsync)
+	    this IEnumerable<ItemType>? items,
+	    Func<ItemType?, Task<bool>> toReceiveItemAsync)
 	{
 		var itemsEnumerator = items?.GetEnumerator();
 		for (var item
-			= (itemsEnumerator?.MoveNext() == true
-			? itemsEnumerator.Current
-			: default)
-			;
-			;)
+		    = (itemsEnumerator?.MoveNext() == true
+		    ? itemsEnumerator.Current
+		    : default)
+		    ;
+		    ;)
 		{
 			////////////////////////////////////////////////
 			if (await toReceiveItemAsync(item) != true)
@@ -86,8 +86,8 @@ public static class IEnumerableExtension
 	}
 
 	public static void ForEach<ItemType>(
-		this IEnumerable<ItemType>? items,
-		Func<ItemType, bool> toEnumerateItem)
+	    this IEnumerable<ItemType>? items,
+	    Func<ItemType, bool> toEnumerateItem)
 	{
 		if (items == null)
 		{
@@ -128,10 +128,10 @@ public static class IEnumerableExtension
 	}
 
 	public static bool IsContains<ItemType>(
-		this IEnumerable<ItemType> items,
-		ItemType? objectItem,
-		out int objectItemIndexInItems)
-		where ItemType : notnull
+	    this IEnumerable<ItemType> items,
+	    ItemType? objectItem,
+	    out int objectItemIndexInItems)
+	    where ItemType : notnull
 	{
 		objectItemIndexInItems = -1;
 
@@ -154,42 +154,42 @@ public static class IEnumerableExtension
 	}
 
 	public static bool IsNotContains<ItemType>(
-		this IEnumerable<ItemType> items,
-		ItemType? objectItem,
-		out int objectItemIndexInItems)
-		where ItemType : notnull
+	    this IEnumerable<ItemType> items,
+	    ItemType? objectItem,
+	    out int objectItemIndexInItems)
+	    where ItemType : notnull
 	{
 		return !IEnumerableExtension.IsContains(
-			items,
-			objectItem,
-			out objectItemIndexInItems);
+		    items,
+		    objectItem,
+		    out objectItemIndexInItems);
 	}
 
 	public static bool IsContains<ItemType>(
-		this IEnumerable<ItemType> items,
-		ItemType? objectItem)
-		where ItemType : notnull
+	    this IEnumerable<ItemType> items,
+	    ItemType? objectItem)
+	    where ItemType : notnull
 	{
 		return IEnumerableExtension.IsContains(
-			items,
-			objectItem,
-			out _);
+		    items,
+		    objectItem,
+		    out _);
 	}
 
 	public static bool IsNotContains<ItemType>(
-		this IEnumerable<ItemType> items,
-		ItemType? objectItem)
-		where ItemType : notnull
+	    this IEnumerable<ItemType> items,
+	    ItemType? objectItem)
+	    where ItemType : notnull
 	{
 		return !IEnumerableExtension.IsContains(
-			items,
-			objectItem);
+		    items,
+		    objectItem);
 	}
 
 	public static bool IsContains<ItemType>(
-		this IEnumerable<ItemType> items,
-		IEnumerable<ItemType>? objectItems)
-		where ItemType : notnull
+	    this IEnumerable<ItemType> items,
+	    IEnumerable<ItemType>? objectItems)
+	    where ItemType : notnull
 	{
 		if (objectItems != null)
 		{
@@ -213,20 +213,20 @@ public static class IEnumerableExtension
 	}
 
 	public static bool IsNotContains<ItemType>(
-		this IEnumerable<ItemType> items,
-		IEnumerable<ItemType>? objectItems)
-		where ItemType : notnull
+	    this IEnumerable<ItemType> items,
+	    IEnumerable<ItemType>? objectItems)
+	    where ItemType : notnull
 	{
 		return !IEnumerableExtension.IsContains(
-			items,
-			objectItems);
+		    items,
+		    objectItems);
 	}
 
 	public static bool IsContainsAny<ItemType>(
-		this IEnumerable<ItemType> items,
-		IEnumerable<ItemType>? objectItems,
-		bool isNullEqualsEmpty = true)
-		where ItemType : notnull
+	    this IEnumerable<ItemType> items,
+	    IEnumerable<ItemType>? objectItems,
+	    bool isNullEqualsEmpty = true)
+	    where ItemType : notnull
 	{
 		if (objectItems != null)
 		{
@@ -239,7 +239,7 @@ public static class IEnumerableExtension
 			}
 		}
 		else if (isNullEqualsEmpty
-			&& items.Any() == false)
+		    && items.IsNotEmpty() == false)
 		{
 			return true;
 		}
@@ -247,24 +247,24 @@ public static class IEnumerableExtension
 	}
 
 	public static bool IsNotContainsAny<ItemType>(
-		this IEnumerable<ItemType> items,
-		IEnumerable<ItemType>? objectItems,
-		bool isNullEqualsEmpty = true)
-		where ItemType : notnull
+	    this IEnumerable<ItemType> items,
+	    IEnumerable<ItemType>? objectItems,
+	    bool isNullEqualsEmpty = true)
+	    where ItemType : notnull
 	{
 		return !IEnumerableExtension.IsContainsAny(
-			items,
-			objectItems,
-			isNullEqualsEmpty);
+		    items,
+		    objectItems,
+		    isNullEqualsEmpty);
 	}
 
 
 	public static bool IsEquals<ItemType>(
-		this IEnumerable<ItemType> items,
-		IEnumerable<ItemType>? objectItems,
-		bool isIgnoreSameItems = false,
-		bool isNullEqualsEmpty = true)
-		where ItemType : notnull
+	    this IEnumerable<ItemType> items,
+	    IEnumerable<ItemType>? objectItems,
+	    bool isIgnoreSameItems = false,
+	    bool isNullEqualsEmpty = true)
+	    where ItemType : notnull
 	{
 		if (objectItems != null)
 		{
@@ -275,8 +275,8 @@ public static class IEnumerableExtension
 				foreach (var objectItem in objectItems)
 				{
 					if (items.IsContains(
-						objectItem,
-						out var itemIndexMatched) != true)
+					    objectItem,
+					    out var itemIndexMatched) != true)
 					{
 						return false;
 					}
@@ -355,22 +355,22 @@ public static class IEnumerableExtension
 	}
 
 	public static bool IsNotEquals<ItemType>(
-		this IEnumerable<ItemType> items,
-		IEnumerable<ItemType>? objectItems,
-		bool isIgnoreSameItems = false,
-		bool isNullEqualsEmpty = true)
-		where ItemType : notnull
+	    this IEnumerable<ItemType> items,
+	    IEnumerable<ItemType>? objectItems,
+	    bool isIgnoreSameItems = false,
+	    bool isNullEqualsEmpty = true)
+	    where ItemType : notnull
 	{
 		return !IEnumerableExtension.IsEquals(
-			items,
-			objectItems,
-			isIgnoreSameItems,
-			isNullEqualsEmpty);
+		    items,
+		    objectItems,
+		    isIgnoreSameItems,
+		    isNullEqualsEmpty);
 	}
 
 	public static List<ItemType>? ToListBy<ItemType>(
-		this IEnumerable<ItemType>? items,
-		Func<ItemType, bool> toIsItemValidToList)
+	    this IEnumerable<ItemType>? items,
+	    Func<ItemType, bool> toIsItemValidToList)
 	{
 		if (items == null)
 		{
@@ -389,9 +389,9 @@ public static class IEnumerableExtension
 	}
 
 	public static List<ItemType>[]? ToGroupsBy<ItemType, ItemGroupKeyType>(
-		this IEnumerable<ItemType>? items,
-		Func<ItemType, ItemGroupKeyType> toGetItemGroupKey)
-		where ItemGroupKeyType : notnull
+	    this IEnumerable<ItemType>? items,
+	    Func<ItemType, ItemGroupKeyType> toGetItemGroupKey)
+	    where ItemGroupKeyType : notnull
 	{
 		if (items == null)
 		{
@@ -403,8 +403,8 @@ public static class IEnumerableExtension
 		{
 			var itemGroupKey = toGetItemGroupKey(item);
 			if (!itemGroups.TryGetValue(
-				itemGroupKey,
-				out var itemGroup))
+			    itemGroupKey,
+			    out var itemGroup))
 			{
 				itemGroup = [];
 				itemGroups.AddOrSet(itemGroupKey, itemGroup);
@@ -416,8 +416,8 @@ public static class IEnumerableExtension
 
 	[Obsolete("请使用“ToItemHashSet”替代当前函数。")]
 	public static Dictionary<KeyType, bool>? ToDictionaryWithValueTrue<KeyType>(
-		this IEnumerable<KeyType>? keys)
-		where KeyType : notnull
+	    this IEnumerable<KeyType>? keys)
+	    where KeyType : notnull
 	{
 		if (keys == null)
 		{
@@ -432,15 +432,9 @@ public static class IEnumerableExtension
 		return dictionary;
 	}
 
-	public static HashSet<KeyType>? ToItemHashSet<KeyType>(
-		this IEnumerable<KeyType>? keys)
-		where KeyType : notnull
+	public static HashSet<KeyType> ToItemHashSet<KeyType>(this IEnumerable<KeyType> keys)
+	    where KeyType : notnull
 	{
-		if (keys == null)
-		{
-			return null;
-		}
-
 		var hashSet = new HashSet<KeyType>();
 		foreach (var key in keys)
 		{
@@ -451,12 +445,12 @@ public static class IEnumerableExtension
 
 
 	public static async Task ConcurrentProcessItemsAsync<ItemType>(
-		this IEnumerable<ItemType> items,
-		Action<ItemType> toProcessItem,
-		int concurrentTasksCountMax = 10)
+	    this IEnumerable<ItemType> items,
+	    Action<ItemType> toProcessItem,
+	    int concurrentTasksCountMax = 10)
 	{
 		var itemsConcurrentProcessQueue
-			= new ItemsConcurrentProcessQueue<ItemType>(concurrentTasksCountMax);
+		    = new ItemsConcurrentProcessQueue<ItemType>(concurrentTasksCountMax);
 		foreach (var item in items)
 		{
 			// !!!
@@ -469,12 +463,12 @@ public static class IEnumerableExtension
 	}
 
 	public static async Task ConcurrentProcessItemsAsync<ItemType>(
-		this IEnumerable<ItemType> items,
-		Func<ItemType, Task> toProcessItemAsync,
-		int concurrentTasksCountMax = 10)
+	    this IEnumerable<ItemType> items,
+	    Func<ItemType, Task> toProcessItemAsync,
+	    int concurrentTasksCountMax = 10)
 	{
 		var itemsConcurrentProcessQueue
-			= new ItemsConcurrentProcessQueue<ItemType>(concurrentTasksCountMax);
+		    = new ItemsConcurrentProcessQueue<ItemType>(concurrentTasksCountMax);
 		foreach (var item in items)
 		{
 			// !!!
@@ -487,17 +481,11 @@ public static class IEnumerableExtension
 	}
 
 	public static async Task<ItemSearchResult<ItemType>?> SearchAsync<ItemType>(
-		this IEnumerable<ItemType> items,
-		//
-		int searchTasksCount,
-		Func<ItemType, double>? toGetItemSearchMatchedProgress,
-		Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
-		Func<List<ItemSearchMatchInfo<ItemType>>, Task<List<ItemSearchMatchInfo<ItemType>>>>? toSortItemSearchMatchInfesAsync,
-		//
-		int pageIndex,
-		int pageSize,
-		//
-		bool isGetItemSearchMatchInfesInPage = false)
+	    this IEnumerable<ItemType> items, int searchTasksCount,
+	    Func<ItemType, double>? toGetItemSearchMatchedProgress,
+	    Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
+	    Func<List<ItemSearchMatchInfo<ItemType>>, Task<List<ItemSearchMatchInfo<ItemType>>>>? toSortItemSearchMatchInfesAsync,
+	    int pageIndex, int pageSize, bool isGetItemSearchMatchInfesInPage = false)
 	{
 		var itemsCount = items.GetCount();
 		if (itemsCount < 1)
@@ -528,8 +516,8 @@ public static class IEnumerableExtension
 		List<ItemType> itemsSearchedInPage;
 		List<ItemSearchMatchInfo<ItemType>>? itemSearchMatchInfesInPage = null;
 		if (toGetItemSearchMatchedProgress == null
-			&& toSortItemSearchMatchInfes == null
-			&& toSortItemSearchMatchInfesAsync == null)
+		    && toSortItemSearchMatchInfes == null
+		    && toSortItemSearchMatchInfesAsync == null)
 		{
 			itemsSearchedInPage = [];
 			if (isGetItemSearchMatchInfesInPage)
@@ -538,8 +526,8 @@ public static class IEnumerableExtension
 				if (items is ICollection<ItemType> itemsCollection)
 				{
 					for (var itemIndex = itemPageBeginItemIndex;
-						itemIndex < itemPageEndItemIndex;
-						itemIndex++)
+					    itemIndex < itemPageEndItemIndex;
+					    itemIndex++)
 					{
 						var item = itemsCollection.ElementAt(itemIndex);
 						// !!!
@@ -576,8 +564,8 @@ public static class IEnumerableExtension
 				if (items is ICollection<ItemType> itemsCollection)
 				{
 					for (var itemIndex = itemPageBeginItemIndex;
-						itemIndex < itemPageEndItemIndex;
-						itemIndex++)
+					    itemIndex < itemPageEndItemIndex;
+					    itemIndex++)
 					{
 						var item = itemsCollection.ElementAt(itemIndex);
 						// !!!
@@ -609,9 +597,9 @@ public static class IEnumerableExtension
 			}
 			//
 			return new(
-				itemsCount,
-				itemsSearchedInPage,
-				itemSearchMatchInfesInPage);
+			    itemsCount,
+			    itemsSearchedInPage,
+			    itemSearchMatchInfesInPage);
 			//
 		}
 
@@ -621,25 +609,25 @@ public static class IEnumerableExtension
 
 		List<ItemSearchMatchInfo<ItemType>> itemSearchMatchInfes = [];
 		await items.ConcurrentProcessItemsAsync(
-			(item) =>
-			{
-				var itemSearchMatchedProgress = 0.0;
-				if (toGetItemSearchMatchedProgress != null)
-				{
-					itemSearchMatchedProgress = toGetItemSearchMatchedProgress(item);
-				}
-				if (itemSearchMatchedProgress <= 0)
-				{
-					return;
-				}
-				lock (itemSearchMatchInfes)
-				{
-					itemSearchMatchInfes.Add(new(
-						item,
-						itemSearchMatchedProgress));
-				}
-			},
-			searchTasksCount);
+		    (item) =>
+		    {
+			    var itemSearchMatchedProgress = 0.0;
+			    if (toGetItemSearchMatchedProgress != null)
+			    {
+				    itemSearchMatchedProgress = toGetItemSearchMatchedProgress(item);
+			    }
+			    if (itemSearchMatchedProgress <= 0)
+			    {
+				    return;
+			    }
+			    lock (itemSearchMatchInfes)
+			    {
+				    itemSearchMatchInfes.Add(new(
+			item,
+			itemSearchMatchedProgress));
+			    }
+		    },
+		    searchTasksCount);
 
 		var itemSearchMatchInfesCount = itemSearchMatchInfes.Count;
 		if (itemPageEndItemIndex > itemSearchMatchInfesCount)
@@ -672,7 +660,7 @@ public static class IEnumerableExtension
 			    searchMatchInfoB) =>
 			{
 				return searchMatchInfoB.MatchedProgress.CompareTo(
-					searchMatchInfoA.MatchedProgress);
+		searchMatchInfoA.MatchedProgress);
 			});
 		}
 
@@ -708,25 +696,18 @@ public static class IEnumerableExtension
 		}
 		//
 		return new(
-			itemSearchMatchInfes.Count,
-			itemsSearchedInPage,
-			itemSearchMatchInfesInPage);
+		    itemSearchMatchInfes.Count,
+		    itemsSearchedInPage,
+		    itemSearchMatchInfesInPage);
 		//
 	}
 
-
-	public static async Task<ItemSearchResult<ItemType>?> SearchAsync<ItemType>(
-		this IEnumerable<ItemType> items,
-		//
-		int searchTasksCount,
-		Func<ItemType, Task<double>>? toGetItemSearchMatchedProgressAsync,
-		Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
-		Func<List<ItemSearchMatchInfo<ItemType>>, Task<List<ItemSearchMatchInfo<ItemType>>>>? toSortItemSearchMatchInfesAsync,
-		//
-		int pageIndex,
-		int pageSize,
-		//
-		bool isGetItemSearchMatchInfesInPage = false)
+	public static async Task<ItemSearchResult<ItemType>?> SearchWithAsyncMatcherAsync<ItemType>(
+	    this IEnumerable<ItemType> items,
+	    int searchTasksCount, Func<ItemType, Task<double>>? toGetItemSearchMatchedProgressAsync,
+	    Func<List<ItemSearchMatchInfo<ItemType>>, List<ItemSearchMatchInfo<ItemType>>>? toSortItemSearchMatchInfes,
+	    Func<List<ItemSearchMatchInfo<ItemType>>, Task<List<ItemSearchMatchInfo<ItemType>>>>? toSortItemSearchMatchInfesAsync,
+	    int pageIndex, int pageSize, bool isGetItemSearchMatchInfesInPage = false)
 	{
 		var itemsCount = items.GetCount();
 		if (itemsCount < 1)
@@ -757,8 +738,8 @@ public static class IEnumerableExtension
 		List<ItemType> itemsSearchedInPage;
 		List<ItemSearchMatchInfo<ItemType>>? itemSearchMatchInfesInPage = null;
 		if (toGetItemSearchMatchedProgressAsync == null
-			&& toSortItemSearchMatchInfes == null
-			&& toSortItemSearchMatchInfesAsync == null)
+		    && toSortItemSearchMatchInfes == null
+		    && toSortItemSearchMatchInfesAsync == null)
 		{
 			itemsSearchedInPage = [];
 			var itemIndex = 0;
@@ -804,9 +785,9 @@ public static class IEnumerableExtension
 			}
 			//
 			return new(
-				itemsCount,
-				itemsSearchedInPage,
-				itemSearchMatchInfesInPage);
+			    itemsCount,
+			    itemsSearchedInPage,
+			    itemSearchMatchInfesInPage);
 			//
 		}
 
@@ -816,25 +797,25 @@ public static class IEnumerableExtension
 
 		List<ItemSearchMatchInfo<ItemType>> itemSearchMatchInfes = [];
 		await items.ConcurrentProcessItemsAsync(
-			async (item) =>
-			{
-				var itemSearchMatchedProgress = 0.0;
-				if (toGetItemSearchMatchedProgressAsync != null)
-				{
-					itemSearchMatchedProgress = await toGetItemSearchMatchedProgressAsync(item);
-				}
-				if (itemSearchMatchedProgress <= 0)
-				{
-					return;
-				}
-				lock (itemSearchMatchInfes)
-				{
-					itemSearchMatchInfes.Add(new(
-						item,
-						itemSearchMatchedProgress));
-				}
-			},
-			searchTasksCount);
+		    async (item) =>
+		    {
+			    var itemSearchMatchedProgress = 0.0;
+			    if (toGetItemSearchMatchedProgressAsync != null)
+			    {
+				    itemSearchMatchedProgress = await toGetItemSearchMatchedProgressAsync(item);
+			    }
+			    if (itemSearchMatchedProgress <= 0)
+			    {
+				    return;
+			    }
+			    lock (itemSearchMatchInfes)
+			    {
+				    itemSearchMatchInfes.Add(new(
+			item,
+			itemSearchMatchedProgress));
+			    }
+		    },
+		    searchTasksCount);
 
 		var itemSearchMatchInfesCount = itemSearchMatchInfes.Count;
 		if (itemPageEndItemIndex > itemSearchMatchInfesCount)
@@ -867,7 +848,7 @@ public static class IEnumerableExtension
 			    searchMatchInfoB) =>
 			{
 				return searchMatchInfoB.MatchedProgress.CompareTo(
-					searchMatchInfoA.MatchedProgress);
+		searchMatchInfoA.MatchedProgress);
 			});
 		}
 
@@ -903,9 +884,32 @@ public static class IEnumerableExtension
 		}
 		//
 		return new(
-			itemSearchMatchInfes.Count,
-			itemsSearchedInPage,
-			itemSearchMatchInfesInPage);
+		    itemSearchMatchInfes.Count,
+		    itemsSearchedInPage,
+		    itemSearchMatchInfesInPage);
 		//
+	}
+
+	public static List<EnumerableItemType> SortToList<EnumerableItemType>(
+		this IEnumerable<EnumerableItemType> items, IComparer<EnumerableItemType> toCompareItemsAsync)
+	{
+		var itemList = new List<EnumerableItemType>(items);
+		{
+			itemList.Sort(toCompareItemsAsync);
+		}
+		return itemList;
+	}
+
+	public static async Task<List<EnumerableItemType>> SortToListAsync<EnumerableItemType>(
+		this IEnumerable<EnumerableItemType> items, Func<EnumerableItemType, EnumerableItemType, Task<int>> toCompareItemsAsync)
+	{
+		var itemList = new List<EnumerableItemType>(items);
+		{
+			await itemList.SortAsync(async (itemA, itemB) =>
+			{
+				return await toCompareItemsAsync(itemA, itemB);
+			});
+		}
+		return itemList;
 	}
 }

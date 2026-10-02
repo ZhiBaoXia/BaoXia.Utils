@@ -41,37 +41,37 @@ public static class FloatExtension
 	}
 
 	public static float ToFloatWithDecimalPrecision(
-		this float floatA,
-		int decimalPrecision,
-		MidpointRounding midpointRounding = MidpointRounding.ToEven)
+	    this float floatA,
+	    int decimalPrecision,
+	    MidpointRounding midpointRounding = MidpointRounding.ToEven)
 	{
 		return DoubleExtension.ToFloatWithDecimalPrecision(
-			floatA,
-			decimalPrecision,
-			midpointRounding);
+		    floatA,
+		    decimalPrecision,
+		    midpointRounding);
 	}
 
 	public static double ToDoubleWithDecimalPrecision(
-		this float floatA,
-		int decimalPrecision,
-		MidpointRounding midpointRounding = MidpointRounding.ToEven)
+	    this float floatA,
+	    int decimalPrecision,
+	    MidpointRounding midpointRounding = MidpointRounding.ToEven)
 	{
 		return DoubleExtension.ToDoubleWithDecimalPrecision(
-			floatA,
-			decimalPrecision,
-			midpointRounding);
+		    floatA,
+		    decimalPrecision,
+		    midpointRounding);
 	}
 
 	public static int CompareTo(
-		this float floatA,
-		float floatB,
-		int decimalPrecision,
-		MidpointRounding midpointRounding = MidpointRounding.ToEven)
+	    this float floatA,
+	    float floatB,
+	    int decimalPrecision,
+	    MidpointRounding midpointRounding = MidpointRounding.ToEven)
 	{
 		return DoubleExtension.CompareTo(
-			floatA,
-			floatB,
-			decimalPrecision,
-			midpointRounding);
+		    floatA,
+		    floatB,
+		    decimalPrecision,
+		    midpointRounding);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BaoXia.Utils;
 
@@ -25,11 +26,11 @@ public class ConfigInfoInConfigFile<ConfigType> where ConfigType : class
 		{
 			ConfigType? serviceConfig = null;
 			if (_configFile != null
-				&& _configPropertyInfoInConfigFile != null)
+			    && _configPropertyInfoInConfigFile != null)
 			{
 				serviceConfig
-					= _configPropertyInfoInConfigFile.GetValue(_configFile)
-					as ConfigType;
+				    = _configPropertyInfoInConfigFile.GetValue(_configFile)
+				    as ConfigType;
 			}
 			serviceConfig ??= _defaultConfig;
 			return serviceConfig;
@@ -38,42 +39,37 @@ public class ConfigInfoInConfigFile<ConfigType> where ConfigType : class
 
 	#endregion
 
+
 	////////////////////////////////////////////////
 	// @自身实现
 	////////////////////////////////////////////////
 
 	#region 自身实现
 
-	public ConfigInfoInConfigFile(
-		ConfigFile? configFile,
-		string? configPropertyName,
-		//
-		ConfigType defaultConfig,
-		//
-		Action<ConfigFile>? toReceiveConfigFileChanged = null)
+	public ConfigInfoInConfigFile(ConfigFile? configFile, string? configPropertyName,
+		ConfigType defaultConfig, Func<ConfigFile, Task>? toReceiveConfigFileChanged = null)
 	{
 		_configFile = configFile;
 		_configPropertyName = configPropertyName;
-		if (_configFile != null
-			&& !string.IsNullOrEmpty(_configPropertyName))
+		if (_configFile != null && !string.IsNullOrEmpty(_configPropertyName))
 		{
 			var configPropertyInfoInConfigFile
-				= _configFile
-				.GetType()
-				.GetProperty(_configPropertyName);
+			    = _configFile
+			    .GetType()
+			    .GetProperty(_configPropertyName);
 			if (configPropertyInfoInConfigFile == null)
 			{
 				var configPropertyNotFoundException
-					= new ArgumentException(
-						$"无法在配置文件中，使用名称“{configPropertyName}”找到“{typeof(ConfigType).Name}”类型的配置信息。",
-						nameof(configPropertyName));
+				    = new ArgumentException(
+				    $"无法在配置文件中，使用名称“{configPropertyName}”找到“{typeof(ConfigType).Name}”类型的配置信息。",
+				    nameof(configPropertyName));
 				{
 					configPropertyNotFoundException.Data.Add(
-						nameof(configFile),
-						configFile);
+					    nameof(configFile),
+					    configFile);
 					configPropertyNotFoundException.Data.Add(
-						nameof(configPropertyName),
-						configPropertyName);
+					    nameof(configPropertyName),
+					    configPropertyName);
 				}
 				throw configPropertyNotFoundException;
 			}

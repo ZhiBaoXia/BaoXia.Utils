@@ -17,11 +17,11 @@ namespace BaoXia.Utils.Extensions
 		#region “GET”相关方法	
 
 		public static async Task<string?> GetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string?>? queryParams,
-			Dictionary<string, string?>? headers,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string?>? queryParams,
+		    Dictionary<string, string?>? headers,
+		    CancellationToken cancellationToken = default)
 		{
 			if (string.IsNullOrEmpty(requestUri))
 			{
@@ -42,8 +42,8 @@ namespace BaoXia.Utils.Extensions
 					if (headerKey?.Length > 0)
 					{
 						requestMessage.Headers.TryAddWithoutValidation(
-							headerKey,
-							headerKeyValue.Value);
+						    headerKey,
+						    headerKeyValue.Value);
 					}
 				}
 			}
@@ -57,30 +57,30 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static async Task<string?> GetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string?>? queryParams,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string?>? queryParams,
+		    CancellationToken cancellationToken = default)
 		{
 			return await GetStringAsync(
-				httpClient,
-				requestUri,
-				queryParams,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    queryParams,
+			    null,
+			    cancellationToken);
 		}
 
 		public static async Task<string?> GetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			CancellationToken cancellationToken)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    CancellationToken cancellationToken)
 		{
 			return await GetStringAsync(
-				httpClient,
-				requestUri,
-				null,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    null,
+			    null,
+			    cancellationToken);
 		}
 
 
@@ -88,74 +88,74 @@ namespace BaoXia.Utils.Extensions
 
 
 		public static async Task<ObjectType?> GetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string?>? queryParams,
-			Dictionary<string, string?>? headers,
-			JsonSerializerOptions? jsonSerializerOptions,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string?>? queryParams,
+		    Dictionary<string, string?>? headers,
+		    JsonSerializerOptions? jsonSerializerOptions,
+		    CancellationToken cancellationToken = default)
 		{
 			var responseString = await httpClient.GetStringAsync(
-				requestUri,
-				queryParams,
-				headers,
-				cancellationToken);
+			    requestUri,
+			    queryParams,
+			    headers,
+			    cancellationToken);
 			if (responseString == null
-				|| responseString.Length < 1)
+			    || responseString.Length < 1)
 			{
 				return default;
 			}
 
 			var @object = responseString.ToObjectByJsonDeserialize<ObjectType>(
-				jsonSerializerOptions);
+			    jsonSerializerOptions);
 			{ }
 			return @object;
 		}
 
 		public static async Task<ObjectType?> GetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string?>? queryParams,
-			Dictionary<string, string?>? headers,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string?>? queryParams,
+		    Dictionary<string, string?>? headers,
+		    CancellationToken cancellationToken = default)
 		{
 			var @object = await httpClient.GetObjectAsync<ObjectType>(
-				requestUri,
-				queryParams,
-				headers,
-				null,
-				cancellationToken);
+			    requestUri,
+			    queryParams,
+			    headers,
+			    null,
+			    cancellationToken);
 			{ }
 			return @object;
 		}
 
 		public static async Task<ObjectType?> GetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string?>? queryParams,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string?>? queryParams,
+		    CancellationToken cancellationToken = default)
 		{
 			var @object = await httpClient.GetObjectAsync<ObjectType>(
-				requestUri,
-				queryParams,
-				null,
-				null,
-				cancellationToken);
+			    requestUri,
+			    queryParams,
+			    null,
+			    null,
+			    cancellationToken);
 			{ }
 			return @object;
 		}
 
 		public static async Task<ObjectType?> GetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			CancellationToken cancellationToken)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    CancellationToken cancellationToken)
 		{
 			var @object = await httpClient.GetObjectAsync<ObjectType>(
-				requestUri,
-				null,
-				null,
-				null,
-				cancellationToken);
+			    requestUri,
+			    null,
+			    null,
+			    null,
+			    cancellationToken);
 			{ }
 			return @object;
 		}
@@ -170,12 +170,12 @@ namespace BaoXia.Utils.Extensions
 		#region “POST”相关方法	
 
 		public static async Task<string?> PostToGetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			string? requestBody,
-			Dictionary<string, string?>? headers,
-			Encoding? requestBodyEncoding,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    string? requestBody,
+		    Dictionary<string, string?>? headers,
+		    Encoding? requestBodyEncoding,
+		    CancellationToken cancellationToken = default)
 		{
 			if (string.IsNullOrEmpty(requestUri))
 			{
@@ -192,8 +192,8 @@ namespace BaoXia.Utils.Extensions
 					if (headerKey?.Length > 0)
 					{
 						if (!requestMessage.Headers.TryAddWithoutValidation(
-							headerKey,
-							headerKeyValue.Value))
+						    headerKey,
+						    headerKeyValue.Value))
 						{
 							contentHeaders ??= [];
 							contentHeaders.TryAdd(headerKey, headerKeyValue.Value);
@@ -212,8 +212,8 @@ namespace BaoXia.Utils.Extensions
 						foreach (var contentHeader in contentHeaders)
 						{
 							requestContent.Headers.TryAddWithoutValidation(
-								contentHeader.Key,
-								contentHeader.Value);
+							    contentHeader.Key,
+							    contentHeader.Value);
 						}
 					}
 				}
@@ -237,26 +237,26 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static async Task<string?> PostToGetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			string? requestBody,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    string? requestBody,
+		    CancellationToken cancellationToken = default)
 		{
 			return await PostToGetStringAsync(
-				httpClient,
-				requestUri,
-				requestBody,
-				null,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    requestBody,
+			    null,
+			    null,
+			    cancellationToken);
 		}
 
 		public static async Task<string?> PostFormUrlEncodedToGetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string> formUrlEncoded,
-			Dictionary<string, string?>? headers,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string> formUrlEncoded,
+		    Dictionary<string, string?>? headers,
+		    CancellationToken cancellationToken = default)
 		{
 			if (string.IsNullOrEmpty(requestUri))
 			{
@@ -273,8 +273,8 @@ namespace BaoXia.Utils.Extensions
 					if (headerKey?.Length > 0)
 					{
 						if (!requestMessage.Headers.TryAddWithoutValidation(
-							headerKey,
-							headerKeyValue.Value))
+						    headerKey,
+						    headerKeyValue.Value))
 						{
 							contentHeaders ??= [];
 							contentHeaders.TryAdd(headerKey, headerKeyValue.Value);
@@ -291,8 +291,8 @@ namespace BaoXia.Utils.Extensions
 						foreach (var contentHeader in contentHeaders)
 						{
 							requestContent.Headers.TryAddWithoutValidation(
-								contentHeader.Key,
-								contentHeader.Value);
+							    contentHeader.Key,
+							    contentHeader.Value);
 						}
 					}
 				}
@@ -316,25 +316,25 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static async Task<string?> PostFormUrlEncodedToGetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string> formUrlEncoded,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string> formUrlEncoded,
+		    CancellationToken cancellationToken = default)
 		{
 			return await PostFormUrlEncodedToGetStringAsync(
-				httpClient,
-				requestUri,
-				formUrlEncoded,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    formUrlEncoded,
+			    null,
+			    cancellationToken);
 		}
 
 		public static async Task<string?> PostFormMultipartToGetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string> multipartFormData,
-			Dictionary<string, string?>? headers,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string> multipartFormData,
+		    Dictionary<string, string?>? headers,
+		    CancellationToken cancellationToken = default)
 		{
 			if (string.IsNullOrEmpty(requestUri))
 			{
@@ -351,8 +351,8 @@ namespace BaoXia.Utils.Extensions
 					if (headerKey?.Length > 0)
 					{
 						if (!requestMessage.Headers.TryAddWithoutValidation(
-							headerKey,
-							headerKeyValue.Value))
+						    headerKey,
+						    headerKeyValue.Value))
 						{
 							contentHeaders ??= [];
 							contentHeaders.TryAdd(headerKey, headerKeyValue.Value);
@@ -371,8 +371,8 @@ namespace BaoXia.Utils.Extensions
 						foreach (var contentHeader in contentHeaders)
 						{
 							requestContent.Headers.TryAddWithoutValidation(
-								contentHeader.Key,
-								contentHeader.Value);
+							    contentHeader.Key,
+							    contentHeader.Value);
 						}
 					}
 				}
@@ -396,17 +396,17 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static async Task<string?> PostFormMultipartToGetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string> multipartFormData,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string> multipartFormData,
+		    CancellationToken cancellationToken = default)
 		{
 			return await PostFormMultipartToGetStringAsync(
-				httpClient,
-				requestUri,
-				multipartFormData,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    multipartFormData,
+			    null,
+			    cancellationToken);
 		}
 
 		#endregion
@@ -419,175 +419,171 @@ namespace BaoXia.Utils.Extensions
 		#region “POST GetObject”相关方法。
 
 		public static async Task<ObjectType?> PostToGetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			string? requestBody,
-			Dictionary<string, string?>? headers,
-			Encoding? requestBodyEncoding,
-			JsonSerializerOptions? jsonSerializerOptions,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient, string? requestUri, string? requestBody,
+		    Dictionary<string, string?>? headers, Encoding? requestBodyEncoding, JsonSerializerOptions? jsonSerializerOptions,
+		    CancellationToken cancellationToken = default)
 		{
 			var responseString = await PostToGetStringAsync(
-				httpClient,
-				requestUri,
-				requestBody,
-				headers,
-				requestBodyEncoding,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    requestBody,
+			    headers,
+			    requestBodyEncoding,
+			    cancellationToken);
 			if (responseString == null
-				|| responseString.Length < 1)
+			    || responseString.Length < 1)
 			{
 				return default;
 			}
 			var @object = responseString.ToObjectByJsonDeserialize<ObjectType>(
-				jsonSerializerOptions);
+			    jsonSerializerOptions);
 			{ }
 			return @object;
 		}
 
 		public static async Task<ObjectType?> PostToGetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			string? requestBody,
-			Dictionary<string, string?>? headers,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    string? requestBody,
+		    Dictionary<string, string?>? headers,
+		    CancellationToken cancellationToken = default)
 		{
 			return await PostToGetObjectAsync<ObjectType>(
-				httpClient,
-				requestUri,
-				requestBody,
-				headers,
-				null,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    requestBody,
+			    headers,
+			    null,
+			    null,
+			    cancellationToken);
 		}
 
 		public static async Task<ObjectType?> PostToGetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			string? requestBody,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    string? requestBody,
+		    CancellationToken cancellationToken = default)
 		{
 			return await PostToGetObjectAsync<ObjectType>(
-				httpClient,
-				requestUri,
-				requestBody,
-				null,
-				null,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    requestBody,
+			    null,
+			    null,
+			    null,
+			    cancellationToken);
 		}
 
 		public static async Task<ObjectType?> PostFormUrlEncodedToGetObject<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string> formUrlEncoded,
-			Dictionary<string, string?>? headers,
-			JsonSerializerOptions? jsonSerializerOptions,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string> formUrlEncoded,
+		    Dictionary<string, string?>? headers,
+		    JsonSerializerOptions? jsonSerializerOptions,
+		    CancellationToken cancellationToken = default)
 		{
 			var responseString = await PostFormUrlEncodedToGetStringAsync(
-				httpClient,
-				requestUri,
-				formUrlEncoded,
-				headers,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    formUrlEncoded,
+			    headers,
+			    cancellationToken);
 			if (responseString == null
-				|| responseString.Length < 1)
+			    || responseString.Length < 1)
 			{
 				return default;
 			}
 			var @object = responseString.ToObjectByJsonDeserialize<ObjectType>(
-				jsonSerializerOptions);
+			    jsonSerializerOptions);
 			{ }
 			return @object;
 		}
 
 		public static async Task<ObjectType?> PostFormUrlEncodedToGetObject<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string> formUrlEncoded,
-			Dictionary<string, string?>? headers,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string> formUrlEncoded,
+		    Dictionary<string, string?>? headers,
+		    CancellationToken cancellationToken = default)
 		{
 			return await PostFormUrlEncodedToGetObject<ObjectType>(
-				httpClient,
-				requestUri,
-				formUrlEncoded,
-				headers,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    formUrlEncoded,
+			    headers,
+			    null,
+			    cancellationToken);
 		}
 
 		public static async Task<ObjectType?> PostFormUrlEncodedToGetObject<ObjectType>(
-			this HttpClient httpClient,
-			string requestUri,
-			Dictionary<string, string> formUrlEncoded,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Dictionary<string, string> formUrlEncoded,
+		    CancellationToken cancellationToken = default)
 		{
 			return await PostFormUrlEncodedToGetObject<ObjectType>(
-				httpClient,
-				requestUri,
-				formUrlEncoded,
-				null,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    formUrlEncoded,
+			    null,
+			    null,
+			    cancellationToken);
 		}
 
 		public static async Task<ObjectType?> PostFormMultipartToGetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string requestUri,
-			Dictionary<string, string> multipartFormData,
-			Dictionary<string, string?>? headers,
-			JsonSerializerOptions? jsonSerializerOptions,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Dictionary<string, string> multipartFormData,
+		    Dictionary<string, string?>? headers,
+		    JsonSerializerOptions? jsonSerializerOptions,
+		    CancellationToken cancellationToken = default)
 		{
 			var responseString = await PostFormMultipartToGetStringAsync(
-				httpClient,
-				requestUri,
-				multipartFormData,
-				headers,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    multipartFormData,
+			    headers,
+			    cancellationToken);
 			if (responseString == null
-				|| responseString.Length < 1)
+			    || responseString.Length < 1)
 			{
 				return default;
 			}
 			var @object = responseString.ToObjectByJsonDeserialize<ObjectType>(
-				jsonSerializerOptions);
+			    jsonSerializerOptions);
 			{ }
 			return @object;
 		}
 
 		public static async Task<ObjectType?> PostFormMultipartToGetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string requestUri,
-			Dictionary<string, string> multipartFormData,
-			Dictionary<string, string?>? headers,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Dictionary<string, string> multipartFormData,
+		    Dictionary<string, string?>? headers,
+		    CancellationToken cancellationToken = default)
 		{
 			return await PostFormMultipartToGetObjectAsync<ObjectType>(
-				httpClient,
-				requestUri,
-				multipartFormData,
-				headers,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    multipartFormData,
+			    headers,
+			    null,
+			    cancellationToken);
 		}
 
 		public static async Task<ObjectType?> PostFormMultipartToGetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string requestUri,
-			Dictionary<string, string> multipartFormData,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Dictionary<string, string> multipartFormData,
+		    CancellationToken cancellationToken = default)
 		{
 			return await PostFormMultipartToGetObjectAsync<ObjectType>(
-				httpClient,
-				requestUri,
-				multipartFormData,
-				null,
-				null,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    multipartFormData,
+			    null,
+			    null,
+			    cancellationToken);
 		}
 
 		#endregion
@@ -600,18 +596,18 @@ namespace BaoXia.Utils.Extensions
 		#region 常用语法糖
 
 		public static async Task<ResponseObjectType?> PostToJsonApiAsync<ResponseObjectType>(
-			this HttpClient httpClient,
-			string? apiUri,
-			object? requestObject,
-			Dictionary<string, string?>? headers,
-			Encoding? requestBodyEncoding,
-			JsonSerializerOptions? jsonSerializerOptions,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? apiUri,
+		    object? requestObject,
+		    Dictionary<string, string?>? headers,
+		    Encoding? requestBodyEncoding,
+		    JsonSerializerOptions? jsonSerializerOptions,
+		    CancellationToken cancellationToken = default)
 		{
 			var isNeedContentTypeHeaderParam = true;
 			var contentTypeName = System.Net.HttpRequestHeader
-				.ContentType
-				.ToHttpHeaderParamName();
+			    .ContentType
+			    .ToHttpHeaderParamName();
 			if (contentTypeName?.Length > 0)
 			{
 				if (headers?.Count > 0)
@@ -635,50 +631,50 @@ namespace BaoXia.Utils.Extensions
 			}
 
 			var responseObject = await PostToGetObjectAsync<ResponseObjectType>(
-				httpClient,
-				apiUri,
-				requestObject.ToJsonString(jsonSerializerOptions),
-				headers,
-				requestBodyEncoding,
-				jsonSerializerOptions,
-				cancellationToken);
+			    httpClient,
+			    apiUri,
+			    requestObject.ToJsonString(jsonSerializerOptions),
+			    headers,
+			    requestBodyEncoding,
+			    jsonSerializerOptions,
+			    cancellationToken);
 			{ }
 			return responseObject;
 		}
 
 		public static async Task<ResponseObjectType?> PostToJsonApiAsync<ResponseObjectType>(
-			this HttpClient httpClient,
-			string? apiUri,
-			object? requestObject,
-			Dictionary<string, string?>? headers,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? apiUri,
+		    object? requestObject,
+		    Dictionary<string, string?>? headers,
+		    CancellationToken cancellationToken = default)
 		{
 			var responseObject = await PostToJsonApiAsync<ResponseObjectType>(
-				httpClient,
-				apiUri,
-				requestObject,
-				headers,
-				null,
-				null,
-				cancellationToken);
+			    httpClient,
+			    apiUri,
+			    requestObject,
+			    headers,
+			    null,
+			    null,
+			    cancellationToken);
 			{ }
 			return responseObject;
 		}
 
 		public static async Task<ResponseObjectType?> PostToJsonApiAsync<ResponseObjectType>(
-			this HttpClient httpClient,
-			string? apiUri,
-			object? requestObject,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? apiUri,
+		    object? requestObject,
+		    CancellationToken cancellationToken = default)
 		{
 			var responseObject = await PostToJsonApiAsync<ResponseObjectType>(
-				httpClient,
-				apiUri,
-				requestObject,
-				null,
-				null,
-				null,
-				cancellationToken);
+			    httpClient,
+			    apiUri,
+			    requestObject,
+			    null,
+			    null,
+			    null,
+			    cancellationToken);
 			{ }
 			return responseObject;
 		}

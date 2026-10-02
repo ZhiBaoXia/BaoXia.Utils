@@ -30,16 +30,16 @@ public static class ByteArrayExtension
 	#region ”Brotli“压缩算法实现
 
 	public static byte[]? BytesByCompressWithBrotli(
-		this byte[] bytes,
-		int offset,
-		int length,
-		CompressionLevel compressionLevel = CompressionLevel.Optimal)
+	    this byte[] bytes,
+	    int offset,
+	    int length,
+	    CompressionLevel compressionLevel = CompressionLevel.Optimal)
 	{
 		if (bytes == null
-				   || bytes.Length < 1
-				   || offset < 0
-				   || offset >= bytes.Length
-				   || length <= 0)
+		       || bytes.Length < 1
+		       || offset < 0
+		       || offset >= bytes.Length
+		       || length <= 0)
 		{
 			return null;
 		}
@@ -53,8 +53,8 @@ public static class ByteArrayExtension
 		{
 			using var bytesCompressedMemoryStream = new MemoryStream();
 			using var brStream = new BrotliStream(
-				bytesCompressedMemoryStream,
-				compressionLevel);
+			    bytesCompressedMemoryStream,
+			    compressionLevel);
 			{
 				brStream.Write(bytes, offset, length);
 				brStream.Flush();
@@ -65,44 +65,44 @@ public static class ByteArrayExtension
 	}
 
 	public static byte[]? BytesByCompressWithBrotli(
-		this byte[] bytes,
-		CompressionLevel compressionLevel = CompressionLevel.Optimal)
+	    this byte[] bytes,
+	    CompressionLevel compressionLevel = CompressionLevel.Optimal)
 	{
 		return bytes.BytesByCompressWithBrotli(
-			0,
-			bytes.Length,
-			compressionLevel);
+		    0,
+		    bytes.Length,
+		    compressionLevel);
 	}
 
 	public static ArraySegment<byte>? BytesByDecompressWithBrotli(
-		this byte[] bytesCompressed,
-		int bytesCompressedBeginIndex,
-		int bytesCompressedCount,
-		int readBufferSize = 0,
-		float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
+	    this byte[] bytesCompressed,
+	    int bytesCompressedBeginIndex,
+	    int bytesCompressedCount,
+	    int readBufferSize = 0,
+	    float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
 	{
 		ArraySegment<byte>? bytesDecompressed = null;
 		if (bytesCompressed.Length > 0)
 		{
 			using var bytesCompressedStream
-				= new MemoryStream(
-					bytesCompressed,
-					bytesCompressedBeginIndex,
-					bytesCompressedCount);
+			    = new MemoryStream(
+			    bytesCompressed,
+			    bytesCompressedBeginIndex,
+			    bytesCompressedCount);
 			using var brStream = new BrotliStream(
-				bytesCompressedStream,
-				CompressionMode.Decompress);
+			    bytesCompressedStream,
+			    CompressionMode.Decompress);
 			if (readBufferSize <= 0)
 			{
 				readBufferSize
-					= (int)(bytesCompressed.Length
-					* readBufferSizeRatio);
+				    = (int)(bytesCompressed.Length
+				    * readBufferSizeRatio);
 			}
 			if (readBufferSize <= 0)
 			{
 				readBufferSize
-					= (int)(bytesCompressed.Length
-					* ByteArrayExtension.ReadBufferSizeRatioDefault);
+				    = (int)(bytesCompressed.Length
+				    * ByteArrayExtension.ReadBufferSizeRatioDefault);
 			}
 			var bytesDecompressedBuffer = new BytesBuffer(readBufferSize);
 			{
@@ -122,16 +122,16 @@ public static class ByteArrayExtension
 	}
 
 	public static ArraySegment<byte>? BytesByDecompressWithBrotli(
-			this byte[] bytesCompressed,
-			int readBufferSize = 0,
-			float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
+	    this byte[] bytesCompressed,
+	    int readBufferSize = 0,
+	    float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
 	{
 		return BytesByDecompressWithBrotli(
-			bytesCompressed,
-			0,
-			bytesCompressed.Length,
-			readBufferSize,
-			readBufferSizeRatio);
+		    bytesCompressed,
+		    0,
+		    bytesCompressed.Length,
+		    readBufferSize,
+		    readBufferSizeRatio);
 	}
 
 	#endregion
@@ -145,10 +145,10 @@ public static class ByteArrayExtension
 	public static byte[]? BytesByCompressWithGZip(this byte[] bytes, int offset, int length)
 	{
 		if (bytes == null
-				   || bytes.Length < 1
-				   || offset < 0
-				   || offset >= bytes.Length
-				   || length <= 0)
+		       || bytes.Length < 1
+		       || offset < 0
+		       || offset >= bytes.Length
+		       || length <= 0)
 		{
 			return null;
 		}
@@ -162,8 +162,8 @@ public static class ByteArrayExtension
 		{
 			using var bytesCompressedMemoryStream = new MemoryStream();
 			using (var gzipStream = new GZipStream(
-				bytesCompressedMemoryStream,
-				CompressionMode.Compress))
+			    bytesCompressedMemoryStream,
+			    CompressionMode.Compress))
 			{
 				gzipStream.Write(bytes, offset, length);
 				gzipStream.Flush();
@@ -179,34 +179,34 @@ public static class ByteArrayExtension
 	}
 
 	public static ArraySegment<byte>? BytesByDecompressWithGZip(
-		this byte[] bytesCompressed,
-		int bytesCompressedBeginIndex,
-		int bytesCompressedCount,
-		int readBufferSize = 0,
-		float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
+	    this byte[] bytesCompressed,
+	    int bytesCompressedBeginIndex,
+	    int bytesCompressedCount,
+	    int readBufferSize = 0,
+	    float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
 	{
 		ArraySegment<byte>? bytesDecompressed = null;
 		if (bytesCompressed.Length > 0)
 		{
 			using var bytesCompressedStream
-				= new MemoryStream(
-					bytesCompressed,
-					bytesCompressedBeginIndex,
-					bytesCompressedCount);
+			    = new MemoryStream(
+			    bytesCompressed,
+			    bytesCompressedBeginIndex,
+			    bytesCompressedCount);
 			using var brStream = new GZipStream(
-				bytesCompressedStream,
-				CompressionMode.Decompress);
+			    bytesCompressedStream,
+			    CompressionMode.Decompress);
 			if (readBufferSize <= 0)
 			{
 				readBufferSize
-					= (int)(bytesCompressed.Length
-					* readBufferSizeRatio);
+				    = (int)(bytesCompressed.Length
+				    * readBufferSizeRatio);
 			}
 			if (readBufferSize <= 0)
 			{
 				readBufferSize
-					= (int)(bytesCompressed.Length
-					* ByteArrayExtension.ReadBufferSizeRatioDefault);
+				    = (int)(bytesCompressed.Length
+				    * ByteArrayExtension.ReadBufferSizeRatioDefault);
 			}
 			var bytesDecompressedBuffer = new BytesBuffer(readBufferSize);
 			{
@@ -226,16 +226,16 @@ public static class ByteArrayExtension
 	}
 
 	public static ArraySegment<byte>? BytesByDecompressWithGZip(
-		this byte[] bytesCompressed,
-		int readBufferSize = 0,
-		float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
+	    this byte[] bytesCompressed,
+	    int readBufferSize = 0,
+	    float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
 	{
 		return BytesByDecompressWithGZip(
-			bytesCompressed,
-			0,
-			bytesCompressed.Length,
-			readBufferSize,
-			readBufferSizeRatio);
+		    bytesCompressed,
+		    0,
+		    bytesCompressed.Length,
+		    readBufferSize,
+		    readBufferSizeRatio);
 	}
 
 	#endregion
@@ -249,10 +249,10 @@ public static class ByteArrayExtension
 	public static byte[]? BytesByCompressWithDeflate(this byte[] bytes, int offset, int length)
 	{
 		if (bytes == null
-				   || bytes.Length < 1
-				   || offset < 0
-				   || offset >= bytes.Length
-				   || length <= 0)
+		       || bytes.Length < 1
+		       || offset < 0
+		       || offset >= bytes.Length
+		       || length <= 0)
 		{
 			return null;
 		}
@@ -266,8 +266,8 @@ public static class ByteArrayExtension
 		{
 			using var bytesCompressedMemoryStream = new MemoryStream();
 			using var deflateStream = new DeflateStream(
-				bytesCompressedMemoryStream,
-				CompressionMode.Compress);
+			    bytesCompressedMemoryStream,
+			    CompressionMode.Compress);
 			{
 				deflateStream.Write(bytes, offset, length);
 				deflateStream.Flush();
@@ -283,34 +283,34 @@ public static class ByteArrayExtension
 	}
 
 	public static ArraySegment<byte>? BytesByDecompressWithDeflate(
-		this byte[] bytesCompressed,
-		int bytesCompressedBeginIndex,
-		int bytesCompressedCount,
-		int readBufferSize = 0,
-		float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
+	    this byte[] bytesCompressed,
+	    int bytesCompressedBeginIndex,
+	    int bytesCompressedCount,
+	    int readBufferSize = 0,
+	    float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
 	{
 		ArraySegment<byte>? bytesDecompressed = null;
 		if (bytesCompressed.Length > 0)
 		{
 			using var bytesCompressedStream
-				= new MemoryStream(
-					bytesCompressed,
-					bytesCompressedBeginIndex,
-					bytesCompressedCount);
+			    = new MemoryStream(
+			    bytesCompressed,
+			    bytesCompressedBeginIndex,
+			    bytesCompressedCount);
 			using var brStream = new DeflateStream(
-				bytesCompressedStream,
-				CompressionMode.Decompress);
+			    bytesCompressedStream,
+			    CompressionMode.Decompress);
 			if (readBufferSize <= 0)
 			{
 				readBufferSize
-					= (int)(bytesCompressed.Length
-					* readBufferSizeRatio);
+				    = (int)(bytesCompressed.Length
+				    * readBufferSizeRatio);
 			}
 			if (readBufferSize <= 0)
 			{
 				readBufferSize
-					= (int)(bytesCompressed.Length
-					* ByteArrayExtension.ReadBufferSizeRatioDefault);
+				    = (int)(bytesCompressed.Length
+				    * ByteArrayExtension.ReadBufferSizeRatioDefault);
 			}
 			var bytesDecompressedBuffer = new BytesBuffer(readBufferSize);
 			{
@@ -330,16 +330,16 @@ public static class ByteArrayExtension
 	}
 
 	public static ArraySegment<byte>? BytesByDecompressWithDeflate(
-		this byte[] bytesCompressed,
-		int readBufferSize = 0,
-		float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
+	    this byte[] bytesCompressed,
+	    int readBufferSize = 0,
+	    float readBufferSizeRatio = ByteArrayExtension.ReadBufferSizeRatioDefault)
 	{
 		return BytesByDecompressWithDeflate(
-			bytesCompressed,
-			0,
-			bytesCompressed.Length,
-			readBufferSize,
-			readBufferSizeRatio);
+		    bytesCompressed,
+		    0,
+		    bytesCompressed.Length,
+		    readBufferSize,
+		    readBufferSizeRatio);
 	}
 
 	#endregion
@@ -352,12 +352,12 @@ public static class ByteArrayExtension
 	/// <param name="isAutoIgnoreContentTypeChars">是否自动处理内容类型字符，如：“data:image/jpeg;base64,”。</param>
 	/// <returns>Base64码格式的字符串，对应的字节数组。</returns>
 	public static byte[]? BytesByConvertFromBase64(
-		string base64String,
-		bool isAutoIgnoreContentTypeChars = true)
+	    string base64String,
+	    bool isAutoIgnoreContentTypeChars = true)
 	{
 		return BytesUtil.CreateBytesFromBase64String(
-			base64String,
-			isAutoIgnoreContentTypeChars);
+		    base64String,
+		    isAutoIgnoreContentTypeChars);
 	}
 
 	/// <summary>
@@ -370,74 +370,74 @@ public static class ByteArrayExtension
 	/// <param name="base64FormattingOptions">Base64码的格式参数。</param>
 	/// <returns>字节数组转为对应的Base64码格式的字符串。</returns>
 	public static string ToBase64(
-		this byte[] bytes,
-		int offset,
-		int length,
-		string dataType,
-		Base64FormattingOptions base64FormattingOptions = Base64FormattingOptions.None)
+	    this byte[] bytes,
+	    int offset,
+	    int length,
+	    string dataType,
+	    Base64FormattingOptions base64FormattingOptions = Base64FormattingOptions.None)
 	{
 		return BytesUtil.CreateBase64StringOfBytes(
-			bytes,
-			offset,
-			length,
-			dataType,
-			base64FormattingOptions)
-			?? string.Empty;
+		    bytes,
+		    offset,
+		    length,
+		    dataType,
+		    base64FormattingOptions)
+		    ?? string.Empty;
 	}
 
 	public static string ToMD532String(this byte[] bytes, int offset, int length)
 	{
 		return Security.Cryptography.SHA.CreateMD532String(
-			bytes,
-			offset,
-			length);
+		    bytes,
+		    offset,
+		    length);
 	}
 	public static string ToMD532String(this byte[] bytes)
 	{
 		return Security.Cryptography.SHA.CreateMD532String(
-			bytes);
+		    bytes);
 	}
 
 	public static string ToMD516String(this byte[] bytes, int offset, int length)
 	{
 		return Security.Cryptography.SHA.CreateMD516String(
-			bytes,
-			offset,
-			length);
+		    bytes,
+		    offset,
+		    length);
 	}
 
 	public static string ToMD516String(this byte[] bytes)
 	{
 		return Security.Cryptography.SHA.CreateMD516String(
-			bytes);
+		    bytes);
 	}
 
 	public static string ToSHA256(this byte[] bytes, int offset, int length)
 	{
 		return Security.Cryptography.SHA.CreateSHA256String(
-			bytes,
-			offset,
-			length);
+		    bytes,
+		    offset,
+		    length);
 	}
 
 	public static string ToSHA256(this byte[] bytes)
 	{
 		return Security.Cryptography.SHA.CreateSHA256String(
-			bytes);
+		    bytes);
 	}
 
 	public static string ToSHA512(this byte[] bytes, int offset, int length)
 	{
 		return Security.Cryptography.SHA.CreateSHA512String(
-			bytes,
-			offset,
-			length);
+		    bytes,
+		    offset,
+		    length);
 	}
 
 	public static string ToSHA512(this byte[] bytes)
 	{
 		return Security.Cryptography.SHA.CreateSHA512String(
-			bytes);
+		    bytes);
 	}
 
 	/// <summary>
@@ -446,9 +446,9 @@ public static class ByteArrayExtension
 	/// <param name="bytes">C#的字节数组。</param>
 	/// <returns>符合Java值定义的字节数组。</returns>
 	public static byte[] ToJavaBytes(
-		this byte[] bytes,
-		int offset,
-		int count)
+	    this byte[] bytes,
+	    int offset,
+	    int count)
 	{
 		var javaBytes = new sbyte[bytes.Length];
 		{
@@ -464,14 +464,14 @@ public static class ByteArrayExtension
 			}
 
 			for (int byteIndex = beginByteIndex;
-				byteIndex < endByteIndex;
-				byteIndex++)
+			    byteIndex < endByteIndex;
+			    byteIndex++)
 			{
 				var @byte = bytes[byteIndex];
 				javaBytes[byteIndex]
-					= @byte <= 127
-					? (sbyte)@byte
-					: (sbyte)(@byte - 256);
+				    = @byte <= 127
+				    ? (sbyte)@byte
+				    : (sbyte)(@byte - 256);
 			}
 		}
 		return (byte[])(Array)javaBytes;

@@ -120,20 +120,20 @@ public class IPAddressInfo
 
 		var ipSectionStrings = _ipSectionStrings;
 		if (ipSectionStrings == null
-			|| anotherIPAddressInfo.SectionsCount != this.SectionsCount)
+		    || anotherIPAddressInfo.SectionsCount != this.SectionsCount)
 		{
 			return false;
 		}
 
 		var anotherIPSectionStrings = anotherIPAddressInfo.IPSectionStrings!;
 		for (var ipSectionStringIndex = this.SectionsCount - 1;
-			ipSectionStringIndex >= 0;
-			ipSectionStringIndex--)
+		    ipSectionStringIndex >= 0;
+		    ipSectionStringIndex--)
 		{
 			var ipSectionString = ipSectionStrings[ipSectionStringIndex];
 			var anotherIPSectionString = anotherIPSectionStrings[ipSectionStringIndex];
 			if (!ipSectionString.Equals(IPAddressInfo.FuzzyMatchingKey)
-				&& !ipSectionString.Equals(anotherIPSectionString))
+			    && !ipSectionString.Equals(anotherIPSectionString))
 			{
 				return false;
 			}

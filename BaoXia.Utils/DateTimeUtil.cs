@@ -25,19 +25,19 @@ public class DateTimeUtil
 	#region 类方法
 
 	public static TimeSpan GetTimeSpanFromLocalToObjectTimeZone(
-		TimeZoneNumber objectTimeZoneNumber)
+	    TimeZoneNumber objectTimeZoneNumber)
 	{
 		var timeSpan
-			= new TimeSpan((int)objectTimeZoneNumber, 0, 0)
-			- TimeZoneInfo.Local.BaseUtcOffset;
+		    = new TimeSpan((int)objectTimeZoneNumber, 0, 0)
+		    - TimeZoneInfo.Local.BaseUtcOffset;
 		{ }
 		return timeSpan;
 	}
 
 	public static long GetMillisecondsFrom1970OfDateTime(
-		DateTime dateTime,
-		TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0,
-		bool isMillisecondsMinZero = true)
+	    DateTime dateTime,
+	    TimeZoneNumber millisecondsZoneNumber = TimeZoneNumber.Utc0,
+	    bool isMillisecondsMinZero = true)
 	{
 		long dateTimeTicks = dateTime.Ticks - DateTimeAtUTCZero.Ticks;
 		if (dateTime.Kind != DateTimeKind.Utc)
@@ -48,7 +48,7 @@ public class DateTimeUtil
 
 		var milliseconds = dateTimeTicks / TimeSpan.TicksPerMillisecond;
 		if (milliseconds < 0
-			&& isMillisecondsMinZero)
+		    && isMillisecondsMinZero)
 		{
 			milliseconds = 0;
 		}
@@ -56,26 +56,26 @@ public class DateTimeUtil
 	}
 
 	public static long GetSecondsFrom1970OfDateTime(
-		DateTime dateTime,
-		TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0,
-		bool isMillisecondsMinZero = true)
+	    DateTime dateTime,
+	    TimeZoneNumber secondsZoneNumber = TimeZoneNumber.Utc0,
+	    bool isMillisecondsMinZero = true)
 	{
 		return GetMillisecondsFrom1970OfDateTime(
-			dateTime,
-			secondsZoneNumber,
-			isMillisecondsMinZero)
-			/ 1000;
+		    dateTime,
+		    secondsZoneNumber,
+		    isMillisecondsMinZero)
+		    / 1000;
 	}
 
 	public static DateTime DateTimeWithMillisecondsAfter1970(
-		long milliseconds,
-		TimeZoneNumber millisecondsTimeZoneNumber = TimeZoneNumber.Utc0)
+	    long milliseconds,
+	    TimeZoneNumber millisecondsTimeZoneNumber = TimeZoneNumber.Utc0)
 	{
 		var dateTimeTicks
-			= DateTimeAtUTCZero.Ticks
-			+ (TimeSpan.TicksPerMillisecond * milliseconds
-			- TimeSpan.TicksPerHour * (int)millisecondsTimeZoneNumber
-			+ TimeZoneInfo.Local.BaseUtcOffset.Ticks);
+		    = DateTimeAtUTCZero.Ticks
+		    + (TimeSpan.TicksPerMillisecond * milliseconds
+		    - TimeSpan.TicksPerHour * (int)millisecondsTimeZoneNumber
+		    + TimeZoneInfo.Local.BaseUtcOffset.Ticks);
 		if (dateTimeTicks < DateTime.MinValue.Ticks)
 		{
 			dateTimeTicks = DateTime.MinValue.Ticks;
@@ -90,17 +90,17 @@ public class DateTimeUtil
 	}
 
 	public static DateTime DateTimeWithSecondsAfter1970(
-		long seconds,
-		TimeZoneNumber secondsTimeZoneNumber = TimeZoneNumber.Utc0)
+	    long seconds,
+	    TimeZoneNumber secondsTimeZoneNumber = TimeZoneNumber.Utc0)
 	{
 		return DateTimeWithMillisecondsAfter1970(
-			seconds * 1000,
-			secondsTimeZoneNumber);
+		    seconds * 1000,
+		    secondsTimeZoneNumber);
 	}
 
 	public static DateTime DateTimeByOffsetToTimeZone(
-		DateTime dateTime,
-		TimeZoneNumber timeZoneNumber)
+	    DateTime dateTime,
+	    TimeZoneNumber timeZoneNumber)
 	{
 		long dateTimeOffsetHours = 0;
 		int timeZoneNumberHours = (int)timeZoneNumber;
@@ -111,11 +111,11 @@ public class DateTimeUtil
 		dateTimeOffsetHours += timeZoneNumberHours;
 
 		var dateTimeOffsetTicks
-			= TimeSpan.TicksPerHour * dateTimeOffsetHours;
+		    = TimeSpan.TicksPerHour * dateTimeOffsetHours;
 		var dateTimeTicks
-			= dateTime.Ticks;
+		    = dateTime.Ticks;
 		var objectDateTimeTicks
-			= dateTimeTicks + dateTimeOffsetTicks;
+		    = dateTimeTicks + dateTimeOffsetTicks;
 		if (objectDateTimeTicks < DateTime.MinValue.Ticks)
 		{
 			objectDateTimeTicks = DateTime.MinValue.Ticks;

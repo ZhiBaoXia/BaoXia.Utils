@@ -29,9 +29,9 @@ public class RecursionStep<ItemType>
 	{ }
 
 	public RecursionStep(
-		ItemType? parentItem,
-		IList<ItemType> steps,
-		int nextStepIndex)
+	    ItemType? parentItem,
+	    IList<ItemType> steps,
+	    int nextStepIndex)
 	{
 		ParentItem = parentItem;
 		Items = steps;

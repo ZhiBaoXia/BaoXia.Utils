@@ -28,10 +28,10 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static bool TryToObject(
-			this JsonElement jsonElement,
-			Type? objectType,
-			out object? objectValue,
-			JsonSerializerOptions? options = null)
+		    this JsonElement jsonElement,
+		    Type? objectType,
+		    out object? objectValue,
+		    JsonSerializerOptions? options = null)
 		{
 			objectValue = null;
 
@@ -43,8 +43,8 @@ namespace BaoXia.Utils.Extensions
 			try
 			{
 				objectValue = jsonElement.Deserialize(
-					objectType,
-					options);
+				    objectType,
+				    options);
 				return true;
 			}
 			catch
@@ -53,16 +53,16 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static bool TryToObject<ObjectType>(
-			this JsonElement jsonElement,
-			out ObjectType? objectValue,
-			JsonSerializerOptions? options = null)
+		    this JsonElement jsonElement,
+		    out ObjectType? objectValue,
+		    JsonSerializerOptions? options = null)
 		{
 			objectValue = default;
 			try
 			{
 				objectValue = (ObjectType?)jsonElement.Deserialize(
-					typeof(ObjectType),
-					options);
+				    typeof(ObjectType),
+				    options);
 				return true;
 			}
 			catch
@@ -71,15 +71,15 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static object? ToObject(
-			this JsonElement jsonElement,
-			Type? objectType,
-			JsonSerializerOptions? options = null)
+		    this JsonElement jsonElement,
+		    Type? objectType,
+		    JsonSerializerOptions? options = null)
 		{
 			if (TryToObject(
-				jsonElement,
-				objectType,
-				out var objectValue,
-				options))
+			    jsonElement,
+			    objectType,
+			    out var objectValue,
+			    options))
 			{
 				return objectValue;
 			}
@@ -87,13 +87,13 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static ObjectType? ToObject<ObjectType>(
-			this JsonElement jsonElement,
-			JsonSerializerOptions? options = null)
+		    this JsonElement jsonElement,
+		    JsonSerializerOptions? options = null)
 		{
 			if (TryToObject<ObjectType>(
-				jsonElement,
-				out var objectValue,
-				options))
+			    jsonElement,
+			    out var objectValue,
+			    options))
 			{
 				return objectValue;
 			}
@@ -109,9 +109,9 @@ namespace BaoXia.Utils.Extensions
 		#region 获取属性
 
 		public static JsonElement? TryGetProperty(
-			this JsonElement jsonElement,
-			string? propertyName,
-			bool isIgnoreCase = true)
+		    this JsonElement jsonElement,
+		    string? propertyName,
+		    bool isIgnoreCase = true)
 		{
 			if (string.IsNullOrEmpty(propertyName))
 			{
@@ -120,8 +120,8 @@ namespace BaoXia.Utils.Extensions
 			if (isIgnoreCase == false)
 			{
 				if (!jsonElement.TryGetProperty(
-					propertyName,
-					out var propertyObject))
+				    propertyName,
+				    out var propertyObject))
 				{
 					return null;
 				}
@@ -144,16 +144,16 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static byte TryGetByteProperty(
-			this JsonElement jsonElement,
-			string? propertyName,
-			byte defaultObject = 0,
-			bool isIgnoreCase = true)
+		    this JsonElement jsonElement,
+		    string? propertyName,
+		    byte defaultObject = 0,
+		    bool isIgnoreCase = true)
 		{
 			var propertyObject
-				= TryGetProperty(
-				jsonElement,
-				propertyName,
-				isIgnoreCase);
+			    = TryGetProperty(
+			    jsonElement,
+			    propertyName,
+			    isIgnoreCase);
 			if (propertyObject == null)
 			{
 				return defaultObject;
@@ -167,16 +167,16 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static bool TryGetBoolProperty(
-			this JsonElement jsonElement,
-			string? propertyName,
-			bool defaultObject = false,
-			bool isIgnoreCase = true)
+		    this JsonElement jsonElement,
+		    string? propertyName,
+		    bool defaultObject = false,
+		    bool isIgnoreCase = true)
 		{
 			var propertyObject
-				= TryGetProperty(
-				jsonElement,
-				propertyName,
-				isIgnoreCase);
+			    = TryGetProperty(
+			    jsonElement,
+			    propertyName,
+			    isIgnoreCase);
 			if (propertyObject == null)
 			{
 				return defaultObject;
@@ -194,18 +194,18 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static int TryGetIntProperty(
-			this JsonElement jsonElement,
-			string? propertyName,
-			int defaultObject = 0,
-			bool isIgnoreCase = true)
+		    this JsonElement jsonElement,
+		    string? propertyName,
+		    int defaultObject = 0,
+		    bool isIgnoreCase = true)
 		{
 			var propertyObject
-				= TryGetProperty(
-				jsonElement,
-				propertyName,
-				isIgnoreCase);
+			    = TryGetProperty(
+			    jsonElement,
+			    propertyName,
+			    isIgnoreCase);
 			if (propertyObject == null
-				|| propertyObject.Value.ValueKind != JsonValueKind.Number)
+			    || propertyObject.Value.ValueKind != JsonValueKind.Number)
 			{
 				return defaultObject;
 			}
@@ -218,18 +218,18 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static long TryGetLongProperty(
-			this JsonElement jsonElement,
-			string? propertyName,
-			long defaultObject = 0,
-			bool isIgnoreCase = true)
+		    this JsonElement jsonElement,
+		    string? propertyName,
+		    long defaultObject = 0,
+		    bool isIgnoreCase = true)
 		{
 			var propertyObject
-				= TryGetProperty(
-				jsonElement,
-				propertyName,
-				isIgnoreCase);
+			    = TryGetProperty(
+			    jsonElement,
+			    propertyName,
+			    isIgnoreCase);
 			if (propertyObject == null
-				|| propertyObject.Value.ValueKind != JsonValueKind.Number)
+			    || propertyObject.Value.ValueKind != JsonValueKind.Number)
 			{
 				return defaultObject;
 			}
@@ -242,18 +242,18 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static float TryGetFloatProperty(
-			this JsonElement jsonElement,
-			string? propertyName,
-			float defaultObject = 0.0F,
-			bool isIgnoreCase = true)
+		    this JsonElement jsonElement,
+		    string? propertyName,
+		    float defaultObject = 0.0F,
+		    bool isIgnoreCase = true)
 		{
 			var propertyObject
-				= TryGetProperty(
-				jsonElement,
-				propertyName,
-				isIgnoreCase);
+			    = TryGetProperty(
+			    jsonElement,
+			    propertyName,
+			    isIgnoreCase);
 			if (propertyObject == null
-				|| propertyObject.Value.ValueKind != JsonValueKind.Number)
+			    || propertyObject.Value.ValueKind != JsonValueKind.Number)
 			{
 				return defaultObject;
 			}
@@ -266,18 +266,18 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static double TryGetDoubleProperty(
-			this JsonElement jsonElement,
-			string? propertyName,
-			double defaultObject = 0.0,
-			bool isIgnoreCase = true)
+		    this JsonElement jsonElement,
+		    string? propertyName,
+		    double defaultObject = 0.0,
+		    bool isIgnoreCase = true)
 		{
 			var propertyObject
-				= TryGetProperty(
-				jsonElement,
-				propertyName,
-				isIgnoreCase);
+			    = TryGetProperty(
+			    jsonElement,
+			    propertyName,
+			    isIgnoreCase);
 			if (propertyObject == null
-				|| propertyObject.Value.ValueKind != JsonValueKind.Number)
+			    || propertyObject.Value.ValueKind != JsonValueKind.Number)
 			{
 				return defaultObject;
 			}
@@ -290,18 +290,18 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static decimal TryGetDecimalProperty(
-			this JsonElement jsonElement,
-			string? propertyName,
-			decimal defaultObject = 0,
-			bool isIgnoreCase = true)
+		    this JsonElement jsonElement,
+		    string? propertyName,
+		    decimal defaultObject = 0,
+		    bool isIgnoreCase = true)
 		{
 			var propertyObject
-				= TryGetProperty(
-				jsonElement,
-				propertyName,
-				isIgnoreCase);
+			    = TryGetProperty(
+			    jsonElement,
+			    propertyName,
+			    isIgnoreCase);
 			if (propertyObject == null
-				|| propertyObject.Value.ValueKind != JsonValueKind.Number)
+			    || propertyObject.Value.ValueKind != JsonValueKind.Number)
 			{
 				return defaultObject;
 			}
@@ -314,18 +314,18 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static string? TryGetStringProperty(
-			this JsonElement jsonElement,
-			string? propertyName,
-			string? defaultObject = null,
-			bool isIgnoreCase = true)
+		    this JsonElement jsonElement,
+		    string? propertyName,
+		    string? defaultObject = null,
+		    bool isIgnoreCase = true)
 		{
 			var propertyObject
-				= TryGetProperty(
-				jsonElement,
-				propertyName,
-				isIgnoreCase);
+			    = TryGetProperty(
+			    jsonElement,
+			    propertyName,
+			    isIgnoreCase);
 			if (propertyObject == null
-				|| propertyObject.Value.ValueKind != JsonValueKind.String)
+			    || propertyObject.Value.ValueKind != JsonValueKind.String)
 			{
 				return defaultObject;
 			}
@@ -336,25 +336,25 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static ObjectType? TryGetObjectProperty<ObjectType>(
-			this JsonElement jsonElement,
-			string? propertyName,
-			ObjectType? defaultObject = default,
-			bool isIgnoreCase = true,
-			JsonSerializerOptions? options = null)
+		    this JsonElement jsonElement,
+		    string? propertyName,
+		    ObjectType? defaultObject = default,
+		    bool isIgnoreCase = true,
+		    JsonSerializerOptions? options = null)
 		{
 			var propertyObject
-				= TryGetProperty(
-				jsonElement,
-				propertyName,
-				isIgnoreCase);
+			    = TryGetProperty(
+			    jsonElement,
+			    propertyName,
+			    isIgnoreCase);
 			if (propertyObject == null
-				|| propertyObject.Value.ValueKind != JsonValueKind.Object)
+			    || propertyObject.Value.ValueKind != JsonValueKind.Object)
 			{
 				return defaultObject;
 			}
 
 			var @object = propertyObject.Value.Deserialize<ObjectType>(
-				options ?? Environment.JsonSerializerOptions);
+			    options ?? Environment.JsonSerializerOptions);
 			{ }
 			return @object;
 		}

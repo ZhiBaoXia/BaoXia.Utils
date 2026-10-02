@@ -2,12 +2,12 @@
 namespace BaoXia.Utils.Cache
 {
 	public class ItemCacheItemContainer<ItemKeyType, ItemType, ItemCacheCreateParamType>(
-		ItemKeyType key,
-		ItemType? item,
-		Boolean isItemValid,
-		ItemCacheCreateParamType? itemCreateParam,
-		DateTime lastReadTime,
-		DateTime lastUpdateTime)
+	    ItemKeyType key,
+	    ItemType? item,
+	    Boolean isItemValid,
+	    ItemCacheCreateParamType? itemCreateParam,
+	    DateTime lastReadTime,
+	    DateTime lastUpdateTime)
 	{
 
 		////////////////////////////////////////////////
@@ -52,20 +52,20 @@ namespace BaoXia.Utils.Cache
 		#region 自身实现
 
 		public ItemCacheItemContainer(
-			ItemKeyType key,
-			ItemCacheCreateParamType? itemCreateParam)
-			: this(key,
-				  default,
-				  false,
-				  itemCreateParam,
-				  DateTime.MinValue,
-				  DateTime.MinValue)
+		    ItemKeyType key,
+		    ItemCacheCreateParamType? itemCreateParam)
+		    : this(key,
+		      default,
+		      false,
+		      itemCreateParam,
+		      DateTime.MinValue,
+		      DateTime.MinValue)
 		{ }
 
 		public void SetItem(
-			ItemType? item,
-			ItemCacheCreateParamType? itemCreateParam,
-			bool isNeedUpdateItemLastReadTime)
+		    ItemType? item,
+		    ItemCacheCreateParamType? itemCreateParam,
+		    bool isNeedUpdateItemLastReadTime)
 		{
 			lock (this)
 			{
@@ -93,8 +93,8 @@ namespace BaoXia.Utils.Cache
 		#region 事件节点
 
 		protected virtual void DidSetItem(
-			ItemType? item,
-			ItemCacheCreateParamType? itemCreateParam)
+		    ItemType? item,
+		    ItemCacheCreateParamType? itemCreateParam)
 		{ }
 
 		#endregion

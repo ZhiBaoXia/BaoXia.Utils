@@ -12,11 +12,8 @@ public class SearchKeyMatchProgressGetter
 	#region 类方法
 
 	public static double GetMatchProgressWithSearchKey(
-		string? searchKey,
-		double defaultMatchProgress,
-		string?[]? objectStrings,
-		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase,
-		bool isMatchValueCharsOverlapEnable = false)
+		string? searchKey, double defaultMatchProgress, string?[]? objectStrings,
+		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase, bool isMatchValueCharsOverlapEnable = false)
 	{
 		if (string.IsNullOrEmpty(searchKey))
 		{
@@ -30,9 +27,9 @@ public class SearchKeyMatchProgressGetter
 		foreach (var objectString in objectStrings)
 		{
 			var matchProgress = objectString.GetMatchProgressValueOf(
-				searchKey,
-				comparisonType,
-				isMatchValueCharsOverlapEnable);
+			    searchKey,
+			    comparisonType,
+			    isMatchValueCharsOverlapEnable);
 			if (defaultMatchProgress < matchProgress)
 			{
 				defaultMatchProgress = matchProgress;
@@ -42,28 +39,25 @@ public class SearchKeyMatchProgressGetter
 	}
 
 	public static double GetMatchProgressWithSearchKey(
-		string? searchKey,
-		double defaultMatchProgress,
-	 	params string?[]? objectStrings)
+		string? searchKey, double defaultMatchProgress, params string?[]? objectStrings)
 	{
 		return GetMatchProgressWithSearchKey(
-			searchKey,
-			defaultMatchProgress,
-			objectStrings,
-			StringComparison.OrdinalIgnoreCase,
-			false);
+		    searchKey,
+		    defaultMatchProgress,
+		    objectStrings,
+		    StringComparison.OrdinalIgnoreCase,
+		    false);
 	}
 
 	public static double GetMatchProgressWithSearchKey(
-		string? searchKey,
-	 	params string?[]? objectStrings)
+		string? searchKey, params string?[]? objectStrings)
 	{
 		return GetMatchProgressWithSearchKey(
-			searchKey,
-			0.0,
-			objectStrings,
-			StringComparison.OrdinalIgnoreCase,
-			false);
+		    searchKey,
+		    0.0,
+		    objectStrings,
+		    StringComparison.OrdinalIgnoreCase,
+		    false);
 	}
 
 	#endregion

@@ -58,9 +58,9 @@ public static class StringExtension
 		try
 		{
 			stringRead
-				= LoadStringFromFilePath(
-				filePath,
-				encoding);
+			    = LoadStringFromFilePath(
+			    filePath,
+			    encoding);
 		}
 		catch
 		{
@@ -77,8 +77,8 @@ public static class StringExtension
 		try
 		{
 			str = await TryLoadStringFromFilePathAsync(
-				filePath,
-				encoding);
+			    filePath,
+			    encoding);
 		}
 		catch
 		{
@@ -88,9 +88,9 @@ public static class StringExtension
 	}
 
 	public static string? TrimStart(
-		this string originalString,
-		string? trimString,
-		StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+	    this string originalString,
+	    string? trimString,
+	    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 	{
 		if (string.IsNullOrEmpty(trimString))
 		{
@@ -98,19 +98,19 @@ public static class StringExtension
 		}
 
 		while (originalString.StartsWith(
-			trimString,
-			stringComparison))
+		    trimString,
+		    stringComparison))
 		{
 			originalString
-				= originalString[trimString.Length..];
+			    = originalString[trimString.Length..];
 		}
 		return originalString;
 	}
 
 	public static string? TrimStart(
-		this string originalString,
-		IEnumerable<string?>? trimStrings,
-		StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+	    this string originalString,
+	    IEnumerable<string?>? trimStrings,
+	    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 	{
 		if (trimStrings == null)
 		{
@@ -129,9 +129,9 @@ public static class StringExtension
 					var lastStringTrimedLength = stringTrimed.Length;
 					////////////////////////////////////////////////
 					stringTrimed = TrimStart(
-						stringTrimed!,
-						trimString,
-						stringComparison);
+					    stringTrimed!,
+					    trimString,
+					    stringComparison);
 					////////////////////////////////////////////////
 					// 替换成功后，需要重置Trim：
 					if (stringTrimed?.Length != lastStringTrimedLength)
@@ -150,9 +150,9 @@ public static class StringExtension
 	}
 
 	public static string? TrimEnd(
-		this string originalString,
-		string? trimString,
-		StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+	    this string originalString,
+	    string? trimString,
+	    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 	{
 		if (string.IsNullOrEmpty(trimString))
 		{
@@ -160,19 +160,19 @@ public static class StringExtension
 		}
 
 		while (originalString.EndsWith(
-			trimString,
-			stringComparison))
+		    trimString,
+		    stringComparison))
 		{
 			originalString
-				= originalString[..^trimString.Length];
+			    = originalString[..^trimString.Length];
 		}
 		return originalString;
 	}
 
 	public static string? TrimEnd(
-		this string originalString,
-		IEnumerable<string?>? trimStrings,
-		StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+	    this string originalString,
+	    IEnumerable<string?>? trimStrings,
+	    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 	{
 		if (trimStrings == null)
 		{
@@ -191,9 +191,9 @@ public static class StringExtension
 					var lastStringTrimedLength = stringTrimed.Length;
 					////////////////////////////////////////////////
 					stringTrimed = TrimEnd(
-						stringTrimed!,
-						trimString,
-						stringComparison);
+					    stringTrimed!,
+					    trimString,
+					    stringComparison);
 					////////////////////////////////////////////////
 					// 替换成功后，需要重置Trim：
 					if (stringTrimed?.Length != lastStringTrimedLength)
@@ -212,29 +212,27 @@ public static class StringExtension
 	}
 
 	public static string? Trim(
-		this string originalString,
-		string? trimString,
-		StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+	    this string originalString,
+	    string? trimString,
+	    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 	{
 		var stringTrimed =
-			TrimStart(
-			originalString,
-			trimString,
-			stringComparison);
+		    TrimStart(
+		    originalString,
+		    trimString,
+		    stringComparison);
 		if (stringTrimed?.Length > 0)
 		{
 			stringTrimed =
-				TrimEnd(
-				stringTrimed,
-				trimString,
-				stringComparison);
+			    TrimEnd(
+			    stringTrimed,
+			    trimString,
+			    stringComparison);
 		}
 		return stringTrimed;
 	}
 
-	public static string? Trim(
-		this string originalString,
-		IEnumerable<string?>? trimStrings,
+	public static string? Trim(this string originalString, IEnumerable<string?>? trimStrings,
 		StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 	{
 		if (trimStrings == null)
@@ -242,18 +240,19 @@ public static class StringExtension
 			return originalString;
 		}
 
-		var stringTrimed = TrimStart(
-			originalString,
-			trimStrings,
-			stringComparison);
+		var stringTrimed = TrimStart(originalString, trimStrings, stringComparison);
 		if (stringTrimed?.Length > 0)
 		{
-			stringTrimed = TrimEnd(
-				stringTrimed,
-				trimStrings,
-				stringComparison);
+			stringTrimed = TrimEnd(stringTrimed, trimStrings, stringComparison);
 		}
 		return stringTrimed;
+	}
+
+	public static string TrimTrailingPunctuation(this string originalString)
+	{
+		return originalString.TrimEnd(
+			',', '.', ':', ';',
+			'，', '。', '：', '；');
 	}
 
 	/// <summary>
@@ -263,12 +262,12 @@ public static class StringExtension
 	/// <param name="encoding">指定的文件编码，指定值为“null”时，默认使用“Encoding.UTF8”。</param>
 	/// <returns>保存成功时，返回：true，否则返回：false。</returns>
 	public static bool SaveToFilePath(
-		this string? str,
-		string? filePath,
-		Encoding? encoding = null)
+	    this string? str,
+	    string? filePath,
+	    Encoding? encoding = null)
 	{
 		if (filePath == null
-			|| filePath.Length < 1)
+		    || filePath.Length < 1)
 		{
 			return false;
 		}
@@ -284,12 +283,12 @@ public static class StringExtension
 	}
 
 	public static async Task<bool> SaveToFilePathAsync(
-		this string? str,
-		string? filePath,
-		Encoding? encoding = null)
+	    this string? str,
+	    string? filePath,
+	    Encoding? encoding = null)
 	{
 		if (filePath == null
-			|| filePath.Length < 1)
+		    || filePath.Length < 1)
 		{
 			return false;
 		}
@@ -365,9 +364,9 @@ public static class StringExtension
 	    string? key)
 	{
 		return CountOfString(
-			str,
-			key,
-			StringComparison.OrdinalIgnoreCase);
+		    str,
+		    key,
+		    StringComparison.OrdinalIgnoreCase);
 	}
 
 	/// <summary>
@@ -379,10 +378,10 @@ public static class StringExtension
 	/// <param name="isMatchValueCharsOverlapEnable">目标字符串是否可以重叠，如：“999”是否算作包含两次的“99”，默认为“false”，不重叠。</param>
 	/// <returns>指定匹配字符串，在当前字符串中的匹配进度值，范围：0.0 - 1.0 。</returns>
 	public static double GetMatchProgressValueOf(
-		this string? str,
-		string? matchValue,
-		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase,
-		bool isMatchValueCharsOverlapEnable = false)
+	    this string? str,
+	    string? matchValue,
+	    StringComparison comparisonType = StringComparison.OrdinalIgnoreCase,
+	    bool isMatchValueCharsOverlapEnable = false)
 	{
 		if (string.IsNullOrEmpty(str)
 		    || string.IsNullOrEmpty(matchValue))
@@ -412,11 +411,11 @@ public static class StringExtension
 	/// <param name="leftSubstringLength">指定的要获取的左侧内容长度。</param>
 	/// <returns>字符串中指定长度的左侧内容。</returns>
 	public static string Left(
-		this string? str,
-		int leftSubstringLength)
+	    this string? str,
+	    int leftSubstringLength)
 	{
 		if (string.IsNullOrEmpty(str)
-			|| leftSubstringLength <= 0)
+		    || leftSubstringLength <= 0)
 		{
 			return String.Empty;
 		}
@@ -434,19 +433,19 @@ public static class StringExtension
 	/// <param name="rightSubstringLength">指定的要获取的右侧内容长度。</param>
 	/// <returns>字符串中指定长度的右侧内容。</returns>
 	public static string Right(
-		this string? str,
-		int rightSubstringLength)
+	    this string? str,
+	    int rightSubstringLength)
 	{
 		if (string.IsNullOrEmpty(str)
-			|| rightSubstringLength <= 0)
+		    || rightSubstringLength <= 0)
 		{
 			return String.Empty;
 		}
 		else if (str.Length >= rightSubstringLength)
 		{
 			return str.Substring(
-				str.Length - rightSubstringLength,
-				rightSubstringLength);
+			    str.Length - rightSubstringLength,
+			    rightSubstringLength);
 		}
 		return str;
 	}
@@ -474,9 +473,9 @@ public static class StringExtension
 			return null;
 		}
 		var indexOfKey = str.IndexOf(
-			keyword,
-			startIndex,
-			stringComparison);
+		    keyword,
+		    startIndex,
+		    stringComparison);
 		if (indexOfKey < 0)
 		{
 			return null;
@@ -500,10 +499,10 @@ public static class StringExtension
 	    StringComparison stringComparison = StringComparison.Ordinal)
 	{
 		return SubstringBefore(
-			str,
-			keyword,
-			0,
-			stringComparison);
+		    str,
+		    keyword,
+		    0,
+		    stringComparison);
 	}
 
 	/// <summary>
@@ -515,10 +514,10 @@ public static class StringExtension
 	/// <param name="stringComparison">字符串的比较类型。</param>
 	/// <returns>字符串中，指定关键字后的部分。</returns>
 	public static string? SubstringAfter(
-		this string? str,
-		string? keyword,
-		int startIndex,
-		StringComparison stringComparison = StringComparison.Ordinal)
+	    this string? str,
+	    string? keyword,
+	    int startIndex,
+	    StringComparison stringComparison = StringComparison.Ordinal)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -529,9 +528,9 @@ public static class StringExtension
 			return null;
 		}
 		var indexOfKey = str.IndexOf(
-			keyword,
-			startIndex,
-			stringComparison);
+		    keyword,
+		    startIndex,
+		    stringComparison);
 		if (indexOfKey < 0)
 		{
 			return null;
@@ -549,15 +548,15 @@ public static class StringExtension
 	/// <param name="stringComparison">字符串的比较类型。</param>
 	/// <returns>字符串中，指定关键字后的部分。</returns>
 	public static string? SubstringAfter(
-		this string? str,
-		string? keyword,
-		StringComparison stringComparison = StringComparison.Ordinal)
+	    this string? str,
+	    string? keyword,
+	    StringComparison stringComparison = StringComparison.Ordinal)
 	{
 		return SubstringAfter(
-			str,
-			keyword,
-			0,
-			stringComparison);
+		    str,
+		    keyword,
+		    0,
+		    stringComparison);
 	}
 
 	/// <summary>
@@ -672,9 +671,9 @@ public static class StringExtension
 	/// <param name="isIgnoreCase">比较字符串时是否忽略大小写，默认为：true。</param>
 	/// <returns>返回当前字符串对应的枚举值。</returns>
 	public static T EnumValue<T>(
-		this string? str,
-		T defaultValue,
-		bool isIgnoreCase = true) where T : Enum
+	    this string? str,
+	    T defaultValue,
+	    bool isIgnoreCase = true) where T : Enum
 	{
 		return EnumUtil.ValueOf<T>(
 		    str,
@@ -683,9 +682,9 @@ public static class StringExtension
 	}
 
 	public static string? StringByAppend(
-		this string? originalString,
-		string? stringNeedAppend,
-		string? spliter = null)
+	    this string? originalString,
+	    string? stringNeedAppend,
+	    string? spliter = null)
 	{
 		if (!string.IsNullOrEmpty(stringNeedAppend))
 		{
@@ -739,8 +738,8 @@ public static class StringExtension
 			else
 			{
 				for (var optionalSeparatorCharIndex = 0;
-					optionalSeparatorCharIndex < optionalSeparatorChars.Length;
-					optionalSeparatorCharIndex++)
+				    optionalSeparatorCharIndex < optionalSeparatorChars.Length;
+				    optionalSeparatorCharIndex++)
 				{
 					var optionalSeparatorChar = optionalSeparatorChars[optionalSeparatorCharIndex];
 					if (CharUtil.IsEquals(stringValueChar, optionalSeparatorChar, isIgnoreCase))
@@ -776,7 +775,7 @@ public static class StringExtension
 				// !!!
 			}
 			if (stringValueCharIndex == stringValueLastCharIndex
-				&& isStringValueCharSeperator)
+			    && isStringValueCharSeperator)
 			{
 				// !!!
 				substrings.Add(string.Empty);
@@ -793,9 +792,9 @@ public static class StringExtension
 	    params char[] optionalSeparatorChars)
 	{
 		return SplitWithOptionalSeparators(
-			stringValue,
-			true,
-			optionalSeparatorChars);
+		    stringValue,
+		    true,
+		    optionalSeparatorChars);
 	}
 
 	public static string ToStringEndWithoutFullstop(
@@ -814,9 +813,9 @@ public static class StringExtension
 	/// <param name="splitOptions">字符串分隔选项。</param>
 	/// <returns>有拆解字符串得出的字符串数组，当字符串为空或非数字时，会转为“0”。</returns>
 	public static string[] ToStringArray(
-		this string? str,
-		string spliter = ",",
-		StringSplitOptions splitOptions = StringSplitOptions.None)
+	    this string? str,
+	    string spliter = ",",
+	    StringSplitOptions splitOptions = StringSplitOptions.None)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -838,14 +837,14 @@ public static class StringExtension
 	/// <param name="splitOptions">字符串分隔选项。</param>
 	/// <returns>有拆解字符串得出的字符串数组，当字符串为空或非数字时，会转为“0”。</returns>
 	public static string[] ToUnemptyStringArrayWithTrimEntries(
-		this string? str,
-		string spliter = ",")
+	    this string? str,
+	    string spliter = ",")
 	{
 		return StringExtension.ToStringArray(
-			str,
-			spliter,
-			StringSplitOptions.RemoveEmptyEntries
-			| StringSplitOptions.TrimEntries);
+		    str,
+		    spliter,
+		    StringSplitOptions.RemoveEmptyEntries
+		    | StringSplitOptions.TrimEntries);
 	}
 
 	/// <summary>
@@ -856,9 +855,9 @@ public static class StringExtension
 	/// <param name="splitOptions">字符串分隔选项。</param>
 	/// <returns>有拆解字符串得出的整型数值数组，当字符串为空或非数字时，会转为“0”。</returns>
 	public static int[] ToIntArray(
-		this string? str,
-		string spliter = ",",
-		StringSplitOptions splitOptions = StringSplitOptions.None)
+	    this string? str,
+	    string spliter = ",",
+	    StringSplitOptions splitOptions = StringSplitOptions.None)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -896,9 +895,9 @@ public static class StringExtension
 	/// <param name="splitOptions">字符串分隔选项。</param>
 	/// <returns>有拆解字符串得出的整型数值数组，当字符串为空或非数字时，会转为“0”。</returns>
 	public static long[] ToLongArray(
-		this string? str,
-		string spliter = ",",
-		StringSplitOptions splitOptions = StringSplitOptions.None)
+	    this string? str,
+	    string spliter = ",",
+	    StringSplitOptions splitOptions = StringSplitOptions.None)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -936,9 +935,9 @@ public static class StringExtension
 	/// <param name="splitOptions">字符串分隔选项。</param>
 	/// <returns>有拆解字符串得出的浮点数数值数组，当字符串为空或非数字时，会转为“0.0”。</returns>
 	public static float[] ToFloatArray(
-		this string? str,
-		string spliter = ",",
-		StringSplitOptions splitOptions = StringSplitOptions.None)
+	    this string? str,
+	    string spliter = ",",
+	    StringSplitOptions splitOptions = StringSplitOptions.None)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -976,9 +975,9 @@ public static class StringExtension
 	/// <param name="splitOptions">字符串分隔选项。</param>
 	/// <returns>有拆解字符串得出的浮点数数值数组，当字符串为空或非数字时，会转为“0.0”。</returns>
 	public static double[] ToDoubleArray(
-		this string? str,
-		string spliter = ",",
-		StringSplitOptions splitOptions = StringSplitOptions.None)
+	    this string? str,
+	    string spliter = ",",
+	    StringSplitOptions splitOptions = StringSplitOptions.None)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -1016,9 +1015,9 @@ public static class StringExtension
 	/// <param name="splitOptions">字符串分隔选项。</param>
 	/// <returns>有拆解字符串得出的高精度浮点数数值数组，当字符串为空或非数字时，会转为“0.0”。</returns>
 	public static decimal[] ToDecimalArray(
-		this string? str,
-		string spliter = ",",
-		StringSplitOptions splitOptions = StringSplitOptions.None)
+	    this string? str,
+	    string spliter = ",",
+	    StringSplitOptions splitOptions = StringSplitOptions.None)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -1116,9 +1115,9 @@ public static class StringExtension
 				rightCharsCount += 1;
 			}
 			str = string.Concat(
-				str.AsSpan(0, leftCharsCount),
-				fillChars,
-				str.AsSpan(rightCharsCount));
+			    str.AsSpan(0, leftCharsCount),
+			    fillChars,
+			    str.AsSpan(rightCharsCount));
 		}
 		return str;
 	}
@@ -1257,8 +1256,8 @@ public static class StringExtension
 	/// <param name="stringLengthAfterRemove">新字符串的目标长度。</param>
 	/// <returns>小于等于指定长度的新字符串。</returns>
 	public static string StringByRemoveLeftCharsToLength(
-		this string? str,
-		int stringLengthAfterRemove)
+	    this string? str,
+	    int stringLengthAfterRemove)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -1279,8 +1278,8 @@ public static class StringExtension
 	/// <param name="stringLengthAfterRemove">新字符串的目标长度。</param>
 	/// <returns>小于等于指定长度的新字符串。</returns>
 	public static string StringByRemoveRightCharsToLength(
-		this string? str,
-		int stringLengthAfterRemove)
+	    this string? str,
+	    int stringLengthAfterRemove)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -1301,8 +1300,8 @@ public static class StringExtension
 	/// <param name="stringLengthAfterRemove">新字符串的目标长度。</param>
 	/// <returns>小于等于指定长度的新字符串。</returns>
 	public static string StringByRemoveMidCharsToLength(
-		this string? str,
-		int stringLengthAfterRemove)
+	    this string? str,
+	    int stringLengthAfterRemove)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -1318,8 +1317,8 @@ public static class StringExtension
 				rightCharsCount++;
 			}
 			str = string.Concat(
-				str.AsSpan(0, leftCharsCount),
-				str.AsSpan(str.Length - rightCharsCount));
+			    str.AsSpan(0, leftCharsCount),
+			    str.AsSpan(str.Length - rightCharsCount));
 		}
 		return str;
 	}
@@ -1332,15 +1331,15 @@ public static class StringExtension
 	/// <param name="stringLengthAfterOperation">新字符串的目标长度。</param>
 	/// <returns>等于指定长度的新字符串。</returns>
 	public static string StringByRetainRightCharsToLength(
-		this string? str,
-		char fillChar,
-		int stringLengthAfterOperation)
+	    this string? str,
+	    char fillChar,
+	    int stringLengthAfterOperation)
 	{
 		return str.StringByFillCharacterAtLeftToLength(
-			fillChar,
-			stringLengthAfterOperation)
-			.StringByRemoveLeftCharsToLength(
-			stringLengthAfterOperation);
+		    fillChar,
+		    stringLengthAfterOperation)
+		    .StringByRemoveLeftCharsToLength(
+		    stringLengthAfterOperation);
 	}
 
 	/// <summary>
@@ -1351,15 +1350,15 @@ public static class StringExtension
 	/// <param name="stringLengthAfterOperation">新字符串的目标长度。</param>
 	/// <returns>等于指定长度的新字符串。</returns>
 	public static string StringByRetainLeftAndRightCharsToLength(
-		this string? str,
-		char fillChar,
-		int stringLengthAfterOperation)
+	    this string? str,
+	    char fillChar,
+	    int stringLengthAfterOperation)
 	{
 		return str.StringByFillCharacterAtMidToLength(
-			fillChar,
-			stringLengthAfterOperation)
-			.StringByRemoveMidCharsToLength(
-			stringLengthAfterOperation);
+		    fillChar,
+		    stringLengthAfterOperation)
+		    .StringByRemoveMidCharsToLength(
+		    stringLengthAfterOperation);
 	}
 
 	/// <summary>
@@ -1370,15 +1369,15 @@ public static class StringExtension
 	/// <param name="stringLengthAfterOperation">新字符串的目标长度。</param>
 	/// <returns>等于指定长度的新字符串。</returns>
 	public static string StringByRetainLeftCharsToLength(
-		this string? str,
-		char fillChar,
-		int stringLengthAfterOperation)
+	    this string? str,
+	    char fillChar,
+	    int stringLengthAfterOperation)
 	{
 		return str.StringByFillCharacterAtRightToLength(
-			fillChar,
-			stringLengthAfterOperation)
-			.StringByRemoveRightCharsToLength(
-			stringLengthAfterOperation);
+		    fillChar,
+		    stringLengthAfterOperation)
+		    .StringByRemoveRightCharsToLength(
+		    stringLengthAfterOperation);
 	}
 
 	/// <summary>
@@ -1462,8 +1461,8 @@ public static class StringExtension
 		}
 
 		for (var charIndex = stringWithUnasciiChars.Length - 1;
-			charIndex >= 0;
-			charIndex--)
+		    charIndex >= 0;
+		    charIndex--)
 		{
 			var character = stringWithUnasciiChars[charIndex];
 			if (!Char.IsAscii(character))
@@ -1484,18 +1483,18 @@ public static class StringExtension
 				if (unasciiCharStringLength > 0)
 				{
 					var unasciiCharString
-						= stringWithUnasciiChars.Substring(
-							firstUnasciiCharIndex,
-							unasciiCharStringLength);
+					    = stringWithUnasciiChars.Substring(
+					    firstUnasciiCharIndex,
+					    unasciiCharStringLength);
 					var asciiCharString
-						= System.Web.HttpUtility.UrlEncode(
-							unasciiCharString,
-							System.Text.Encoding.UTF8);
+					    = System.Web.HttpUtility.UrlEncode(
+					    unasciiCharString,
+					    System.Text.Encoding.UTF8);
 					// !!!
 					stringWithUnasciiChars
-						= stringWithUnasciiChars[..firstUnasciiCharIndex]
-						+ asciiCharString
-						+ stringWithUnasciiChars[(lastUnasciiCharIndex + 1)..];
+					    = stringWithUnasciiChars[..firstUnasciiCharIndex]
+					    + asciiCharString
+					    + stringWithUnasciiChars[(lastUnasciiCharIndex + 1)..];
 					// !!!
 				}
 			}
@@ -1511,9 +1510,9 @@ public static class StringExtension
 	/// <param name="isCurrentStringFileUri">当前字符串是否为文件URI，如果是，则会取当前文件所在的文件夹路径。</param>
 	/// <returns>连接了指定Uri相对路径后的Uri路径。</returns>
 	public static string StringByUriAppendRelativePath(
-		this string uri,
-		string? uriRelativePath,
-		bool isCurrentStringFileUri = false)
+	    this string uri,
+	    string? uriRelativePath,
+	    bool isCurrentStringFileUri = false)
 	{
 		if (string.IsNullOrEmpty(uriRelativePath))
 		{
@@ -1536,7 +1535,7 @@ public static class StringExtension
 		}
 
 		uri = uri.ToUriSystemDirectoryPath(isCurrentStringFileUri)
-			+ uriRelativePath.ToUriSystemRelativePath();
+		    + uriRelativePath.ToUriSystemRelativePath();
 		if (fragments?.Length > 0)
 		{
 			uri += fragments;
@@ -1555,11 +1554,11 @@ public static class StringExtension
 	/// <param name="uriQueryParams">要连接的Url查询参数字符串。</param>
 	/// <returns>连接了Url查询参数的Uri字符串。</returns>
 	public static string StringByUriAppendQueryParams(
-		this string uri,
-		string? uriQueryParams)
+	    this string uri,
+	    string? uriQueryParams)
 	{
 		if (uriQueryParams == null
-			|| uriQueryParams.Length < 1)
+		    || uriQueryParams.Length < 1)
 		{
 			return uri;
 		}
@@ -1597,7 +1596,7 @@ public static class StringExtension
 		uri += uriQueryParams;
 
 		if (uriSuffix?.Length > 0
-			&& uriQueryParamsSuffix?.Length > 0)
+		    && uriQueryParamsSuffix?.Length > 0)
 		{
 			uri += uriSuffix + '&' + uriQueryParamsSuffix.Trim('#');
 		}
@@ -1620,14 +1619,14 @@ public static class StringExtension
 	/// <param name="uriQueryParams">要连接的Url查询参数字符串。</param>
 	/// <returns>连接了Url查询参数的Uri字符串。</returns>
 	public static string StringByUriAppendQueryParams(
-		this string uri,
-		Dictionary<string, string?>? uriQueryParams)
+	    this string uri,
+	    Dictionary<string, string?>? uriQueryParams)
 	{
 		var uriQueryString = uriQueryParams?.ToUriQuery();
 		{ }
 		return StringByUriAppendQueryParams(
-			uri,
-			uriQueryString);
+		    uri,
+		    uriQueryString);
 	}
 
 	/// <summary>
@@ -1638,15 +1637,15 @@ public static class StringExtension
 	/// <param name="uriQueryParamValue">要连接的Url查询参数，值。</param>
 	/// <returns>连接了Url查询参数的Uri字符串。</returns>
 	public static string StringByUriAppendQueryParam(
-		this string uri,
-		string uriQueryParamName,
-		string? uriQueryParamValue)
+	    this string uri,
+	    string uriQueryParamName,
+	    string? uriQueryParamValue)
 	{
 		var uriQueryString = uriQueryParamName + "=" + uriQueryParamValue.StringByEncodeInUriParam();
 		{ }
 		return StringByUriAppendQueryParams(
-			uri,
-			uriQueryString);
+		    uri,
+		    uriQueryString);
 	}
 
 	/// <summary>
@@ -1842,48 +1841,6 @@ public static class StringExtension
 	}
 
 	/// <summary>
-	/// 使用“Environment.AESKey_Default”作为加密Key，通过“AES”算法对当前字符串进行加密。
-	/// </summary>
-	/// <param name="plaintext">当前“明文”字符串。</param>
-	/// <param name="key">指定的加密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
-	/// <returns>返回加密后的字符串。</returns>
-
-	[Obsolete("当前函数，使用“Aes/Ecb算法”，存在安全隐患（相同明文、密钥时，密文永远相同，因此可通过重复明文的方式进行破解），推荐使用“ToNewCiphertext”方法替代。")]
-	public static string? StringByEncrypted(
-		this string plaintext,
-		string? key = null)
-	{
-		key ??= Environment.AESKeyDeafult;
-
-		var plaintextBytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
-		{ }
-#pragma warning disable CS0618 // 类型或成员已过时
-		var cipherBytes = AES.EncryptToBytesWithECB(plaintextBytes, key);
-#pragma warning restore CS0618 // 类型或成员已过时
-		if (cipherBytes.Length < 1)
-		{
-			return null;
-		}
-		var ciphertext = Convert.ToBase64String(cipherBytes);
-		{ }
-		return ciphertext;
-	}
-
-	/// <summary>
-	/// 使用“Environment.AESKey_Default”作为加密Key，通过“AES”算法对当前字符串进行解密。
-	/// </summary>
-	/// <param name="ciphertext">当前“密文”字符串。，</param>
-	/// <param name="key">指定的解密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
-	/// <returns>返回解密后的字符串。</returns>
-	[Obsolete("当前函数，使用“Aes/Ecb算法”，存在安全隐患（相同明文、密钥时，密文永远相同，因此可通过重复明文的方式进行破解），推荐使用“ToPlaintext”方法替代。")]
-	public static string StringByDecrypted(
-		this string ciphertext,
-		string? key = null)
-	{
-		return ToPlaintext(ciphertext, key);
-	}
-
-	/// <summary>
 	/// 使用Utf8编码，将当前字符串转为字节数组。
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
@@ -1909,8 +1866,7 @@ public static class StringExtension
 	/// <returns>
 	/// 当前字符串对象对应的字符大小写哈希码，如：“Abc”的哈希码为“100”，“aBc”的哈希码为“010”。 
 	/// </returns>
-	public static string ToHashCodeByCharCase(
-	    this string? plaintext)
+	public static string ToHashCodeByCharCase(this string? plaintext)
 	{
 		var hashCodeBuilder = new StringBuilder();
 		if (!string.IsNullOrEmpty(plaintext))
@@ -1946,8 +1902,8 @@ public static class StringExtension
 		textEncoding ??= System.Text.Encoding.UTF8;
 
 		var hashCode = Security.Cryptography.SHA.CreateSHA256String(
-			     plaintext,
-			     textEncoding);
+		     plaintext,
+		     textEncoding);
 		{ }
 		return hashCode;
 	}
@@ -1964,8 +1920,8 @@ public static class StringExtension
 	    System.Text.Encoding? textEncoding = null)
 	{
 		var hashCode = Security.Cryptography.SHA.CreateSHA512String(
-			    plaintext,
-			    textEncoding);
+		    plaintext,
+		    textEncoding);
 		{ }
 		return hashCode;
 	}
@@ -1986,8 +1942,8 @@ public static class StringExtension
 		}
 
 		var md5String = Security.Cryptography.SHA.CreateMD532String(
-			    str,
-			    textEncoding);
+		    str,
+		    textEncoding);
 		{ }
 		return md5String;
 	}
@@ -2008,8 +1964,8 @@ public static class StringExtension
 		}
 
 		var md5String = Security.Cryptography.SHA.CreateMD516String(
-			    str,
-			    textEncoding);
+		    str,
+		    textEncoding);
 		{ }
 		return md5String;
 	}
@@ -2022,16 +1978,16 @@ public static class StringExtension
 	/// <param name="key">指定的加密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
 	/// <returns>返回加密后的字符串。</returns>
 	public static string? ToNewCiphertext(
-		this string plaintext,
-		string? key = null,
-		string? nonceInBase64 = null)
+	    this string plaintext,
+	    string? key = null,
+	    string? nonceInBase64 = null)
 	{
 		key ??= Environment.AESKeyDeafult;
 		var ciphertext = AesCtr.EncryptString(
-			plaintext,
-			key,
-			nonceInBase64,
-			out var finalNonceInBase64);
+		    plaintext,
+		    key,
+		    nonceInBase64,
+		    out var finalNonceInBase64);
 		if (ciphertext.Length < 1)
 		{
 			return null;
@@ -2044,7 +2000,7 @@ public static class StringExtension
 		var nonceParamValue = finalNonceInBase64.StringByEncodeInUriParam();
 
 		var uriQuery
-			= $"{ciphertextParamName}={ciphertextParamValue}&{nonceParamName}={nonceParamValue}";
+		    = $"{ciphertextParamName}={ciphertextParamValue}&{nonceParamName}={nonceParamValue}";
 
 		var uriBuilder = new UriBuilder
 		{
@@ -2064,9 +2020,9 @@ public static class StringExtension
 	/// <param name="key">指定的解密Key，为空时，默认使用“Environment.AESKey_Default”。</param>
 	/// <returns>返回解密后的字符串。</returns>
 	public static string ToPlaintext(
-		this string ciphertext,
-		out string? nonceInBase64,
-		string? key = null)
+	    this string ciphertext,
+	    out string? nonceInBase64,
+	    string? key = null)
 	{
 		key ??= Environment.AESKeyDeafult;
 		nonceInBase64 = null;
@@ -2080,12 +2036,12 @@ public static class StringExtension
 			try
 			{
 				if (Uri.TryCreate(
-					ciphertext,
-					new UriCreationOptions()
-					{
-						DangerousDisablePathAndQueryCanonicalization = true
-					},
-					out var ciphertextUri))
+				    ciphertext,
+				    new UriCreationOptions()
+				    {
+					    DangerousDisablePathAndQueryCanonicalization = true
+				    },
+				    out var ciphertextUri))
 				{
 					var encryptionParams = HttpUtility.ParseQueryString(ciphertextUri.Query);
 					var ciphertextContent = encryptionParams[BxAesValueEncryptionParamNames.Ciphertext];
@@ -2095,9 +2051,9 @@ public static class StringExtension
 						if (!string.IsNullOrEmpty(nonceInBase64))
 						{
 							return AesCtr.DecryptString(
-								ciphertextContent,
-								key,
-								nonceInBase64);
+							    ciphertextContent,
+							    key,
+							    nonceInBase64);
 						}
 					}
 				}
@@ -2126,13 +2082,13 @@ public static class StringExtension
 	}
 
 	public static string ToPlaintext(
-		this string ciphertext,
-		string? key = null)
+	    this string ciphertext,
+	    string? key = null)
 	{
 		return ToPlaintext(
-			ciphertext,
-			out _
-			, key);
+		    ciphertext,
+		    out _
+		    , key);
 	}
 
 	/// <summary>
@@ -2177,8 +2133,7 @@ public static class StringExtension
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
 	/// <returns>去除字符串起始处的“\”和“/”符号后的相对路径字符串。</returns>
-	public static string ToFileSystemRelativePath(
-	    this string? str)
+	public static string ToFileSystemRelativePath(this string? str)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -2222,9 +2177,7 @@ public static class StringExtension
 	/// <param name="str">当前字符串。</param>
 	/// <param name="rootPath">指定的根路径。</param>
 	/// <returns>当前字符串最终确认的绝对路径，当当前字符串为”null“，或长度无效时，返回”null“。</returns>
-	public static string ToAbsoluteFilePathInRootPath(
-		this string? str,
-		string? rootPath)
+	public static string ToAbsoluteFilePathInRootPath(this string? str, string? rootPath)
 	{
 		string absoluteFilePath;
 		if (System.IO.Path.IsPathRooted(str) == true)
@@ -2232,7 +2185,7 @@ public static class StringExtension
 			absoluteFilePath = str;
 		}
 		else if (rootPath?.Length > 0
-			&& System.IO.Path.IsPathRooted(rootPath))
+		    && System.IO.Path.IsPathRooted(rootPath))
 		{
 			absoluteFilePath = rootPath.ToFileSystemDirectoryPath() + str;
 		}
@@ -2247,15 +2200,27 @@ public static class StringExtension
 		return absoluteFilePath;
 	}
 
+	public static string ToSetDirectorySeparatorToCurrentSystem(this string? filePath)
+	{
+		if (filePath == null)
+		{
+			return string.Empty;
+		}
+
+		filePath = filePath.Replace('\\', System.IO.Path.DirectorySeparatorChar);
+		filePath = filePath.Replace('/', System.IO.Path.DirectorySeparatorChar);
+
+		return filePath;
+	}
+
+
 	/// <summary>
 	/// 生成格式合法的以“/”结尾的URI系统路径字符串。
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
 	/// <param name="isCurrentStringFileUri">当前字符串是否为文件URI，如果是，则会取当前文件所在的文件夹路径。</param>
 	/// <returns>格式合法的以“/”结尾的URI系统路径字符串。</returns>
-	public static string ToUriSystemDirectoryPath(
-	    this string? str,
-	    bool isCurrentStringFileUri = false)
+	public static string ToUriSystemDirectoryPath(this string? str, bool isCurrentStringFileUri = false)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -2308,7 +2273,7 @@ public static class StringExtension
 			{
 				var character = relativeFilePath[firstUnslashCharIndex];
 				if (character != directorySeparatorCharA
-					&& character != directorySeparatorCharB)
+				    && character != directorySeparatorCharB)
 				{
 					break;
 				}
@@ -2368,9 +2333,9 @@ public static class StringExtension
 		var indexOfSchemeDelimiter = uriString.IndexOf(schemeDelimiter);
 
 		var hostBeginCharIndex
-			= indexOfSchemeDelimiter >= 0
-			? indexOfSchemeDelimiter + schemeDelimiter.Length
-			: 0;
+		    = indexOfSchemeDelimiter >= 0
+		    ? indexOfSchemeDelimiter + schemeDelimiter.Length
+		    : 0;
 		var hostEndCharIndex = uriString.Length;
 		var directorySeparatorChar = System.IO.Path.AltDirectorySeparatorChar;
 		var indexOfDirectorySeparatorChar = uriString.IndexOf(directorySeparatorChar, hostBeginCharIndex);
@@ -2381,7 +2346,7 @@ public static class StringExtension
 
 		var indexOfQueryDelimiter = uriString.IndexOf('?', hostBeginCharIndex);
 		if (indexOfQueryDelimiter >= 0
-			&& hostEndCharIndex > indexOfQueryDelimiter)
+		    && hostEndCharIndex > indexOfQueryDelimiter)
 		{
 			hostEndCharIndex = indexOfQueryDelimiter;
 		}
@@ -2391,7 +2356,7 @@ public static class StringExtension
 			var hostPortDelimiter = ':';
 			var indexOfHostPortDelimiter = uriString.IndexOf(hostPortDelimiter, hostBeginCharIndex);
 			if (indexOfHostPortDelimiter >= 0
-				&& hostEndCharIndex > indexOfHostPortDelimiter)
+			    && hostEndCharIndex > indexOfHostPortDelimiter)
 			{
 				hostEndCharIndex = indexOfHostPortDelimiter;
 			}
@@ -2509,8 +2474,8 @@ public static class StringExtension
 		}
 
 		var queryParamsString = GetQueryParamsInUri(
-			uriString,
-			isIncludeFragment);
+		    uriString,
+		    isIncludeFragment);
 		if (string.IsNullOrEmpty(queryParamsString))
 		{
 			return null;
@@ -2529,17 +2494,17 @@ public static class StringExtension
 
 				var queryParamKeyValue = queryParamString.Split('=');
 				if (queryParamKeyValue == null
-					|| queryParamKeyValue.Length < 1)
+				    || queryParamKeyValue.Length < 1)
 				{
 					continue;
 				}
 
 				var queryParamKey
-					= queryParamKeyValue[0].StringByDecodeInUriParam();
+				    = queryParamKeyValue[0].StringByDecodeInUriParam();
 				var queryParamValue
-					= queryParamKeyValue.Length > 1
-					? queryParamKeyValue[1].StringByDecodeInUriParam()
-					: null;
+				    = queryParamKeyValue.Length > 1
+				    ? queryParamKeyValue[1].StringByDecodeInUriParam()
+				    : null;
 				// !!!
 				queryParamDictionary.Add(queryParamKey, queryParamValue);
 				// !!!
@@ -2705,8 +2670,8 @@ public static class StringExtension
 	/// <param name="str">当前字符串。</param>
 	/// <returns>反序列化当前字符串生成的指定类型的对象。</returns>
 	public static T? ToObjectByJsonDeserialize<T>(
-		this string? str,
-		JsonSerializerOptions? jsonSerializerOptions = null)
+	    this string? str,
+	    JsonSerializerOptions? jsonSerializerOptions = null)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -2724,10 +2689,10 @@ public static class StringExtension
 	}
 
 	public static bool TryToObjectByJsonDeserialize(
-		this string? str,
-		Type objectType,
-		out object? objectDeserialized,
-		JsonSerializerOptions? jsonSerializerOptions = null)
+	    this string? str,
+	    Type objectType,
+	    out object? objectDeserialized,
+	    JsonSerializerOptions? jsonSerializerOptions = null)
 	{
 		objectDeserialized = null;
 		try
@@ -2738,8 +2703,8 @@ public static class StringExtension
 			}
 
 			objectDeserialized = str.ToObjectByJsonDeserialize(
-				objectType,
-				jsonSerializerOptions);
+			    objectType,
+			    jsonSerializerOptions);
 			return true;
 		}
 		catch
@@ -2748,9 +2713,9 @@ public static class StringExtension
 	}
 
 	public static bool TryToObjectByJsonDeserialize<ObjectType>(
-		this string? str,
-		out ObjectType? objectDeserialized,
-		JsonSerializerOptions? jsonSerializerOptions = null)
+	    this string? str,
+	    out ObjectType? objectDeserialized,
+	    JsonSerializerOptions? jsonSerializerOptions = null)
 	{
 		objectDeserialized = default;
 		try
@@ -2761,7 +2726,7 @@ public static class StringExtension
 			}
 
 			objectDeserialized = str.ToObjectByJsonDeserialize<ObjectType>(
-				jsonSerializerOptions);
+			    jsonSerializerOptions);
 			return true;
 		}
 		catch
@@ -2770,10 +2735,10 @@ public static class StringExtension
 	}
 
 	public static string WithDefault(
-		this string? str,
-		string defaultString = "[无]",
-		bool isStringNullToDefault = true,
-		bool isStringEmptyToDefault = true)
+	    this string? str,
+	    string defaultString = "[无]",
+	    bool isStringNullToDefault = true,
+	    bool isStringEmptyToDefault = true)
 	{
 		if (str == null)
 		{
@@ -2802,11 +2767,11 @@ public static class StringExtension
 	/// <param name="alpha">当前颜色描述字符串对应的“透明度”像素值，取值范围：0.0-1.0。</param>
 	/// <returns></returns>
 	public static bool ToRGBA(
-		this string colorString,
-		out byte red,
-		out byte green,
-		out byte blue,
-		out float alpha)
+	    this string colorString,
+	    out byte red,
+	    out byte green,
+	    out byte blue,
+	    out float alpha)
 	{
 		// !!!
 		red = 0;
@@ -2823,14 +2788,14 @@ public static class StringExtension
 		colorString = colorString.Trim();
 
 		if (colorString.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
-			|| colorString.StartsWith("&h", StringComparison.OrdinalIgnoreCase))
+		    || colorString.StartsWith("&h", StringComparison.OrdinalIgnoreCase))
 		{
 			var colorValuesString = colorString[2..];
 			if (!int.TryParse(
-				colorValuesString,
-				System.Globalization.NumberStyles.HexNumber,
-				null,
-				out var colorValue))
+			    colorValuesString,
+			    System.Globalization.NumberStyles.HexNumber,
+			    null,
+			    out var colorValue))
 			{
 				return false;
 			}
@@ -2841,11 +2806,11 @@ public static class StringExtension
 			alpha = (colorValue & 0xFF) / 255.0F;
 		}
 		else if (colorString.StartsWith("rgb(", StringComparison.OrdinalIgnoreCase)
-			|| colorString.StartsWith("rgba(", StringComparison.OrdinalIgnoreCase))
+		    || colorString.StartsWith("rgba(", StringComparison.OrdinalIgnoreCase))
 		{
 			var colorValuesString = colorString.SubstringBetween(
-				"(",
-				")");
+			    "(",
+			    ")");
 			if (colorValuesString != null)
 			{
 				var colorValueStrings = colorValuesString.Split(',');
@@ -2911,10 +2876,10 @@ public static class StringExtension
 	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
 	/// <returns>返回经过隐私处理的字符串。</returns>
 	public static string ToPrivacyString(
-		this string str,
-		int privacyCharsCount,
-		StringPartType privacyStringPart = StringPartType.Center,
-		string? privacytext = "*")
+	    this string str,
+	    int privacyCharsCount,
+	    StringPartType privacyStringPart = StringPartType.Center,
+	    string? privacytext = "*")
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -2980,7 +2945,7 @@ public static class StringExtension
 		var centerPrivacytext = string.Empty;
 		var centerPrivacytextLength = privacyCharsEndIndex - privacyCharsBeginIndex;
 		if (centerPrivacytextLength > 0
-			&& privacytext?.Length > 0)
+		    && privacytext?.Length > 0)
 		{
 			var privacytextLength = privacytext.Length;
 			while (centerPrivacytext.Length < centerPrivacytextLength)
@@ -3006,36 +2971,48 @@ public static class StringExtension
 
 
 	public static string ToPrivacyString(
-		this string originalString,
-		PrivacyInfoType privacyInfoType)
+	    this string originalString,
+	    PrivacyInfoType privacyInfoType)
 	{
 		string privacyContentErased;
 		switch (privacyInfoType)
 		{
 			default:
-			case PrivacyInfoType.Unknow:
+			case PrivacyInfoType.Unknown:
 			case PrivacyInfoType.PhoneNumber:
 				{
 					privacyContentErased
-						= originalString.ToPrivacyStringForPhoneNumber(null);
+					    = originalString.ToPrivacyStringForPhoneNumber(null);
 				}
 				break;
 			case PrivacyInfoType.EnglishAccount:
 				{
 					privacyContentErased
-						= originalString.ToPrivacyStringForAccount(null);
+					    = originalString.ToPrivacyStringForAccount(null);
 				}
 				break;
 			case PrivacyInfoType.EMail:
 				{
 					privacyContentErased
-						= originalString.ToPrivacyStringForEMail(null);
+					    = originalString.ToPrivacyStringForEMail(null);
 				}
 				break;
 			case PrivacyInfoType.CNIdCardNumber:
 				{
 					privacyContentErased
-						= originalString.ToPrivacyStringForCNIdCardNumber(null);
+					    = originalString.ToPrivacyStringForCNIdCardNumber(null);
+				}
+				break;
+			case PrivacyInfoType.CNPersonName:
+				{
+					privacyContentErased
+					    = originalString.ToPrivacyStringForCNPersonName(null);
+				}
+				break;
+			case PrivacyInfoType.Url:
+				{
+					privacyContentErased
+					    = originalString.ToPrivacyStringForUrl(null);
 				}
 				break;
 		}
@@ -3053,21 +3030,21 @@ public static class StringExtension
 	/// <returns>返回经过隐私处理的字符串。</returns>
 	[Obsolete("“plaintextCharsCount”将改为“int?”类型。")]
 	public static string ToPrivacyStringForPhoneNumber(
-		this string phoneNumber,
-		int plaintextCharsCount = 7,
-		StringPartType privacyStringPart = StringPartType.Center,
-		string? privacytext = "*")
+	    this string phoneNumber,
+	    int plaintextCharsCount = 7,
+	    StringPartType privacyStringPart = StringPartType.Center,
+	    string? privacytext = "*")
 	{
 		if (plaintextCharsCount == 7
-			&& phoneNumber.Length < 11)
+		    && phoneNumber.Length < 11)
 		{
 			plaintextCharsCount = 4;
 		}
 		return ToPrivacyString(
-			phoneNumber,
-			phoneNumber.Length - plaintextCharsCount,
-			privacyStringPart,
-			privacytext);
+		    phoneNumber,
+		    phoneNumber.Length - plaintextCharsCount,
+		    privacyStringPart,
+		    privacytext);
 	}
 
 	/// <summary>
@@ -3079,10 +3056,10 @@ public static class StringExtension
 	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
 	/// <returns>返回经过隐私处理的字符串。</returns>
 	public static string ToPrivacyStringForPhoneNumber(
-		this string phoneNumber,
-		int? plaintextCharsCount,
-		StringPartType privacyStringPart = StringPartType.Center,
-		string? privacytext = "*")
+	    this string phoneNumber,
+	    int? plaintextCharsCount,
+	    StringPartType privacyStringPart = StringPartType.Center,
+	    string? privacytext = "*")
 	{
 		if (plaintextCharsCount == null)
 		{
@@ -3093,10 +3070,10 @@ public static class StringExtension
 			}
 		}
 		return ToPrivacyString(
-			phoneNumber,
-			phoneNumber.Length - plaintextCharsCount.Value,
-			privacyStringPart,
-			privacytext);
+		    phoneNumber,
+		    phoneNumber.Length - plaintextCharsCount.Value,
+		    privacyStringPart,
+		    privacytext);
 	}
 
 	/// <summary>
@@ -3109,16 +3086,16 @@ public static class StringExtension
 	/// <returns>返回经过隐私处理的字符串。</returns>
 	[Obsolete("“plaintextCharsCount”将改为“int?”类型。")]
 	public static string ToPrivacyStringForEMail(
-		this string email,
-		int plaintextCharsCount = 2,
-		StringPartType privacyStringPart = StringPartType.Center,
-		string? privacytext = "*")
+	    this string email,
+	    int plaintextCharsCount = 2,
+	    StringPartType privacyStringPart = StringPartType.Center,
+	    string? privacytext = "*")
 	{
 		return ToPrivacyString(
-			email,
-			email.Length - plaintextCharsCount,
-			privacyStringPart,
-			privacytext);
+		    email,
+		    email.Length - plaintextCharsCount,
+		    privacyStringPart,
+		    privacytext);
 	}
 
 	/// <summary>
@@ -3130,17 +3107,17 @@ public static class StringExtension
 	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
 	/// <returns>返回经过隐私处理的字符串。</returns>
 	public static string ToPrivacyStringForEMail(
-		this string email,
-		int? plaintextCharsCount,
-		StringPartType privacyStringPart = StringPartType.Center,
-		string? privacytext = "*")
+	    this string email,
+	    int? plaintextCharsCount,
+	    StringPartType privacyStringPart = StringPartType.Center,
+	    string? privacytext = "*")
 	{
 		plaintextCharsCount ??= 2;
 		return ToPrivacyString(
-			email,
-			email.Length - plaintextCharsCount.Value,
-			privacyStringPart,
-			privacytext);
+		    email,
+		    email.Length - plaintextCharsCount.Value,
+		    privacyStringPart,
+		    privacytext);
 	}
 
 	/// <summary>
@@ -3153,36 +3130,36 @@ public static class StringExtension
 	/// <returns>返回经过隐私处理的字符串。</returns>
 	[Obsolete("“plaintextCharsCount”将改为“int?”类型。")]
 	public static string ToPrivacyStringForAccount(
-		this string account,
-		int plaintextCharsCount = 2,
-		StringPartType privacyStringPart = StringPartType.Center,
-		string? privacytext = "*")
+	    this string account,
+	    int plaintextCharsCount = 2,
+	    StringPartType privacyStringPart = StringPartType.Center,
+	    string? privacytext = "*")
 	{
 		return account.ToPrivacyString(
-			account.Length - plaintextCharsCount,
-			privacyStringPart,
-			privacytext);
+		    account.Length - plaintextCharsCount,
+		    privacyStringPart,
+		    privacytext);
 	}
 
 	/// <summary>
 	/// 将当前“电话号码”字符串（11位）转为隐私字符串。
 	/// </summary>
-	/// <param name="account">当前“电话毫秒”字符串。</param>
+	/// <param name="personName">当前“电话毫秒”字符串。</param>
 	/// <param name="plaintextCharsCount">【注意】不要隐私处理的字符数量，默认位“2”。</param>
 	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
 	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
 	/// <returns>返回经过隐私处理的字符串。</returns
 	public static string ToPrivacyStringForAccount(
-		this string account,
-		int? plaintextCharsCount,
-		StringPartType privacyStringPart = StringPartType.Center,
-		string? privacytext = "*")
+	    this string personName,
+	    int? plaintextCharsCount,
+	    StringPartType privacyStringPart = StringPartType.Center,
+	    string? privacytext = "*")
 	{
 		plaintextCharsCount ??= 2;
-		return account.ToPrivacyString(
-			account.Length - plaintextCharsCount.Value,
-			privacyStringPart,
-			privacytext);
+		return personName.ToPrivacyString(
+		    personName.Length - plaintextCharsCount.Value,
+		    privacyStringPart,
+		    privacytext);
 	}
 
 	/// <summary>
@@ -3195,39 +3172,81 @@ public static class StringExtension
 	/// <returns>返回经过隐私处理的字符串。</returns>
 	[Obsolete("“plaintextCharsCount”将改为“int?”类型。")]
 	public static string ToPrivacyStringForCNIdCardNumber(
-		this string idCardNumber,
-		int plaintextCharsCount = 7,
-		StringPartType privacyStringPart = StringPartType.Center,
-		string? privacytext = "*")
+	    this string idCardNumber,
+	    int plaintextCharsCount = 7,
+	    StringPartType privacyStringPart = StringPartType.Center,
+	    string? privacytext = "*")
 	{
 		return ToPrivacyString(
-			idCardNumber,
-			idCardNumber.Length - plaintextCharsCount,
-			privacyStringPart,
-			privacytext);
+		    idCardNumber,
+		    idCardNumber.Length - plaintextCharsCount,
+		    privacyStringPart,
+		    privacytext);
 	}
 
 	/// <summary>
 	/// 将当前“身份证”字符串（18位）转为隐私字符串。
 	/// </summary>
-	/// <param name="idCardNumber">当前“电话毫秒”字符串。</param>
+	/// <param name="cnName">当前“电话毫秒”字符串。</param>
 	/// <param name="privacyCharsCount">要隐私处理的字符数量，默认位“10”。</param>
 	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
 	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
 	/// <returns>返回经过隐私处理的字符串。</returns>
 	public static string ToPrivacyStringForCNIdCardNumber(
-		this string idCardNumber,
-		int? plaintextCharsCount,
-		StringPartType privacyStringPart = StringPartType.Center,
-		string? privacytext = "*")
+	    this string cnName,
+	    int? plaintextCharsCount,
+	    StringPartType privacyStringPart = StringPartType.Center,
+	    string? privacytext = "*")
 	{
 		plaintextCharsCount ??= 7;
 		return ToPrivacyString(
-			idCardNumber,
-			idCardNumber.Length - plaintextCharsCount.Value,
-			privacyStringPart,
-			privacytext);
+		    cnName,
+		    cnName.Length - plaintextCharsCount.Value,
+		    privacyStringPart,
+		    privacytext);
 	}
+
+
+	/// <summary>
+	/// 将当前“真人姓名”字符串转为隐私字符串。
+	/// </summary>
+	/// <param name="personName">当前“真人姓名”字符串。</param>
+	/// <param name="plaintextCharsCount">【注意】不要隐私处理的字符数量，默认位“2”。</param>
+	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
+	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
+	/// <returns>返回经过隐私处理的字符串。</returns
+	public static string ToPrivacyStringForCNPersonName(
+	    this string personName,
+	    int? plaintextCharsCount,
+	    StringPartType privacyStringPart = StringPartType.Right,
+	    string? privacytext = "*")
+	{
+		plaintextCharsCount ??= 1;
+		return personName.ToPrivacyString(
+		    personName.Length - plaintextCharsCount.Value,
+		    privacyStringPart,
+		    privacytext);
+	}
+
+	/// <summary>
+	/// 将当前“Url”字符串转为隐私字符串。
+	/// </summary>
+	/// <param name="url">当前“Url”字符串。</param>
+	/// <param name="plaintextCharsCount">【注意】不要隐私处理的字符数量，默认位“2”。</param>
+	/// <param name="privacyStringPart">要隐私处理的字符位置，默认位：StringPartType.Center。</param>
+	/// <param name="privacytext">隐私字符文本，默认为：“*”。</param>
+	/// <returns>返回经过隐私处理的字符串。</returns
+	public static string ToPrivacyStringForUrl(this string url, int? plaintextCharsCount, StringPartType privacyStringPart = StringPartType.Right,
+	    string? privacytext = "*")
+	{
+		plaintextCharsCount ??= url.Length / 2;
+		if (plaintextCharsCount < 0 || plaintextCharsCount.Value > url.Length)
+		{
+			plaintextCharsCount = url.Length;
+		}
+		return url.ToPrivacyString(url.Length - plaintextCharsCount.Value, privacyStringPart, privacytext);
+	}
+
 
 	/// <summary>
 	/// 不区分大小写的比较两个字符串是否相当。
@@ -3237,9 +3256,9 @@ public static class StringExtension
 	/// <param name="isNullEqualsEmpty">是否空字符串与长度为零的字符串视为相同。</param>
 	/// <returns>两个字符串相等时，返回：true，否则返回：false。</returns>
 	public static bool EqualsIgnoreCase(
-		this string? str,
-		string? anotherStr,
-		bool isNullEqualsEmpty = true)
+	    this string? str,
+	    string? anotherStr,
+	    bool isNullEqualsEmpty = true)
 	{
 		if (str == anotherStr)
 		{
@@ -3248,8 +3267,8 @@ public static class StringExtension
 		else if (str != null)
 		{
 			if (str.Length < 1
-				&& anotherStr == null
-				&& isNullEqualsEmpty)
+			    && anotherStr == null
+			    && isNullEqualsEmpty)
 			{
 				return true;
 			}
@@ -3259,8 +3278,8 @@ public static class StringExtension
 			}
 		}
 		else if (str == null
-			&& anotherStr?.Length < 1
-			&& isNullEqualsEmpty)
+		    && anotherStr?.Length < 1
+		    && isNullEqualsEmpty)
 		{
 			return true;
 		}
@@ -3276,17 +3295,17 @@ public static class StringExtension
 	/// <param name="comparisonType">字符串的比较类型，默认未：StringComparison.OrdinalIgnoreCase</param>
 	/// <returns>指定字符串在当前字符串中的位置，未找到时返回：-1 。</returns>
 	public static int IndexOfIgnoreCase(
-		this string? str,
-		string? keywords,
-		int startIndex,
-		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+	    this string? str,
+	    string? keywords,
+	    int startIndex,
+	    StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
 			return -1;
 		}
 		if (keywords == null
-			|| keywords.Length < 1)
+		    || keywords.Length < 1)
 		{
 			return -1;
 		}
@@ -3300,9 +3319,9 @@ public static class StringExtension
 		}
 
 		return str.IndexOf(
-			keywords,
-			startIndex,
-			comparisonType);
+		    keywords,
+		    startIndex,
+		    comparisonType);
 	}
 
 	/// <summary>
@@ -3313,15 +3332,15 @@ public static class StringExtension
 	/// <param name="comparisonType">字符串的比较类型，默认未：StringComparison.OrdinalIgnoreCase</param>
 	/// <returns>指定字符串在当前字符串中的位置，未找到时返回：-1 。</returns>
 	public static int IndexOfIgnoreCase(
-		this string? str,
-		string? keywords,
-		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+	    this string? str,
+	    string? keywords,
+	    StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 	{
 		return StringExtension.IndexOfIgnoreCase(
-			str,
-			keywords,
-			0,
-			comparisonType);
+		    str,
+		    keywords,
+		    0,
+		    comparisonType);
 	}
 
 	/// <summary>
@@ -3333,17 +3352,17 @@ public static class StringExtension
 	/// <param name="comparisonType">字符串的比较类型，默认未：StringComparison.OrdinalIgnoreCase</param>
 	/// <returns>指定字符串在当前字符串中的位置，未找到时返回：-1 。</returns>
 	public static int LastIndexOfIgnoreCase(
-		this string? str,
-		string? keywords,
-		int startIndex,
-		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+	    this string? str,
+	    string? keywords,
+	    int startIndex,
+	    StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
 			return -1;
 		}
 		if (keywords == null
-			|| keywords.Length < 1)
+		    || keywords.Length < 1)
 		{
 			return -1;
 		}
@@ -3356,9 +3375,9 @@ public static class StringExtension
 			startIndex = 0;
 		}
 		return str.LastIndexOf(
-			keywords,
-			startIndex,
-			comparisonType);
+		    keywords,
+		    startIndex,
+		    comparisonType);
 	}
 
 	/// <summary>
@@ -3369,15 +3388,15 @@ public static class StringExtension
 	/// <param name="comparisonType">字符串的比较类型，默认未：StringComparison.OrdinalIgnoreCase</param>
 	/// <returns>指定字符串在当前字符串中的位置，未找到时返回：-1 。</returns>
 	public static int LastIndexOfIgnoreCase(
-		this string? str,
-		string? keywords,
-		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+	    this string? str,
+	    string? keywords,
+	    StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 	{
 		return StringExtension.LastIndexOfIgnoreCase(
-			str,
-			keywords,
-			0,
-			comparisonType);
+		    str,
+		    keywords,
+		    0,
+		    comparisonType);
 	}
 
 	/// <summary>
@@ -3386,9 +3405,7 @@ public static class StringExtension
 	/// <param name="str">当前字符串。</param>
 	/// <param name="isIntNumber">是否只是整形数字。</param>
 	/// <returns>字符串是否为纯数字字符串时，返回：true，否则返回：false。</returns>
-	public static bool IsNumberString(
-	    this string? str,
-	    bool isIntNumber = true)
+	public static bool IsNumberString(this string? str, bool isIntNumber = true)
 	{
 		if (str == null
 		    || str.Length < 1)
@@ -3462,8 +3479,7 @@ public static class StringExtension
 	/// </summary>
 	/// <param name="str">当前字符串。</param>
 	/// <returns>字符串是否为纯字母字符串时，返回：true，否则返回：false。</returns>
-	public static bool IsAlphabetString(
-	    this string? str)
+	public static bool IsAlphabetString(this string? str)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -3474,6 +3490,30 @@ public static class StringExtension
 		{
 			if ((character < 'a' || character > 'z')
 			    && (character < 'A' || character > 'Z'))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/// <summary>
+	/// 当前字符串是否为纯字母和数字的字符串。
+	/// </summary>
+	/// <param name="str">当前字符串。</param>
+	/// <returns>字符串为纯字母和数字的字符串时，返回：true，否则返回：false。</returns>
+	public static bool IsAlphabetAndNumberString(this string? str)
+	{
+		if (string.IsNullOrEmpty(str))
+		{
+			return false;
+		}
+
+		foreach (var character in str)
+		{
+			if ((character < 'a' || character > 'z')
+			    && (character < 'A' || character > 'Z')
+			    && (character < '0' || character > '9'))
 			{
 				return false;
 			}
@@ -3534,9 +3574,9 @@ public static class StringExtension
 	}
 
 	public static bool IsIn(
-		this string key,
-		ICollection<string>? strings,
-		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+	    this string key,
+	    ICollection<string>? strings,
+	    StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 	{
 		if (strings?.IsContains(key, comparisonType) == true)
 		{
@@ -3546,9 +3586,9 @@ public static class StringExtension
 	}
 
 	public static bool IsNotIn(
-		this string key,
-		ICollection<string>? strings,
-		StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+	    this string key,
+	    ICollection<string>? strings,
+	    StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
 	{
 		if (strings?.IsNotContains(key, comparisonType) == true)
 		{
@@ -3558,11 +3598,11 @@ public static class StringExtension
 	}
 
 	public static async Task<List<ItemMatchResultType>?> GetItemsContainedAsync<MatchItemType, ItemMatchResultType>(
-		this string? str,
-		IEnumerable<MatchItemType>? matchItems,
-		Func<string, MatchItemType, ItemMatchResultType?> toIsStringContainedItem,
-		int itemsCountMinToMatchWithTasks = 5,
-		int tasksCountToMatch = 10)
+	    this string? str,
+	    IEnumerable<MatchItemType>? matchItems,
+	    Func<string, MatchItemType, ItemMatchResultType?> toIsStringContainedItem,
+	    int itemsCountMinToMatchWithTasks = 5,
+	    int tasksCountToMatch = 10)
 	{
 		if (string.IsNullOrEmpty(str))
 		{
@@ -3584,8 +3624,8 @@ public static class StringExtension
 			foreach (var matchItem in matchItems)
 			{
 				var itemMatchResult = toIsStringContainedItem(
-					str,
-					matchItem);
+				    str,
+				    matchItem);
 				if (itemMatchResult != null)
 				{
 					// !!!
@@ -3603,8 +3643,8 @@ public static class StringExtension
 			var tasksToMatch = new List<Task>();
 			var matchItemsEnumerator = matchItems.GetEnumerator();
 			for (var taskIndex = 0;
-				taskIndex < tasksCountToMatch;
-				taskIndex++)
+			    taskIndex < tasksCountToMatch;
+			    taskIndex++)
 			{
 				tasksToMatch.Add(Task.Run(() =>
 				{
@@ -3620,8 +3660,8 @@ public static class StringExtension
 					{
 
 						var itemMatchResult = toIsStringContainedItem(
-							str,
-							matchItem);
+			    str,
+			    matchItem);
 						if (itemMatchResult != null)
 						{
 							lock (itemsContained)

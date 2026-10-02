@@ -50,14 +50,14 @@ namespace BaoXia.Utils.Notification
 		#region 自身实现
 
 		public NotificationListener(
-			NotificationQueue notificationQueue,
-			//
-			string notificationName,
-			IEnumerable<string>? tagNamesWithIntersection,
-			IEnumerable<string>? tagNamesWithUnion,
-			//
-			Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
-			Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
+		    NotificationQueue notificationQueue,
+		    //
+		    string notificationName,
+		    IEnumerable<string>? tagNamesWithIntersection,
+		    IEnumerable<string>? tagNamesWithUnion,
+		    //
+		    Func<Notification, CancellationToken, object?>? toDidReceivedNotification,
+		    Func<Notification, CancellationToken, Task<object?>>? toDidReceivedNotificationAsync)
 		{
 			this.NotificationQueue = notificationQueue;
 			this.NotificationName = notificationName;
@@ -74,8 +74,8 @@ namespace BaoXia.Utils.Notification
 		}
 
 		public bool IsListenTo(
-			string notificationName,
-			IEnumerable<string>? notificationNameTagNames)
+		    string notificationName,
+		    IEnumerable<string>? notificationNameTagNames)
 		{
 			////////////////////////////////////////////////
 			// 1/4，目标消息名称：
@@ -93,7 +93,7 @@ namespace BaoXia.Utils.Notification
 			// 2/4，目标消息标签信息，交集：
 			////////////////////////////////////////////////
 			var listenNotificationTagNamesWithIntersection
-				= this.NotificationTagNamesWithIntersection;
+			    = this.NotificationTagNamesWithIntersection;
 			if (listenNotificationTagNamesWithIntersection != null)
 			{
 				foreach (var listenNotificationTagName in listenNotificationTagNamesWithIntersection)
@@ -126,7 +126,7 @@ namespace BaoXia.Utils.Notification
 			// 3/4，目标消息标签信息，并集：
 			////////////////////////////////////////////////
 			var listenNotificationTagNamesWithUnion
-				= this.NotificationTagNamesWithUnion;
+			    = this.NotificationTagNamesWithUnion;
 			if (listenNotificationTagNamesWithUnion != null)
 			{
 				var isAnyListenNotificationTagNameExisted = false;
@@ -166,8 +166,8 @@ namespace BaoXia.Utils.Notification
 		public bool IsListenTo(Notification notification)
 		{
 			return this.IsListenTo(
-				notification.Name,
-				notification.TagNames);
+			    notification.Name,
+			    notification.TagNames);
 		}
 
 		public bool CancelListen()

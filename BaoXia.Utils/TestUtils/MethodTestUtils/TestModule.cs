@@ -104,7 +104,7 @@ public class TestModule(string name)
 			//
 			testInfo.Description = description;
 			if (testInfo.State == TestUnitState.Unknown
-				|| testInfo.State == TestUnitState.WaitingTest)
+			    || testInfo.State == TestUnitState.WaitingTest)
 			{
 				testInfo.State = TestUnitState.InTesting;
 				testInfo.TestBeginTime = DateTime.Now;

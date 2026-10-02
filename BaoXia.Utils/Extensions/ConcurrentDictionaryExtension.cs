@@ -19,27 +19,27 @@ namespace BaoXia.Utils.Extensions
 		/// <param name="value">值对象。</param>
 		/// <returns>返回新添加，或新修改的值。</returns>
 		public static TValue AddOrUpdateWithNewValue<TKey, TValue>(
-			this ConcurrentDictionary<TKey, TValue> dictionary,
-			TKey key,
-			TValue value) where TKey : notnull
+		    this ConcurrentDictionary<TKey, TValue> dictionary,
+		    TKey key,
+		    TValue value) where TKey : notnull
 		{
 			return dictionary.AddOrUpdate(
-				key,
-				value,
-				(keyExisted, valueExisted) => value);
+			    key,
+			    value,
+			    (keyExisted, valueExisted) => value);
 		}
 
 		public static bool IsEquals<KeyType, ValueType>(
-			this Dictionary<KeyType, ValueType> dictionary,
-			Dictionary<KeyType, ValueType>? anotherDictionary,
-			bool isNullEqualsEmpty = true,
-			Func<ValueType, ValueType, bool>? toEqualsValues = null)
-			where KeyType : notnull
+		    this Dictionary<KeyType, ValueType> dictionary,
+		    Dictionary<KeyType, ValueType>? anotherDictionary,
+		    bool isNullEqualsEmpty = true,
+		    Func<ValueType, ValueType, bool>? toEqualsValues = null)
+		    where KeyType : notnull
 		{
 			if (anotherDictionary == null)
 			{
 				if (isNullEqualsEmpty == true
-					&& dictionary.Count == 0)
+				    && dictionary.Count == 0)
 				{
 					return true;
 				}
@@ -53,8 +53,8 @@ namespace BaoXia.Utils.Extensions
 			foreach (var keyValue in dictionary)
 			{
 				if (!anotherDictionary.TryGetValue(
-					keyValue.Key,
-					out var valueInAnotherDictionary))
+				    keyValue.Key,
+				    out var valueInAnotherDictionary))
 				{
 					return false;
 				}
@@ -67,7 +67,7 @@ namespace BaoXia.Utils.Extensions
 					}
 				}
 				else if (keyValue.Value == null
-					&& valueInAnotherDictionary == null)
+				    && valueInAnotherDictionary == null)
 				{
 					continue;
 				}
@@ -81,23 +81,23 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static bool IsEquals(
-			this Dictionary<string, string> dictionary,
-			Dictionary<string, string>? anotherDictionary,
-			bool isNullEqualsEmpty = true,
-			StringComparison stringComparison = StringComparison.Ordinal)
+		    this Dictionary<string, string> dictionary,
+		    Dictionary<string, string>? anotherDictionary,
+		    bool isNullEqualsEmpty = true,
+		    StringComparison stringComparison = StringComparison.Ordinal)
 		{
 			return IsEquals(
-				dictionary,
-				anotherDictionary,
-				isNullEqualsEmpty,
-				(stringA, stringB) =>
-				{
-					return StringUtil.EqualsStrings(
-						stringA,
-						stringB,
-						stringComparison,
-						isNullEqualsEmpty);
-				});
+			    dictionary,
+			    anotherDictionary,
+			    isNullEqualsEmpty,
+			    (stringA, stringB) =>
+			    {
+				    return StringUtil.EqualsStrings(
+		    stringA,
+		    stringB,
+		    stringComparison,
+		    isNullEqualsEmpty);
+			    });
 		}
 	}
 }

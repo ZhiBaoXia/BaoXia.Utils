@@ -26,9 +26,9 @@ public class ItemSearchResult<ItemType>
 	#region 自身实现
 
 	public ItemSearchResult(
-		int itemsCountSearchMatched,
-		List<ItemType> itemsInPage,
-		List<ItemSearchMatchInfo<ItemType>>? itemSearchMatchInfesInPage)
+	    int itemsCountSearchMatched,
+	    List<ItemType> itemsInPage,
+	    List<ItemSearchMatchInfo<ItemType>>? itemSearchMatchInfesInPage)
 	{
 		ItemsCountSearchMatched = itemsCountSearchMatched;
 		ItemsInPage = itemsInPage;

@@ -28,9 +28,9 @@
 		{ }
 
 		public ByteArray(
-			string name,
-			string fileName,
-			byte[] bytes)
+		    string name,
+		    string fileName,
+		    byte[] bytes)
 		{
 			this.Name = name;
 			this.FileName = fileName;

@@ -8,7 +8,7 @@ namespace BaoXia.Utils.Extensions
 		public static bool IsAllTaskNotStarted(this ICollection<Task> tasks)
 		{
 			if (tasks == null
-				|| tasks.Count < 1)
+			    || tasks.Count < 1)
 			{
 				return true;
 			}
@@ -26,7 +26,7 @@ namespace BaoXia.Utils.Extensions
 		public static bool IsAllTaskStarted(this ICollection<Task> tasks)
 		{
 			if (tasks == null
-				|| tasks.Count < 1)
+			    || tasks.Count < 1)
 			{
 				return false;
 			}

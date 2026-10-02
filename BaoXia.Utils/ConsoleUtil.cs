@@ -34,8 +34,8 @@ public class ConsoleUtil
 				cursorTop -= 1;
 			}
 			System.Console.SetCursorPosition(
-				0,
-				cursorTop);
+			    0,
+			    cursorTop);
 
 			System.Console.Write(string.Empty);
 		}
@@ -56,8 +56,8 @@ public class ConsoleUtil
 				cursorTop -= 1;
 			}
 			System.Console.SetCursorPosition(
-				0,
-				cursorTop);
+			    0,
+			    cursorTop);
 			System.Console.WriteLine(message);
 		}
 	}
@@ -98,7 +98,7 @@ public class ConsoleUtil
 			// 如果内容一致，则不再更新：
 			var lastLines = lastConsoleLinesInfo.LastLines;
 			if (lines != null
-				&& lastLines != null)
+			    && lastLines != null)
 			{
 				var linesCount = lines.GetCount();
 				var lastLinesCount = lastLines.GetCount();
@@ -108,7 +108,7 @@ public class ConsoleUtil
 					var linesEnumerator = lines.GetEnumerator();
 					var lastLinesEnumerator = lastLines.GetEnumerator();
 					while (linesEnumerator.MoveNext()
-						&& lastLinesEnumerator.MoveNext())
+					    && lastLinesEnumerator.MoveNext())
 					{
 						var line = linesEnumerator.Current;
 						var lastLine = lastLinesEnumerator.Current;
@@ -168,8 +168,8 @@ public class ConsoleUtil
 			var consoleCursorRightMax = lastConsoleLinesInfo.RowWidthMax;
 			var consoleCursorBottom = -1;
 			for (var prefixBlankRowIndex = 0;
-				prefixBlankRowIndex < prefixBlankRowsCount;
-				prefixBlankRowIndex++)
+			    prefixBlankRowIndex < prefixBlankRowsCount;
+			    prefixBlankRowIndex++)
 			{
 				// !!!
 				Console.WriteLine();

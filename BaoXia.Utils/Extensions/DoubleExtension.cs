@@ -10,6 +10,29 @@ public static class DoubleExtension
 
 	#region 类方法
 
+	public static double ChangeRateTo(this double currentValue, double? targetValue)
+	{
+		var finalTargetValue = targetValue ?? 0.0;
+		var changeValue = currentValue - finalTargetValue;
+		double changeRate;
+		if (finalTargetValue != 0)
+		{
+			changeRate = changeValue / finalTargetValue;
+		}
+		else if (changeValue > 0)
+		{
+			changeRate = 1;
+		}
+		else if (changeValue < 0)
+		{
+			changeRate = -1;
+		}
+		else
+		{
+			changeRate = 0;
+		}
+		return changeRate;
+	}
 
 	public static double TryParse(string? doubleString, double defaultValue = 0.0)
 	{
@@ -38,7 +61,7 @@ public static class DoubleExtension
 		// 默认值精度说明符：具体取决于数值类型。
 		// 更多信息：常规（“G”）格式说明符。
 		var doubleValueString = doubleValue.ToString("G");
-		var dotIndex = doubleValueString.IndexOf(".");
+		var dotIndex = doubleValueString.IndexOf('.');
 		var doubleValueDecimalDigits = 0;
 		if (dotIndex >= 0)
 		{
@@ -48,22 +71,22 @@ public static class DoubleExtension
 	}
 
 	public static float ToFloatWithDecimalPrecision(
-		this double doubleA,
-		int decimalPrecision,
-		MidpointRounding midpointRounding = MidpointRounding.ToEven)
+	    this double doubleA,
+	    int decimalPrecision,
+	    MidpointRounding midpointRounding = MidpointRounding.ToEven)
 	{
 		doubleA = ToDoubleWithDecimalPrecision(
-			doubleA,
-			decimalPrecision,
-			midpointRounding);
+		    doubleA,
+		    decimalPrecision,
+		    midpointRounding);
 		{ }
 		return Convert.ToSingle(doubleA);
 	}
 
 	public static double ToDoubleWithDecimalPrecision(
-		this double doubleA,
-		int decimalPrecision,
-		MidpointRounding midpointRounding = MidpointRounding.ToEven)
+	    this double doubleA,
+	    int decimalPrecision,
+	    MidpointRounding midpointRounding = MidpointRounding.ToEven)
 	{
 		if (decimalPrecision < 0)
 		{
@@ -73,10 +96,10 @@ public static class DoubleExtension
 	}
 
 	public static int CompareTo(
-		this double doubleA,
-		double doubleB,
-		int decimalPrecision,
-		MidpointRounding midpointRounding = MidpointRounding.ToEven)
+	    this double doubleA,
+	    double doubleB,
+	    int decimalPrecision,
+	    MidpointRounding midpointRounding = MidpointRounding.ToEven)
 	{
 		if (decimalPrecision >= 0)
 		{

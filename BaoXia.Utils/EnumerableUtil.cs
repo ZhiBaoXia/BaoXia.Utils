@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using BaoXia.Utils.Extensions;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 namespace BaoXia.Utils;
 
 public class EnumerableUtil
 {
-
 	////////////////////////////////////////////////
 	// @类方法
 	////////////////////////////////////////////////
@@ -15,7 +14,7 @@ public class EnumerableUtil
 
 	public static bool IsEmpty<EnumerableItemType>([NotNullWhen(false)] IEnumerable<EnumerableItemType>? enumerabler)
 	{
-		if (enumerabler?.Any() == true)
+		if (enumerabler?.IsNotEmpty() == true)
 		{
 			return false;
 		}

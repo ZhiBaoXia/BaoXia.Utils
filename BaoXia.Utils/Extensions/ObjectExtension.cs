@@ -27,9 +27,9 @@ public static class ObjectExtension
 		return ObjectUtil.CreateObject(objectType);
 	}
 
-	public static ObjectType? CreateObject<ObjectType>()
+	public static ObjectClass? CreateObject<ObjectClass>()
 	{
-		return ObjectUtil.CreateObject<ObjectType>();
+		return ObjectUtil.CreateObject<ObjectClass>();
 	}
 
 	public static object? CreateObject(object? @object)
@@ -46,45 +46,45 @@ public static class ObjectExtension
 		if (propertiesBindingFlags == BindingFlags.Default)
 		{
 			propertiesBindingFlags
-				= BindingFlags.Instance
-				| BindingFlags.Public
-				| BindingFlags.SetProperty;
+			    = BindingFlags.Instance
+			    | BindingFlags.Public
+			    | BindingFlags.SetProperty;
 		}
 		var objectSetableProperties = objectType.GetProperties(propertiesBindingFlags);
 		bool isGetPropertyInfesGettable
-			= (propertiesBindingFlags & BindingFlags.GetProperty)
-			== BindingFlags.GetProperty;
+		    = (propertiesBindingFlags & BindingFlags.GetProperty)
+		    == BindingFlags.GetProperty;
 		bool isGetPropertyInfesSettable
-			= (propertiesBindingFlags & BindingFlags.SetProperty)
-			== BindingFlags.SetProperty;
+		    = (propertiesBindingFlags & BindingFlags.SetProperty)
+		    == BindingFlags.SetProperty;
 		if (objectSetableProperties.Length > 0
-			&& (isGetPropertyInfesGettable || isGetPropertyInfesSettable))
+		    && (isGetPropertyInfesGettable || isGetPropertyInfesSettable))
 		{
 			var objectSetablePropertiesCount = objectSetableProperties.Length;
 			for (var propertyInfoIndex = objectSetablePropertiesCount - 1;
-				propertyInfoIndex >= 0;
-				propertyInfoIndex--)
+			    propertyInfoIndex >= 0;
+			    propertyInfoIndex--)
 			{
 				var propertyInfo = objectSetableProperties[propertyInfoIndex];
 				var isPropertyInfoValid = true;
 				if (isGetPropertyInfesGettable
-					&& propertyInfo.GetMethod == null)
+				    && propertyInfo.GetMethod == null)
 				{
 					isPropertyInfoValid = false;
 				}
 				if (isGetPropertyInfesSettable
-					&& propertyInfo.SetMethod == null)
+				    && propertyInfo.SetMethod == null)
 				{
 					isPropertyInfoValid = false;
 				}
 				if (isPropertyInfoValid == false)
 				{
 					Array.Copy(
-						objectSetableProperties,
-						propertyInfoIndex + 1,
-						objectSetableProperties,
-						propertyInfoIndex,
-						objectSetableProperties.Length - (propertyInfoIndex + 1));
+					    objectSetableProperties,
+					    propertyInfoIndex + 1,
+					    objectSetableProperties,
+					    propertyInfoIndex,
+					    objectSetableProperties.Length - (propertyInfoIndex + 1));
 					objectSetablePropertiesCount--;
 				}
 			}
@@ -122,9 +122,9 @@ public static class ObjectExtension
 	}
 
 	public static string? GetPropertyNameWithPropertyValue(
-		this object @object,
-		object? propertyValue,
-		BindingFlags propertiesBindingFlags = BindingFlags.Public | BindingFlags.Instance)
+	    this object @object,
+	    object? propertyValue,
+	    BindingFlags propertiesBindingFlags = BindingFlags.Public | BindingFlags.Instance)
 	{
 		if (propertyValue == null)
 		{
@@ -137,9 +137,9 @@ public static class ObjectExtension
 		foreach (var objectTypeProperty in objectTypeProperties)
 		{
 			var objectProperty
-				= objectTypeProperty.GetIndexParameters().Length > 0
-				? null // 暂时不支持的数据格式。
-				: objectTypeProperty.GetValue(@object);
+			    = objectTypeProperty.GetIndexParameters().Length > 0
+			    ? null // 暂时不支持的数据格式。
+			    : objectTypeProperty.GetValue(@object);
 			if (objectProperty == propertyValue)
 			{
 				// !!!
@@ -294,11 +294,11 @@ public static class ObjectExtension
 	}
 
 	public static List<ItemPropertyGetInfo<object>>? GetPropertyGetInfes(
-		this object? item,
-		int propertyLayerNumber = 0,
-		string[]? propertyNamesExcepted = null,
-		BindingFlags propertiesBindingFlags = BindingFlags.Default,
-		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null)
+	    this object? item,
+	    int propertyLayerNumber = 0,
+	    string[]? propertyNamesExcepted = null,
+	    BindingFlags propertiesBindingFlags = BindingFlags.Default,
+	    Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null)
 	{
 		if (item == null)
 		{
@@ -309,7 +309,7 @@ public static class ObjectExtension
 		if (itemType.IsValueType)
 		{
 			if (itemType.IsPrimitive
-				|| itemType.IsEnum)
+			    || itemType.IsEnum)
 			{
 				return null;
 			}
@@ -318,8 +318,8 @@ public static class ObjectExtension
 			// 需要特殊处理的结构体：DateTime，decimal
 			////////////////////////////////////////////////
 			else if (itemType.Equals(typeof(decimal))
-				|| itemType.Equals(typeof(DateTime))
-				|| itemType.Equals(typeof(DateTimeOffset)))
+			    || itemType.Equals(typeof(DateTime))
+			    || itemType.Equals(typeof(DateTimeOffset)))
 			{
 				return null;
 			}
@@ -358,8 +358,8 @@ public static class ObjectExtension
 			{
 				var childItemValueType = childItemValue.GetType();
 				if (childItemValueType.IsValueType
-					// 字符串类型的特殊处理。
-					|| childItemValueType.Equals(typeof(string)))
+				    // 字符串类型的特殊处理。
+				    || childItemValueType.Equals(typeof(string)))
 				{
 					// !!!
 					isChildItemTypeValue = true;
@@ -378,13 +378,13 @@ public static class ObjectExtension
 			{
 				var childItemValue = childItemDictionary[childItemKey];
 				chilItemPropertyGetInfes.Add(new ItemPropertyGetInfo<object>(
-					propertyLayerNumber,
-					ItemPropertyRelation.ObjectItemInIEnumerable,
-					item,
-					null,
-					childItemValue,
-					-1,
-					childItemKey));
+				    propertyLayerNumber,
+				    ItemPropertyRelation.ObjectItemInIEnumerable,
+				    item,
+				    null,
+				    childItemValue,
+				    -1,
+				    childItemKey));
 			}
 			return chilItemPropertyGetInfes;
 		}
@@ -403,8 +403,8 @@ public static class ObjectExtension
 			{
 				var childItemType = childItem.GetType();
 				if (childItemType.IsValueType
-					// 字符串类型的特殊处理。
-					|| childItemType.Equals(typeof(string)))
+				    // 字符串类型的特殊处理。
+				    || childItemType.Equals(typeof(string)))
 				{
 					isChildItemTypeValue = true;
 				}
@@ -420,13 +420,13 @@ public static class ObjectExtension
 			foreach (var childItem in childItems)
 			{
 				chilItemPropertyGetInfes.Add(new ItemPropertyGetInfo<object>(
-					propertyLayerNumber,
-					ItemPropertyRelation.ObjectItemInIEnumerable,
-					item,
-					null,
-					childItem,
-					childItemIndex,
-					null));
+				    propertyLayerNumber,
+				    ItemPropertyRelation.ObjectItemInIEnumerable,
+				    item,
+				    null,
+				    childItem,
+				    childItemIndex,
+				    null));
 				////////////////////////////////////////////////
 				childItemIndex++;
 				////////////////////////////////////////////////
@@ -438,16 +438,16 @@ public static class ObjectExtension
 		if (propertiesBindingFlags == BindingFlags.Default)
 		{
 			propertiesBindingFlags
-				= BindingFlags.Instance
-				| BindingFlags.Public
-				| BindingFlags.GetProperty;
+			    = BindingFlags.Instance
+			    | BindingFlags.Public
+			    | BindingFlags.GetProperty;
 		}
 		var isGetPropertyInfesGetable
-			= (propertiesBindingFlags & BindingFlags.GetProperty)
-			== BindingFlags.GetProperty;
+		    = (propertiesBindingFlags & BindingFlags.GetProperty)
+		    == BindingFlags.GetProperty;
 		var isGetPropertyInfesSetable
-			= (propertiesBindingFlags & BindingFlags.SetProperty)
-			== BindingFlags.SetProperty;
+		    = (propertiesBindingFlags & BindingFlags.SetProperty)
+		    == BindingFlags.SetProperty;
 		var itemPropertyInfes = itemType.GetProperties(propertiesBindingFlags);
 		if (itemPropertyInfes == null
 		|| itemPropertyInfes.Length < 1)
@@ -462,39 +462,39 @@ public static class ObjectExtension
 				continue;
 			}
 			if (toIsPropertyInfoOfObjectValidToGenerate?.Invoke(
-				item,
-				hostItemPropertyInfo) == false)
+			    item,
+			    hostItemPropertyInfo) == false)
 			{
 				continue;
 			}
 			if (isGetPropertyInfesGetable
-				&& hostItemPropertyInfo.GetMethod == null)
+			    && hostItemPropertyInfo.GetMethod == null)
 			{
 				continue;
 			}
 			if (isGetPropertyInfesSetable
-				&& hostItemPropertyInfo.SetMethod == null)
+			    && hostItemPropertyInfo.SetMethod == null)
 			{
 				continue;
 			}
 			itemPropertyGetInfes.Add(new(
-				propertyLayerNumber,
-				ItemPropertyRelation.Property,
-				item,
-				hostItemPropertyInfo,
-				null,
-				-1,
-				null));
+			    propertyLayerNumber,
+			    ItemPropertyRelation.Property,
+			    item,
+			    hostItemPropertyInfo,
+			    null,
+			    -1,
+			    null));
 		}
 		return itemPropertyGetInfes;
 	}
 
 
 	public static List<ObjectPropertyInfo> GetPropertyInfesFrom(
-		this Type _,
-		PropertyInfo[] sourceEntityPropertyInfes,
-		Func<ObjectPropertyInfo, bool> isPropertyInfoValid,
-		BindingFlags propertyBindingFlags = BindingFlags.Instance | BindingFlags.Public)
+	    this Type _,
+	    PropertyInfo[] sourceEntityPropertyInfes,
+	    Func<ObjectPropertyInfo, bool> isPropertyInfoValid,
+	    BindingFlags propertyBindingFlags = BindingFlags.Instance | BindingFlags.Public)
 	{
 		var objectEntityPropertyInfes = new List<ObjectPropertyInfo>();
 		var objectEntityPropertyInfoId = 0;
@@ -504,72 +504,64 @@ public static class ObjectExtension
 			// 并且没有可为空的标记，
 			// 则该类型不可为空，需要约束，
 			// 非字符串和非集合对象【需要】检查子属性：
-			RecursionUtil.Enumerate(
-				new ObjectPropertyInfo(0, entityPropertyInfo, []),
-				(entityPropertyInfo) =>
+			RecursionUtil.Enumerate(new ObjectPropertyInfo(0, entityPropertyInfo, []), (entityPropertyInfo) =>
+			{
+				var entityPropertyType = entityPropertyInfo.PropertyType;
+
+				// 值类型，【不需要】检查子属性：
+				if (entityPropertyType.IsValueType)
 				{
-					var entityPropertyType = entityPropertyInfo.PropertyType;
-
-					// 值类型，【不需要】检查子属性：
-					if (entityPropertyType.IsValueType)
-					{
-						return null;
-					}
-					// 字符串和集合对象，【不需要】检查子属性：
-					if (entityPropertyType.Equals(typeof(string))
-						|| entityPropertyType.IsAssignableTo(typeof(System.Collections.ICollection)))
-					{
-						return null;
-					}
-
-					// 非值类型，
-					// 且，非字符串和集合对象，
-					// 【需要】检查子属性：
-					var childEntityPropertyInfes = new List<ObjectPropertyInfo>();
-					var childPropertyInfes = entityPropertyType.GetProperties(propertyBindingFlags);
-					foreach (var childPropertyInfo in childPropertyInfes)
-					{
-						childEntityPropertyInfes.Add(
-							new ObjectPropertyInfo(
-								0,
-								childPropertyInfo,
-								[]));
-					}
-					return childEntityPropertyInfes;
-				},
-				(parentEntityPropertyInfo, entityPropertyInfo) =>
+					return null;
+				}
+				// 字符串和集合对象，【不需要】检查子属性：
+				if (entityPropertyType.Equals(typeof(string))
+				|| entityPropertyType.IsAssignableTo(typeof(System.Collections.ICollection)))
 				{
-					if (!isPropertyInfoValid(entityPropertyInfo))
-					{
-						return true;
-					}
+					return null;
+				}
 
-
-					objectEntityPropertyInfoId++;
-					entityPropertyInfo.Id = objectEntityPropertyInfoId;
-					if (parentEntityPropertyInfo == null)
-					{
-						// !!!
-						objectEntityPropertyInfes.Add(entityPropertyInfo);
-						// !!!
-					}
-					else
-					{
-						// !!!
-						parentEntityPropertyInfo.AddChildObjectPropertyInfo(
-							entityPropertyInfo);
-						// !!!
-					}
+				// 非值类型，
+				// 且，非字符串和集合对象，
+				// 【需要】检查子属性：
+				var childEntityPropertyInfes = new List<ObjectPropertyInfo>();
+				var childPropertyInfes = entityPropertyType.GetProperties(propertyBindingFlags);
+				foreach (var childPropertyInfo in childPropertyInfes)
+				{
+					childEntityPropertyInfes.Add(new ObjectPropertyInfo(0, childPropertyInfo, []));
+				}
+				return childEntityPropertyInfes;
+			},
+			(parentEntityPropertyInfo, entityPropertyInfo) =>
+			{
+				if (!isPropertyInfoValid(entityPropertyInfo))
+				{
 					return true;
-				});
+				}
+
+
+				objectEntityPropertyInfoId++;
+				entityPropertyInfo.Id = objectEntityPropertyInfoId;
+				if (parentEntityPropertyInfo == null)
+				{
+					// !!!
+					objectEntityPropertyInfes.Add(entityPropertyInfo);
+					// !!!
+				}
+				else
+				{
+					// !!!
+					parentEntityPropertyInfo.AddChildObjectPropertyInfo(entityPropertyInfo);
+					// !!!
+				}
+				return true;
+			});
 		}
 		return objectEntityPropertyInfes;
 	}
 
 	public static List<ObjectPropertyInfo> GetObjectPropertyInfes(
-		this Type entityType,
-		Func<ObjectPropertyInfo, bool> isPropertyInfoValid,
-		BindingFlags propertyBindingFlags = BindingFlags.Instance | BindingFlags.Public)
+	    this Type entityType, Func<ObjectPropertyInfo, bool> isPropertyInfoValid,
+	    BindingFlags propertyBindingFlags = BindingFlags.Instance | BindingFlags.Public)
 	{
 		var objectEntityPropertyInfes = new List<ObjectPropertyInfo>();
 		var objectEntityPropertyInfoId = 0;
@@ -581,83 +573,83 @@ public static class ObjectExtension
 			// 则该类型不可为空，需要约束，
 			// 非字符串和非集合对象【需要】检查子属性：
 			RecursionUtil.Enumerate(
-				new ObjectPropertyInfo(0, entityPropertyInfo, []),
-				(entityPropertyInfo, currentRecursionStep, _) =>
-				{
-					// 值类型，【不需要】检查子属性，
-					// 字符串，【不需要】检查子属性，
-					// 集合对象，【不需要】检查子属性：
-					if (entityPropertyInfo.IsPropertyTypeNoneChildProperties)
-					{
-						return null;
-					}
+			    new ObjectPropertyInfo(0, entityPropertyInfo, []),
+			    (entityPropertyInfo, currentRecursionStep, _) =>
+			    {
+				    // 值类型，【不需要】检查子属性，
+				    // 字符串，【不需要】检查子属性，
+				    // 集合对象，【不需要】检查子属性：
+				    if (entityPropertyInfo.IsPropertyTypeNoneChildProperties)
+				    {
+					    return null;
+				    }
 
-					// 非值类型，
-					// 单之前已经检查过的类型，
-					// 【不需要】再次检查子属性，
-					// （否则会产生死循环）：
-					var entityPropertyType = entityPropertyInfo.PropertyType;
-					for (var prevRecursionStep = currentRecursionStep.PrevRecursionStep;
-					prevRecursionStep != null;
-					prevRecursionStep = prevRecursionStep.PrevRecursionStep)
-					{
-						if (prevRecursionStep.CurrentItem?.PropertyType.
-						Equals(entityPropertyType) == true)
-						{
-							return null;
-						}
-					}
+				    // 非值类型，
+				    // 单之前已经检查过的类型，
+				    // 【不需要】再次检查子属性，
+				    // （否则会产生死循环）：
+				    var entityPropertyType = entityPropertyInfo.PropertyType;
+				    for (var prevRecursionStep = currentRecursionStep.PrevRecursionStep;
+		prevRecursionStep != null;
+		prevRecursionStep = prevRecursionStep.PrevRecursionStep)
+				    {
+					    if (prevRecursionStep.CurrentItem?.PropertyType.
+			Equals(entityPropertyType) == true)
+					    {
+						    return null;
+					    }
+				    }
 
 
-					// 非值类型，
-					// 且，之前未检查过的类型，
-					// 且，非字符串和集合对象，
-					// 【需要】检查子属性：
-					var childEntityPropertyInfes = new List<ObjectPropertyInfo>();
-					var childPropertyInfes = entityPropertyInfo.GetProperties(propertyBindingFlags);
-					foreach (var childPropertyInfo in childPropertyInfes)
-					{
-						childEntityPropertyInfes.Add(
-							new ObjectPropertyInfo(
-								0,
-								childPropertyInfo,
-								[]));
-					}
-					return childEntityPropertyInfes;
-				},
-				(parentEntityPropertyInfo, entityPropertyInfo, _) =>
-				{
-					if (!isPropertyInfoValid(entityPropertyInfo))
-					{
-						return true;
-					}
+				    // 非值类型，
+				    // 且，之前未检查过的类型，
+				    // 且，非字符串和集合对象，
+				    // 【需要】检查子属性：
+				    var childEntityPropertyInfes = new List<ObjectPropertyInfo>();
+				    var childPropertyInfes = entityPropertyInfo.GetProperties(propertyBindingFlags);
+				    foreach (var childPropertyInfo in childPropertyInfes)
+				    {
+					    childEntityPropertyInfes.Add(
+			    new ObjectPropertyInfo(
+			    0,
+			    childPropertyInfo,
+			    []));
+				    }
+				    return childEntityPropertyInfes;
+			    },
+			    (parentEntityPropertyInfo, entityPropertyInfo, _) =>
+			    {
+				    if (!isPropertyInfoValid(entityPropertyInfo))
+				    {
+					    return true;
+				    }
 
-					objectEntityPropertyInfoId++;
-					entityPropertyInfo.Id = objectEntityPropertyInfoId;
-					if (parentEntityPropertyInfo == null)
-					{
-						// !!!
-						objectEntityPropertyInfes.Add(entityPropertyInfo);
-						// !!!
-					}
-					else
-					{
-						// !!!
-						parentEntityPropertyInfo.AddChildObjectPropertyInfo(
-							entityPropertyInfo);
-						// !!!
-					}
-					return true;
-				});
+				    objectEntityPropertyInfoId++;
+				    entityPropertyInfo.Id = objectEntityPropertyInfoId;
+				    if (parentEntityPropertyInfo == null)
+				    {
+					    // !!!
+					    objectEntityPropertyInfes.Add(entityPropertyInfo);
+					    // !!!
+				    }
+				    else
+				    {
+					    // !!!
+					    parentEntityPropertyInfo.AddChildObjectPropertyInfo(
+			    entityPropertyInfo);
+					    // !!!
+				    }
+				    return true;
+			    });
 		}
 		return objectEntityPropertyInfes;
 	}
 
 	public static ObjectCheckResultType? CheckPropertyValuesWithObjectPropertyInfes<ObjectCheckResultType>(
-		this object entity,
-		ObjectPropertyInfo[] entityPropertyInfesNeedCheck,
-		Func<object?, ObjectPropertyInfo, object?, ObjectCheckResultType?> toCheckEntityPropertyValue)
-		where ObjectCheckResultType : class
+	    this object entity,
+	    ObjectPropertyInfo[] entityPropertyInfesNeedCheck,
+	    Func<object?, ObjectPropertyInfo, object?, ObjectCheckResultType?> toCheckEntityPropertyValue)
+	    where ObjectCheckResultType : class
 	{
 		if (entityPropertyInfesNeedCheck.Length < 1)
 		{
@@ -668,54 +660,54 @@ public static class ObjectExtension
 		foreach (var entityPropertyInfoNeedCheck in entityPropertyInfesNeedCheck)
 		{
 			RecursionUtil.EnumerateWithRecursionStepType<ObjectPropertyInfo, ObjectPropertyRecursionStep>(
-				entityPropertyInfoNeedCheck,
-				(entityPropertyInfo, _) =>
-				{
-					return entityPropertyInfo.ChildObjectPropertyInfes;
-				},
-				(parentEntityPropertyInfo, propertyInfo, currentRecursionStep) =>
-				{
-					var propertyOwner
-						= currentRecursionStep.RecursionDepthIndex == 0
-						? entity
-						: currentRecursionStep.ParentEntity;
+			    entityPropertyInfoNeedCheck,
+			    (entityPropertyInfo, _) =>
+			    {
+				    return entityPropertyInfo.ChildObjectPropertyInfes;
+			    },
+			    (parentEntityPropertyInfo, propertyInfo, currentRecursionStep) =>
+			    {
+				    var propertyOwner
+		    = currentRecursionStep.RecursionDepthIndex == 0
+		    ? entity
+		    : currentRecursionStep.ParentEntity;
 
-					var entityPropertyValue
-					= propertyOwner != null
-					? propertyInfo.GetValue(propertyOwner)
-					: null;
+				    var entityPropertyValue
+		= propertyOwner != null
+		? propertyInfo.GetValue(propertyOwner)
+		: null;
 
-					checkResult = toCheckEntityPropertyValue(
-						propertyOwner,
-						propertyInfo,
-						entityPropertyValue);
-					if (checkResult != null)
-					{
-						// !!!
-						return false;
-						// !!!
-					}
+				    checkResult = toCheckEntityPropertyValue(
+		    propertyOwner,
+		    propertyInfo,
+		    entityPropertyValue);
+				    if (checkResult != null)
+				    {
+					    // !!!
+					    return false;
+					    // !!!
+				    }
 
-					// !!! 如果当前继续检查，且当前属性值为“null”， !!!
-					// !!! 则重新获取属性值（有可能被检查函数赋值）。 !!!
-					entityPropertyValue
-					??= propertyOwner != null
-						? propertyInfo.GetValue(propertyOwner)
-						: null;
+				    // !!! 如果当前继续检查，且当前属性值为“null”， !!!
+				    // !!! 则重新获取属性值（有可能被检查函数赋值）。 !!!
+				    entityPropertyValue
+		??= propertyOwner != null
+		    ? propertyInfo.GetValue(propertyOwner)
+		    : null;
 
-					// !!!
-					currentRecursionStep.CurrentEntityPropertyValue
-					= entityPropertyValue;
-					// !!!
-					return true;
-				},
-				(currentRecursionStep) =>
-				{
-					return new()
-					{
-						ParentEntity = currentRecursionStep.CurrentEntityPropertyValue
-					};
-				});
+				    // !!!
+				    currentRecursionStep.CurrentEntityPropertyValue
+		= entityPropertyValue;
+				    // !!!
+				    return true;
+			    },
+			    (currentRecursionStep) =>
+			    {
+				    return new()
+				    {
+					    ParentEntity = currentRecursionStep.CurrentEntityPropertyValue
+				    };
+			    });
 			if (checkResult != null)
 			{
 				break;
@@ -728,14 +720,14 @@ public static class ObjectExtension
 	/// <summary>
 	/// 浅拷贝，通过设置同名属性，克隆产生新对象。
 	/// </summary>
-	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
+	/// <typeparam name="ObjectClass">当前对象类型。</typeparam>
 	/// <param name="currentObject">当前对象。</param>
 	/// <returns>拥有相同属性的，克隆产生的新对象。</returns>
-	public static ObjectType CloneShallow<ObjectType>(this ObjectType currentObject)
-		where ObjectType
-		: class, new()
+	public static ObjectClass CloneShallow<ObjectClass>(this ObjectClass currentObject)
+	    where ObjectClass
+	    : class, new()
 	{
-		var newObject = new ObjectType();
+		var newObject = new ObjectClass();
 		{
 			newObject.SetPropertiesWithSameNameFrom((object)currentObject);
 		}
@@ -745,37 +737,37 @@ public static class ObjectExtension
 	/// <summary>
 	/// 深拷贝。
 	/// </summary>
-	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
+	/// <typeparam name="ObjectClass">当前对象类型。</typeparam>
 	/// <param name="item">当前对象。</param>
 	/// <param name="propertyNamesExcepted">要排除的属性名称</param>
 	/// <param name="propertiesBindingFlags">要拷贝属性的绑定标志。</param>
 	/// <param name="toIsPropertyInfoOfObjectValidToGenerate">用于拷贝筛选属性的回调。</param>
 	/// <param name="propertyLayerNumberMax">深拷贝的层数，“-1”表示不限制层数。</param>
 	/// <returns>拥有相同属性的，克隆产生的新对象。</returns>
-	public static ObjectType CloneDeep<ObjectType>(
-		this ObjectType item,
-		string[]? propertyNamesExcepted = null,
-		BindingFlags propertiesBindingFlags = BindingFlags.Default,
-		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
-		int propertyLayerNumberMax = -1)
-		where ObjectType : new()
+	public static ObjectClass CloneDeep<ObjectClass>(
+	    this ObjectClass item,
+	    string[]? propertyNamesExcepted = null,
+	    BindingFlags propertiesBindingFlags = BindingFlags.Default,
+	    Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
+	    int propertyLayerNumberMax = -1)
+	    where ObjectClass : new()
 	{
-		var itemCloned = new ObjectType();
+		var itemCloned = new ObjectClass();
 		if (propertiesBindingFlags == BindingFlags.Default)
 		{
 			propertiesBindingFlags
-				= BindingFlags.Instance
-				| BindingFlags.Public
-				| BindingFlags.GetProperty
-				| BindingFlags.SetProperty;
+			    = BindingFlags.Instance
+			    | BindingFlags.Public
+			    | BindingFlags.GetProperty
+			    | BindingFlags.SetProperty;
 		}
 		var itemPropertyGetInfes = item.GetPropertyGetInfes(
-			1,
-			propertyNamesExcepted,
-			propertiesBindingFlags,
-			toIsPropertyInfoOfObjectValidToGenerate);
+		    1,
+		    propertyNamesExcepted,
+		    propertiesBindingFlags,
+		    toIsPropertyInfoOfObjectValidToGenerate);
 		if (itemPropertyGetInfes == null
-			|| itemPropertyGetInfes.Count < 1)
+		    || itemPropertyGetInfes.Count < 1)
 		{
 			return itemCloned;
 		}
@@ -796,408 +788,408 @@ public static class ObjectExtension
 		foreach (var objectItemPropertyGetInfo in itemPropertyGetInfes)
 		{
 			RecursionUtil.Enumerate<ItemPropertyGetInfo<object>>(
-				objectItemPropertyGetInfo,
-				(itemPropertyGetInfo) =>
-				{
-					var sourcePropertyValue = itemPropertyGetInfo.GetPropertyValue();
-					if (sourcePropertyValue == null)
-					{
-						return null;
-					}
+			    objectItemPropertyGetInfo,
+			    (itemPropertyGetInfo) =>
+			    {
+				    var sourcePropertyValue = itemPropertyGetInfo.GetPropertyValue();
+				    if (sourcePropertyValue == null)
+				    {
+					    return null;
+				    }
 
 
-					////////////////////////////////////////////////
-					// 避免递归引用，重复查询检查对象：
-					////////////////////////////////////////////////
-					if (sourcePropertyValueHadGetPropertyGetInfes.TryGetValue(
-						sourcePropertyValue,
-						out _))
-					{
-						return null;
-					}
-					// !!!
-					sourcePropertyValueHadGetPropertyGetInfes.Add(
-						sourcePropertyValue);
-					// !!!
+				    ////////////////////////////////////////////////
+				    // 避免递归引用，重复查询检查对象：
+				    ////////////////////////////////////////////////
+				    if (sourcePropertyValueHadGetPropertyGetInfes.TryGetValue(
+		    sourcePropertyValue,
+		    out _))
+				    {
+					    return null;
+				    }
+				    // !!!
+				    sourcePropertyValueHadGetPropertyGetInfes.Add(
+		    sourcePropertyValue);
+				    // !!!
 
 
-					////////////////////////////////////////////////
-					// 检查递归层级：
-					////////////////////////////////////////////////
-					var isSourcePropertyValueCollectionType = sourcePropertyValue
-					.GetType()
-					.IsAssignableTo(typeof(ICollection));
-					var itemPropertyGetInfesPropertyLayerNumber
-					= isSourcePropertyValueCollectionType
-					? itemPropertyGetInfo.PropertyLayerNumber
-					: itemPropertyGetInfo.PropertyLayerNumber + 1;
-					if (propertyLayerNumberMax >= 0
-					&& itemPropertyGetInfesPropertyLayerNumber > propertyLayerNumberMax)
-					{
-						return null;
-					}
+				    ////////////////////////////////////////////////
+				    // 检查递归层级：
+				    ////////////////////////////////////////////////
+				    var isSourcePropertyValueCollectionType = sourcePropertyValue
+		.GetType()
+		.IsAssignableTo(typeof(ICollection));
+				    var itemPropertyGetInfesPropertyLayerNumber
+		= isSourcePropertyValueCollectionType
+		? itemPropertyGetInfo.PropertyLayerNumber
+		: itemPropertyGetInfo.PropertyLayerNumber + 1;
+				    if (propertyLayerNumberMax >= 0
+		&& itemPropertyGetInfesPropertyLayerNumber > propertyLayerNumberMax)
+				    {
+					    return null;
+				    }
 
 
-					var nextSourcePropertyGetInfes = sourcePropertyValue
-					.GetPropertyGetInfes(
-						itemPropertyGetInfesPropertyLayerNumber,
-						propertyNamesExcepted,
-						propertiesBindingFlags,
-						toIsPropertyInfoOfObjectValidToGenerate);
-					{ }
-					return nextSourcePropertyGetInfes;
-				},
-				(sourcePropertyHostObjectGetInfo, sourcePropertyGetInfo) =>
-				{
-					////////////////////////////////////////////////
-					// 1/，确定当前属性的宿主对象：
-					////////////////////////////////////////////////
-					var clonedPropertyValueHostObject
-					= sourcePropertyHostObjectGetInfo != null
-					? sourcePropertyHostObjectGetInfo.PropertyValueCloned
-					: itemCloned;
+				    var nextSourcePropertyGetInfes = sourcePropertyValue
+		.GetPropertyGetInfes(
+		    itemPropertyGetInfesPropertyLayerNumber,
+		    propertyNamesExcepted,
+		    propertiesBindingFlags,
+		    toIsPropertyInfoOfObjectValidToGenerate);
+				    { }
+				    return nextSourcePropertyGetInfes;
+			    },
+			    (sourcePropertyHostObjectGetInfo, sourcePropertyGetInfo) =>
+			    {
+				    ////////////////////////////////////////////////
+				    // 1/，确定当前属性的宿主对象：
+				    ////////////////////////////////////////////////
+				    var clonedPropertyValueHostObject
+		= sourcePropertyHostObjectGetInfo != null
+		? sourcePropertyHostObjectGetInfo.PropertyValueCloned
+		: itemCloned;
 
 
-					////////////////////////////////////////////////
-					// 2/，克隆新值：
-					////////////////////////////////////////////////
-					object? clonedPropertyValue = null;
-					var sourcePropertyValue = sourcePropertyGetInfo.GetPropertyValue()!;
-					if (sourcePropertyValue == null)
-					{
-						return true;
-					}
-					switch (sourcePropertyGetInfo.PropertyRelation)
-					{
-						default:
-						case ItemPropertyRelation.Unknown:
-						case ItemPropertyRelation.ValueItemInIEnumerable:
-							{ }
-							break;
-						////////////////////////////////////////////////
-						// 当前属性，【与父对象的关系】为：属性关系。
-						////////////////////////////////////////////////
-						case ItemPropertyRelation.Property:
-							{
-								var sourcePropertyInfo = sourcePropertyGetInfo.PropertyInfo!;
-								// 当前属性，类型为：容器。
-								// !!!⚠
-								// !!!⚠ 注意这里一定是“容器（）”，而不能是“IEnumerable”，例子：string 类型。 ⚠!!!
-								// !!!⚠
-								if (sourcePropertyValue is ICollection sourceCollectionPropertyValue)
-								{
-									// 当前容器属性，类型为：数组类型。
-									if (sourceCollectionPropertyValue is Array sourceArrayPropertyValue)
-									{
-										////////////////////////////////////////////////
-										// 避免递归引用，重复创建对象：
-										////////////////////////////////////////////////
-										if (sourcePropertyValueHadCloned.TryGetValue(
-											sourcePropertyValue,
-											out clonedPropertyValue) != true)
-										{
-											clonedPropertyValue = Activator.CreateInstance(
-												sourceArrayPropertyValue.GetType(),
-												sourceArrayPropertyValue.Length);
-											// !!!
-											sourcePropertyValueHadCloned.Add(
-												sourcePropertyValue,
-												clonedPropertyValue);
-											// !!!
-										}
+				    ////////////////////////////////////////////////
+				    // 2/，克隆新值：
+				    ////////////////////////////////////////////////
+				    object? clonedPropertyValue = null;
+				    var sourcePropertyValue = sourcePropertyGetInfo.GetPropertyValue()!;
+				    if (sourcePropertyValue == null)
+				    {
+					    return true;
+				    }
+				    switch (sourcePropertyGetInfo.PropertyRelation)
+				    {
+					    default:
+					    case ItemPropertyRelation.Unknown:
+					    case ItemPropertyRelation.ValueItemInIEnumerable:
+						    { }
+						    break;
+					    ////////////////////////////////////////////////
+					    // 当前属性，【与父对象的关系】为：属性关系。
+					    ////////////////////////////////////////////////
+					    case ItemPropertyRelation.Property:
+						    {
+							    var sourcePropertyInfo = sourcePropertyGetInfo.PropertyInfo!;
+							    // 当前属性，类型为：容器。
+							    // !!!⚠
+							    // !!!⚠ 注意这里一定是“容器（）”，而不能是“IEnumerable”，例子：string 类型。 ⚠!!!
+							    // !!!⚠
+							    if (sourcePropertyValue is ICollection sourceCollectionPropertyValue)
+							    {
+								    // 当前容器属性，类型为：数组类型。
+								    if (sourceCollectionPropertyValue is Array sourceArrayPropertyValue)
+								    {
+									    ////////////////////////////////////////////////
+									    // 避免递归引用，重复创建对象：
+									    ////////////////////////////////////////////////
+									    if (sourcePropertyValueHadCloned.TryGetValue(
+							    sourcePropertyValue,
+							    out clonedPropertyValue) != true)
+									    {
+										    clonedPropertyValue = Activator.CreateInstance(
+								    sourceArrayPropertyValue.GetType(),
+								    sourceArrayPropertyValue.Length);
+										    // !!!
+										    sourcePropertyValueHadCloned.Add(
+								    sourcePropertyValue,
+								    clonedPropertyValue);
+										    // !!!
+									    }
 
 
-										////////////////////////////////////////////////
-										sourcePropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
-										////////////////////////////////////////////////
-										// !!! 向父对象，设置新的值。 !!!
-										sourcePropertyInfo.SetValue(
-											clonedPropertyValueHostObject,
-											clonedPropertyValue);
-										////////////////////////////////////////////////
-										if (sourceArrayPropertyValue.Length > 0)
-										{
-											var childItemType = sourceArrayPropertyValue.GetValue(0)!.GetType();
-											if (
-											// 值类型的数组，直接复制原始值即可：
-											childItemType.IsValueType
-											// 字符串元素的特殊处理：
-											|| childItemType.Equals(typeof(string)))
-											{
-												Array.Copy(
-													sourceArrayPropertyValue,
-													(Array)clonedPropertyValue!,
-													sourceArrayPropertyValue.Length);
-											}
-											// 引用类型的数组，需要递归克隆：
-											else
-											{
-												// ...
-											}
-										}
-									}
-									// 当前容器属性，类型为：列表类型。
-									else if (sourceCollectionPropertyValue is IList souceListPropertyValue)
-									{
-										////////////////////////////////////////////////
-										// 避免递归引用，重复创建对象：
-										////////////////////////////////////////////////
-										if (sourcePropertyValueHadCloned.TryGetValue(
-											sourcePropertyValue,
-											out clonedPropertyValue) != true)
-										{
-											clonedPropertyValue
-											= Activator.CreateInstance(
-												souceListPropertyValue.GetType());
-											// !!!
-											sourcePropertyValueHadCloned.Add(
-												sourcePropertyValue,
-												clonedPropertyValue);
-											// !!!
-										}
+									    ////////////////////////////////////////////////
+									    sourcePropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+									    ////////////////////////////////////////////////
+									    // !!! 向父对象，设置新的值。 !!!
+									    sourcePropertyInfo.SetValue(
+							    clonedPropertyValueHostObject,
+							    clonedPropertyValue);
+									    ////////////////////////////////////////////////
+									    if (sourceArrayPropertyValue.Length > 0)
+									    {
+										    var childItemType = sourceArrayPropertyValue.GetValue(0)!.GetType();
+										    if (
+								// 值类型的数组，直接复制原始值即可：
+								childItemType.IsValueType
+								// 字符串元素的特殊处理：
+								|| childItemType.Equals(typeof(string)))
+										    {
+											    Array.Copy(
+									    sourceArrayPropertyValue,
+									    (Array)clonedPropertyValue!,
+									    sourceArrayPropertyValue.Length);
+										    }
+										    // 引用类型的数组，需要递归克隆：
+										    else
+										    {
+											    // ...
+										    }
+									    }
+								    }
+								    // 当前容器属性，类型为：列表类型。
+								    else if (sourceCollectionPropertyValue is IList souceListPropertyValue)
+								    {
+									    ////////////////////////////////////////////////
+									    // 避免递归引用，重复创建对象：
+									    ////////////////////////////////////////////////
+									    if (sourcePropertyValueHadCloned.TryGetValue(
+							    sourcePropertyValue,
+							    out clonedPropertyValue) != true)
+									    {
+										    clonedPropertyValue
+								= Activator.CreateInstance(
+								    souceListPropertyValue.GetType());
+										    // !!!
+										    sourcePropertyValueHadCloned.Add(
+								    sourcePropertyValue,
+								    clonedPropertyValue);
+										    // !!!
+									    }
 
 
-										////////////////////////////////////////////////
-										sourcePropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
-										// !!! 向父对象，设置新的值。 !!!
-										sourcePropertyInfo.SetValue(
-											clonedPropertyValueHostObject,
-											clonedPropertyValue);
-										////////////////////////////////////////////////
-										var clonedListPropertyValue = (IList)clonedPropertyValue!;
-										if (souceListPropertyValue.Count > 0)
-										{
-											var childItemType = souceListPropertyValue[0]!.GetType();
-											// 值类型的数组，直接复制原始值即可：
-											if (childItemType.IsValueType)
-											{
-												foreach (var sourceChildItem in souceListPropertyValue)
-												{
-													// !!!
-													clonedListPropertyValue.Insert(
-														clonedListPropertyValue.Count,
-														sourceChildItem);
-													// !!!
-												}
-											}
-											// 引用类型的数组，需要递归克隆：
-											else
-											{
-												// ...
-											}
-										}
-									}
-									// 当前容器属性，类型为：字典类型。
-									else if (sourceCollectionPropertyValue is IDictionary sourceDictionaryPropertyValue)
-									{
-										////////////////////////////////////////////////
-										// 避免递归引用，重复创建对象：
-										////////////////////////////////////////////////
-										if (sourcePropertyValueHadCloned.TryGetValue(
-											sourcePropertyValue,
-											out clonedPropertyValue) != true)
-										{
-											clonedPropertyValue
-											= Activator.CreateInstance(
-												sourceDictionaryPropertyValue.GetType());
-											// !!!
-											sourcePropertyValueHadCloned.Add(
-												sourcePropertyValue,
-												clonedPropertyValue);
-											// !!!
-										}
+									    ////////////////////////////////////////////////
+									    sourcePropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+									    // !!! 向父对象，设置新的值。 !!!
+									    sourcePropertyInfo.SetValue(
+							    clonedPropertyValueHostObject,
+							    clonedPropertyValue);
+									    ////////////////////////////////////////////////
+									    var clonedListPropertyValue = (IList)clonedPropertyValue!;
+									    if (souceListPropertyValue.Count > 0)
+									    {
+										    var childItemType = souceListPropertyValue[0]!.GetType();
+										    // 值类型的数组，直接复制原始值即可：
+										    if (childItemType.IsValueType)
+										    {
+											    foreach (var sourceChildItem in souceListPropertyValue)
+											    {
+												    // !!!
+												    clonedListPropertyValue.Insert(
+										    clonedListPropertyValue.Count,
+										    sourceChildItem);
+												    // !!!
+											    }
+										    }
+										    // 引用类型的数组，需要递归克隆：
+										    else
+										    {
+											    // ...
+										    }
+									    }
+								    }
+								    // 当前容器属性，类型为：字典类型。
+								    else if (sourceCollectionPropertyValue is IDictionary sourceDictionaryPropertyValue)
+								    {
+									    ////////////////////////////////////////////////
+									    // 避免递归引用，重复创建对象：
+									    ////////////////////////////////////////////////
+									    if (sourcePropertyValueHadCloned.TryGetValue(
+							    sourcePropertyValue,
+							    out clonedPropertyValue) != true)
+									    {
+										    clonedPropertyValue
+								= Activator.CreateInstance(
+								    sourceDictionaryPropertyValue.GetType());
+										    // !!!
+										    sourcePropertyValueHadCloned.Add(
+								    sourcePropertyValue,
+								    clonedPropertyValue);
+										    // !!!
+									    }
 
 
-										////////////////////////////////////////////////
-										sourcePropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
-										// !!! 向父对象，设置新的值。 !!!
-										sourcePropertyInfo.SetValue(
-											clonedPropertyValueHostObject,
-											clonedPropertyValue);
-										////////////////////////////////////////////////
-										var clonedDictionaryPropertyValue = (IDictionary)clonedPropertyValue!;
-										var values = sourceDictionaryPropertyValue.Values;
-										if (values.Count > 0)
-										{
-											var isValueTypeValue = false;
-											foreach (var value in values)
-											{
-												var valueType = value.GetType();
-												if (valueType.IsValueType
-												|| valueType.Equals(typeof(string)))
-												{
-													isValueTypeValue = true;
-												}
-												break;
-											}
-											if (isValueTypeValue)
-											{
-												var keys = sourceDictionaryPropertyValue.Keys;
-												foreach (var key in keys)
-												{
-													// !!!
-													clonedDictionaryPropertyValue.Add(
-														key,
-														sourceDictionaryPropertyValue[key]);
-													// !!!
-												}
-											}
-										}
-									}
-									// 其他类型的容器，暂不处理。
-									else
-									{ }
-								}
-								// 当前属性，类型为：非容器，
-								// 即：值类型，或引用类型。
-								else
-								{
-									// 当前属性，类型为：值类型。
-									if (sourcePropertyInfo.PropertyType.IsValueType)
-									{
-										// !!! 直接使用原始值。 !!!
-										clonedPropertyValue = sourcePropertyValue;
-										// !!!
-									}
-									// 当前属性，类型为：引用类型。
-									else
-									{
-										////////////////////////////////////////////////
-										// 避免递归引用，重复创建对象：
-										////////////////////////////////////////////////
-										if (sourcePropertyValueHadCloned.TryGetValue(
-											sourcePropertyValue,
-											out clonedPropertyValue) != true)
-										{
-											// !!! 创建新的对象，并向父对象，设置新的值。 !!!
-											clonedPropertyValue = ObjectUtil.CreateObject(sourcePropertyValue);
-											// !!!
-											sourcePropertyValueHadCloned.Add(
-												sourcePropertyValue,
-												clonedPropertyValue);
-											// !!!
-										}
-									}
-									////////////////////////////////////////////////
-									sourcePropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
-									////////////////////////////////////////////////
-									// !!! 向父对象，设置新的值。 !!!
-									sourcePropertyInfo.SetValue(
-										clonedPropertyValueHostObject,
-										clonedPropertyValue);
-								}
-							}
-							break;
-						////////////////////////////////////////////////
-						// 当前属性，【与父对象的关系】为：容器关系。
-						////////////////////////////////////////////////
-						case ItemPropertyRelation.ObjectItemInIEnumerable:
-							{
-								if (sourcePropertyValue is object sourceObjectPropertyValue)
-								{
-									////////////////////////////////////////////////
-									// 避免递归引用，重复创建对象：
-									////////////////////////////////////////////////
-									if (sourcePropertyValueHadCloned.TryGetValue(
-										sourceObjectPropertyValue,
-										out clonedPropertyValue) != true)
-									{
-										// !!! 创建新的对象，并向父对象，设置新的值。 !!!
-										clonedPropertyValue = ObjectUtil.CreateObject(sourceObjectPropertyValue);
-										// !!!
-										sourcePropertyValueHadCloned.Add(
-											sourcePropertyValue,
-											clonedPropertyValue);
-										// !!!
-									}
+									    ////////////////////////////////////////////////
+									    sourcePropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+									    // !!! 向父对象，设置新的值。 !!!
+									    sourcePropertyInfo.SetValue(
+							    clonedPropertyValueHostObject,
+							    clonedPropertyValue);
+									    ////////////////////////////////////////////////
+									    var clonedDictionaryPropertyValue = (IDictionary)clonedPropertyValue!;
+									    var values = sourceDictionaryPropertyValue.Values;
+									    if (values.Count > 0)
+									    {
+										    var isValueTypeValue = false;
+										    foreach (var value in values)
+										    {
+											    var valueType = value.GetType();
+											    if (valueType.IsValueType
+									|| valueType.Equals(typeof(string)))
+											    {
+												    isValueTypeValue = true;
+											    }
+											    break;
+										    }
+										    if (isValueTypeValue)
+										    {
+											    var keys = sourceDictionaryPropertyValue.Keys;
+											    foreach (var key in keys)
+											    {
+												    // !!!
+												    clonedDictionaryPropertyValue.Add(
+										    key,
+										    sourceDictionaryPropertyValue[key]);
+												    // !!!
+											    }
+										    }
+									    }
+								    }
+								    // 其他类型的容器，暂不处理。
+								    else
+								    { }
+							    }
+							    // 当前属性，类型为：非容器，
+							    // 即：值类型，或引用类型。
+							    else
+							    {
+								    // 当前属性，类型为：值类型。
+								    if (sourcePropertyInfo.PropertyType.IsValueType)
+								    {
+									    // !!! 直接使用原始值。 !!!
+									    clonedPropertyValue = sourcePropertyValue;
+									    // !!!
+								    }
+								    // 当前属性，类型为：引用类型。
+								    else
+								    {
+									    ////////////////////////////////////////////////
+									    // 避免递归引用，重复创建对象：
+									    ////////////////////////////////////////////////
+									    if (sourcePropertyValueHadCloned.TryGetValue(
+							    sourcePropertyValue,
+							    out clonedPropertyValue) != true)
+									    {
+										    // !!! 创建新的对象，并向父对象，设置新的值。 !!!
+										    clonedPropertyValue = ObjectUtil.CreateObject(sourcePropertyValue);
+										    // !!!
+										    sourcePropertyValueHadCloned.Add(
+								    sourcePropertyValue,
+								    clonedPropertyValue);
+										    // !!!
+									    }
+								    }
+								    ////////////////////////////////////////////////
+								    sourcePropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+								    ////////////////////////////////////////////////
+								    // !!! 向父对象，设置新的值。 !!!
+								    sourcePropertyInfo.SetValue(
+						    clonedPropertyValueHostObject,
+						    clonedPropertyValue);
+							    }
+						    }
+						    break;
+					    ////////////////////////////////////////////////
+					    // 当前属性，【与父对象的关系】为：容器关系。
+					    ////////////////////////////////////////////////
+					    case ItemPropertyRelation.ObjectItemInIEnumerable:
+						    {
+							    if (sourcePropertyValue is object sourceObjectPropertyValue)
+							    {
+								    ////////////////////////////////////////////////
+								    // 避免递归引用，重复创建对象：
+								    ////////////////////////////////////////////////
+								    if (sourcePropertyValueHadCloned.TryGetValue(
+						    sourceObjectPropertyValue,
+						    out clonedPropertyValue) != true)
+								    {
+									    // !!! 创建新的对象，并向父对象，设置新的值。 !!!
+									    clonedPropertyValue = ObjectUtil.CreateObject(sourceObjectPropertyValue);
+									    // !!!
+									    sourcePropertyValueHadCloned.Add(
+							    sourcePropertyValue,
+							    clonedPropertyValue);
+									    // !!!
+								    }
 
 
-									////////////////////////////////////////////////
-									sourcePropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
-									////////////////////////////////////////////////
+								    ////////////////////////////////////////////////
+								    sourcePropertyGetInfo.PropertyValueCloned = clonedPropertyValue;
+								    ////////////////////////////////////////////////
 
 
-									// 当前容器属性，类型为：数组类型。
-									if (clonedPropertyValueHostObject is Array clonedPropertyValueArrayHostObject)
-									{
-										var clonedPropertyValue_Index = sourcePropertyGetInfo.ItemInCollection_Index;
-										if (clonedPropertyValue_Index < clonedPropertyValueArrayHostObject.Length)
-										{
-											// !!!
-											clonedPropertyValueArrayHostObject.SetValue(
-												clonedPropertyValue,
-												clonedPropertyValue_Index);
-											// !!!
-										}
-									}
-									// 当前容器属性，类型为：列表类型。
-									else if (clonedPropertyValueHostObject is IList clonedPropertyValueListHostObject)
-									{
-										var clonedPropertyValue_Index = sourcePropertyGetInfo.ItemInCollection_Index;
-										//if (clonedPropertyValue_Index < clonedPropertyValueListHostObject.Count)
-										{
-											// !!!
-											clonedPropertyValueListHostObject.Add(clonedPropertyValue);
-											// !!!
-										}
-									}
-									// 当前容器属性，类型为：字典类型。
-									else if (clonedPropertyValueHostObject is IDictionary clonedPropertyValueDictionaryHostObject)
-									{
-										var clonedPropertyValue_Key = sourcePropertyGetInfo.ItemInCollection_Key;
-										if (clonedPropertyValue_Key != null)
-										{
-											// !!!
-											clonedPropertyValueDictionaryHostObject.Add(
-												clonedPropertyValue_Key,
-												clonedPropertyValue);
-											// !!!
-										}
-									}
-								}
-							}
-							break;
-					}
-					return true;
-				});
+								    // 当前容器属性，类型为：数组类型。
+								    if (clonedPropertyValueHostObject is Array clonedPropertyValueArrayHostObject)
+								    {
+									    var clonedPropertyValue_Index = sourcePropertyGetInfo.ItemInCollection_Index;
+									    if (clonedPropertyValue_Index < clonedPropertyValueArrayHostObject.Length)
+									    {
+										    // !!!
+										    clonedPropertyValueArrayHostObject.SetValue(
+								    clonedPropertyValue,
+								    clonedPropertyValue_Index);
+										    // !!!
+									    }
+								    }
+								    // 当前容器属性，类型为：列表类型。
+								    else if (clonedPropertyValueHostObject is IList clonedPropertyValueListHostObject)
+								    {
+									    var clonedPropertyValue_Index = sourcePropertyGetInfo.ItemInCollection_Index;
+									    //if (clonedPropertyValue_Index < clonedPropertyValueListHostObject.Count)
+									    {
+										    // !!!
+										    clonedPropertyValueListHostObject.Add(clonedPropertyValue);
+										    // !!!
+									    }
+								    }
+								    // 当前容器属性，类型为：字典类型。
+								    else if (clonedPropertyValueHostObject is IDictionary clonedPropertyValueDictionaryHostObject)
+								    {
+									    var clonedPropertyValue_Key = sourcePropertyGetInfo.ItemInCollection_Key;
+									    if (clonedPropertyValue_Key != null)
+									    {
+										    // !!!
+										    clonedPropertyValueDictionaryHostObject.Add(
+								    clonedPropertyValue_Key,
+								    clonedPropertyValue);
+										    // !!!
+									    }
+								    }
+							    }
+						    }
+						    break;
+				    }
+				    return true;
+			    });
 		}
 		return itemCloned;
 	}
 
-	public static ObjectType Clone<ObjectType>(
-		this ObjectType currentObject)
-		where ObjectType
-		: class, new()
+	public static ObjectClass Clone<ObjectClass>(
+	    this ObjectClass currentObject)
+	    where ObjectClass
+	    : class, new()
 	{
 		return CloneShallow(currentObject);
 	}
 
-	public static ObjectType Clone<ObjectType>(
-		this ObjectType currentObject,
-		bool isDeepClone,
-		string[]? propertyNamesExcepted = null,
-		BindingFlags propertiesBindingFlags = BindingFlags.Default,
-		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
-		int propertyLayerNumberMax = -1)
-		where ObjectType
-		: class, new()
+	public static ObjectClass Clone<ObjectClass>(
+	    this ObjectClass currentObject,
+	    bool isDeepClone,
+	    string[]? propertyNamesExcepted = null,
+	    BindingFlags propertiesBindingFlags = BindingFlags.Default,
+	    Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
+	    int propertyLayerNumberMax = -1)
+	    where ObjectClass
+	    : class, new()
 	{
 		if (isDeepClone == false)
 		{
 			return CloneShallow(currentObject);
 		}
 		return CloneDeep(
-			currentObject,
-			propertyNamesExcepted,
-			propertiesBindingFlags,
-			toIsPropertyInfoOfObjectValidToGenerate,
-			propertyLayerNumberMax);
+		    currentObject,
+		    propertyNamesExcepted,
+		    propertiesBindingFlags,
+		    toIsPropertyInfoOfObjectValidToGenerate,
+		    propertyLayerNumberMax);
 	}
 
-	public static ObjectType[] CloneItemsToArray<ObjectType>(this IEnumerable<ObjectType> objects)
-		where ObjectType : class, new()
+	public static ObjectClass[] CloneItemsToArray<ObjectClass>(this IEnumerable<ObjectClass> objects)
+	    where ObjectClass : class, new()
 	{
-		var objectArray = new ObjectType[objects.GetCount()];
+		var objectArray = new ObjectClass[objects.GetCount()];
 		var objectIndex = 0;
 		foreach (var obj in objects)
 		{
@@ -1210,13 +1202,42 @@ public static class ObjectExtension
 		return objectArray;
 	}
 
-	public static List<ObjectType> CloneItemsToList<ObjectType>(this IEnumerable<ObjectType> objects)
-		where ObjectType : class, new()
+	public static ObjectClass[] CloneItemsToArray<ObjectClass>(
+		this IEnumerable<ObjectClass> objects, Func<ObjectClass, ObjectClass> toUpdateItem)
+		where ObjectClass : class, new()
 	{
-		var objectList = new List<ObjectType>();
+		var objectArray = new ObjectClass[objects.GetCount()];
+		var objectIndex = 0;
+		foreach (var obj in objects)
+		{
+			if (objectIndex < objectArray.Length)
+			{
+				objectArray[objectIndex] = toUpdateItem(obj.CloneShallow());
+			}
+			objectIndex++;
+		}
+		return objectArray;
+	}
+
+	public static List<ObjectClass> CloneItemsToList<ObjectClass>(this IEnumerable<ObjectClass> objects)
+	    where ObjectClass : class, new()
+	{
+		var objectList = new List<ObjectClass>();
 		foreach (var obj in objects)
 		{
 			objectList.Add(obj.CloneShallow());
+		}
+		return objectList;
+	}
+
+	public static List<ObjectClass> CloneItemsToList<ObjectClass>(
+		this IEnumerable<ObjectClass> objects, Func<ObjectClass, ObjectClass> toUpdateItem)
+	    where ObjectClass : class, new()
+	{
+		var objectList = new List<ObjectClass>();
+		foreach (var obj in objects)
+		{
+			objectList.Add(toUpdateItem(obj.CloneShallow()));
 		}
 		return objectList;
 	}
@@ -1229,9 +1250,9 @@ public static class ObjectExtension
 	/// <param name="keyValueByteSeparator">键值间的分隔字节。</param>
 	/// <returns>如果任意对象是基本数据类型，则将基本类型数据转为字节数组。</returns>
 	public static byte[]? ConvertBaseValueToBytes(
-		object? baseValue,
-		byte itemsByteSeparator,
-		byte keyValueByteSeparator)
+	    object? baseValue,
+	    byte itemsByteSeparator,
+	    byte keyValueByteSeparator)
 	{
 		if (baseValue == null)
 		{
@@ -1261,7 +1282,7 @@ public static class ObjectExtension
 				{
 					var valueType = value.GetType();
 					if (valueType.IsValueType != true
-						&& valueType.Equals(typeof(string)) != true)
+					    && valueType.Equals(typeof(string)) != true)
 					{
 						return null;
 					}
@@ -1274,9 +1295,9 @@ public static class ObjectExtension
 				foreach (var key in keys)
 				{
 					var keyBytes = ConvertBaseValueToBytes(
-						key,
-						itemsByteSeparator,
-						keyValueByteSeparator);
+					    key,
+					    itemsByteSeparator,
+					    keyValueByteSeparator);
 					if (keyBytes != null)
 					{
 						// !!!
@@ -1292,9 +1313,9 @@ public static class ObjectExtension
 					if (value != null)
 					{
 						var childItemBytes = ConvertBaseValueToBytes(
-							value,
-							itemsByteSeparator,
-							keyValueByteSeparator)
+						    value,
+						    itemsByteSeparator,
+						    keyValueByteSeparator)
 						?? throw new Exception("将基础类型值（字典）转为字节数组失败，意外的错误。");
 						// !!!
 						binaryWriter.Write(childItemBytes);
@@ -1317,7 +1338,7 @@ public static class ObjectExtension
 				var firstItem = itemsEnumerator.Current;
 				var itemType = firstItem.GetType();
 				if (itemType.IsValueType != true
-					&& itemType == typeof(string) != true)
+				    && itemType == typeof(string) != true)
 				{
 					return null;
 				}
@@ -1327,11 +1348,11 @@ public static class ObjectExtension
 				foreach (var item in items)
 				{
 					var itemBytes
-						= ConvertBaseValueToBytes(
-							item,
-							itemsByteSeparator,
-							keyValueByteSeparator)
-						?? throw new Exception("将基础类型值（集合）转为字节数组失败，意外的错误。");
+					    = ConvertBaseValueToBytes(
+					    item,
+					    itemsByteSeparator,
+					    keyValueByteSeparator)
+					    ?? throw new Exception("将基础类型值（集合）转为字节数组失败，意外的错误。");
 					// !!!
 					binaryWriter.Write(itemBytes);
 					binaryWriter.Write(itemsByteSeparator);
@@ -1487,15 +1508,15 @@ public static class ObjectExtension
 	/// <param name="keyValueByteSeparator">键值间的分隔字节。</param>
 	/// <returns>返回由当前对象，所有值类型属性生成的字节数组。</returns>
 	public static byte[] ToBytes(
-		this object? objectItem,
-		string[]? propertyNamesExcepted = null,
-		bool isGetPropertyInfesRecursivly = false,
-		BindingFlags propertiesBindingFlags = BindingFlags.Default,
-		Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
-		int propertyLayerNumberMax = -1,
-		byte propertyByteSeparator = 0,
-		byte itemsByteSeparator = 0,
-		byte keyValueByteSeparator = 0)
+	    this object? objectItem,
+	    string[]? propertyNamesExcepted = null,
+	    bool isGetPropertyInfesRecursivly = false,
+	    BindingFlags propertiesBindingFlags = BindingFlags.Default,
+	    Func<object, PropertyInfo, bool>? toIsPropertyInfoOfObjectValidToGenerate = null,
+	    int propertyLayerNumberMax = -1,
+	    byte propertyByteSeparator = 0,
+	    byte itemsByteSeparator = 0,
+	    byte keyValueByteSeparator = 0)
 	{
 		if (objectItem == null)
 		{
@@ -1507,18 +1528,18 @@ public static class ObjectExtension
 		////////////////////////////////////////////////
 
 		var objectItemPropertyGetInfes = objectItem.GetPropertyGetInfes(
-			1,
-			propertyNamesExcepted,
-			propertiesBindingFlags,
-			toIsPropertyInfoOfObjectValidToGenerate);
+		    1,
+		    propertyNamesExcepted,
+		    propertiesBindingFlags,
+		    toIsPropertyInfoOfObjectValidToGenerate);
 		if (objectItemPropertyGetInfes == null
-			|| objectItemPropertyGetInfes.Count < 1)
+		    || objectItemPropertyGetInfes.Count < 1)
 		{
 			return ConvertBaseValueToBytes(
-				objectItem,
-				itemsByteSeparator,
-				keyValueByteSeparator)
-				?? [];
+			    objectItem,
+			    itemsByteSeparator,
+			    keyValueByteSeparator)
+			    ?? [];
 		}
 		if (propertyLayerNumberMax == 0)
 		{
@@ -1533,9 +1554,9 @@ public static class ObjectExtension
 			{
 				var itemPropertyValue = objectItemPropertyGetInfo.GetPropertyValue();
 				var itemPropertyValueBytes = ConvertBaseValueToBytes(
-					itemPropertyValue,
-					itemsByteSeparator,
-					keyValueByteSeparator);
+				    itemPropertyValue,
+				    itemsByteSeparator,
+				    keyValueByteSeparator);
 				if (itemPropertyValueBytes != null)
 				{
 					// !!!
@@ -1554,74 +1575,74 @@ public static class ObjectExtension
 		foreach (var objectItemPropertyGetInfo in objectItemPropertyGetInfes)
 		{
 			RecursionUtil.Enumerate<ItemPropertyGetInfo<object>>(
-				objectItemPropertyGetInfo,
-				(itemPropertyGetInfo) =>
-				{
-					var itemPropertyValue = itemPropertyGetInfo.GetPropertyValue();
-					if (itemPropertyValue == null)
-					{
-						return null;
-					}
-					var isItemPropertyValueICollection = itemPropertyValue
-					.GetType()
-					.IsAssignableTo(typeof(ICollection));
-					var itemPropertyGetInfesPropertyLayerNumber
-					= isItemPropertyValueICollection
-					? itemPropertyGetInfo.PropertyLayerNumber
-					: itemPropertyGetInfo.PropertyLayerNumber + 1;
+			    objectItemPropertyGetInfo,
+			    (itemPropertyGetInfo) =>
+			    {
+				    var itemPropertyValue = itemPropertyGetInfo.GetPropertyValue();
+				    if (itemPropertyValue == null)
+				    {
+					    return null;
+				    }
+				    var isItemPropertyValueICollection = itemPropertyValue
+		.GetType()
+		.IsAssignableTo(typeof(ICollection));
+				    var itemPropertyGetInfesPropertyLayerNumber
+		= isItemPropertyValueICollection
+		? itemPropertyGetInfo.PropertyLayerNumber
+		: itemPropertyGetInfo.PropertyLayerNumber + 1;
 
-					if (propertyLayerNumberMax >= 0
-					&& itemPropertyGetInfesPropertyLayerNumber > propertyLayerNumberMax)
-					{
-						return null;
-					}
+				    if (propertyLayerNumberMax >= 0
+		&& itemPropertyGetInfesPropertyLayerNumber > propertyLayerNumberMax)
+				    {
+					    return null;
+				    }
 
-					var itemPropertyGetInfes
-					= itemPropertyValue
-					.GetPropertyGetInfes(
-						itemPropertyGetInfesPropertyLayerNumber,
-						propertyNamesExcepted,
-						propertiesBindingFlags,
-						toIsPropertyInfoOfObjectValidToGenerate);
-					{ }
-					return itemPropertyGetInfes;
-				},
-				(parentItemPropertyGetInfo, itemPropertyGetInfo) =>
-				{
-					var itemPropertyValue
-					= itemPropertyGetInfo.GetPropertyValue();
-					// 字典元素处理：
-					if (itemPropertyGetInfo.ItemInCollection_Key != null)
-					{
-						var itemPropertyKeyBytes = ConvertBaseValueToBytes(
-							itemPropertyGetInfo.ItemInCollection_Key,
-							itemsByteSeparator,
-							keyValueByteSeparator);
-						if (itemPropertyKeyBytes != null)
-						{
-							// !!!
-							binaryWriter.Write(itemPropertyKeyBytes);
-							// !!!
-						}
-					}
+				    var itemPropertyGetInfes
+		= itemPropertyValue
+		.GetPropertyGetInfes(
+		    itemPropertyGetInfesPropertyLayerNumber,
+		    propertyNamesExcepted,
+		    propertiesBindingFlags,
+		    toIsPropertyInfoOfObjectValidToGenerate);
+				    { }
+				    return itemPropertyGetInfes;
+			    },
+			    (parentItemPropertyGetInfo, itemPropertyGetInfo) =>
+			    {
+				    var itemPropertyValue
+		= itemPropertyGetInfo.GetPropertyValue();
+				    // 字典元素处理：
+				    if (itemPropertyGetInfo.ItemInCollection_Key != null)
+				    {
+					    var itemPropertyKeyBytes = ConvertBaseValueToBytes(
+			    itemPropertyGetInfo.ItemInCollection_Key,
+			    itemsByteSeparator,
+			    keyValueByteSeparator);
+					    if (itemPropertyKeyBytes != null)
+					    {
+						    // !!!
+						    binaryWriter.Write(itemPropertyKeyBytes);
+						    // !!!
+					    }
+				    }
 
-					// !!!
-					binaryWriter.Write(keyValueByteSeparator);
-					// !!!
+				    // !!!
+				    binaryWriter.Write(keyValueByteSeparator);
+				    // !!!
 
-					var itemPropertyValueBytes = ConvertBaseValueToBytes(
-							itemPropertyValue,
-							itemsByteSeparator,
-							keyValueByteSeparator);
-					if (itemPropertyValueBytes != null)
-					{
-						// !!!
-						binaryWriter.Write(itemPropertyValueBytes);
-						binaryWriter.Write(propertyByteSeparator);
-						// !!!
-					}
-					return true;
-				});
+				    var itemPropertyValueBytes = ConvertBaseValueToBytes(
+		    itemPropertyValue,
+		    itemsByteSeparator,
+		    keyValueByteSeparator);
+				    if (itemPropertyValueBytes != null)
+				    {
+					    // !!!
+					    binaryWriter.Write(itemPropertyValueBytes);
+					    binaryWriter.Write(propertyByteSeparator);
+					    // !!!
+				    }
+				    return true;
+			    });
 		}
 		objectItemBytes = memoryStream.ToArray();
 		{ }
@@ -1632,16 +1653,16 @@ public static class ObjectExtension
 	/// <summary>
 	/// 将当前对象序列化为Json字符串。
 	/// </summary>
-	/// <typeparam name="ObjectType">当前对象类型。</typeparam>
+	/// <typeparam name="ObjectClass">当前对象类型。</typeparam>
 	/// <param name="item">当前对象。</param>
 	/// <returns>对象序列化产生的Json字符串。</returns>
-	public static string ToJsonString<ObjectType>(
-		this ObjectType item,
-		JsonSerializerOptions? jsonSerializerOptions = null)
+	public static string ToJsonString<ObjectClass>(
+	    this ObjectClass item,
+	    JsonSerializerOptions? jsonSerializerOptions = null)
 	{
 		var jsonString = StringUtil.StringByJsonSerializeObject(
-			item,
-			jsonSerializerOptions);
+		    item,
+		    jsonSerializerOptions);
 		{ }
 		return jsonString;
 	}

@@ -16,7 +16,7 @@ public class ShellUtil
 	public static List<string> RunCommand(string cmd)
 	{
 		if (cmd == null
-			|| cmd.Length < 1)
+		    || cmd.Length < 1)
 		{
 			throw new ApplicationException("无法创建Shell进程。");
 		}
@@ -33,9 +33,9 @@ public class ShellUtil
 		}
 
 		var processStartInfo
-			= applicationRunParams?.Length > 0
-			? new ProcessStartInfo(applicationFileName, applicationRunParams)
-			: new ProcessStartInfo(applicationFileName);
+		    = applicationRunParams?.Length > 0
+		    ? new ProcessStartInfo(applicationFileName, applicationRunParams)
+		    : new ProcessStartInfo(applicationFileName);
 		{
 			processStartInfo.UseShellExecute = false;
 			processStartInfo.CreateNoWindow = false;
@@ -43,7 +43,7 @@ public class ShellUtil
 			processStartInfo.RedirectStandardInput = true;
 			processStartInfo.RedirectStandardOutput = true;
 		}
-		;
+	    ;
 		var process = Process.Start(processStartInfo) ?? throw new ApplicationException("无法创建Shell进程。");
 		using var standardOutput = process.StandardOutput;
 		var stringsProcessOutput = new List<string>();

@@ -16,12 +16,12 @@ namespace BaoXia.Utils.Extensions
 		#region “GET”相关方法	
 
 		public static async Task<byte[]?> DownloadBytesWithQueryParamsAsync(
-			this HttpClient httpClient,
-			string requestUri,
-			Dictionary<string, string?>? queryParams,
-			Dictionary<string, string?>? headers,
-			Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Dictionary<string, string?>? queryParams,
+		    Dictionary<string, string?>? headers,
+		    Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
+		    CancellationToken cancellationToken = default)
 		{
 			if (httpClient == null)
 			{
@@ -44,8 +44,8 @@ namespace BaoXia.Utils.Extensions
 					if (headerKey?.Length > 0)
 					{
 						requestMessage.Headers.TryAddWithoutValidation(
-							headerKey,
-							headerKeyValue.Value);
+						    headerKey,
+						    headerKeyValue.Value);
 					}
 				}
 			}
@@ -64,23 +64,23 @@ namespace BaoXia.Utils.Extensions
 			}
 
 			return await responseContent.ReadAsBytesWithProgressActionAsync(
-				toReceiveDownloadProgress,
-				cancellationToken);
+			    toReceiveDownloadProgress,
+			    cancellationToken);
 		}
 
 		public static async Task<byte[]?> DownloadBytesAsync(
-			this HttpClient httpClient,
-			string requestUri,
-			Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
+		    CancellationToken cancellationToken = default)
 		{
 			return await HttpClientDownloadExtension.DownloadBytesWithQueryParamsAsync(
-				httpClient,
-				requestUri,
-				null,
-				null,
-				toReceiveDownloadProgress,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    null,
+			    null,
+			    toReceiveDownloadProgress,
+			    cancellationToken);
 		}
 
 		#endregion
@@ -93,13 +93,13 @@ namespace BaoXia.Utils.Extensions
 		#region “POST”相关方法	
 
 		public static async Task<byte[]?> DownloadBytesByPostWithHeadersAsync(
-			this HttpClient httpClient,
-			string requestUri,
-			Dictionary<string, string?>? headers,
-			string requestBody,
-			Encoding? requestBodyEncoding,
-			Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Dictionary<string, string?>? headers,
+		    string requestBody,
+		    Encoding? requestBodyEncoding,
+		    Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
+		    CancellationToken cancellationToken = default)
 		{
 			if (httpClient == null)
 			{
@@ -116,8 +116,8 @@ namespace BaoXia.Utils.Extensions
 					if (headerKey?.Length > 0)
 					{
 						requestMessage.Headers.TryAddWithoutValidation(
-							headerKey,
-							headerKeyValue.Value);
+						    headerKey,
+						    headerKeyValue.Value);
 					}
 				}
 			}
@@ -147,34 +147,34 @@ namespace BaoXia.Utils.Extensions
 			}
 
 			return await responseContent.ReadAsBytesWithProgressActionAsync(
-				toReceiveDownloadProgress,
-				cancellationToken);
+			    toReceiveDownloadProgress,
+			    cancellationToken);
 		}
 
 		public static async Task<byte[]?> DownloadBytesByPostAsync(
-			this HttpClient httpClient,
-			string requestUri,
-			string requestBody,
-			Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    string requestBody,
+		    Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
+		    CancellationToken cancellationToken = default)
 		{
 			return await HttpClientDownloadExtension.DownloadBytesByPostWithHeadersAsync(
-				httpClient,
-				requestUri,
-				null,
-				requestBody,
-				null,
-				toReceiveDownloadProgress,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    null,
+			    requestBody,
+			    null,
+			    toReceiveDownloadProgress,
+			    cancellationToken);
 		}
 
 		public static async Task<byte[]?> DownloadBytesByPostFormUrlEncodedWithHeadersAsync(
-			this HttpClient httpClient,
-			string requestUri,
-			Dictionary<string, string?>? headers,
-			Dictionary<string, string> formUrlEncoded,
-			Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Dictionary<string, string?>? headers,
+		    Dictionary<string, string> formUrlEncoded,
+		    Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
+		    CancellationToken cancellationToken = default)
 		{
 			if (httpClient == null)
 			{
@@ -191,8 +191,8 @@ namespace BaoXia.Utils.Extensions
 					if (headerKey?.Length > 0)
 					{
 						requestMessage.Headers.TryAddWithoutValidation(
-							headerKey,
-							headerKeyValue.Value);
+						    headerKey,
+						    headerKeyValue.Value);
 					}
 				}
 			}
@@ -217,33 +217,33 @@ namespace BaoXia.Utils.Extensions
 			}
 
 			return await responseContent.ReadAsBytesWithProgressActionAsync(
-				toReceiveDownloadProgress,
-				cancellationToken);
+			    toReceiveDownloadProgress,
+			    cancellationToken);
 		}
 
 		public static async Task<byte[]?> DownloadBytesByPostFormUrlEncodedAsync(
-			this HttpClient httpClient,
-			string requestUri,
-			Dictionary<string, string> formUrlEncoded,
-			Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Dictionary<string, string> formUrlEncoded,
+		    Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
+		    CancellationToken cancellationToken = default)
 		{
 			return await HttpClientDownloadExtension.DownloadBytesByPostFormUrlEncodedWithHeadersAsync(
-				httpClient,
-				requestUri,
-				null,
-				formUrlEncoded,
-				toReceiveDownloadProgress,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    null,
+			    formUrlEncoded,
+			    toReceiveDownloadProgress,
+			    cancellationToken);
 		}
 
 		public static async Task<byte[]?> DownloadBytesByPostMultipartFormWithHeadersAsync(
-			this HttpClient httpClient,
-			string requestUri,
-			Dictionary<string, string?>? headers,
-			Dictionary<string, string> multipartFormData,
-			Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Dictionary<string, string?>? headers,
+		    Dictionary<string, string> multipartFormData,
+		    Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
+		    CancellationToken cancellationToken = default)
 		{
 			if (httpClient == null)
 			{
@@ -260,8 +260,8 @@ namespace BaoXia.Utils.Extensions
 					if (headerKey?.Length > 0)
 					{
 						requestMessage.Headers.TryAddWithoutValidation(
-							headerKey,
-							headerKeyValue.Value);
+						    headerKey,
+						    headerKeyValue.Value);
 					}
 				}
 			}
@@ -288,24 +288,24 @@ namespace BaoXia.Utils.Extensions
 			}
 
 			return await responseContent.ReadAsBytesWithProgressActionAsync(
-				toReceiveDownloadProgress,
-				cancellationToken);
+			    toReceiveDownloadProgress,
+			    cancellationToken);
 		}
 
 		public static async Task<byte[]?> DownloadBytesByPostMultipartForm(
-			this HttpClient httpClient,
-			string requestUri,
-			Dictionary<string, string> multipartFormData,
-			Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string requestUri,
+		    Dictionary<string, string> multipartFormData,
+		    Action<string?, long, float, byte[]?>? toReceiveDownloadProgress = null,
+		    CancellationToken cancellationToken = default)
 		{
 			return await HttpClientDownloadExtension.DownloadBytesByPostMultipartFormWithHeadersAsync(
-				httpClient,
-				requestUri,
-				null,
-				multipartFormData,
-				toReceiveDownloadProgress,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    null,
+			    multipartFormData,
+			    toReceiveDownloadProgress,
+			    cancellationToken);
 		}
 
 		#endregion

@@ -59,9 +59,9 @@ public class EnumUtil
 	public static string NameOf<T>(T enumValue) where T : Enum
 	{
 		return Enum.GetName(
-			enumType: enumValue.GetType(),
-			enumValue)
-			?? enumValue.ToString();
+		    enumType: enumValue.GetType(),
+		    enumValue)
+		    ?? enumValue.ToString();
 	}
 
 	/// <summary>

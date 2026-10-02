@@ -21,9 +21,9 @@ public static class DictionaryExtension
 	/// <param name="key">指定的健字段。</param>
 	/// <param name="value">指定的值字段。</param>
 	public static void AddOrSet<KeyType, ValueType>(
-		this IDictionary<KeyType, ValueType> dictionary,
-		KeyType key,
-		ValueType value) where KeyType : notnull
+	    this IDictionary<KeyType, ValueType> dictionary,
+	    KeyType key,
+	    ValueType value) where KeyType : notnull
 	{
 		if (dictionary.TryAdd(key, value) != true)
 		{
@@ -33,7 +33,7 @@ public static class DictionaryExtension
 	}
 
 	public static string ToUriQuery(
-		this IDictionary<string, string?> queryParams)
+	    this IDictionary<string, string?> queryParams)
 	{
 		string uriQuery = "";
 		foreach (var kvp in queryParams)
@@ -45,8 +45,8 @@ public static class DictionaryExtension
 			}
 
 			var queryItem
-				= key.StringByEncodeInUriParam()
-				+ "=";
+			    = key.StringByEncodeInUriParam()
+			    + "=";
 			var value = kvp.Value;
 			if (value?.Length > 0)
 			{

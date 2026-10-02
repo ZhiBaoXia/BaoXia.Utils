@@ -56,10 +56,10 @@ namespace BaoXia.Utils
 			#region 自身实现
 
 			public FunctionExpressionInfo(
-				string name,
-				string? paramsContainerBeginSymbol = FunctionExpressionInfo.ParamsContainerBeginSymbolDefault,
-				string? paramsContainerEndSymbol = FunctionExpressionInfo.ParamsContainerEndSymbolDefault,
-				string? paramsSeparateDefault = FunctionExpressionInfo.ParamsSeparateDefault)
+			    string name,
+			    string? paramsContainerBeginSymbol = FunctionExpressionInfo.ParamsContainerBeginSymbolDefault,
+			    string? paramsContainerEndSymbol = FunctionExpressionInfo.ParamsContainerEndSymbolDefault,
+			    string? paramsSeparateDefault = FunctionExpressionInfo.ParamsSeparateDefault)
 			{
 				this.Name = name;
 				this.ParamsContainerBeginSymbol = paramsContainerBeginSymbol;
@@ -68,10 +68,10 @@ namespace BaoXia.Utils
 			}
 
 			public FunctionExpressionInfo(
-				FunctionExpressionInfo functionDefine,
-				string[]? invokeParams,
-				int beginCharIndexInOriginString,
-				int endCharIndexInOriginString)
+			    FunctionExpressionInfo functionDefine,
+			    string[]? invokeParams,
+			    int beginCharIndexInOriginString,
+			    int endCharIndexInOriginString)
 			{
 				this.Name = functionDefine.Name;
 
@@ -89,14 +89,14 @@ namespace BaoXia.Utils
 			{
 				var functionExpressionParams = this.Params;
 				if (functionExpressionParams == null
-					|| functionExpressionParams.Length < 1)
+				    || functionExpressionParams.Length < 1)
 				{
 					return null;
 				}
 
 				var firstParam = functionExpressionParams[0];
 				if (firstParam != null
-					&& isParamNeedTrim)
+				    && isParamNeedTrim)
 				{
 					firstParam = firstParam.Trim();
 				}
@@ -146,12 +146,12 @@ namespace BaoXia.Utils
 		#region 类方法
 
 		public static List<FunctionExpressionInfo>? CreateFunctionExpressionsByParseString(
-			string? functionExpressionString,
-			ICollection<FunctionExpressionInfo>? functionDefines,
-			StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+		    string? functionExpressionString,
+		    ICollection<FunctionExpressionInfo>? functionDefines,
+		    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 		{
 			if (functionExpressionString == null
-				|| functionExpressionString.Length < 1)
+			    || functionExpressionString.Length < 1)
 			{
 				return null;
 			}
@@ -172,71 +172,71 @@ namespace BaoXia.Utils
 						string[]? functionParams = null;
 						var functionNameBeginCharIndex = lastFunctionExpressionEndCharIndex + 1;
 						if (CharExtension.IsCharsOfStringEqualsKey(
-							functionName,
-							functionExpressionString,
-							functionNameBeginCharIndex,
-							out var functionNameCharsCountMatched,
-							stringComparison))
+						    functionName,
+						    functionExpressionString,
+						    functionNameBeginCharIndex,
+						    out var functionNameCharsCountMatched,
+						    stringComparison))
 						{
 							var functionNameEndCharIndex
-								= functionNameBeginCharIndex
-								+ functionNameCharsCountMatched;
+							    = functionNameBeginCharIndex
+							    + functionNameCharsCountMatched;
 
 							var functionParamsContainerBeginSymbol
-								= functionDefine.ParamsContainerBeginSymbol;
+							    = functionDefine.ParamsContainerBeginSymbol;
 							var functionParamsContainerEndSymbol
 							= functionDefine.ParamsContainerEndSymbol;
 
 							var functionParamsContainerBeginSymbolBeginIndex
-								= functionNameEndCharIndex;
+							    = functionNameEndCharIndex;
 							var functionParamsContainerBeginSymbolEndIndex
-								= -1;
+							    = -1;
 							var functionParamsContainerEndSymbolBeginIndex
-								= -1;
+							    = -1;
 							var functionParamsContainerEndSymbolEndIndex
-								= -1;
+							    = -1;
 
 							if (functionParamsContainerBeginSymbol?.Length > 0)
 							{
 								if (CharExtension.IsCharsOfStringEqualsKey(
-									functionParamsContainerBeginSymbol,
-									functionExpressionString,
-									functionParamsContainerBeginSymbolBeginIndex,
-									out var charsCountEqualed,
-									stringComparison,
-									true))
+								    functionParamsContainerBeginSymbol,
+								    functionExpressionString,
+								    functionParamsContainerBeginSymbolBeginIndex,
+								    out var charsCountEqualed,
+								    stringComparison,
+								    true))
 								{
 									functionParamsContainerBeginSymbolEndIndex
-										= functionParamsContainerBeginSymbolBeginIndex
-										+ charsCountEqualed;
+									    = functionParamsContainerBeginSymbolBeginIndex
+									    + charsCountEqualed;
 								}
 							}
 							else
 							{
 								functionParamsContainerBeginSymbolEndIndex
-									= functionParamsContainerBeginSymbolBeginIndex;
+								    = functionParamsContainerBeginSymbolBeginIndex;
 							}
 							if (functionParamsContainerBeginSymbolEndIndex >= 0)
 							{
 								if (functionParamsContainerEndSymbol?.Length > 0)
 								{
 									for (var charIndex = functionParamsContainerBeginSymbolEndIndex;
-										charIndex < functionExpressionStringLength;
-										charIndex++)
+									    charIndex < functionExpressionStringLength;
+									    charIndex++)
 									{
 										if (CharExtension.IsCharsOfStringEqualsKey(
-											functionParamsContainerEndSymbol,
-											functionExpressionString,
-											charIndex,
-											out var charsCountEqualed,
-											stringComparison,
-											true))
+										    functionParamsContainerEndSymbol,
+										    functionExpressionString,
+										    charIndex,
+										    out var charsCountEqualed,
+										    stringComparison,
+										    true))
 										{
 											functionParamsContainerEndSymbolBeginIndex
-												= charIndex;
+											    = charIndex;
 											functionParamsContainerEndSymbolEndIndex
-												= functionParamsContainerEndSymbolBeginIndex
-												+ charsCountEqualed;
+											    = functionParamsContainerEndSymbolBeginIndex
+											    + charsCountEqualed;
 											//
 											break;
 											//
@@ -246,9 +246,9 @@ namespace BaoXia.Utils
 								else
 								{
 									functionParamsContainerEndSymbolBeginIndex
-										= functionExpressionStringLength;
+									    = functionExpressionStringLength;
 									functionParamsContainerEndSymbolEndIndex
-										= functionExpressionStringLength;
+									    = functionExpressionStringLength;
 								}
 							}
 
@@ -262,10 +262,10 @@ namespace BaoXia.Utils
 								if (functionParamsContainerEndSymbolEndIndex >= 0)
 								{
 									var functionParamsString
-										= functionExpressionString[
-											functionParamsContainerBeginSymbolEndIndex..functionParamsContainerEndSymbolBeginIndex];
+									    = functionExpressionString[
+									    functionParamsContainerBeginSymbolEndIndex..functionParamsContainerEndSymbolBeginIndex];
 									var functionParamsSeparate
-										= functionDefine.ParamsSeparate;
+									    = functionDefine.ParamsSeparate;
 									if (functionParamsSeparate?.Length > 0)
 									{
 										// !!!
@@ -277,17 +277,17 @@ namespace BaoXia.Utils
 										// !!!
 										functionParams =
 										[
-											functionParamsString
+										    functionParamsString
 										];
 										// !!!
 									}
 
 									// !!!
 									functionInvokeInfoOriginalStrings.Add(new(
-										functionDefine,
-										functionParams,
-										functionNameBeginCharIndex,
-										functionParamsContainerEndSymbolEndIndex));
+									    functionDefine,
+									    functionParams,
+									    functionNameBeginCharIndex,
+									    functionParamsContainerEndSymbolEndIndex));
 									// !!!
 								}
 								else
@@ -311,29 +311,29 @@ namespace BaoXia.Utils
 			else
 			{
 				functionInvokeInfoOriginalStrings.Add(new(
-					functionExpressionString,
-					null,
-					null));
+				    functionExpressionString,
+				    null,
+				    null));
 			}
 			return functionInvokeInfoOriginalStrings;
 		}
 
 		public static string? CreateStringByComputeFunctionExpression(
-			string? functionExpressionString,
-			ICollection<FunctionExpressionInfo>? functionDefines,
-			Func<FunctionExpressionInfo, string?> toInvokeFunction,
-			StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
+		    string? functionExpressionString,
+		    ICollection<FunctionExpressionInfo>? functionDefines,
+		    Func<FunctionExpressionInfo, string?> toInvokeFunction,
+		    StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
 		{
 			if (functionExpressionString == null
-				|| functionExpressionString.Length < 1)
+			    || functionExpressionString.Length < 1)
 			{
 				return null;
 			}
 
 			var functionExpressions = StringWithFunctionExpression.CreateFunctionExpressionsByParseString(
-				functionExpressionString,
-				functionDefines,
-				stringComparison);
+			    functionExpressionString,
+			    functionDefines,
+			    stringComparison);
 
 			var finalString = string.Empty;
 			var lastSubstringEndIndex = 0;

@@ -35,7 +35,7 @@ namespace BaoXia.Utils.Cache
 		public ObjectType GetObject()
 		{
 			if (!_objects.TryDequeue(out var objectItem)
-				|| objectItem == null)
+			    || objectItem == null)
 			{
 				var toGetObject = this.ToGetObject;
 				// !!!
@@ -46,7 +46,7 @@ namespace BaoXia.Utils.Cache
 		}
 
 		public ObjectPoolItemContainer<ObjectType> GetObjectToUsing(
-			out ObjectType? objectItem)
+		    out ObjectType? objectItem)
 		{
 			// !!!
 			objectItem = this.GetObject();

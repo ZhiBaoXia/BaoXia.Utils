@@ -1,7 +1,7 @@
 ﻿namespace BaoXia.Utils.Cache;
 
 public class TryGetItemResultAsync<ItemKeyType, ItemType, ItemCacheCreateParamType>
-		where ItemKeyType : notnull
+    where ItemKeyType : notnull
 {
 	public bool IsGotSucess { get; set; }
 

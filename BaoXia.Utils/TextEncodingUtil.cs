@@ -21,8 +21,8 @@ namespace BaoXia.Utils
 		#region 类方法
 
 		public static System.Text.Encoding EncodingNamed(
-			string? encodingName,
-			System.Text.Encoding? defaultEncoding = null)
+		    string? encodingName,
+		    System.Text.Encoding? defaultEncoding = null)
 		{
 			System.Text.Encoding? encoding = null;
 			if (string.IsNullOrEmpty(encodingName) == false)
@@ -34,8 +34,8 @@ namespace BaoXia.Utils
 		}
 
 		public static String NameOfEncoding(
-			System.Text.Encoding? encoding,
-			System.Text.Encoding? defaultEncoding = null)
+		    System.Text.Encoding? encoding,
+		    System.Text.Encoding? defaultEncoding = null)
 		{
 			string? encodingName = null;
 			if (encoding != null)

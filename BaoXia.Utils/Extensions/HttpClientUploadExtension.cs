@@ -17,12 +17,12 @@ namespace BaoXia.Utils.Extensions
 		#region “Send”相关方法
 
 		public static async Task<string?> SendToGetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			HttpMethod httpMethod,
-			Dictionary<string, string?>? requestHeaders,
-			HttpContent? requestBody,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    HttpMethod httpMethod,
+		    Dictionary<string, string?>? requestHeaders,
+		    HttpContent? requestBody,
+		    CancellationToken cancellationToken = default)
 		{
 			if (string.IsNullOrEmpty(requestUri))
 			{
@@ -38,8 +38,8 @@ namespace BaoXia.Utils.Extensions
 					if (headerKey?.Length > 0)
 					{
 						requestMessage.Headers.TryAddWithoutValidation(
-							headerKey,
-							headerKeyValue.Value);
+						    headerKey,
+						    headerKeyValue.Value);
 					}
 				}
 			}
@@ -65,23 +65,23 @@ namespace BaoXia.Utils.Extensions
 
 
 		public static async Task<ObjectType?> SendToGetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			HttpMethod httpMethod,
-			string? requestUri,
-			Dictionary<string, string?>? requestHeaders,
-			HttpContent? requestBody,
-			JsonSerializerOptions? jsonSerializerOptions = null,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    HttpMethod httpMethod,
+		    string? requestUri,
+		    Dictionary<string, string?>? requestHeaders,
+		    HttpContent? requestBody,
+		    JsonSerializerOptions? jsonSerializerOptions = null,
+		    CancellationToken cancellationToken = default)
 		{
 			var responseString = await HttpClientUploadExtension.SendToGetStringAsync(
-				httpClient,
-				requestUri,
-				httpMethod,
-				requestHeaders,
-				requestBody,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    httpMethod,
+			    requestHeaders,
+			    requestBody,
+			    cancellationToken);
 			if (responseString == null
-				|| responseString.Length < 1)
+			    || responseString.Length < 1)
 			{
 				return default;
 			}
@@ -89,7 +89,7 @@ namespace BaoXia.Utils.Extensions
 			jsonSerializerOptions ??= BaoXia.Utils.Environment.JsonSerializerOptions;
 
 			var @object = responseString.ToObjectByJsonDeserialize<ObjectType>(
-				jsonSerializerOptions);
+			    jsonSerializerOptions);
 			{ }
 			return @object;
 		}
@@ -104,13 +104,13 @@ namespace BaoXia.Utils.Extensions
 		#region “Upload”相关方法
 
 		public static async Task<string?> UploadToGetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string?>? requestHeaders,
-			Dictionary<string, string>? formKeyValues,
-			Dictionary<string, ByteArray> formKeyByteArrays,
-			bool isFormKeyValuesUrlEncoded = false,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string?>? requestHeaders,
+		    Dictionary<string, string>? formKeyValues,
+		    Dictionary<string, ByteArray> formKeyByteArrays,
+		    bool isFormKeyValuesUrlEncoded = false,
+		    CancellationToken cancellationToken = default)
 		{
 			if (string.IsNullOrEmpty(requestUri))
 			{
@@ -119,7 +119,7 @@ namespace BaoXia.Utils.Extensions
 
 			HttpContent? reqeustBody = null;
 			if (formKeyValues?.Count > 0
-				|| formKeyByteArrays?.Count > 0)
+			    || formKeyByteArrays?.Count > 0)
 			{
 				var requestContent = new MultipartFormDataContent();
 				if (formKeyValues?.Count > 0)
@@ -133,8 +133,8 @@ namespace BaoXia.Utils.Extensions
 						foreach (var formKeyValue in formKeyValues)
 						{
 							requestContent.Add(
-								new StringContent(formKeyValue.Value),
-								formKeyValue.Key);
+							    new StringContent(formKeyValue.Value),
+							    formKeyValue.Key);
 						}
 					}
 				}
@@ -154,15 +154,15 @@ namespace BaoXia.Utils.Extensions
 								if (formByteArray.FileName?.Length > 0)
 								{
 									requestContent.Add(
-										byteArrayContent,
-										formKey,
-										formByteArray.FileName);
+									    byteArrayContent,
+									    formKey,
+									    formByteArray.FileName);
 								}
 								else
 								{
 									requestContent.Add(
-										byteArrayContent,
-										formKey);
+									    byteArrayContent,
+									    formKey);
 								}
 							}
 						}
@@ -174,69 +174,69 @@ namespace BaoXia.Utils.Extensions
 			}
 
 			return await SendToGetStringAsync(
-				httpClient,
-				requestUri,
-				HttpMethod.Post,
-				requestHeaders,
-				reqeustBody,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    HttpMethod.Post,
+			    requestHeaders,
+			    reqeustBody,
+			    cancellationToken);
 		}
 
 		public static async Task<string?> UploadToGetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string>? formKeyValues,
-			Dictionary<string, ByteArray> formKeyByteArrays,
-			bool isFormKeyValuesUrlEncoded = false,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string>? formKeyValues,
+		    Dictionary<string, ByteArray> formKeyByteArrays,
+		    bool isFormKeyValuesUrlEncoded = false,
+		    CancellationToken cancellationToken = default)
 		{
 			return await HttpClientUploadExtension.UploadToGetStringAsync(
-				httpClient,
-				requestUri,
-				null,
-				formKeyValues,
-				formKeyByteArrays,
-				isFormKeyValuesUrlEncoded,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    null,
+			    formKeyValues,
+			    formKeyByteArrays,
+			    isFormKeyValuesUrlEncoded,
+			    cancellationToken);
 		}
 
 		public static async Task<string?> UploadToGetStringAsync(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, ByteArray> formKeyByteArrays,
-			bool isFormKeyValuesUrlEncoded = false,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, ByteArray> formKeyByteArrays,
+		    bool isFormKeyValuesUrlEncoded = false,
+		    CancellationToken cancellationToken = default)
 		{
 			return await HttpClientUploadExtension.UploadToGetStringAsync(
-				httpClient,
-				requestUri,
-				null,
-				null,
-				formKeyByteArrays,
-				isFormKeyValuesUrlEncoded,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    null,
+			    null,
+			    formKeyByteArrays,
+			    isFormKeyValuesUrlEncoded,
+			    cancellationToken);
 		}
 
 		public static async Task<ObjectType?> UploadToGetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string?>? requestHeaders,
-			Dictionary<string, string>? formKeyValues,
-			Dictionary<string, ByteArray> formKeyByteArrays,
-			JsonSerializerOptions? jsonSerializerOptions = null,
-			bool isFormKeyValuesUrlEncoded = false,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string?>? requestHeaders,
+		    Dictionary<string, string>? formKeyValues,
+		    Dictionary<string, ByteArray> formKeyByteArrays,
+		    JsonSerializerOptions? jsonSerializerOptions = null,
+		    bool isFormKeyValuesUrlEncoded = false,
+		    CancellationToken cancellationToken = default)
 		{
 			var responseString = await HttpClientUploadExtension.UploadToGetStringAsync(
-				httpClient,
-				requestUri,
-				requestHeaders,
-				formKeyValues,
-				formKeyByteArrays,
-				isFormKeyValuesUrlEncoded,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    requestHeaders,
+			    formKeyValues,
+			    formKeyByteArrays,
+			    isFormKeyValuesUrlEncoded,
+			    cancellationToken);
 			if (responseString == null
-				|| responseString.Length < 1)
+			    || responseString.Length < 1)
 			{
 				return default;
 			}
@@ -244,46 +244,46 @@ namespace BaoXia.Utils.Extensions
 			jsonSerializerOptions ??= BaoXia.Utils.Environment.JsonSerializerOptions;
 
 			var @object = responseString.ToObjectByJsonDeserialize<ObjectType>(
-				jsonSerializerOptions);
+			    jsonSerializerOptions);
 			{ }
 			return @object;
 		}
 
 		public static async Task<ObjectType?> UploadToGetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, string>? formKeyValues,
-			Dictionary<string, ByteArray> formKeyByteArrays,
-			bool isFormKeyValuesUrlEncoded = false,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, string>? formKeyValues,
+		    Dictionary<string, ByteArray> formKeyByteArrays,
+		    bool isFormKeyValuesUrlEncoded = false,
+		    CancellationToken cancellationToken = default)
 		{
 			return await HttpClientUploadExtension.UploadToGetObjectAsync<ObjectType>(
-				httpClient,
-				requestUri,
-				null,
-				formKeyValues,
-				formKeyByteArrays,
-				null,
-				isFormKeyValuesUrlEncoded,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    null,
+			    formKeyValues,
+			    formKeyByteArrays,
+			    null,
+			    isFormKeyValuesUrlEncoded,
+			    cancellationToken);
 		}
 
 		public static async Task<ObjectType?> UploadToGetObjectAsync<ObjectType>(
-			this HttpClient httpClient,
-			string? requestUri,
-			Dictionary<string, ByteArray> formKeyByteArrays,
-			bool isFormKeyValuesUrlEncoded = false,
-			CancellationToken cancellationToken = default)
+		    this HttpClient httpClient,
+		    string? requestUri,
+		    Dictionary<string, ByteArray> formKeyByteArrays,
+		    bool isFormKeyValuesUrlEncoded = false,
+		    CancellationToken cancellationToken = default)
 		{
 			return await HttpClientUploadExtension.UploadToGetObjectAsync<ObjectType>(
-				httpClient,
-				requestUri,
-				null,
-				null,
-				formKeyByteArrays,
-				null,
-				isFormKeyValuesUrlEncoded,
-				cancellationToken);
+			    httpClient,
+			    requestUri,
+			    null,
+			    null,
+			    formKeyByteArrays,
+			    null,
+			    isFormKeyValuesUrlEncoded,
+			    cancellationToken);
 		}
 
 		#endregion

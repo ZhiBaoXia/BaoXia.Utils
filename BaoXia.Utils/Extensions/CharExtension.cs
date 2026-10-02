@@ -8,7 +8,7 @@ namespace BaoXia.Utils.Extensions
 		public static bool IsCharIntegralNumber(this char currentChar)
 		{
 			if (currentChar >= '0'
-				&& currentChar <= '9')
+			    && currentChar <= '9')
 			{
 				return true;
 			}
@@ -35,19 +35,19 @@ namespace BaoXia.Utils.Extensions
 				return true;
 			}
 			else if (currentChar >= 'a'
-				&& currentChar <= 'z')
+			    && currentChar <= 'z')
 			{
 				if (anotherChar >= 'A'
-					&& anotherChar <= 'Z')
+				    && anotherChar <= 'Z')
 				{
 					return true;
 				}
 			}
 			else if (currentChar >= 'A'
-				&& currentChar <= 'Z')
+			    && currentChar <= 'Z')
 			{
 				if (anotherChar >= 'a'
-					&& anotherChar <= 'z')
+				    && anotherChar <= 'z')
 				{
 					return true;
 				}
@@ -56,22 +56,22 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static bool IsCharsOfStringEqualsKey(
-			string? key,
-			string str,
-			int beginCharIndex,
-			out int charsCountEqualed,
-			StringComparison stringComparison = StringComparison.Ordinal,
-			bool isIgnoreSpace = false)
+		    string? key,
+		    string str,
+		    int beginCharIndex,
+		    out int charsCountEqualed,
+		    StringComparison stringComparison = StringComparison.Ordinal,
+		    bool isIgnoreSpace = false)
 		{
 			charsCountEqualed = 0;
 
 			if (key == null
-				|| key.Length < 1)
+			    || key.Length < 1)
 			{
 				return false;
 			}
 			if (str == null
-				|| str.Length < 1)
+			    || str.Length < 1)
 			{
 				return false;
 			}
@@ -87,14 +87,14 @@ namespace BaoXia.Utils.Extensions
 			if (isIgnoreSpace)
 			{
 				if (stringComparison == StringComparison.CurrentCultureIgnoreCase
-					|| stringComparison == StringComparison.InvariantCultureIgnoreCase
-					|| stringComparison == StringComparison.OrdinalIgnoreCase)
+				    || stringComparison == StringComparison.InvariantCultureIgnoreCase
+				    || stringComparison == StringComparison.OrdinalIgnoreCase)
 				{
 					var keyCharIndex = 0;
 					for (var charIndex = 0;
-						charIndex < str.Length
-						&& keyCharIndex < key.Length;
-						charIndex++)
+					    charIndex < str.Length
+					    && keyCharIndex < key.Length;
+					    charIndex++)
 					{
 						var strChar = str[beginCharIndex + charIndex];
 						var keyChar = key[keyCharIndex];
@@ -121,9 +121,9 @@ namespace BaoXia.Utils.Extensions
 				{
 					var keyCharIndex = 0;
 					for (var charIndex = 0;
-						charIndex < str.Length
-						&& keyCharIndex < key.Length;
-						charIndex++)
+					    charIndex < str.Length
+					    && keyCharIndex < key.Length;
+					    charIndex++)
 					{
 						var strChar = str[beginCharIndex + charIndex];
 						var keyChar = key[keyCharIndex];
@@ -150,12 +150,12 @@ namespace BaoXia.Utils.Extensions
 			else
 			{
 				if (stringComparison == StringComparison.CurrentCultureIgnoreCase
-					|| stringComparison == StringComparison.InvariantCultureIgnoreCase
-					|| stringComparison == StringComparison.OrdinalIgnoreCase)
+				    || stringComparison == StringComparison.InvariantCultureIgnoreCase
+				    || stringComparison == StringComparison.OrdinalIgnoreCase)
 				{
 					for (var charIndex = 0;
-						charIndex < key.Length;
-						charIndex++)
+					    charIndex < key.Length;
+					    charIndex++)
 					{
 						var strChar = str[beginCharIndex + charIndex];
 						var keyChar = key[charIndex];
@@ -174,8 +174,8 @@ namespace BaoXia.Utils.Extensions
 				else
 				{
 					for (var charIndex = 0;
-						charIndex < key.Length;
-						charIndex++)
+					    charIndex < key.Length;
+					    charIndex++)
 					{
 						var strChar = str[beginCharIndex + charIndex];
 						var keyChar = key[charIndex];
@@ -196,14 +196,14 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static string? IsCharsOfStringEqualsKeys(
-			ICollection<string> keys,
-			string str,
-			int beginCharIndex,
-			StringComparison stringComparison = StringComparison.Ordinal,
-			bool isIgnoreSpace = false)
+		    ICollection<string> keys,
+		    string str,
+		    int beginCharIndex,
+		    StringComparison stringComparison = StringComparison.Ordinal,
+		    bool isIgnoreSpace = false)
 		{
 			if (keys == null
-				|| keys.Count < 1)
+			    || keys.Count < 1)
 			{
 				return null;
 			}
@@ -211,13 +211,13 @@ namespace BaoXia.Utils.Extensions
 			foreach (var key in keys)
 			{
 				if (CharExtension.IsCharsOfStringEqualsKey(
-					key,
-					str,
-					beginCharIndex,
-					out _,
-					stringComparison,
-					isIgnoreSpace)
-					== true)
+				    key,
+				    str,
+				    beginCharIndex,
+				    out _,
+				    stringComparison,
+				    isIgnoreSpace)
+				    == true)
 				{
 					return key;
 				}
@@ -226,15 +226,15 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static int GetIntegralNumberCharsCountFromString(
-			string str,
-			int beginCharIndex,
-			bool isIgnoreSpace,
-			out int intNumber)
+		    string str,
+		    int beginCharIndex,
+		    bool isIgnoreSpace,
+		    out int intNumber)
 		{
 			intNumber = 0;
 
 			if (str == null
-				|| str.Length < 1)
+			    || str.Length < 1)
 			{
 				return 0;
 			}
@@ -246,8 +246,8 @@ namespace BaoXia.Utils.Extensions
 			var integralNumberCharsCount = 0;
 			var spaceCharsCount = 0;
 			for (var charIndex = beginCharIndex;
-				charIndex < str.Length;
-				charIndex++)
+			    charIndex < str.Length;
+			    charIndex++)
 			{
 				var strChar = str[charIndex];
 				if (strChar.IsCharFloatNumber() == true)
@@ -255,7 +255,7 @@ namespace BaoXia.Utils.Extensions
 					integralNumberCharsCount++;
 				}
 				else if (strChar == ' '
-						&& isIgnoreSpace == true)
+				    && isIgnoreSpace == true)
 				{
 					integralNumberCharsCount++;
 					spaceCharsCount++;
@@ -284,15 +284,15 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static int GetFloatNumberCharsCountFromString(
-			string str,
-			int beginCharIndex,
-			bool isIgnoreSpace,
-			out double floatNumber)
+		    string str,
+		    int beginCharIndex,
+		    bool isIgnoreSpace,
+		    out double floatNumber)
 		{
 			floatNumber = 0.0;
 
 			if (str == null
-				|| str.Length < 1)
+			    || str.Length < 1)
 			{
 				return 0;
 			}
@@ -304,8 +304,8 @@ namespace BaoXia.Utils.Extensions
 			var floatNumberCharsCount = 0;
 			var spaceCharsCount = 0;
 			for (var charIndex = beginCharIndex;
-				charIndex < str.Length;
-				charIndex++)
+			    charIndex < str.Length;
+			    charIndex++)
 			{
 				var strChar = str[charIndex];
 				if (strChar.IsCharFloatNumber() == true)
@@ -313,7 +313,7 @@ namespace BaoXia.Utils.Extensions
 					floatNumberCharsCount++;
 				}
 				else if (strChar == ' '
-						&& isIgnoreSpace == true)
+				    && isIgnoreSpace == true)
 				{
 					floatNumberCharsCount++;
 					spaceCharsCount++;
@@ -342,20 +342,20 @@ namespace BaoXia.Utils.Extensions
 		}
 
 		public static int GetStringCharsCountFromStringBeforeKeys(
-			ICollection<string> endKeys,
-			bool isStringEndEqualsKey,
-			string str,
-			int beginCharIndex,
-			bool isIgnoreSpace,
-			StringComparison stringComparison,
-			out string? stringChars,
-			out string? endKeyFound)
+		    ICollection<string> endKeys,
+		    bool isStringEndEqualsKey,
+		    string str,
+		    int beginCharIndex,
+		    bool isIgnoreSpace,
+		    StringComparison stringComparison,
+		    out string? stringChars,
+		    out string? endKeyFound)
 		{
 			stringChars = null;
 			endKeyFound = null;
 
 			if (str == null
-				|| str.Length < 1)
+			    || str.Length < 1)
 			{
 				return -1;
 			}
@@ -366,7 +366,7 @@ namespace BaoXia.Utils.Extensions
 
 			var stringCharsCount = -1;
 			if (endKeys == null
-				|| endKeys.Count < 1)
+			    || endKeys.Count < 1)
 			{
 				stringCharsCount = str.Length - beginCharIndex;
 				stringChars = str[beginCharIndex..];
@@ -380,17 +380,17 @@ namespace BaoXia.Utils.Extensions
 				var spaceCharsCount = 0;
 				var lastCharIndex = str.Length - 1;
 				for (var charIndex = beginCharIndex;
-					charIndex < str.Length;
-					charIndex++)
+				    charIndex < str.Length;
+				    charIndex++)
 				{
 					foreach (var endKey in endKeys)
 					{
 						if (CharExtension.IsCharsOfStringEqualsKey(
-							endKey,
-							str,
-							charIndex,
-							out _,
-							stringComparison))
+						    endKey,
+						    str,
+						    charIndex,
+						    out _,
+						    stringComparison))
 						{
 							// !!!
 							endKeyFound = endKey;
@@ -407,7 +407,7 @@ namespace BaoXia.Utils.Extensions
 						// !!!
 					}
 					else if (isStringEndEqualsKey == true
-						&& charIndex == lastCharIndex)
+					    && charIndex == lastCharIndex)
 					{
 						// !!!
 						stringCharsCount = charIndex + 1 - beginCharIndex;
@@ -423,7 +423,7 @@ namespace BaoXia.Utils.Extensions
 				{
 					stringChars = str.Substring(beginCharIndex, stringCharsCount);
 					if (spaceCharsCount > 0
-						&& isIgnoreSpace == true)
+					    && isIgnoreSpace == true)
 					{
 						stringChars = stringChars.Replace(" ", null);
 					}
@@ -434,17 +434,17 @@ namespace BaoXia.Utils.Extensions
 
 
 		public static int GetStringCharsCountFromStringBeforeKey(
-			string endKey,
-			bool isStringEndEqualsKey,
-			string str,
-			int beginCharIndex,
-			bool isIgnoreSpace,
-			StringComparison stringComparison,
-			out string? stringChars)
+		    string endKey,
+		    bool isStringEndEqualsKey,
+		    string str,
+		    int beginCharIndex,
+		    bool isIgnoreSpace,
+		    StringComparison stringComparison,
+		    out string? stringChars)
 		{
 			stringChars = null;
 			if (str == null
-				|| str.Length < 1)
+			    || str.Length < 1)
 			{
 				return -1;
 			}
@@ -455,7 +455,7 @@ namespace BaoXia.Utils.Extensions
 
 			var stringCharsCount = -1;
 			if (endKey == null
-				|| endKey.Length < 1)
+			    || endKey.Length < 1)
 			{
 				stringCharsCount = str.Length - beginCharIndex;
 				stringChars = str[beginCharIndex..];
@@ -469,15 +469,15 @@ namespace BaoXia.Utils.Extensions
 				var spaceCharsCount = 0;
 				var lastCharIndex = str.Length - 1;
 				for (var charIndex = beginCharIndex;
-					charIndex < str.Length;
-					charIndex++)
+				    charIndex < str.Length;
+				    charIndex++)
 				{
 					if (CharExtension.IsCharsOfStringEqualsKey(
-							 endKey,
-							 str,
-							 charIndex,
-							out _,
-							 stringComparison))
+					     endKey,
+					     str,
+					     charIndex,
+					    out _,
+					     stringComparison))
 					{
 						// !!!
 						stringCharsCount = charIndex - beginCharIndex;
@@ -485,7 +485,7 @@ namespace BaoXia.Utils.Extensions
 						// !!!
 					}
 					else if (isStringEndEqualsKey == true
-						&& charIndex == lastCharIndex)
+					    && charIndex == lastCharIndex)
 					{
 						// !!!
 						stringCharsCount = charIndex + 1 - beginCharIndex;
@@ -501,7 +501,7 @@ namespace BaoXia.Utils.Extensions
 				{
 					stringChars = str.Substring(beginCharIndex, stringCharsCount);
 					if (spaceCharsCount > 0
-						&& isIgnoreSpace == true)
+					    && isIgnoreSpace == true)
 					{
 						stringChars = stringChars.Replace(" ", null);
 					}

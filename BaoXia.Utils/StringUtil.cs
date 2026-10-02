@@ -94,6 +94,7 @@ public class StringUtil
 		return CharUtil.IsNumberChar(stringValue[^1]);
 	}
 
+
 	#endregion
 
 
@@ -153,27 +154,41 @@ public class StringUtil
 	public static int CompareStrings(
 	    string? strA,
 	    string? strB,
-	    StringComparison stringComparison = StringComparison.Ordinal)
+	    StringComparison stringComparison = StringComparison.Ordinal,
+	    bool isNullEqualsEmpty = false)
 	{
-		//if (isNullEqualsEmpty)
-		//{
-		//	strA ??= string.Empty;
-		//	strB ??= string.Empty;
-		//}
-
-		//if (ReferenceEquals(strA, strB))
-		//{
-		//	return 0;
-		//}
-		//if (strA == null)
-		//{
-		//	return -1;
-		//}
-		//else if (strB == null)
-		//{
-		//	return 1;
-		//}
+		if (isNullEqualsEmpty)
+		{
+			strA ??= string.Empty;
+			strB ??= string.Empty;
+		}
 		return string.Compare(strA, strB, stringComparison);
+	}
+
+	public static double GetMatchProgressValueOfStringsWithSearchKey(
+		string? searchKey, IEnumerable<string?> targetStrings, StringComparison comparisonType,
+		bool isMatchValueCharsOverlapEnable = false)
+	{
+		var matchProgress = 0.0;
+		foreach (var targetString in targetStrings)
+		{
+			if (string.IsNullOrEmpty(targetString))
+			{
+				continue;
+			}
+			var matchProgressOfSearchKey
+				= targetString.GetMatchProgressValueOf(searchKey, comparisonType, isMatchValueCharsOverlapEnable);
+			if (matchProgress < matchProgressOfSearchKey)
+			{
+				matchProgress = matchProgressOfSearchKey;
+			}
+		}
+		return matchProgress;
+	}
+
+	public static double GetMatchProgressValueOfStringsWithSearchKey(string? searchKey, params string?[] targetStrings)
+	{
+		return GetMatchProgressValueOfStringsWithSearchKey(searchKey, targetStrings, StringComparison.OrdinalIgnoreCase);
 	}
 
 	#endregion
@@ -192,10 +207,7 @@ public class StringUtil
 	/// <param name="spliter">创建字符串时使用的数值分隔符，默认为“,”。</param>
 	/// <param name="numberFormat">指定的数字字符串格式字符串。</param>
 	/// <returns>整型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
-	public static string StringWithInts(
-		IEnumerable<int>? intArray,
-		string? spliter = ",",
-		string? numberFormat = null)
+	public static string StringWithInts(IEnumerable<int>? intArray, string? spliter = ",", string? numberFormat = null)
 	{
 		if (EnumerableUtil.IsEmpty(intArray))
 		{
@@ -234,9 +246,9 @@ public class StringUtil
 	/// <param name="numberFormat">指定的数字字符串格式字符串。</param>
 	/// <returns>整型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
 	public static string StringWithLongs(
-		IEnumerable<long>? longArray,
-		string? spliter = ",",
-		string? numberFormat = null)
+	    IEnumerable<long>? longArray,
+	    string? spliter = ",",
+	    string? numberFormat = null)
 	{
 		if (EnumerableUtil.IsEmpty(longArray))
 		{
@@ -276,9 +288,9 @@ public class StringUtil
 	/// <param name="numberFormat">指定的数字字符串格式字符串。</param>
 	/// <returns>浮点型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
 	public static string StringWithFloats(
-		IEnumerable<float> floatArray,
-		string? spliter = ",",
-		string? numberFormat = null)
+	    IEnumerable<float> floatArray,
+	    string? spliter = ",",
+	    string? numberFormat = null)
 	{
 		if (EnumerableUtil.IsEmpty(floatArray))
 		{
@@ -317,9 +329,9 @@ public class StringUtil
 	/// <param name="numberFormat">指定的数字字符串格式字符串。</param>
 	/// <returns>浮点型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
 	public static string StringWithDoubles(
-		IEnumerable<double>? doubleArray,
-		string? spliter = ",",
-		string? numberFormat = null)
+	    IEnumerable<double>? doubleArray,
+	    string? spliter = ",",
+	    string? numberFormat = null)
 	{
 		if (EnumerableUtil.IsEmpty(doubleArray))
 		{
@@ -358,9 +370,9 @@ public class StringUtil
 	/// <param name="numberFormat">指定的数字字符串格式字符串。</param>
 	/// <returns>浮点型数值数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
 	public static string StringWithDicemals(
-		IEnumerable<decimal>? decimalArray,
-		string? spliter = ",",
-		string? numberFormat = null)
+	    IEnumerable<decimal>? decimalArray,
+	    string? spliter = ",",
+	    string? numberFormat = null)
 	{
 		if (EnumerableUtil.IsEmpty(decimalArray))
 		{
@@ -399,44 +411,92 @@ public class StringUtil
 	/// <param name="isOnlyUppercase">是否只使用大写字符串。</param>
 	/// <returns>返回指定长度随机内容字符串，随机内容只包含英文字母和阿拉伯数字。</returns>
 	public static string StringByFillRandomCharsToLength(
-	    int randomStringLength,
-	    int randomSeek = 0,
-	    bool isOnlyUppercase = true)
+	    int randomStringLength, int? randomSeek = null,
+	    RandomStringType randomStringType = RandomStringType.ArabicNumeralAndAlphabetCharsInUppercase)
 	{
-		string randomString = string.Empty;
-		if (randomSeek == 0)
+		Random random;
+		if (randomSeek != null)
 		{
-			randomSeek = DateTime.Now.Millisecond;
-		}
-		Random random = new(randomSeek);
-		if (isOnlyUppercase)
-		{
-			for (int charIndex = 0;
-			    charIndex < randomStringLength;
-			    charIndex++)
-			{
-				var randomCharIndex = random.Next(StringConstants.kArabicNumeralAndAlphabetCharsInUppercase.Length);
-				{ }
-				randomString += StringConstants.kArabicNumeralAndAlphabetCharsInUppercase[randomCharIndex].ToString();
-			}
+			random = new Random(randomSeek.Value);
 		}
 		else
 		{
-			for (int charIndex = 0;
-			    charIndex < randomStringLength;
-			    charIndex++)
-			{
-				var chars = StringConstants.kArabicNumeralAndAlphabetCharsInUppercase;
-				if (random.Next(2) == 1)
-				{
-					chars = StringConstants.kArabicNumeralAndAlphabetCharsInLowercase;
-				}
-				var randomCharIndex = random.Next(chars.Length);
-				{ }
-				randomString += chars[randomCharIndex].ToString();
-			}
+			random = Random.Shared;
 		}
-		return randomString;
+
+		char[] randomCharsPool;
+		switch (randomStringType)
+		{
+			default:
+			case RandomStringType.Random:
+				{
+					//
+					var charsPoolIndex = random.Next(StringConstants.AllChars.Length);
+					randomCharsPool = StringConstants.AllChars[charsPoolIndex];
+					//
+				}
+				break;
+			case RandomStringType.ArabicNumeralChars:
+				{
+					//
+					randomCharsPool = StringConstants.ArabicNumeralChars;
+					//
+				}
+				break;
+			case RandomStringType.AlphabetChars:
+				{
+					//
+					randomCharsPool = StringConstants.AlphabetChars;
+					//
+				}
+				break;
+			case RandomStringType.AlphabetCharsInLowercase:
+				{
+					//
+					randomCharsPool = StringConstants.AlphabetCharsInLowercase;
+					//
+				}
+				break;
+			case RandomStringType.AlphabetCharsInUppercase:
+				{
+					//
+					randomCharsPool = StringConstants.AlphabetCharsInUppercase;
+					//
+				}
+				break;
+			case RandomStringType.ArabicNumeralAndAlphabetChars:
+				{
+					//
+					randomCharsPool = StringConstants.ArabicNumeralAndAlphabetChars;
+					//
+				}
+				break;
+			case RandomStringType.ArabicNumeralAndAlphabetCharsInLowercase:
+				{
+					//
+					randomCharsPool = StringConstants.ArabicNumeralAndAlphabetCharsInLowercase;
+					//
+				}
+				break;
+			case RandomStringType.ArabicNumeralAndAlphabetCharsInUppercase:
+				{
+					//
+					randomCharsPool = StringConstants.ArabicNumeralAndAlphabetCharsInUppercase;
+					//
+				}
+				break;
+		}
+
+		var randomStringBuilder = new StringBuilder(); ;
+		for (int charIndex = 0; charIndex < randomStringLength; charIndex++)
+		{
+			var randomCharIndex = random.Next(randomCharsPool.Length);
+			var randomChar = randomCharsPool[randomCharIndex];
+			//
+			randomStringBuilder.Append(randomChar);
+			//
+		}
+		return randomStringBuilder.ToString();
 	}
 
 	/// <summary>
@@ -447,14 +507,10 @@ public class StringUtil
 	/// <param name="isOnlyUppercase">是否只使用大写字符串。</param>
 	/// <returns>返回指定长度随机内容字符串，随机内容只包含英文字母和阿拉伯数字。</returns>
 	public static string RandomStringInLength(
-	    int randomStringLength,
-	    int randomSeek = 0,
-	    bool isOnlyUppercase = true)
+	    int randomStringLength, int? randomSeek = null,
+	    RandomStringType randomStringType = RandomStringType.ArabicNumeralAndAlphabetCharsInUppercase)
 	{
-		return StringByFillRandomCharsToLength(
-			randomStringLength,
-			randomSeek,
-			isOnlyUppercase);
+		return StringByFillRandomCharsToLength(randomStringLength, randomSeek, randomStringType);
 	}
 
 	/// <summary>
@@ -502,8 +558,8 @@ public class StringUtil
 
 	[Obsolete("后续请使用支持可为空字符串参数的新方法“StringWithStringsJoinSeparator”。")]
 	public static string StringWithStringsJoinSeparator(
-		string? separator,
-		params string[]? strings)
+	    string? separator,
+	    params string[]? strings)
 	{
 		return StringWithStrings(strings, separator);
 	}
@@ -516,10 +572,10 @@ public class StringUtil
 	/// <param name="isSeparatorConsecutiveDisable">是否允许分隔符连续。</param>
 	/// <returns>字符串数组有效时，返回对应的字符串，否则返回“空字符串”。</returns>
 	public static string? StringWithStrings(
-		IEnumerable<string?>? substrings,
-		string? separator,
-		bool isSeparatorConsecutiveDisable,
-		StringComparison stringComparison = StringComparison.Ordinal)
+	    IEnumerable<string?>? substrings,
+	    string? separator,
+	    bool isSeparatorConsecutiveDisable,
+	    StringComparison stringComparison = StringComparison.Ordinal)
 	{
 		if (substrings.IsEmpty())
 		{
@@ -538,14 +594,14 @@ public class StringUtil
 					{
 						finalSubstring = finalSubstring.Trim(separator, stringComparison);
 						if (finalSubstring == null
-							|| finalSubstring.Length < 1)
+						    || finalSubstring.Length < 1)
 						{
 							// !!!
 							continue;
 							// !!!
 						}
 						if (stringBuilder?.Length > 0
-							&& separator?.Length > 0)
+						    && separator?.Length > 0)
 						{
 							//
 							stringBuilder.Append(separator);
@@ -589,9 +645,9 @@ public class StringUtil
 	params string?[]? strings)
 	{
 		return StringWithStrings(
-			strings,
-			separator,
-			isSeparatorConsecutiveDisable);
+		    strings,
+		    separator,
+		    isSeparatorConsecutiveDisable);
 	}
 
 	/// <summary>
@@ -602,15 +658,15 @@ public class StringUtil
 	public static string StringWithUtf8Bytes(ArraySegment<byte> utf8Bytes)
 	{
 		if (utf8Bytes.Array == null
-			|| utf8Bytes.Count < 1)
+		    || utf8Bytes.Count < 1)
 		{
 			return string.Empty;
 		}
 
 		var str = System.Text.UTF8Encoding.UTF8.GetString(
-			utf8Bytes.Array,
-			utf8Bytes.Offset,
-			utf8Bytes.Count);
+		    utf8Bytes.Array,
+		    utf8Bytes.Offset,
+		    utf8Bytes.Count);
 		{ }
 		return str;
 	}
@@ -621,20 +677,20 @@ public class StringUtil
 	/// <param name="utf8Bytes">指定的Utf8编码的字节数组。</param>
 	/// <returns>Utf8编码的字节数组，对应的字符串。</returns>
 	public static string StringWithUtf8Bytes(
-		byte[]? utf8Bytes,
-		int offset,
-		int count)
+	    byte[]? utf8Bytes,
+	    int offset,
+	    int count)
 	{
 		if (utf8Bytes == null
-			|| count < 1)
+		    || count < 1)
 		{
 			return string.Empty;
 		}
 
 		var str = System.Text.UTF8Encoding.UTF8.GetString(
-			utf8Bytes,
-			offset,
-			count);
+		    utf8Bytes,
+		    offset,
+		    count);
 		{ }
 		return str;
 	}
@@ -647,7 +703,7 @@ public class StringUtil
 	public static string StringWithUtf8Bytes(byte[]? utf8Bytes)
 	{
 		if (utf8Bytes == null
-			|| utf8Bytes.Length < 1)
+		    || utf8Bytes.Length < 1)
 		{
 			return string.Empty;
 		}
@@ -660,19 +716,15 @@ public class StringUtil
 	/// <summary>
 	/// 通过序列化指定的对象，生成Json字符串。
 	/// </summary>
-	/// <param name="obj">要被序列化的对象。</param>
+	/// <param name="object">要被序列化的对象。</param>
 	/// <returns>对象序列化后的Json字符串。</returns>
-	public static string StringByJsonSerializeObject(
-		object? obj,
-		JsonSerializerOptions? jsonSerializerOptions = null)
+	public static string StringByJsonSerializeObject(object? @object, JsonSerializerOptions? jsonSerializerOptions = null)
 	{
-		if (obj == null)
+		if (@object == null)
 		{
 			return string.Empty;
 		}
-		var str = System.Text.Json.JsonSerializer.Serialize(
-			    obj,
-			    jsonSerializerOptions ?? Environment.JsonSerializerOptions);
+		var str = System.Text.Json.JsonSerializer.Serialize(@object, jsonSerializerOptions ?? Environment.JsonSerializerOptions);
 		{ }
 		return str;
 	}

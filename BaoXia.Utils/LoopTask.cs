@@ -407,11 +407,11 @@ public class LoopTask : IDisposable
 							// 全局循环任务同时进行数限制：
 							////////////////////////////////////////////////
 							if (LoopTask.CountOfLoopTasksProcssingAtSameTimeMax > 0
-			    && _countOfLoopTasksProcssingAtSameTime >= LoopTask.CountOfLoopTasksProcssingAtSameTimeMax)
+							&& _countOfLoopTasksProcssingAtSameTime >= LoopTask.CountOfLoopTasksProcssingAtSameTimeMax)
 							{
 								await Task.Delay(
-				    (int)(1000.0 * LoopTask.SecondsToSartTaskProcessingByMaxCountOfProcssingTaskAtSameTime),
-				    taskCancellationToken);
+									(int)(1000.0 * LoopTask.SecondsToSartTaskProcessingByMaxCountOfProcssingTaskAtSameTime),
+									taskCancellationToken);
 								// !!!
 								continue;
 								// !!!
@@ -506,13 +506,10 @@ public class LoopTask : IDisposable
 										return;
 									}
 								}
-								if (taskIntervalSeconds > 0.0
-				    && !taskCancellationToken.IsCancellationRequested)
+								if (taskIntervalSeconds > 0.0 && !taskCancellationToken.IsCancellationRequested)
 								{
 									//  !!!
-									await Task.Delay(
-					    (int)(1000 * taskIntervalSeconds),
-					    taskCancellationToken);
+									await Task.Delay((int)(1000 * taskIntervalSeconds), taskCancellationToken);
 									// !!!
 								}
 							}

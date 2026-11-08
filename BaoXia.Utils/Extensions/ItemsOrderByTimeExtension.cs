@@ -1,5 +1,4 @@
-﻿using BaoXia.Utils.Constants;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace BaoXia.Utils.Extensions;
@@ -21,145 +20,8 @@ public static class ItemsOrderByTimeExtension
 	    bool isGetObjectItemsCountOnly,
 	    out int objectItemsCount)
 	{
-		//
-		objectItemsCount = 0;
-		//
-		if (items.Length <= 0)
-		{
-			return null;
-		}
-		// 【注意】beginTime和endTime含义不同，不可互换。
-		if (beginTime >= endTime)
-		{
-			return null;
-		}
-
-		var itemsCount = items.Length;
-
-		var firstItemIndex = items.FindItemIndexWithDichotomy(
-		    isItemsSortedWithAscending,
-		    (item, itemIndex) =>
-		    {
-			    return toCompareTimeWithItem(item, beginTime);
-		    },
-		    // 无论升序、降序，
-		    // 都要找到大于等于“beginTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanTargetItemMin,
-		    out var firstItemIndex_NearestAndGreatThan,
-		    out _);
-		if (firstItemIndex_NearestAndGreatThan == null)
-		{
-			return null;
-		}
-		if (firstItemIndex < 0)
-		{
-			if (firstItemIndex_NearestAndGreatThan >= 0
-			    && firstItemIndex_NearestAndGreatThan < itemsCount)
-			{
-				firstItemIndex = firstItemIndex_NearestAndGreatThan.Value;
-			}
-			else if (isItemsSortedWithAscending)
-			{
-				if (firstItemIndex_NearestAndGreatThan < 0)
-				{
-					// 此时所有“items”都大于“beginTime”。
-					firstItemIndex = 0;
-				}
-				else if (firstItemIndex_NearestAndGreatThan >= itemsCount)
-				{
-					// 此时所有“items”都小于“beginTime”。
-					return null;
-				}
-			}
-			else
-			{
-				if (firstItemIndex_NearestAndGreatThan < 0)
-				{
-					// 此时所有“items”都小于“beginTime”。
-					return null;
-				}
-				else if (firstItemIndex_NearestAndGreatThan >= itemsCount)
-				{
-					// 此时所有“items”都小于“beginTime”。
-					firstItemIndex = itemsCount - 1;
-				}
-			}
-		}
-
-
-		var endItemIndex = items.FindItemIndexWithDichotomy(
-		    isItemsSortedWithAscending,
-		    (item, itemIndex) =>
-		    {
-			    return toCompareTimeWithItem(item, endTime);
-		    },
-		    //
-		    // 无论升序、降序，
-		    // 都要找到大于等于“endTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanTargetItemMin,
-		    out var endItemIndex_NearestAndGreatThan,
-		    out _);
-		if (endItemIndex_NearestAndGreatThan == null)
-		{
-			return null;
-		}
-		if (endItemIndex < 0)
-		{
-			if (endItemIndex_NearestAndGreatThan >= 0
-			    && endItemIndex_NearestAndGreatThan < itemsCount)
-			{
-				endItemIndex = endItemIndex_NearestAndGreatThan.Value;
-			}
-			else if (isItemsSortedWithAscending)
-			{
-				if (endItemIndex_NearestAndGreatThan < 0)
-				{
-					// 此时所有“items”都大于“endTime”。
-					return null;
-				}
-				else if (endItemIndex_NearestAndGreatThan >= itemsCount)
-				{
-					// 此时所有“items”都小于“endTime”。
-					endItemIndex = itemsCount;
-				}
-			}
-			else
-			{
-				if (endItemIndex_NearestAndGreatThan < 0)
-				{
-					// 此时所有“items”都小于“endTime”。
-					endItemIndex = -1;
-				}
-				else if (endItemIndex_NearestAndGreatThan >= itemsCount)
-				{
-					// 此时所有“items”大于“endTime”。
-					return null;
-				}
-			}
-		}
-
-
-		if (isItemsSortedWithAscending != true)
-		{
-			(firstItemIndex, endItemIndex) = (endItemIndex + 1, firstItemIndex + 1);
-		}
-		objectItemsCount = endItemIndex - firstItemIndex;
-		if (objectItemsCount <= 0
-		    || isGetObjectItemsCountOnly)
-		{
-			return null;
-		}
-
-		var objectItems = new ItemType[objectItemsCount];
-		{
-			Array.Copy(
-			    items,
-			    firstItemIndex,
-			    objectItems,
-			    0,
-			    objectItemsCount);
-		}
-		return objectItems;
+		return GetItemsSortByTimeInTimeRange((IList<ItemType>)items, isItemsSortedWithAscending,
+			beginTime, endTime, toCompareTimeWithItem, isGetObjectItemsCountOnly, out objectItemsCount);
 	}
 
 	public static ItemType[]? GetItemsSortByTimeInTimeRange<ItemType>(
@@ -207,140 +69,54 @@ public static class ItemsOrderByTimeExtension
 	    bool isGetObjectItemsCountOnly,
 	    out int objectItemsCount)
 	{
-		//
 		objectItemsCount = 0;
-		//
-		if (items.Count <= 0)
-		{
-			return null;
-		}
-		// 【注意】beginTime和endTime含义不同，不可互换。
-		if (beginTime >= endTime)
+		if (items.Count == 0 || beginTime >= endTime)
 		{
 			return null;
 		}
 
-		var itemsCount = items.Count;
-
-		var firstItemIndex = items.FindItemIndexWithDichotomy(
-		    isItemsSortedWithAscending,
-		    (item, itemIndex) =>
-		    {
-			    return toCompareTimeWithItem(item, beginTime);
-		    },
-		    // 无论升序、降序，
-		    // 都要找到大于等于“beginTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanTargetItemMin,
-		    out var firstItemIndex_NearestAndGreatThan,
-		    out _);
-		if (firstItemIndex_NearestAndGreatThan == null)
+		// 区间为 [beginTime, endTime)，相同时间的元素必须一起包含或排除。
+		var firstTargetTime = isItemsSortedWithAscending ? beginTime : endTime;
+		var lastTargetTime = isItemsSortedWithAscending ? endTime : beginTime;
+		var lowerIndex = 0;
+		var upperIndex = items.Count;
+		while (lowerIndex < upperIndex)
 		{
-			return null;
-		}
-		if (firstItemIndex < 0)
-		{
-			if (firstItemIndex_NearestAndGreatThan >= 0
-			    && firstItemIndex_NearestAndGreatThan < itemsCount)
+			var middleIndex = lowerIndex + (upperIndex - lowerIndex) / 2;
+			var comparison = toCompareTimeWithItem(items[middleIndex], firstTargetTime);
+			if (isItemsSortedWithAscending ? comparison < 0 : comparison >= 0)
 			{
-				firstItemIndex = firstItemIndex_NearestAndGreatThan.Value;
-			}
-			else if (isItemsSortedWithAscending)
-			{
-				if (firstItemIndex_NearestAndGreatThan < 0)
-				{
-					// 此时所有“items”都大于“beginTime”。
-					firstItemIndex = 0;
-				}
-				else if (firstItemIndex_NearestAndGreatThan >= itemsCount)
-				{
-					// 此时所有“items”都小于“beginTime”。
-					return null;
-				}
+				lowerIndex = middleIndex + 1;
 			}
 			else
 			{
-				if (firstItemIndex_NearestAndGreatThan < 0)
-				{
-					// 此时所有“items”都小于“beginTime”。
-					return null;
-				}
-				else if (firstItemIndex_NearestAndGreatThan >= itemsCount)
-				{
-					// 此时所有“items”都小于“beginTime”。
-					firstItemIndex = itemsCount - 1;
-				}
+				upperIndex = middleIndex;
 			}
 		}
-
-
-		var endItemIndex = items.FindItemIndexWithDichotomy(
-		    isItemsSortedWithAscending,
-		    (item, itemIndex) =>
-		    {
-			    return toCompareTimeWithItem(item, endTime);
-		    },
-		    //
-		    // 无论升序、降序，
-		    // 都要找到大于等于“endTime”的第一个元素。
-		    DichotomyClosestItemType.GreaterThanTargetItemMin,
-		    out var endItemIndex_NearestAndGreatThan,
-		    out _);
-		if (endItemIndex_NearestAndGreatThan == null)
+		var firstItemIndex = lowerIndex;
+		upperIndex = items.Count;
+		while (lowerIndex < upperIndex)
 		{
-			return null;
-		}
-		if (endItemIndex < 0)
-		{
-			if (endItemIndex_NearestAndGreatThan >= 0
-			    && endItemIndex_NearestAndGreatThan < itemsCount)
+			var middleIndex = lowerIndex + (upperIndex - lowerIndex) / 2;
+			var comparison = toCompareTimeWithItem(items[middleIndex], lastTargetTime);
+			if (isItemsSortedWithAscending ? comparison < 0 : comparison >= 0)
 			{
-				endItemIndex = endItemIndex_NearestAndGreatThan.Value;
-			}
-			else if (isItemsSortedWithAscending)
-			{
-				if (endItemIndex_NearestAndGreatThan < 0)
-				{
-					// 此时所有“items”都大于“endTime”。
-					return null;
-				}
-				else if (endItemIndex_NearestAndGreatThan >= itemsCount)
-				{
-					// 此时所有“items”都小于“endTime”。
-					endItemIndex = itemsCount;
-				}
+				lowerIndex = middleIndex + 1;
 			}
 			else
 			{
-				if (endItemIndex_NearestAndGreatThan < 0)
-				{
-					// 此时所有“items”都小于“endTime”。
-					endItemIndex = -1;
-				}
-				else if (endItemIndex_NearestAndGreatThan >= itemsCount)
-				{
-					// 此时所有“items”大于“endTime”。
-					return null;
-				}
+				upperIndex = middleIndex;
 			}
 		}
-
-
-		if (isItemsSortedWithAscending != true)
-		{
-			(firstItemIndex, endItemIndex) = (endItemIndex + 1, firstItemIndex + 1);
-		}
-		objectItemsCount = endItemIndex - firstItemIndex;
-		if (objectItemsCount <= 0
-		    || isGetObjectItemsCountOnly)
+		objectItemsCount = lowerIndex - firstItemIndex;
+		if (objectItemsCount == 0 || isGetObjectItemsCountOnly)
 		{
 			return null;
 		}
-
 		var objectItems = new ItemType[objectItemsCount];
+		for (var index = 0; index < objectItemsCount; index++)
 		{
-			items.CopyTo(
-			    objectItems,
-			    firstItemIndex);
+			objectItems[index] = items[firstItemIndex + index];
 		}
 		return objectItems;
 	}

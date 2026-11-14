@@ -777,11 +777,12 @@ public static class ObjectExtension
 		}
 
 
-		HashSet<object> sourcePropertyValueHadGetPropertyGetInfes = [];
+		// 对象图中的节点按引用区分，不能使用业务上的相等判断。
+		HashSet<object> sourcePropertyValueHadGetPropertyGetInfes = new(ReferenceEqualityComparer.Instance);
 		{
 			sourcePropertyValueHadGetPropertyGetInfes.Add(item!);
 		}
-		Dictionary<object, object?> sourcePropertyValueHadCloned = [];
+		Dictionary<object, object?> sourcePropertyValueHadCloned = new(ReferenceEqualityComparer.Instance);
 		{
 			sourcePropertyValueHadCloned.Add(item!, itemCloned);
 		}

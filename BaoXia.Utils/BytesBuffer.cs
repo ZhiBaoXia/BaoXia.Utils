@@ -250,7 +250,7 @@ public class BytesBuffer
 
 	public byte[] ToBytes()
 	{
-		return this.Bytes.ToArray();
+		return [.. this.Bytes];
 	}
 
 	#endregion
